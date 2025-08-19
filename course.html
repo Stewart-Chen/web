@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>課程內容 | 園藝治療</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1><a href="index.html" class="plain">🌿 園藝治療課程平台</a></h1>
+      <nav>
+        <a href="index.html">首頁</a>
+        <a href="#" id="login-link">登入/註冊</a>
+        <a href="#" id="logout-link" class="hidden">登出</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="course-info" class="card">
+      <h2 id="course-title">讀取中...</h2>
+      <p id="course-desc"></p>
+      <div class="row">
+        <button id="enroll-btn" class="primary">報名課程</button>
+        <span id="enrolled-badge" class="badge hidden">已報名</span>
+      </div>
+    </section>
+
+    <section>
+      <h3>單元列表</h3>
+      <ol id="lessons"></ol>
+      <div id="lessons-empty" class="muted hidden">尚未開放單元。</div>
+    </section>
+
+    <section class="card">
+      <h3>學習進度</h3>
+      <div id="progress"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 園藝治療課程平台 — MVP</small>
+    </div>
+  </footer>
+
+  <!-- Lesson modal -->
+  <dialog id="lesson-modal">
+    <form method="dialog" class="card">
+      <h3 id="lesson-title">單元</h3>
+      <article id="lesson-content" class="prose"></article>
+      <div class="actions">
+        <button id="mark-done" class="primary">標記完成</button>
+        <button value="close" class="secondary">關閉</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
+

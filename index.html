@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>園藝治療課程平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>🌿 園藝治療課程平台</h1>
+      <nav>
+        <a href="index.html">首頁</a>
+        <a href="#" id="login-link">登入/註冊</a>
+        <a href="#" id="logout-link" class="hidden">登出</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2>用園藝療癒身心</h2>
+      <p>在這裡，你可以瀏覽課程、報名加入、依照節奏完成每個單元。</p>
+      <p class="note">此為最小可用版本（MVP）：免自架伺服器，使用 Supabase 作為帳號與資料庫。</p>
+    </section>
+
+    <section>
+      <h3>課程一覽</h3>
+      <div id="courses" class="grid"></div>
+      <div id="courses-empty" class="muted hidden">目前沒有課程。</div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 園藝治療課程平台 — MVP</small>
+    </div>
+  </footer>
+
+  <!-- Auth modal -->
+  <dialog id="auth-modal">
+    <form method="dialog" class="card">
+      <h3>登入 / 註冊</h3>
+      <label>Email
+        <input type="email" id="auth-email" required placeholder="you@example.com" />
+      </label>
+      <label>密碼
+        <input type="password" id="auth-password" required placeholder="至少 6 碼" />
+      </label>
+      <div class="actions">
+        <button id="btn-signin" value="signin">登入</button>
+        <button id="btn-signup" value="signup">註冊</button>
+        <button value="cancel" class="secondary">取消</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
+
