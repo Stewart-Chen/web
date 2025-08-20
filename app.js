@@ -172,3 +172,71 @@ function initPage(){
   if (document.getElementById('course-info')) loadCourse();
 }
 
+// ====== 個人化推薦（純前端範例） ======
+const COURSES = [
+  { id:'intro-garden', title:'園藝治療入門', level:'初階', audience:['student','office','retired','teacher'], tags:['園藝入門','身心紓壓'], gender: 'all' },
+  { id:'indoor-plants', title:'室內植物照護術', level:'初階', audience:['office','student','retired'], tags:['室內植物','綠化空間'], gender: 'all' },
+  { id:'succulents-art', title:'多肉與小景設計', level:'初/中階', audience:['student','office','other'], tags:['多肉','手作'], gender: 'all' },
+  { id:'mindfulness-garden', title:'正念與園藝冥想', level:'中階', audience:['teacher','healthcare','office'], tags:['正念','身心健康'], gender: 'all' },
+  { id:'therapeutic-design', title:'照護場域：治療性花園設計', level:'進階', audience:['healthcare','teacher'], tags:['照護','設計','長照'], gender: 'all' },
+  { id:'kids-horti', title:'親子自然感官探索', level:'親子', audience:['teacher','other'], tags:['親子','教育','感官'], gender:'all' },
+];
+
+function parseInterests(value){
+  return (value || '')
+    .split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+}
+
+function scoreCourse(course, {age, gender, interests, profession}){
+  let score = 0;
+  // 職業匹配
+  if (course.audience.includes(profession)) score += 3;
+  // 興趣匹配：每命中一個 +2
+  const hit = interests.filter(k => course.tags.some(t => t.includes(k)));
+  score += hit.length * 2;
+  // 年齡導向（簡單示意）
+  if (age <= 16 && course.id === 'kids-horti') score += 2;
+  if (age >= 55 && (course.id === 'mindfulness-garden' || course.id==='indoor-plants')) score += 1;
+  // 性別目前不加權（保留欄位）
+  return score;
+}
+
+function renderRecommendations(list){
+  const box = document.getElementById('rec-results');
+  if (!box) return;
+  if (!list.length){
+    box.innerHTML = `<p class="muted">沒有找到合適的推薦，試試不同的興趣關鍵字（如：室內植物、正念、多肉、親子）。</p>`;
+    return;
+  }
+  box.innerHTML = list.map(c => `
+    <article class="course-card">
+      <h3>${c.title}</h3>
+      <div class="course-meta">
+        <span class="badge">${c.level}</span>
+        ${c.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
+      </div>
+      <div class="cta">
+        <a href="course.html?id=${c.id}" class="primary-link">查看課程</a>
+      </div>
+    </article>
+  `).join('');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('rec-form');
+  if (!form) return;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const age = parseInt(document.getElementById('age').value || '0', 10);
+    const gender = document.getElementById('gender').value || 'nonbinary';
+    const interests = parseInterests(document.getElementById('interests').value);
+    const profession = document.getElementById('profession').value || 'other';
+    // 打分排序
+    const ranked = COURSES
+      .map(c => ({...c, _score: scoreCourse(c, {age, gender, interests, profession})}))
+      .filter(c => c._score > 0)
+      .sort((a,b) => b._score - a._score)
+      .slice(0, 6);
+    renderRecommendations(ranked);
+  });
+});
