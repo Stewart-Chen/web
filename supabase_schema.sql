@@ -294,8 +294,8 @@ picked AS (
         WHERE l.course_id = pc.course_id
           AND l.title = c2.lesson_title
       )
-    ORDER BY random()
-    LIMIT GREATEST(FLOOR(random()*6)::int, 0)  -- 每門課 0~5
+    ORDER BY c2.lesson_title
+    LIMIT 5
   ) AS cat ON TRUE
 ),
 numbered AS (
