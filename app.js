@@ -296,3 +296,33 @@ window.addEventListener('DOMContentLoaded', () => {
   renderTeacherPicks(teacherKey);
 });
 
+// 在 course.html 顯示老師資訊（從 URL ?teacher 或依課程 id 推斷）
+function showCourseTeacher(){
+  const box = document.getElementById('teacher-box-content');
+  if (!box) return;
+  const params = new URLSearchParams(location.search);
+  let key = params.get('teacher');
+
+  // 若沒有帶 teacher，可依課程 id 做最簡映射（必要時自行維護）
+  const id = params.get('id'); // 如 indoor-plants, succulents-art, ...
+  if (!key && id){
+    // 簡單映射：你可按實際情況調整
+    const map = {
+      'indoor-plants':'fanfan',
+      'therapeutic-design':'fanfan',
+      'mindfulness-garden':'fanfan',
+      'succulents-art':'xd',
+      'intro-garden':'xd',
+    };
+    key = map[id];
+  }
+
+  const t = TEACHERS[key];
+  if (!t) {
+    box.textContent = '—';
+    return;
+  }
+  box.innerHTML = `${t.name}｜${t.role}`;
+}
+
+window.addEventListener('DOMContentLoaded', showCourseTeacher);
