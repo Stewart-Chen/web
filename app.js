@@ -23,13 +23,13 @@ if (logoutLink) logoutLink.addEventListener('click', async (e)=>{ e.preventDefau
 if (authModal) {
   const email = document.getElementById('auth-email');
   const passwd = document.getElementById('auth-password');
-  document.getElementById('btn-signin').addEventListener('click', async (e)=>{
+  document.getElementById('btn-signin')?.addEventListener('click', async (e)=>{
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: passwd.value });
     if (error) { console.error(error); return; }
     authModal.close(); location.reload();
   });
-  document.getElementById('btn-signup').addEventListener('click', async (e)=>{
+  document.getElementById('btn-signup')?.addEventListener('click', async (e)=>{
     e.preventDefault();
     const { error } = await supabase.auth.signUp({ email: email.value, password: passwd.value });
     if (error) { console.error(error); return; }
@@ -62,6 +62,7 @@ async function loadCourses(){
     .from('courses')
     .select('id,title,summary,cover_url,created_at')
     .eq('published', true)
+    .is('deleted_at', null)               // 只顯示未軟刪
     .order('created_at', { ascending: false });
 
   if (error) { console.error(error); return; }
@@ -85,7 +86,8 @@ async function loadCourses(){
 
 // ====== 課程頁：載入課程 + 單元 + 報名 ======
 async function loadCourse(){
-  const id = qs('id');
+  const idParam = qs('id');
+  const idNum = Number(idParam);
   const titleEl = document.getElementById('course-title');
   const descEl = document.getElementById('course-desc');
   const lessonsEl = document.getElementById('lessons');
@@ -95,14 +97,18 @@ async function loadCourse(){
   const progressEl = document.getElementById('progress');
   const modal = document.getElementById('lesson-modal');
 
-  if (!id) return;
+  if (!idParam || Number.isNaN(idNum)) {
+    if (titleEl) titleEl.textContent = '找不到課程或尚未發佈';
+    return;
+  }
 
   // (A) 課程資訊：公開可讀（published=true）
   let { data: course, error } = await supabase
     .from('courses')
     .select('*')
-    .eq('id', id)
+    .eq('id', idNum)
     .eq('published', true)
+    .is('deleted_at', null)
     .maybeSingle();
 
   if (error) { console.error(error); return; }
@@ -111,7 +117,7 @@ async function loadCourse(){
     return;
   }
   titleEl.textContent = course.title;
-  descEl.textContent = course.description ?? course.summary ?? '';
+  if (descEl) descEl.textContent = course.description ?? course.summary ?? '';
 
   const teacherBox = document.getElementById('teacher-box-content');
   if (teacherBox) {
@@ -127,12 +133,12 @@ async function loadCourse(){
   const { data: lessons, error: lsErr } = await supabase
     .from('lessons')
     .select('id, title, content, order_no')
-    .eq('course_id', id)
+    .eq('course_id', idNum)
     .order('order_no');
   if (lsErr) { console.error(lsErr); return; }
   if (!lessons || lessons.length === 0){
     lessonsEmpty?.classList.remove('hidden');
-  } else {
+  } else if (lessonsEl){
     lessonsEl.innerHTML = lessons.map(ls => `
       <li>
         <button class="btn" data-lesson="${ls.id}">${ls.order_no}. ${ls.title}</button>
@@ -146,7 +152,7 @@ async function loadCourse(){
     const { data: en, error: enErr } = await supabase
       .from('enrollments')
       .select('course_id')
-      .eq('course_id', id)
+      .eq('course_id', idNum)
       .eq('user_id', currentUser.id)
       .maybeSingle();
     if (!enErr && en) enrolled = true;
@@ -162,7 +168,7 @@ async function loadCourse(){
       if (!requireAuthOrOpenModal(e)) return;
       const { error: insErr } = await supabase
         .from('enrollments')
-        .insert({ course_id: Number(id), user_id: currentUser.id });
+        .insert({ course_id: idNum, user_id: currentUser.id });
       if (insErr){ console.error(insErr); return; }
       enrollBtn.classList.add('hidden');
       enrolledBadge?.classList.remove('hidden');
@@ -209,12 +215,12 @@ async function loadCourse(){
   // (E) 進度
   async function loadProgress(lessonList){
     if (!currentUser){
-      progressEl.innerHTML = '<span class="muted">登入後可記錄進度。</span>';
+      if (progressEl) progressEl.innerHTML = '<span class="muted">登入後可記錄進度。</span>';
       return;
     }
     const ids = (lessonList || []).map(l => l.id);
     if (!ids.length){
-      progressEl.innerHTML = '<span class="muted">尚無單元。</span>';
+      if (progressEl) progressEl.innerHTML = '<span class="muted">尚無單元。</span>';
       return;
     }
     const { data: prog, error: pErr } = await supabase
@@ -226,7 +232,7 @@ async function loadCourse(){
     const doneSet = new Set((prog||[]).map(p=>p.lesson_id));
     const total = ids.length;
     const done = doneSet.size;
-    progressEl.innerHTML = `完成 ${done} / ${total} 單元`;
+    if (progressEl) progressEl.innerHTML = `完成 ${done} / ${total} 單元`;
   }
   loadProgress(lessons || []);
 }
@@ -237,16 +243,25 @@ function initPage(){
   if (document.getElementById('course-info')) loadCourse();
 }
 
-// ====== 個人化推薦（純前端範例） ======
+// ====== 個人化推薦（修正版：點「查看課程」連到 DB 的數字 id） ======
 const COURSES = [
-  { id:'intro-garden', title:'園藝治療入門', level:'初階', audience:['student','office','retired','teacher'], tags:['園藝入門','身心紓壓'], gender: 'all' },
-  { id:'indoor-plants', title:'室內植物照護術', level:'初階', audience:['office','student','retired'], tags:['室內植物','綠化空間'], gender: 'all' },
-  { id:'succulents-art', title:'多肉與小景設計', level:'初/中階', audience:['student','office','other'], tags:['多肉','手作'], gender: 'all' },
-  { id:'mindfulness-garden', title:'正念與園藝冥想', level:'中階', audience:['teacher','healthcare','office'], tags:['正念','身心健康'], gender: 'all' },
-  { id:'therapeutic-design', title:'照護場域：治療性花園設計', level:'進階', audience:['healthcare','teacher'], tags:['照護','設計','長照'], gender: 'all' },
-  { id:'kids-horti', title:'親子自然感官探索', level:'親子', audience:['teacher','other'], tags:['親子','教育','感官'], gender:'all' },
+  { id:'intro-garden',       title:'園藝治療入門',       level:'初階',   audience:['student','office','retired','teacher'], tags:['園藝入門','身心紓壓'], gender: 'all' },
+  { id:'indoor-plants',      title:'室內植物照護術',     level:'初階',   audience:['office','student','retired'],           tags:['室內植物','綠化空間'], gender: 'all' },
+  { id:'succulents-art',     title:'多肉與小景設計',     level:'初/中階', audience:['student','office','other'],            tags:['多肉','手作'], gender: 'all' },
+  { id:'mindfulness-garden', title:'正念與園藝冥想',     level:'中階',   audience:['teacher','healthcare','office'],        tags:['正念','身心健康'], gender: 'all' },
+  { id:'therapeutic-design', title:'治療性花園設計',     level:'進階',   audience:['healthcare','teacher'],                tags:['照護','設計','長照'], gender: 'all' },
+  { id:'kids-horti',         title:'親子自然感官探索',   level:'親子',   audience:['teacher','other'],                     tags:['親子','教育','感官'], gender:'all' },
 ];
 
+// 將標題做一致化（去掉全形括號註記、可選前綴、空白、轉小寫）
+function normalizeTitle(s){
+  if (!s) return '';
+  return s
+    .replace(/（.*?）/g, '')         // 去掉（汎汎）
+    .replace(/^[^：:]*[：:]\s*/, '') // 去掉「照護場域：」這類前綴
+    .replace(/\s+/g, '')
+    .toLowerCase();
+}
 function parseInterests(value){
   return (value || '').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
 }
@@ -259,70 +274,95 @@ function scoreCourse(course, {age, gender, interests, profession}){
   if (age >= 55 && (course.id === 'mindfulness-garden' || course.id==='indoor-plants')) score += 1;
   return score;
 }
-function renderRecommendations(list){
+
+// 快取已發佈課程（避免每次打 API）
+let _publishedCourses = null;
+async function getPublishedCourses(){
+  if (_publishedCourses) return _publishedCourses;
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id,title,summary,cover_url')
+    .eq('published', true)
+    .is('deleted_at', null);
+  if (error) { console.error(error); return []; }
+  _publishedCourses = data || [];
+  return _publishedCourses;
+}
+
+function renderRecommendations(list, dbMap){
   const box = document.getElementById('rec-results');
   if (!box) return;
   if (!list.length){
     box.innerHTML = `<p class="muted">沒有找到合適的推薦，試試不同的興趣關鍵字（如：室內植物、正念、多肉、親子）。</p>`;
     return;
   }
-  box.innerHTML = list.map(c => `
-    <article class="course-card">
-      <h3>${c.title}</h3>
-      <div class="course-meta">
-        <span class="badge">${c.level}</span>
-        ${c.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
-      </div>
-      <div class="cta">
-        <a href="course.html?id=${c.id}" class="primary-link">查看課程</a>
-      </div>
-    </article>
-  `).join('');
+  box.innerHTML = list.map(c => {
+    const match = dbMap.get(normalizeTitle(c.title)); // 用標題對 DB 課程
+    const href  = match ? `course.html?id=${match.id}` : null;
+    const cover = match?.cover_url || `https://picsum.photos/seed/${normalizeTitle(c.title)}/640/360`;
+    return `
+      <article class="course-card">
+        <img src="${cover}" alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
+        <h3>${c.title}</h3>
+        <div class="course-meta">
+          <span class="badge">${c.level}</span>
+          ${c.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
+        </div>
+        <div class="cta">
+          ${href
+            ? `<a href="${href}" class="btn primary">查看課程</a>`
+            : `<button class="btn" disabled title="尚未上架">即將上架</button>`}
+        </div>
+      </article>
+    `;
+  }).join('');
 }
+
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('rec-form');
   if (form){
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const age = parseInt(document.getElementById('age').value || '0', 10);
       const gender = document.getElementById('gender').value || 'nonbinary';
       const interests = parseInterests(document.getElementById('interests').value);
       const profession = document.getElementById('profession').value || 'other';
+
       const ranked = COURSES
         .map(c => ({...c, _score: scoreCourse(c, {age, gender, interests, profession})}))
         .filter(c => c._score > 0)
         .sort((a,b) => b._score - a._score)
         .slice(0, 6);
-      renderRecommendations(ranked);
+
+      const published = await getPublishedCourses();
+      const dbMap = new Map(published.map(pc => [ normalizeTitle(pc.title), pc ]));
+      renderRecommendations(ranked, dbMap);
     });
   }
 });
 
-// ====== 老師與精選課程（前端輕量設定） ======
+// ====== 老師與精選課程 ======
 const TEACHERS = {
   fanfan: {
     name: '汎汎',
     role: '園藝治療老師',
     picks: [
-      { id:'indoor-plants',  title:'室內植物照護術', level:'初階', tags:['室內植物','綠化空間'] },
-      { id:'mindfulness-garden', title:'正念與園藝冥想', level:'中階', tags:['正念','身心健康'] },
-      { id:'therapeutic-design', title:'照護場域：治療性花園設計', level:'進階', tags:['照護','設計','長照'] },
+      { id:'indoor-plants',       title:'室內植物照護術',     level:'初階', tags:['室內植物','綠化空間'] },
+      { id:'mindfulness-garden',  title:'正念與園藝冥想',     level:'中階', tags:['正念','身心健康'] },
+      { id:'therapeutic-design',  title:'治療性花園設計',     level:'進階', tags:['照護','設計','長照'] },
     ],
   },
   xd: {
     name: '小D',
     role: '藝術治療老師',
     picks: [
-      { id:'color-emotion', title:'情緒色彩創作', level:'初階', tags:['色彩','情緒表達','藝術'] },
-      { id:'watercolor-mindfulness', title:'水彩與正念表達', level:'中階', tags:['水彩','正念','藝術療癒'] },
-      { id:'oilpainting-healing', title:'油畫的療癒表達', level:'進階', tags:['油畫','深層情緒','藝術治療'] },
+      { id:'color-emotion',           title:'情緒色彩創作',       level:'初階', tags:['色彩','情緒表達','藝術'] },
+      { id:'watercolor-mindfulness',  title:'水彩與正念表達',     level:'中階', tags:['水彩','正念','藝術療癒'] },
+      { id:'oilpainting-healing',     title:'油畫的療癒表達',     level:'進階', tags:['油畫','深層情緒','藝術治療'] },
     ],
   },
 };
-function normalizeTitle(s){
-  if (!s) return '';
-  return s.replace(/（.*?）/g,'').replace(/\s+/g,'').toLowerCase();
-}
+
 async function renderTeacherPicks(key){
   const wrap = document.getElementById('teacher-picks');
   const titleEl = document.getElementById('teacher-picks-title');
@@ -341,6 +381,7 @@ async function renderTeacherPicks(key){
     .from('courses')
     .select('id,title,summary,teacher,cover_url')
     .eq('published', true)
+    .is('deleted_at', null)
     .eq('teacher', key);
 
   if (error){ console.error('load teacher picks error:', error); }
@@ -367,6 +408,7 @@ async function renderTeacherPicks(key){
     `;
   }).join('');
 }
+
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(location.search);
   const teacherKey = params.get('teacher'); // fanfan / xd
@@ -398,12 +440,13 @@ async function isAdmin() {
     await adminRefresh();
   }
 
+  // 鍵盤
   window.addEventListener('keydown', (e)=>{
     if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
       e.preventDefault(); openIfAdmin();
     }
   });
-
+  // 連點標題
   const headerTitle = document.querySelector('.site-header h1, .site-header a.plain');
   let clickCount = 0, timer = null;
   headerTitle?.addEventListener('click', ()=>{
@@ -411,7 +454,7 @@ async function isAdmin() {
     timer = setTimeout(()=>{ clickCount = 0; }, 600);
     if (clickCount >= 5) { clickCount = 0; openIfAdmin(); }
   });
-
+  // ?admin=1
   if (new URLSearchParams(location.search).get('admin') === '1') {
     openIfAdmin();
   }
@@ -453,25 +496,30 @@ async function adminRefresh(){
     });
   });
 }
-function adminFillCourseForm(c){
-  document.getElementById('ac-id').value       = c?.id ?? '';
-  document.getElementById('ac-title').value    = c?.title ?? '';
-  document.getElementById('ac-summary').value  = c?.summary ?? '';
-  document.getElementById('ac-desc').value     = c?.description ?? '';
-  document.getElementById('ac-cover').value    = c?.cover_url ?? '';
-  document.getElementById('ac-teacher').value  = c?.teacher ?? '';
-  document.getElementById('ac-published').checked = !!c?.published;
 
-  const sd = document.getElementById('admin-soft-delete');
-  const hd = document.getElementById('admin-hard-delete');
-  sd.disabled = !c?.id;
-  hd.disabled = !c?.id;
+function adminFillCourseForm(c){
+  $('#ac-id').value        = c?.id ?? '';
+  $('#ac-title').value     = c?.title ?? '';
+  $('#ac-summary').value   = c?.summary ?? '';
+  $('#ac-desc').value      = c?.description ?? '';
+  $('#ac-cover').value     = c?.cover_url ?? '';
+  $('#ac-teacher').value   = c?.teacher ?? '';
+  $('#ac-published').checked = !!c?.published;
+
+  const sd = $('#admin-soft-delete');
+  const hd = $('#admin-hard-delete');
+  if (sd) sd.disabled = !c?.id;
+  if (hd) hd.disabled = !c?.id;
 }
+
 async function adminLoadLessons(courseId){
   const box = document.getElementById('admin-lessons');
   if (!courseId) { box.innerHTML = '<p class="muted">先選擇或建立課程。</p>'; return; }
   const { data, error } = await supabase
-    .from('lessons').select('id,order_no,title,content').eq('course_id', courseId).order('order_no');
+    .from('lessons')
+    .select('id,order_no,title,content')
+    .eq('course_id', courseId)
+    .order('order_no');
   if (error) { box.innerHTML = `<p class="muted">讀取失敗：${error.message}</p>`; return; }
 
   box.innerHTML = (data||[]).map(l => `
@@ -488,10 +536,10 @@ async function adminLoadLessons(courseId){
       const wrap = e.currentTarget.closest('.item');
       const lid = Number(wrap.dataset.lid);
       supabase.from('lessons').select('*').eq('id', lid).maybeSingle().then(({data})=>{
-        document.getElementById('al-id').value = lid;
-        document.getElementById('al-order').value = data?.order_no ?? 1;
-        document.getElementById('al-title').value = data?.title ?? '';
-        document.getElementById('al-content').value = data?.content ?? '';
+        $('#al-id').value    = lid;
+        $('#al-order').value = data?.order_no ?? 1;
+        $('#al-title').value = data?.title ?? '';
+        $('#al-content').value = data?.content ?? '';
       });
     });
   });
@@ -499,23 +547,26 @@ async function adminLoadLessons(courseId){
 
 // 4) 事件：刷新 / 新增課程 / 儲存 / 刪除
 document.getElementById('admin-refresh')?.addEventListener('click', adminRefresh);
+
 document.getElementById('admin-new-course')?.addEventListener('click', ()=>{
   adminFillCourseForm(null);
-  document.getElementById('admin-lessons').innerHTML = '<p class="muted">尚無單元。</p>';
+  const ls = document.getElementById('admin-lessons');
+  if (ls) ls.innerHTML = '<p class="muted">尚無單元。</p>';
 });
+
 document.getElementById('admin-course-form')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   if (!await isAdmin()) { alert('只有管理者可以操作'); return; }
 
   const payload = {
-    title:   document.getElementById('ac-title').value.trim(),
-    summary: document.getElementById('ac-summary').value.trim() || null,
-    description: document.getElementById('ac-desc').value.trim() || null,
-    cover_url: document.getElementById('ac-cover').value.trim() || null,
-    teacher: document.getElementById('ac-teacher').value,
-    published: document.getElementById('ac-published').checked,
+    title:   $('#ac-title').value.trim(),
+    summary: $('#ac-summary').value.trim() || null,
+    description: $('#ac-desc').value.trim() || null,
+    cover_url: $('#ac-cover').value.trim() || null,
+    teacher: $('#ac-teacher').value,
+    published: $('#ac-published').checked,
   };
-  const id = Number(document.getElementById('ac-id').value || 0);
+  const id = Number($('#ac-id').value || 0);
 
   if (id) {
     const { error } = await supabase.from('courses').update(payload).eq('id', id);
@@ -528,9 +579,10 @@ document.getElementById('admin-course-form')?.addEventListener('submit', async (
   }
   await adminRefresh();
 });
+
 document.getElementById('admin-soft-delete')?.addEventListener('click', async ()=>{
   if (!await isAdmin()) return alert('只有管理者可以操作');
-  const id = Number(document.getElementById('ac-id').value || 0);
+  const id = Number($('#ac-id').value || 0);
   if (!id) return;
   if (!confirm('移到回收（可復原）？')) return;
   const { error } = await supabase.from('courses')
@@ -539,9 +591,10 @@ document.getElementById('admin-soft-delete')?.addEventListener('click', async ()
   if (error) return alert('刪除失敗：' + error.message);
   alert('已移到回收'); await adminRefresh();
 });
+
 document.getElementById('admin-hard-delete')?.addEventListener('click', async ()=>{
   if (!await isAdmin()) return alert('只有管理者可以操作');
-  const id = Number(document.getElementById('ac-id').value || 0);
+  const id = Number($('#ac-id').value || 0);
   if (!id) return;
   if (!confirm('⚠ 永久刪除課程與所有單元，確定？')) return;
   const { error } = await supabase.from('courses').delete().eq('id', id);
@@ -554,16 +607,16 @@ document.getElementById('admin-lesson-form')?.addEventListener('submit', async (
   e.preventDefault();
   if (!await isAdmin()) return alert('只有管理者可以操作');
 
-  const courseId = Number(document.getElementById('ac-id').value || 0);
+  const courseId = Number($('#ac-id').value || 0);
   if (!courseId) return alert('請先選擇或建立課程');
 
   const payload = {
     course_id: courseId,
-    order_no:  Number(document.getElementById('al-order').value || 1),
-    title:     document.getElementById('al-title').value.trim(),
-    content:   document.getElementById('al-content').value.trim() || null,
+    order_no:  Number($('#al-order').value || 1),
+    title:     $('#al-title').value.trim(),
+    content:   $('#al-content').value.trim() || null,
   };
-  const id = Number(document.getElementById('al-id').value || 0);
+  const id = Number($('#al-id').value || 0);
 
   if (id) {
     const { error } = await supabase.from('lessons').update(payload).eq('id', id);
@@ -574,18 +627,19 @@ document.getElementById('admin-lesson-form')?.addEventListener('submit', async (
     if (error) return alert('新增單元失敗：' + error.message);
     alert('單元已新增');
   }
-  document.getElementById('al-id').value = '';
+  $('#al-id').value = '';
   await adminLoadLessons(courseId);
 });
+
 document.getElementById('admin-lesson-delete')?.addEventListener('click', async ()=>{
   if (!await isAdmin()) return alert('只有管理者可以操作');
-  const lid = Number(document.getElementById('al-id').value || 0);
-  const cid = Number(document.getElementById('ac-id').value || 0);
+  const lid = Number($('#al-id').value || 0);
+  const cid = Number($('#ac-id').value || 0);
   if (!lid) return alert('請先點選要刪除的單元（於列表選擇「編輯」）');
   if (!confirm('刪除這個單元？')) return;
   const { error } = await supabase.from('lessons').delete().eq('id', lid);
   if (error) return alert('刪除單元失敗：' + error.message);
-  document.getElementById('al-id').value = '';
+  $('#al-id').value = '';
   await adminLoadLessons(cid);
 });
 
