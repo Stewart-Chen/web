@@ -1,16 +1,12 @@
 // ====== CONFIG ======
-// 1) 填入你的 Supabase 專案 URL 與匿名金鑰（安全：僅擁有者權限受 RLS 限制）
 const SUPABASE_URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
-
-// 2) 建立 Supabase 用戶端
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ====== 共用工具 ======
+// ====== 小工具 ======
 function $(sel, root=document){ return root.querySelector(sel); }
 function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 function qs(name){ return new URLSearchParams(location.search).get(name); }
-function formatDate(iso){ return new Date(iso).toLocaleDateString(); }
 
 // ====== Auth UI ======
 const loginLink = document.getElementById('login-link');
@@ -38,17 +34,11 @@ if (authModal) {
   });
 }
 
-// 目前使用者 + 登入狀態管理
+// 目前使用者
 let currentUser = null;
-function showAuthModal(){
-  if (authModal && !authModal.open) authModal.showModal();
-}
+function showAuthModal(){ if (authModal && !authModal.open) authModal.showModal(); }
 function requireAuthOrOpenModal(e){
-  if (!currentUser){
-    if (e) e.preventDefault();
-    showAuthModal();
-    return false;
-  }
+  if (!currentUser){ if (e) e.preventDefault(); showAuthModal(); return false; }
   return true;
 }
 
@@ -84,7 +74,7 @@ async function loadCourses(){
   `).join('');
 }
 
-// ====== 課程頁：載入課程 + 單元 + 報名 ======
+// ====== 課程頁 ======
 async function loadCourse(){
   const idParam = qs('id');
   const idNum = Number(idParam);
@@ -102,7 +92,7 @@ async function loadCourse(){
     return;
   }
 
-  // (A) 課程資訊：公開可讀（published=true）
+  // (A) 課程資訊
   let { data: course, error } = await supabase
     .from('courses')
     .select('*')
@@ -112,12 +102,9 @@ async function loadCourse(){
     .maybeSingle();
 
   if (error) { console.error(error); return; }
-  if (!course) {
-    if (titleEl) titleEl.textContent = '找不到課程或尚未發佈';
-    return;
-  }
-  titleEl.textContent = course.title;
-  if (descEl) descEl.textContent = course.description ?? course.summary ?? '';
+  if (!course) { if (titleEl) titleEl.textContent = '找不到課程或尚未發佈'; return; }
+  if (titleEl) titleEl.textContent = course.title;
+  if (descEl)  descEl.textContent  = course.description ?? course.summary ?? '';
 
   const teacherBox = document.getElementById('teacher-box-content');
   if (teacherBox) {
@@ -140,9 +127,7 @@ async function loadCourse(){
     lessonsEmpty?.classList.remove('hidden');
   } else if (lessonsEl){
     lessonsEl.innerHTML = lessons.map(ls => `
-      <li>
-        <button class="btn" data-lesson="${ls.id}">${ls.order_no}. ${ls.title}</button>
-      </li>
+      <li><button class="btn" data-lesson="${ls.id}">${ls.order_no}. ${ls.title}</button></li>
     `).join('');
   }
 
@@ -157,8 +142,6 @@ async function loadCourse(){
       .maybeSingle();
     if (!enErr && en) enrolled = true;
   }
-
-  // 調整 UI 與點擊行為
   if (enrolled) {
     enrollBtn?.classList.add('hidden');
     enrolledBadge?.classList.remove('hidden');
@@ -176,7 +159,7 @@ async function loadCourse(){
     });
   }
 
-  // (D) 點單元：完成標記
+  // (D) 點單元 → 完成標記
   lessonsEl?.addEventListener('click', async (e)=>{
     const btn = e.target.closest('button[data-lesson]');
     if (!btn) return;
@@ -214,15 +197,9 @@ async function loadCourse(){
 
   // (E) 進度
   async function loadProgress(lessonList){
-    if (!currentUser){
-      if (progressEl) progressEl.innerHTML = '<span class="muted">登入後可記錄進度。</span>';
-      return;
-    }
+    if (!currentUser){ if (progressEl) progressEl.innerHTML = '<span class="muted">登入後可記錄進度。</span>'; return; }
     const ids = (lessonList || []).map(l => l.id);
-    if (!ids.length){
-      if (progressEl) progressEl.innerHTML = '<span class="muted">尚無單元。</span>';
-      return;
-    }
+    if (!ids.length){ if (progressEl) progressEl.innerHTML = '<span class="muted">尚無單元。</span>'; return; }
     const { data: prog, error: pErr } = await supabase
       .from('progress')
       .select('lesson_id, done_at')
@@ -230,107 +207,74 @@ async function loadCourse(){
       .in('lesson_id', ids);
     if (pErr) { console.error(pErr); return; }
     const doneSet = new Set((prog||[]).map(p=>p.lesson_id));
-    const total = ids.length;
-    const done = doneSet.size;
-    if (progressEl) progressEl.innerHTML = `完成 ${done} / ${total} 單元`;
+    if (progressEl) progressEl.innerHTML = `完成 ${doneSet.size} / ${ids.length} 單元`;
   }
   loadProgress(lessons || []);
 }
 
-// 頁面初始化
+// ====== 頁面初始化 ======
 function initPage(){
   if (document.getElementById('courses') || document.getElementById('courses-list')) loadCourses();
   if (document.getElementById('course-info')) loadCourse();
 }
 
-// ====== 個人化推薦（改成從資料庫選） ======
-
-// 標題/內文正規化（供封面 seed 與關鍵字比對）
+// ====== 個人化推薦（從資料庫挑） ======
 function normalizeTitle(s){
   if (!s) return '';
-  return s
-    .replace(/（.*?）/g, '')         // 去掉（汎汎）之類
-    .replace(/^[^：:]*[：:]\s*/, '') // 去掉「照護場域：」前綴
-    .replace(/\s+/g, '')
-    .toLowerCase();
+  return s.replace(/（.*?）/g,'').replace(/^[^：:]*[：:]\s*/,'').replace(/\s+/g,'').toLowerCase();
 }
-
-// 從課程文字推導 tags/level（若 DB 沒有欄位，就用關鍵字推估）
 function deriveMetaFromText(course){
   const text = `${course.title ?? ''} ${course.summary ?? ''} ${course.description ?? ''}`;
-  const has = (kw) => text.includes(kw);
-
+  const has = (kw)=>text.includes(kw);
   const tags = [
-    ...(has('室內植物') ? ['室內植物'] : []),
-    ...(has('多肉') ? ['多肉'] : []),
-    ...(has('正念') || has('冥想') ? ['正念'] : []),
-    ...(has('親子') || has('兒童') ? ['親子'] : []),
-    ...(has('設計') ? ['設計'] : []),
-    ...(has('長照') || has('照護') ? ['長照'] : []),
-    ...(has('水彩') ? ['水彩'] : []),
-    ...(has('油畫') ? ['油畫'] : []),
-    ...(has('色彩') ? ['色彩'] : []),
-    ...(has('藝術') ? ['藝術'] : []),
-    ...(has('園藝') ? ['園藝'] : []),
+    ...(has('室內植物')?['室內植物']:[]),
+    ...(has('多肉')?['多肉']:[]),
+    ...(has('正念')||has('冥想')?['正念']:[]),
+    ...(has('親子')||has('兒童')?['親子']:[]),
+    ...(has('設計')?['設計']:[]),
+    ...(has('長照')||has('照護')?['長照']:[]),
+    ...(has('水彩')?['水彩']:[]),
+    ...(has('油畫')?['油畫']:[]),
+    ...(has('色彩')?['色彩']:[]),
+    ...(has('藝術')?['藝術']:[]),
+    ...(has('園藝')?['園藝']:[]),
   ];
-
-  let level = '一般';
-  if (has('入門') || has('初階')) level = '初階';
-  else if (has('中階')) level = '中階';
-  else if (has('進階')) level = '進階';
-  else if (has('親子')) level = '親子';
-
+  let level='一般';
+  if (has('入門')||has('初階')) level='初階';
+  else if (has('中階')) level='中階';
+  else if (has('進階')) level='進階';
+  else if (has('親子')) level='親子';
   return { tags, level };
 }
-
-function parseInterests(value){
-  return (value || '').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
-}
-function preferredTagsByProfession(prof){
-  switch (prof) {
-    case 'student':   return ['入門','室內植物','多肉','色彩','水彩'];
-    case 'office':    return ['室內植物','正念'];
-    case 'teacher':   return ['親子','教育','正念'];
-    case 'healthcare':return ['長照','照護','治療性','設計'];
-    case 'retired':   return ['室內植物','正念'];
-    default:          return [];
+function parseInterests(v){ return (v||'').split(/[,，]/).map(s=>s.trim()).filter(Boolean); }
+function preferredTagsByProfession(p){
+  switch(p){
+    case 'student': return ['入門','室內植物','多肉','色彩','水彩'];
+    case 'office': return ['室內植物','正念'];
+    case 'teacher': return ['親子','教育','正念'];
+    case 'healthcare': return ['長照','照護','治療性','設計'];
+    case 'retired': return ['室內植物','正念'];
+    default: return [];
   }
 }
 function scoreDbCourse(course, {age, gender, interests, profession}){
   const { tags, level } = deriveMetaFromText(course);
   const text = `${course.title ?? ''} ${course.summary ?? ''} ${course.description ?? ''}`;
-
   let score = 0;
-
-  const prefs = preferredTagsByProfession(profession);
-  prefs.forEach(p => {
-    if (tags.some(t => t.includes(p)) || text.includes(p)) score += 2;
-  });
-
-  interests.forEach(k => {
-    if (tags.some(t => t.includes(k)) || text.includes(k)) score += 2;
-  });
-
-  if (age <= 16 && (tags.includes('親子') || text.includes('親子'))) score += 2;
-  if (age >= 55 && (tags.includes('正念') || tags.includes('室內植物') || text.includes('正念') || text.includes('室內植物'))) score += 1;
-
-  if (course.teacher === 'fanfan' && (text.includes('室內植物') || text.includes('正念'))) score += 1;
-  if (course.teacher === 'xd'     && (text.includes('色彩') || text.includes('水彩') || text.includes('油畫'))) score += 1;
-
-  const levelBonus = { '一般':0, '初階':0.5, '中階':0.8, '進階':1, '親子':0.6 };
+  preferredTagsByProfession(profession).forEach(p=>{ if(tags.some(t=>t.includes(p))||text.includes(p)) score+=2; });
+  interests.forEach(k=>{ if(tags.some(t=>t.includes(k))||text.includes(k)) score+=2; });
+  if (age<=16 && (tags.includes('親子')||text.includes('親子'))) score+=2;
+  if (age>=55 && (tags.includes('正念')||tags.includes('室內植物')||text.includes('正念')||text.includes('室內植物'))) score+=1;
+  if (course.teacher==='fanfan' && (text.includes('室內植物')||text.includes('正念'))) score+=1;
+  if (course.teacher==='xd' && (text.includes('色彩')||text.includes('水彩')||text.includes('油畫'))) score+=1;
+  const levelBonus = { '一般':0,'初階':0.5,'中階':0.8,'進階':1,'親子':0.6 };
   score += levelBonus[level] ?? 0;
-
   return { score, tags, level };
 }
-
 function renderRecommendationsFromDb(list){
   const box = document.getElementById('rec-results');
   if (!box) return;
-  if (!list.length){
-    box.innerHTML = `<p class="muted">沒有找到合適的推薦，試試不同的興趣關鍵字（如：室內植物、正念、多肉、親子）。</p>`;
-    return;
-  }
-
+  if (!list.length){ box.innerHTML = `<p class="muted">沒有找到合適的推薦，試試不同的興趣關鍵字（如：室內植物、正念、多肉、親子）。</p>`; return; }
   box.innerHTML = list.map(c => `
     <article class="course-card">
       <img src="${c.cover_url || `https://picsum.photos/seed/${normalizeTitle(c.title)}/640/360`}" alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
@@ -343,17 +287,13 @@ function renderRecommendationsFromDb(list){
         <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
       </div>
     </article>
-  ").join('');
+  `).join('');
 }
-
-// 綁定推薦表單：從 DB 取課程來計分
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('rec-form');
   if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async (e)=>{
     e.preventDefault();
-
     const age = parseInt(document.getElementById('age').value || '0', 10);
     const gender = document.getElementById('gender').value || 'nonbinary';
     const interests = parseInterests(document.getElementById('interests').value);
@@ -364,35 +304,22 @@ window.addEventListener('DOMContentLoaded', () => {
       .select('id,title,summary,description,cover_url,teacher')
       .eq('published', true)
       .is('deleted_at', null);
+    if (error){ console.error('load courses for recommend error:', error); renderRecommendationsFromDb([]); return; }
 
-    if (error) {
-      console.error('load courses for recommend error:', error);
-      renderRecommendationsFromDb([]);
-      return;
-    }
-
-    const scored = (courses || []).map(c => {
+    const scored = (courses||[]).map(c => {
       const r = scoreDbCourse(c, {age, gender, interests, profession});
       return { ...c, _score: r.score, _tags: r.tags, _level: r.level };
     });
-
-    const top = scored
-      .filter(c => c._score > 0)
-      .sort((a,b) => b._score - a._score)
-      .slice(0, 6);
-
+    const top = scored.filter(c=>c._score>0).sort((a,b)=>b._score-a._score).slice(0,6);
     renderRecommendationsFromDb(top);
   });
 });
 
-// ====== 老師精選（從資料庫選） ======
-
-// 顯示老師中文名/角色
+// ====== 老師精選（從資料庫） ======
 const TEACHER_META = {
-  fanfan: { name: '汎汪', role: '園藝治療老師' },
+  fanfan: { name: '汎汪', role: '園藝治療老師' }, // 顯示名：你要顯示「汎汪/汎汎」可自行調整
   xd:     { name: '小D', role: '藝術治療老師' },
 };
-
 async function renderTeacherPicksFromDb(teacherKey){
   const wrap = document.getElementById('teacher-picks');
   const titleEl = document.getElementById('teacher-picks-title');
@@ -404,10 +331,8 @@ async function renderTeacherPicksFromDb(teacherKey){
     wrap.innerHTML = `<p class="muted">點選上方「看某位老師的課程」或直接瀏覽下方課程列表。</p>`;
     return;
   }
-
   titleEl.textContent = `📚 ${meta.name} 的精選課程`;
 
-  // 從 DB 取該老師的已發佈課程（可視需求加上 limit，例如 .limit(3)）
   const { data, error } = await supabase
     .from('courses')
     .select('id,title,summary,cover_url,teacher,created_at,description')
@@ -415,20 +340,11 @@ async function renderTeacherPicksFromDb(teacherKey){
     .is('deleted_at', null)
     .eq('teacher', teacherKey)
     .order('created_at', { ascending: false });
-    // .limit(3) // 若要只顯示最新三門，解除這行註解
+    // .limit(3)
 
-  if (error) {
-    console.error('load teacher picks error:', error);
-    wrap.innerHTML = `<p class="muted">載入失敗。</p>`;
-    return;
-  }
+  if (error){ console.error('load teacher picks error:', error); wrap.innerHTML = `<p class="muted">載入失敗。</p>`; return; }
+  if (!data || data.length===0){ wrap.innerHTML = `<p class="muted">這位老師目前尚無已發佈的課程。</p>`; return; }
 
-  if (!data || data.length === 0){
-    wrap.innerHTML = `<p class="muted">這位老師目前尚無已發佈的課程。</p>`;
-    return;
-  }
-
-  // 可選：用 deriveMetaFromText 補一些標籤/level
   const enriched = data.map(c => {
     const { tags, level } = deriveMetaFromText(c);
     return { ...c, _tags: tags, _level: level };
@@ -448,7 +364,6 @@ async function renderTeacherPicksFromDb(teacherKey){
     </article>
   `).join('');
 }
-
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(location.search);
   const teacherKey = params.get('teacher'); // fanfan / xd
@@ -457,7 +372,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ========== Admin Panel ==========
 
-// 1) 判斷是否為管理者（查 admins 表）
+// 1) 判斷是否為管理者
 async function isAdmin() {
   if (!currentUser) return false;
   const { data, error } = await supabase
@@ -468,7 +383,7 @@ async function isAdmin() {
   return !!data && !error;
 }
 
-// 2) 觸發方式：Ctrl+Shift+A、標題點 5 次、或 ?admin=1
+// 2) 觸發方式
 (function adminTriggers(){
   const dlg = document.getElementById('admin-panel');
   if (!dlg) return;
@@ -480,13 +395,11 @@ async function isAdmin() {
     await adminRefresh();
   }
 
-  // 鍵盤
   window.addEventListener('keydown', (e)=>{
     if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
       e.preventDefault(); openIfAdmin();
     }
   });
-  // 連點標題
   const headerTitle = document.querySelector('.site-header h1, .site-header a.plain');
   let clickCount = 0, timer = null;
   headerTitle?.addEventListener('click', ()=>{
@@ -494,13 +407,10 @@ async function isAdmin() {
     timer = setTimeout(()=>{ clickCount = 0; }, 600);
     if (clickCount >= 5) { clickCount = 0; openIfAdmin(); }
   });
-  // ?admin=1
-  if (new URLSearchParams(location.search).get('admin') === '1') {
-    openIfAdmin();
-  }
+  if (new URLSearchParams(location.search).get('admin') === '1') openIfAdmin();
 })();
 
-// 3) UI 綁定：載入課程清單、填表、單元清單
+// 3) Admin 清單/表單
 async function adminRefresh(){
   const wrap = document.getElementById('admin-courses');
   if (!wrap) return;
@@ -521,9 +431,7 @@ async function adminRefresh(){
           <span class="muted">${new Date(c.created_at).toLocaleString()}</span>
         </div>
       </div>
-      <div>
-        <button class="btn" data-act="edit">編輯</button>
-      </div>
+      <div><button class="btn" data-act="edit">編輯</button></div>
     </div>
   `).join('');
 
@@ -536,7 +444,6 @@ async function adminRefresh(){
     });
   });
 }
-
 function adminFillCourseForm(c){
   $('#ac-id').value        = c?.id ?? '';
   $('#ac-title').value     = c?.title ?? '';
@@ -545,29 +452,20 @@ function adminFillCourseForm(c){
   $('#ac-cover').value     = c?.cover_url ?? '';
   $('#ac-teacher').value   = c?.teacher ?? '';
   $('#ac-published').checked = !!c?.published;
-
-  const sd = $('#admin-soft-delete');
-  const hd = $('#admin-hard-delete');
-  if (sd) sd.disabled = !c?.id;
-  if (hd) hd.disabled = !c?.id;
+  const sd = $('#admin-soft-delete'); const hd = $('#admin-hard-delete');
+  if (sd) sd.disabled = !c?.id; if (hd) hd.disabled = !c?.id;
 }
-
 async function adminLoadLessons(courseId){
   const box = document.getElementById('admin-lessons');
   if (!courseId) { box.innerHTML = '<p class="muted">先選擇或建立課程。</p>'; return; }
   const { data, error } = await supabase
-    .from('lessons')
-    .select('id,order_no,title,content')
-    .eq('course_id', courseId)
-    .order('order_no');
+    .from('lessons').select('id,order_no,title,content').eq('course_id', courseId).order('order_no');
   if (error) { box.innerHTML = `<p class="muted">讀取失敗：${error.message}</p>`; return; }
 
   box.innerHTML = (data||[]).map(l => `
     <div class="item" data-lid="${l.id}">
       <div><strong>${l.order_no}.</strong> ${l.title}</div>
-      <div>
-        <button class="btn" data-act="edit-lesson">編輯</button>
-      </div>
+      <div><button class="btn" data-act="edit-lesson">編輯</button></div>
     </div>
   `).join('');
 
@@ -585,17 +483,8 @@ async function adminLoadLessons(courseId){
   });
 }
 
-// 4) 事件：刷新 / 新增課程 / 儲存 / 刪除
-document.getElementById('admin-refresh')?.addEventListener('click', adminRefresh);
-
-document.getElementById('admin-new-course')?.addEventListener('click', ()=>{
-  adminFillCourseForm(null);
-  const ls = document.getElementById('admin-lessons');
-  if (ls) ls.innerHTML = '<p class="muted">尚無單元。</p>';
-});
-
-document.getElementById('admin-course-form')?.addEventListener('submit', async (e)=>{
-  e.preventDefault();
+// ====== Admin 儲存/刪除（含 dialog 巢狀表單修補） ======
+async function saveCourseFromForm() {
   if (!await isAdmin()) { alert('只有管理者可以操作'); return; }
 
   const payload = {
@@ -607,19 +496,88 @@ document.getElementById('admin-course-form')?.addEventListener('submit', async (
     published: $('#ac-published').checked,
   };
   const id = Number($('#ac-id').value || 0);
+  if (!payload.title) { alert('請填寫標題'); return; }
+  if (!payload.teacher) { alert('請選擇授課老師'); return; }
 
-  if (id) {
-    const { error } = await supabase.from('courses').update(payload).eq('id', id);
-    if (error) return alert('更新失敗：' + error.message);
-    alert('課程已更新');
-  } else {
-    const { error } = await supabase.from('courses').insert([payload]);
-    if (error) return alert('建立失敗：' + error.message);
-    alert('課程已建立');
+  try {
+    if (id) {
+      const { error } = await supabase.from('courses').update(payload).eq('id', id);
+      if (error) throw error;
+      alert('課程已更新');
+    } else {
+      const { error } = await supabase.from('courses').insert([payload]);
+      if (error) throw error;
+      alert('課程已建立');
+    }
+    await adminRefresh();
+  } catch (err) {
+    console.error('saveCourse error:', err);
+    alert('儲存失敗：' + (err?.message || err));
   }
-  await adminRefresh();
+}
+async function saveLessonFromForm() {
+  if (!await isAdmin()) { alert('只有管理者可以操作'); return; }
+
+  const courseId = Number($('#ac-id').value || 0);
+  if (!courseId) { alert('請先選擇或建立課程'); return; }
+
+  const payload = {
+    course_id: courseId,
+    order_no:  Number($('#al-order').value || 1),
+    title:     $('#al-title').value.trim(),
+    content:   $('#al-content').value.trim() || null,
+  };
+  const id = Number($('#al-id').value || 0);
+  if (!payload.title) { alert('請填寫單元標題'); return; }
+  if (payload.order_no <= 0) { alert('順序需為正整數'); return; }
+
+  try {
+    if (id) {
+      const { error } = await supabase.from('lessons').update(payload).eq('id', id);
+      if (error) throw error;
+      alert('單元已更新');
+    } else {
+      const { error } = await supabase.from('lessons').insert([payload]);
+      if (error) throw error;
+      alert('單元已新增');
+    }
+    $('#al-id').value = '';
+    await adminLoadLessons(courseId);
+  } catch (err) {
+    console.error('saveLesson error:', err);
+    alert('儲存單元失敗：' + (err?.message || err));
+  }
+}
+
+// 保留 submit（未來若移除外層 form 也能用）
+document.getElementById('admin-course-form')?.addEventListener('submit', async (e)=>{
+  e.preventDefault(); e.stopPropagation(); await saveCourseFromForm();
+});
+document.getElementById('admin-lesson-form')?.addEventListener('submit', async (e)=>{
+  e.preventDefault(); e.stopPropagation(); await saveLessonFromForm();
 });
 
+// 🔧 補 click 雙保險，避免被 <form method="dialog"> 吞掉
+(function patchDialogNestedForms(){
+  const saveBtn = document.querySelector('#admin-course-form button[type="submit"]');
+  if (saveBtn && !saveBtn.dataset.bound) {
+    saveBtn.addEventListener('click', async (e)=>{ e.preventDefault(); e.stopPropagation(); await saveCourseFromForm(); });
+    saveBtn.dataset.bound = '1';
+  }
+  const saveLessonBtn = document.querySelector('#admin-lesson-form button[type="submit"]');
+  if (saveLessonBtn && !saveLessonBtn.dataset.bound) {
+    saveLessonBtn.addEventListener('click', async (e)=>{ e.preventDefault(); e.stopPropagation(); await saveLessonFromForm(); });
+    saveLessonBtn.dataset.bound = '1';
+  }
+})();
+
+// 其他 Admin 事件
+document.getElementById('admin-refresh')?.addEventListener('click', adminRefresh);
+document.getElementById('admin-new-course')?.addEventListener('click', ()=>{
+  adminFillCourseForm(null);
+  const ls = document.getElementById('admin-lessons');
+  if (ls) ls.innerHTML = '<p class="muted">尚無單元。</p>';
+});
 document.getElementById('admin-soft-delete')?.addEventListener('click', async ()=>{
   if (!await isAdmin()) return alert('只有管理者可以操作');
   const id = Number($('#ac-id').value || 0);
@@ -631,7 +589,6 @@ document.getElementById('admin-soft-delete')?.addEventListener('click', async ()
   if (error) return alert('刪除失敗：' + error.message);
   alert('已移到回收'); await adminRefresh();
 });
-
 document.getElementById('admin-hard-delete')?.addEventListener('click', async ()=>{
   if (!await isAdmin()) return alert('只有管理者可以操作');
   const id = Number($('#ac-id').value || 0);
@@ -642,84 +599,33 @@ document.getElementById('admin-hard-delete')?.addEventListener('click', async ()
   alert('已永久刪除'); await adminRefresh();
 });
 
-// 5) 單元新增/更新/刪除
-document.getElementById('admin-lesson-form')?.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  if (!await isAdmin()) return alert('只有管理者可以操作');
-
-  const courseId = Number($('#ac-id').value || 0);
-  if (!courseId) return alert('請先選擇或建立課程');
-
-  const payload = {
-    course_id: courseId,
-    order_no:  Number($('#al-order').value || 1),
-    title:     $('#al-title').value.trim(),
-    content:   $('#al-content').value.trim() || null,
-  };
-  const id = Number($('#al-id').value || 0);
-
-  if (id) {
-    const { error } = await supabase.from('lessons').update(payload).eq('id', id);
-    if (error) return alert('更新單元失敗：' + error.message);
-    alert('單元已更新');
-  } else {
-    const { error } = await supabase.from('lessons').insert([payload]);
-    if (error) return alert('新增單元失敗：' + error.message);
-    alert('單元已新增');
-  }
-  $('#al-id').value = '';
-  await adminLoadLessons(courseId);
-});
-
-document.getElementById('admin-lesson-delete')?.addEventListener('click', async ()=>{
-  if (!await isAdmin()) return alert('只有管理者可以操作');
-  const lid = Number($('#al-id').value || 0);
-  const cid = Number($('#ac-id').value || 0);
-  if (!lid) return alert('請先點選要刪除的單元（於列表選擇「編輯」）');
-  if (!confirm('刪除這個單元？')) return;
-  const { error } = await supabase.from('lessons').delete().eq('id', lid);
-  if (error) return alert('刪除單元失敗：' + error.message);
-  $('#al-id').value = '';
-  await adminLoadLessons(cid);
-});
-
 // ====== Admin 連結顯示控制 ======
 async function updateAdminLink(){
   const adminLink = document.getElementById('admin-link');
   if (!adminLink) return;
-
-  if (!currentUser) { // 未登入 → 隱藏
-    adminLink.classList.add('hidden');
-    return;
-  }
-
-  const ok = await isAdmin(); // 查 admins 表
+  if (!currentUser) { adminLink.classList.add('hidden'); return; }
+  const ok = await isAdmin();
   adminLink.classList.toggle('hidden', !ok);
-
   if (ok && !adminLink.dataset.bound) {
     adminLink.addEventListener('click', async (e) => {
       e.preventDefault();
       document.getElementById('admin-panel').showModal();
       await adminRefresh();
     });
-    adminLink.dataset.bound = '1'; // 避免重綁
+    adminLink.dataset.bound = '1';
   }
 }
 
-// ====== Auth 初始化：一次且只在這裡處理 ======
+// ====== Auth 初始化 ======
 supabase.auth.onAuthStateChange((_event, session) => {
   currentUser = session?.user || null;
   $('#login-link')?.classList.toggle('hidden', !!currentUser);
   $('#logout-link')?.classList.toggle('hidden', !currentUser);
-  updateAdminLink();           // 狀態改變時更新「課程管理」
+  updateAdminLink();
 });
-
 supabase.auth.getUser().then(({ data }) => {
   currentUser = data?.user ?? null;
-  if (currentUser) {
-    loginLink?.classList.add('hidden');
-    logoutLink?.classList.remove('hidden');
-  }
-  updateAdminLink();           // 首次載入也更新
-  initPage();                  // 啟動頁面
+  if (currentUser) { loginLink?.classList.add('hidden'); logoutLink?.classList.remove('hidden'); }
+  updateAdminLink();
+  initPage();
 });
