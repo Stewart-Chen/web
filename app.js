@@ -240,3 +240,59 @@ window.addEventListener('DOMContentLoaded', () => {
     renderRecommendations(ranked);
   });
 });
+
+// ====== 老師與精選課程（前端輕量設定） ======
+const TEACHERS = {
+  fanfan: {
+    name: '汎汎',
+    role: '園藝治療老師',
+    picks: [
+      { id:'indoor-plants',  title:'室內植物照護術', level:'初階', tags:['室內植物','綠化空間'] },
+      { id:'mindfulness-garden', title:'正念與園藝冥想', level:'中階', tags:['正念','身心健康'] },
+      { id:'therapeutic-design', title:'照護場域：治療性花園設計', level:'進階', tags:['照護','設計','長照'] },
+    ],
+  },
+  xd: {
+    name: '小D',
+    role: '藝術治療老師',
+    picks: [
+      { id:'succulents-art', title:'多肉與小景設計', level:'初/中階', tags:['多肉','手作'] },
+      { id:'mindfulness-garden', title:'正念與園藝冥想', level:'中階', tags:['正念','身心健康'] },
+      { id:'intro-garden', title:'園藝治療入門', level:'初階', tags:['園藝入門','身心紓壓'] },
+    ],
+  },
+};
+
+function renderTeacherPicks(key){
+  const wrap = document.getElementById('teacher-picks');
+  const titleEl = document.getElementById('teacher-picks-title');
+  if (!wrap || !titleEl) return;
+
+  const teacher = TEACHERS[key] || null;
+  if (!teacher){
+    titleEl.textContent = '📚 老師精選課程';
+    wrap.innerHTML = `<p class="muted">點選上方「看某位老師的課程」或直接瀏覽下方課程列表。</p>`;
+    return;
+  }
+
+  titleEl.textContent = `📚 ${teacher.name} 的精選課程`;
+  wrap.innerHTML = teacher.picks.map(c => `
+    <article class="course-card">
+      <h3>${c.title}</h3>
+      <div class="course-meta">
+        <span class="badge">${c.level}</span>
+        ${c.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
+      </div>
+      <div class="cta">
+        <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
+      </div>
+    </article>
+  `).join('');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  const teacherKey = params.get('teacher'); // fanfan / xd
+  renderTeacherPicks(teacherKey);
+});
+
