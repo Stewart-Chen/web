@@ -188,11 +188,11 @@
 </dialog>
 <!-- 隱藏管理面板 -->
 <dialog id="admin-panel">
-  <form method="dialog" class="card" style="min-width:min(980px,95vw);">
+  <div method="dialog" class="card" style="min-width:min(980px,95vw);">
     <header style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
       <h3 style="margin:0;">管理面板</h3>
       <div>
-        <button value="close" class="btn">關閉</button>
+        <button class="btn" type="button" onclick="document.getElementById('admin-panel').close()">關閉</button>
       </div>
     </header>
 
@@ -253,7 +253,7 @@
     </section>
 
     <p class="muted" style="margin-top:10px;">＊只有被加入管理者清單的帳號才能看到這個面板。</p>
-  </form>
+  </div>
 </dialog>
 
 </body>
