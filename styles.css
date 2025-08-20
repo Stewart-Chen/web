@@ -1,371 +1,90 @@
-/* Basic, clean styles for the MVP */
-:root { --max: 960px; }
-* { box-sizing: border-box; }
-body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans TC, Arial, sans-serif; margin:0; line-height:1.6; }
-.container { max-width: var(--max); margin: 0 auto; padding: 16px; }
-.site-header, .site-footer { border-bottom:1px solid #eee; }
-.site-footer { border-top:1px solid #eee; border-bottom:none; }
-.site-header h1 { margin:0; }
-nav a { margin-right: 12px; text-decoration: none; }
-.hero { padding: 16px; background: #f8fff8; border: 1px solid #e2f0e2; border-radius: 8px; }
-.grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-.card { border:1px solid #eee; border-radius: 10px; padding: 16px; background:#fff; }
-.row { display:flex; align-items:center; gap:10px; }
-.badge { padding: 6px 10px; border-radius: 100px; background:#e8f5e9; border:1px solid #c8e6c9; }
-button, .btn { padding: 10px 14px; border-radius: 8px; border:1px solid #444; background:#fff; cursor:pointer; }
-button.primary { background:#1a73e8; color:#fff; border-color:#1a73e8; }
-button.secondary { background:#f1f3f4; }
-.hidden { display:none !important; }
-.plain { color: inherit; text-decoration: none; }
-.muted { color:#666; }
-dialog::backdrop { background: rgba(0,0,0,.2); }
-label { display:block; margin: 10px 0; }
-input { width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
-.prose p { margin: 0 0 12px 0; }
+/* =========================================
+   園藝與藝術治療課程平台：精簡整合 CSS
+   - 去除重複宣告與相互覆寫
+   - 一致的變數、陰影、圓角與字型
+   - 修正 teacher-card 內距與 CTA 按鈕太近
+   ========================================= */
 
-/* --- Personalized Recommender Styles --- */
+/* ---- 基礎設計變數 ---- */
 :root{
-  --radius: 14px;
+  --container: 1100px;
+  --radius: 16px;
   --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
   --shadow-md: 0 10px 30px rgba(0,0,0,.08);
-  --brand: #2e7d32;
-  --brand-2: #81c784;
-}
-
-body{
-  background:
-    radial-gradient(1200px 600px at 100% -10%, rgba(129,199,132,.15), transparent 60%),
-    radial-gradient(1000px 600px at -10% 100%, rgba(76,175,80,.10), transparent 60%);
-}
-
-.card.recommend{
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(0,0,0,.06);
-  backdrop-filter: saturate(110%) blur(2px);
-}
-
-.form-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  margin-block: 12px 8px;
-}
-.form-grid label{
-  display: grid;
-  gap: 8px;
-  font-weight: 600;
-}
-.form-grid input, .form-grid select{
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,.15);
-  padding: 10px 12px;
-  box-shadow: var(--shadow-sm);
-}
-
-.actions{
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 6px;
-}
-button.primary{
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 18px;
-  font-weight: 700;
-  letter-spacing: .3px;
-}
-button.secondary{
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.15);
-  border-radius: 999px;
-  padding: 10px 16px;
-}
-.muted{ color: rgba(0,0,0,.6); }
-
-.grid.cards{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
-  margin-top: 14px;
-}
-.course-card{
-  display: grid;
-  gap: 6px;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,.08);
-  box-shadow: var(--shadow-sm);
-  background: #fff;
-}
-.course-card h3{ margin: 0; }
-.course-meta{
-  font-size: .9rem;
-  color: rgba(0,0,0,.65);
-  display: flex; gap: 8px; flex-wrap: wrap;
-}
-.badge{
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,.1);
-  font-size: .78rem;
-}
-.course-card .cta{
-  margin-top: 6px;
-  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-}
-.course-card .cta a{
-  text-decoration: none;
-  font-weight: 700;
-}
-/* 🌿 溫馨園藝治療風格強化 */
-body {
-  font-family: 'Noto Serif TC', serif;
-  background: linear-gradient(160deg, #fdfcf9, #f1f8f4);
-  color: #333;
-}
-
-/* Header 與 Footer */
-.site-header, .site-footer {
-  background: #f8fff8;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,.06);
-}
-.site-header h1 {
-  color: #2e7d32;
-  font-weight: 600;
-}
-nav a {
-  color: #2e7d32;
-  font-weight: 500;
-}
-nav a:hover {
-  text-decoration: underline;
-}
-
-/* Hero 區塊 */
-.hero {
-  padding: 32px;
-  text-align: center;
-  background: linear-gradient(120deg, #e8f5e9, #fff);
-  border: none;
-  box-shadow: 0 6px 20px rgba(0,0,0,.05);
-  border-radius: 16px;
-}
-.hero h2 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: #388e3c;
-}
-.hero p {
-  font-size: 1.1rem;
-  color: #555;
-}
-
-/* 卡片樣式 */
-.card {
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
-  transition: transform .2s ease;
-}
-.card:hover {
-  transform: translateY(-3px);
-}
-
-/* 按鈕樣式 */
-button, .btn {
-  border-radius: 999px;
-  padding: 10px 18px;
-  font-weight: 600;
-  transition: background .3s ease;
-}
-button.primary, .btn.primary {
-  background: linear-gradient(135deg, #66bb6a, #43a047);
-  color: #fff;
-  border: none;
-}
-button.primary:hover, .btn.primary:hover {
-  background: linear-gradient(135deg, #81c784, #388e3c);
-}
-button.secondary {
-  background: #fff;
-  border: 1px solid #ccc;
-}
-
-/* Badge */
-.badge {
-  background: #c8e6c9;
-  color: #2e7d32;
-  font-weight: 500;
-}
-
-/* 背景小點綴（葉子感） */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image:
-    url('https://www.transparenttextures.com/patterns/green-dust-and-scratches.png');
-  opacity: 0.05;
-  pointer-events: none;
-}
-
-/* 🌿 溫馨園藝治療風格 */
-@media (prefers-color-scheme: light){
-  body {
-    background:
-      linear-gradient(160deg, #fdfcf9, #f1f8f4);
-  }
-}
-body {
-  font-family: 'Noto Serif TC', serif;
-  color: #333;
-}
-.site-header, .site-footer {
-  background: #f8fff8;
-  box-shadow: 0 2px 6px rgba(0,0,0,.06);
-  border: none;
-}
-.site-header h1 { color: #2e7d32; font-weight: 600; }
-nav a { color: #2e7d32; font-weight: 500; }
-
-.hero {
-  padding: 28px;
-  text-align: center;
-  background: linear-gradient(120deg, #e8f5e9, #fff);
-  border: none;
-  box-shadow: 0 6px 20px rgba(0,0,0,.05);
-  border-radius: 16px;
-}
-.hero h2 { font-size: 2rem; margin: 0 0 8px; color: #388e3c; }
-.hero p { color: #555; }
-.hero .note { color: #6a6a6a; }
-
-/* 老師區塊 */
-.teachers { margin-top: 22px; }
-.teachers h2 { margin-bottom: 12px; color: #2e7d32; }
-.teacher-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
-}
-.teacher-card {
-  display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 16px;
-  align-items: center;
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
-}
-.teacher-card .avatar {
-  width: 72px; height: 72px; border-radius: 50%;
-  display: grid; place-items: center;
-  font-size: 32px;
-  background: #e8f5e9;
-  border: 1px solid rgba(0,0,0,.05);
-}
-.teacher-card .subtitle { color: #388e3c; margin: 2px 0 6px; font-weight: 600; }
-.teacher-card .bio { color: #555; margin: 0 0 8px; }
-.teacher-card .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-.teacher-card .badge {
-  background: #c8e6c9;
-  color: #2e7d32;
-  border: none;
-  font-weight: 600;
-}
-.teacher-card .cta { margin-top: 8px; }
-.btn.primary, button.primary {
-  background: linear-gradient(135deg, #66bb6a, #43a047);
-  color: #fff; border: none; border-radius: 999px; padding: 10px 18px; font-weight: 700;
-}
-.btn.primary:hover { background: linear-gradient(135deg, #81c784, #388e3c); }
-
-/* 精選課程格線（共用） */
-.grid.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px; margin-top: 14px;
-}
-.course-card {
-  display: grid; gap: 6px; padding: 14px; border-radius: 12px;
-  border: 1px solid rgba(0,0,0,.08); background: #fff;
-  box-shadow: 0 2px 10px rgba(0,0,0,.06);
-}
-.course-card h3 { margin: 0; }
-.course-meta { font-size: .9rem; color: rgba(0,0,0,.65); display: flex; gap: 8px; flex-wrap: wrap; }
-.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(0,0,0,.1); font-size: .78rem; }
-
-
-/* === 溫馨療癒風：基礎設定 === */
-:root{
   --brand: #2e7d32;
   --brand-2: #81c784;
   --ink: #333;
   --muted: rgba(0,0,0,.6);
-  --radius: 16px;
-  --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
-  --shadow-md: 0 10px 30px rgba(0,0,0,.08);
-  --container: 1100px;
 }
 
+/* ---- Reset / Base ---- */
 * { box-sizing: border-box; }
 html, body { scroll-behavior: smooth; }
 body{
   font-family: 'Noto Serif TC', serif;
   color: var(--ink);
+  margin: 0;
+  line-height: 1.6;
+  /* 溫柔背景 */
   background: linear-gradient(160deg, #fdfcf9, #f1f8f4);
 }
-
 .container{ max-width: var(--container); margin: 0 auto; padding: 0 16px; }
+.hidden { display: none !important; }
+.muted{ color: var(--muted); }
+.plain { color: inherit; text-decoration: none; }
 
 /* 間距工具：讓頁面不擁擠 */
 .flow-md > * + * { margin-top: 18px; }
 .flow-lg > * + * { margin-top: 28px; }
 
-.muted{ color: var(--muted); }
-.lead{ font-size: 1.06rem; line-height: 1.7; }
-
-/* Header / Footer */
+/* ---- Header / Footer / Nav ---- */
 .site-header, .site-footer{
   background: #f8fff8;
-  box-shadow: 0 2px 6px rgba(0,0,0,.06);
   border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
 }
-.site-header h1{ color: var(--brand); font-weight: 600; }
-nav a{ color: var(--brand); font-weight: 500; margin-left: 12px; }
+.site-header h1{ margin: 0; color: var(--brand); font-weight: 600; }
+nav a{
+  color: var(--brand);
+  font-weight: 500;
+  text-decoration: none;
+  margin-left: 12px;
+}
 nav a[aria-current="page"]{ text-decoration: underline; }
+nav a:hover { text-decoration: underline; }
 
-/* 卡片與重點區域 */
+/* ---- 卡片 ---- */
 .card{
   border-radius: var(--radius);
   border: 1px solid rgba(0,0,0,.06);
-  box-shadow: var(--shadow-sm);
   background: #fff;
   padding: 18px;
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s ease;
 }
-.card:hover{ transform: translateY(-1px); transition: transform .2s ease; }
+.card:hover{ transform: translateY(-1px); }
 
-/* Hero */
+/* ---- Hero ---- */
 .hero{
+  padding: 28px;
+  text-align: center;
   background: linear-gradient(120deg, #e8f5e9, #ffffff);
+  border: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,.05);
+  border-radius: var(--radius);
   display: grid;
   align-items: center;
 }
-.hero h2{ color: #388e3c; margin: 0 0 6px; }
+.hero h2{ font-size: 2rem; margin: 0 0 8px; color: #388e3c; }
+.hero p{ color: #555; }
 .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
 .chip{
   display:inline-block; padding:6px 12px; border-radius:999px;
-  border:1px solid rgba(0,0,0,.12); text-decoration:none; color:#2e7d32;
+  border:1px solid rgba(0,0,0,.12); text-decoration:none; color:var(--brand);
   background:#ffffffb3;
 }
 
-/* 區塊：服務領域 */
+/* ---- Feature（服務領域） ---- */
 .feature-grid{
   display:grid; gap:16px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -376,58 +95,156 @@ nav a[aria-current="page"]{ text-decoration: underline; }
   background:#e8f5e9; border:1px solid rgba(0,0,0,.05); font-size:26px;
 }
 
-/* 老師 */
-.teachers h2{ color: var(--brand); }
+/* ---- 老師區塊 ---- */
+.teachers { margin-top: 22px; }
+.teachers h2{ color: var(--brand); margin-bottom: 12px; }
+
 .teacher-grid{
-  display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(320px,1fr));
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap:16px;
 }
+
+/* 卡片結構：左側 avatar、右側 info */
 .teacher-card{
-  display:grid; grid-template-columns: 88px 1fr; gap:16px; align-items:center;
+  display:grid;
+  grid-template-columns: 88px 1fr;
+  gap: 18px;
+  align-items: start;
+  border-radius: var(--radius);
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  padding: 16px;
 }
 .teacher-card .avatar{
-  width:72px;height:72px;border-radius:50%;display:grid;place-items:center;
-  background:#e8f5e9; border:1px solid rgba(0,0,0,.05); font-size:32px;
+  width:72px;height:72px;border-radius:50%;
+  display:grid;place-items:center;font-size:32px;
+  background:#e8f5e9;border:1px solid rgba(0,0,0,.05);
 }
-.subtitle{ color:#388e3c; margin:2px 0 6px; font-weight:600; }
-.bio{ color:#555; }
-.badges{ display:flex; gap:8px; flex-wrap:wrap; }
+.teacher-card .info{
+  display: grid;
+  gap: 10px;              /* 讓內部元素有基本間距 */
+}
+.teacher-card .subtitle{ color:#388e3c; margin: 0; font-weight: 600; }
+.teacher-card .bio{ color:#555; margin: 0; }
+.teacher-card .badges{ display:flex; gap:8px; flex-wrap:wrap; }
+.teacher-card .badge{
+  background:#c8e6c9; color: var(--brand);
+  border: none; font-weight: 600;
+}
+/* ✅ 讓 CTA 與上面內容拉開距離 */
+.teacher-card .cta{
+  margin-top: 12px;
+}
+
+/* ---- 精選課程 / 課程格線 ---- */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.grid.cards{ margin-top: 14px; }
+
+.course-card{
+  display:grid; gap: 6px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.course-card h3{ margin: 0; }
+.course-meta{
+  font-size: .9rem;
+  color: rgba(0,0,0,.65);
+  display:flex; gap:8px; flex-wrap:wrap;
+}
 .badge{
-  display:inline-block; padding:2px 8px; border-radius:999px;
-  border:1px solid rgba(0,0,0,.1); font-size:.78rem; background:#c8e6c9; color:#2e7d32;
+  display:inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.1);
+  font-size: .78rem;
 }
 
-/* 課程格線（沿用你原有的 grid，可加上間距） */
-.grid{ display:grid; gap:16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-.grid.cards .course-card{
-  padding:14px;border-radius:12px;border:1px solid rgba(0,0,0,.08); background:#fff; box-shadow: var(--shadow-sm);
+/* ---- 推薦表單 ---- */
+.card.recommend{
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0,0,0,.06);
+  backdrop-filter: saturate(110%) blur(2px);
 }
-
-/* 推薦表單 */
 .form-grid{
-  display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-block: 12px 8px;
 }
-.form-grid input, .form-grid select{
-  border-radius:10px; border:1px solid rgba(0,0,0,.15); padding:10px 12px; box-shadow: var(--shadow-sm);
+.form-grid label{
+  display:grid; gap:8px; font-weight: 600;
 }
-.actions{ display:flex; gap:10px; align-items:center; }
+label { display:block; }
+input, select, textarea{
+  width:100%;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.15);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-sm);
+  font-family: inherit;
+}
+.actions{
+  display:flex; gap:10px; align-items:center; margin-top: 6px;
+}
 
-/* 按鈕 */
-.btn, button{
-  border-radius:999px; padding:10px 18px; font-weight:700;
+/* ---- 按鈕 ---- */
+button, .btn{
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .3s ease, opacity .2s ease;
+  border: 1px solid rgba(0,0,0,.15);
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.btn.primary, button.primary{
-  background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; border:none;
+button.primary, .btn.primary{
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: #fff;
+  border: none;
 }
-.btn.subtle{
-  background:#fff; border:1px solid rgba(0,0,0,.15); color:var(--brand); text-decoration:none;
+button.primary:hover, .btn.primary:hover{
+  background: linear-gradient(135deg, #81c784, #388e3c);
 }
-button.secondary{ background:#fff; border:1px solid rgba(0,0,0,.15); }
+button.secondary, .btn.secondary{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.15);
+}
+.btn.danger{
+  background:#b00020; color:#fff; border:none;
+}
 
-#admin-courses .item {
+/* ---- Prose ---- */
+.prose p { margin: 0 0 12px 0; }
+
+/* ---- Dialog ---- */
+dialog::backdrop { background: rgba(0,0,0,.2); }
+
+/* ---- Admin 面板列表 ---- */
+#admin-courses .item{
   display:flex; justify-content:space-between; align-items:center;
   padding:8px 10px; border:1px solid #e6e6e6; border-radius:8px; margin-bottom:8px; background:#fff;
 }
 #admin-courses .item .meta { display:flex; gap:6px; flex-wrap:wrap; }
 #admin-courses .item .title { font-weight:600; }
-.btn.danger { background:#b00020; color:#fff; }
 
+/* ---- 額外小點綴：淡紋理（可留可去） ---- */
+body::before{
+  content:"";
+  position: fixed; inset: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/green-dust-and-scratches.png');
+  opacity: .05; pointer-events: none;
+}
