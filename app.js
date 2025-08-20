@@ -49,7 +49,7 @@ document.getElementById('btn-signup')?.addEventListener('click', async (e)=>{
   authModal.close(); 
   location.reload();
 });
-
+}
 
 // 目前使用者
 let currentUser = null;
