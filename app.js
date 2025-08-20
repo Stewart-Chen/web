@@ -148,35 +148,42 @@ async function loadCourse(){
     `).join('');
   }
 
-  // (C) 報名狀態：只有登入才查 enrollments
-  let enrolled = false;
-  if (currentUser){
-    const { data: en, error: enErr } = await supabase
+  // (C) 報名狀態：只有登入才查 enrollments，但按鈕永遠可點（未登入就彈出對話框）
+let enrolled = false;
+if (currentUser){
+  const { data: en, error: enErr } = await supabase
+    .from('enrollments')
+    .select('course_id')
+    .eq('course_id', id)
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+  if (!enErr && en) enrolled = true;
+}
+
+// 調整 UI 與點擊行為
+if (enrolled) {
+  enrollBtn?.classList.add('hidden');
+  enrolledBadge?.classList.remove('hidden');
+} else if (enrollBtn){
+  // ✨ 不要設 disabled，讓它可以被點擊
+  enrollBtn.title = currentUser ? '' : '請先登入';
+  enrollBtn.addEventListener('click', async (e)=>{
+    // 未登入 → 打開登入對話框就好
+    if (!requireAuthOrOpenModal(e)) return;
+
+    // 已登入 → 送出報名
+    const { error: insErr } = await supabase
       .from('enrollments')
-      .select('course_id')
-      .eq('course_id', id)
-      .eq('user_id', currentUser.id)
-      .maybeSingle();
-    if (!enErr && en) enrolled = true;
-  }
-  // 調整 UI
-  if (enrolled) {
-    enrollBtn?.classList.add('hidden');
+      .insert({ course_id: Number(id), user_id: currentUser.id });
+
+    if (insErr){ console.error(insErr); return; }
+    enrollBtn.classList.add('hidden');
     enrolledBadge?.classList.remove('hidden');
-  } else {
-    if (enrollBtn){
-      enrollBtn.disabled = !currentUser;
-      enrollBtn.title = currentUser ? '' : '請先登入';
-      enrollBtn.addEventListener('click', async (e)=>{
-        if (!requireAuthOrOpenModal(e)) return;
-        const { error: insErr } = await supabase.from('enrollments').insert({ course_id: Number(id), user_id: currentUser.id });
-        if (insErr){ console.error(insErr); return; }
-        enrollBtn.classList.add('hidden');
-        enrolledBadge?.classList.remove('hidden');
-        loadProgress(lessons || []);
-      });
-    }
-  }
+    // 重新計算進度
+    loadProgress(lessons || []);
+  });
+}
+
 
   // (D) 點單元：需已登入且已報名才可「標記完成」
   lessonsEl?.addEventListener('click', async (e)=>{
