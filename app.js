@@ -164,16 +164,59 @@ async function loadCourse(){
     enrolledBadge?.classList.remove('hidden');
   } else if (enrollBtn){
     enrollBtn.title = currentUser ? '' : '請先登入';
-    enrollBtn.addEventListener('click', async (e)=>{
-      if (!requireAuthOrOpenModal(e)) return;
+
+enrollBtn.addEventListener('click', async (e)=>{
+  if (!requireAuthOrOpenModal(e)) return;
+
+  // 開啟 dialog
+  const dlg = document.getElementById('enroll-dialog');
+  if (!dlg) { alert('找不到報名視窗'); return; }
+  dlg.showModal();
+
+  // 綁一次 submit（避免重覆綁定）
+  const form = document.getElementById('enroll-form');
+  if (!form.dataset.bound) {
+    form.addEventListener('submit', async (ev)=>{
+      ev.preventDefault();
+
+      const name = document.getElementById('enroll-name').value.trim();
+      const phone = document.getElementById('enroll-phone').value.trim();
+      const line  = document.getElementById('enroll-line').value.trim();
+
+      // 基本驗證（可自行強化）
+      if (!name)  { alert('請填寫姓名');  return; }
+      if (!phone) { alert('請填寫電話');  return; }
+      // 範例：簡單電話規則（10~15 位數字與符號）
+      if (!/^[0-9+\-() ]{8,20}$/.test(phone)) { alert('電話格式看起來不正確'); return; }
+
       const { error: insErr } = await supabase
         .from('enrollments')
-        .insert({ course_id: idNum, user_id: currentUser.id });
-      if (insErr){ console.error(insErr); return; }
+        .insert({
+          course_id: idNum,
+          user_id: currentUser.id,
+          fullname: name,
+          phone: phone,
+          line_id: line || null
+        });
+
+      if (insErr){ console.error(insErr); alert('報名失敗：' + insErr.message); return; }
+
+      alert('報名成功！');
+      dlg.close();
+
+      // UI 更新：隱藏報名鈕、顯示已報名徽章、解鎖單元
       enrollBtn.classList.add('hidden');
       enrolledBadge?.classList.remove('hidden');
+      // 若你有 setLessonLock(true)，這裡也呼叫
+      if (typeof setLessonLock === 'function') setLessonLock(true);
+
       loadProgress(lessons || []);
     });
+    form.dataset.bound = '1';
+  }
+});
+
+    
   }
 
   // (D) 點單元 → 完成標記
