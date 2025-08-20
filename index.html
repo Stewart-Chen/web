@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>園藝治療課程平台</title>
+  <title>園藝與藝術治療課程平台</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,84 +12,110 @@
 <body>
   <header class="site-header">
     <div class="container">
-      <h1>🌿 園藝治療課程平台</h1>
+      <h1>🌿 園藝與藝術治療課程平台</h1>
       <nav>
-        <a href="index.html">首頁</a>
+        <a href="index.html" aria-current="page">首頁</a>
         <a href="#" id="login-link">登入/註冊</a>
         <a href="#" id="logout-link" class="hidden">登出</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <h2>用園藝療癒身心</h2>
-      <p>在這裡，你可以瀏覽課程、報名加入、依照節奏完成每個單元。</p>
-      <p class="note">🌸 與植物相處，培養耐心，療癒心靈。</p>
+  <main class="container flow-lg">
+    <!-- Hero -->
+    <section class="hero card">
+      <div class="hero-content">
+        <h2>與植物與創作相遇，找回內在的平靜</h2>
+        <p class="lead">結合 <strong>園藝治療</strong> 與 <strong>藝術治療</strong> 的溫柔課程設計，陪你用可持續的小步伐，梳理情緒、建立日常療癒儀式。</p>
+        <div class="chips">
+          <a class="chip" href="#domains">療癒領域</a>
+          <a class="chip" href="#teachers">我們的老師</a>
+          <a class="chip" href="#courses">課程一覽</a>
+          <a class="chip" href="#recommend">個人化推薦</a>
+        </div>
+      </div>
     </section>
 
-    <section>
-      <h3>課程一覽</h3>
-      <div id="courses" class="grid"></div>
+    <!-- 服務領域 -->
+    <section id="domains" class="flow-md">
+      <h2>🌸 療癒領域</h2>
+      <div class="feature-grid">
+        <article class="feature card">
+          <div class="icon" aria-hidden="true">🌿</div>
+          <div>
+            <h3>園藝治療</h3>
+            <p>透過植物照護、空間綠化與感官活動，培養耐心與專注，建立可被日常複製的自我照顧練習。</p>
+            <a class="btn subtle" href="#teachers" aria-label="前往老師介紹（汎汎）">了解汎汎的課程</a>
+          </div>
+        </article>
+        <article class="feature card">
+          <div class="icon" aria-hidden="true">🎨</div>
+          <div>
+            <h3>藝術治療</h3>
+            <p>運用色彩、線條與自然素材進行創作，安全地表達與梳理情緒，重建內在秩序與力量。</p>
+            <a class="btn subtle" href="#teachers" aria-label="前往老師介紹（小D）">看看小D的課程</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 老師 -->
+    <section id="teachers" class="teachers flow-md">
+      <h2>👩‍🏫 我們的老師</h2>
+      <div class="teacher-grid">
+        <!-- 汎汎 -->
+        <article class="teacher-card card">
+          <div class="avatar" aria-hidden="true">🌿</div>
+          <div class="info">
+            <h3>汎汎</h3>
+            <p class="subtitle">園藝治療老師</p>
+            <p class="bio">專注於植物照護、正念實作與社福/長照場域之應用，帶領你用綠意調理身心。</p>
+            <div class="badges">
+              <span class="badge">園藝照護</span>
+              <span class="badge">正念實作</span>
+              <span class="badge">長照與社福</span>
+            </div>
+            <div class="cta">
+              <a href="index.html?teacher=fanfan#picks" class="btn primary">看汎汎的課程</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 小D -->
+        <article class="teacher-card card">
+          <div class="avatar" aria-hidden="true">🎨</div>
+          <div class="info">
+            <h3>小D</h3>
+            <p class="subtitle">藝術治療老師</p>
+            <p class="bio">以色彩與自然素材陪伴情緒表達與整合，設計可延伸到生活裡的溫柔創作練習。</p>
+            <div class="badges">
+              <span class="badge">藝術表達</span>
+              <span class="badge">情緒照護</span>
+              <span class="badge">手作療癒</span>
+            </div>
+            <div class="cta">
+              <a href="index.html?teacher=xd#picks" class="btn primary">看小D的課程</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 老師精選 -->
+    <section id="picks" class="card teacher-picks flow-md">
+      <h2 id="teacher-picks-title">📚 老師精選課程</h2>
+      <div id="teacher-picks" class="grid cards"></div>
+    </section>
+
+    <!-- 課程列表（保持你的原功能） -->
+    <section id="courses" class="flow-md">
+      <h2>🗂️ 課程一覽</h2>
+      <div id="courses-list" class="grid"></div>
       <div id="courses-empty" class="muted hidden">目前沒有課程。</div>
     </section>
 
-  <section class="hero card">
-    <h2>用園藝療癒身心 · 與好老師一起走</h2>
-    <p>在這裡，你可以依自己的步調學習，從植物與創作中找回穩定與專注。</p>
-    <p class="note">🌸 小小的綠意，帶來大的平靜。</p>
-  </section>
-
-  <!-- 我們的老師 -->
-  <section class="teachers">
-    <h2>👩‍🏫 我們的老師</h2>
-
-    <div class="teacher-grid">
-      <!-- 汎汎 -->
-      <article class="teacher-card card">
-        <div class="avatar" aria-hidden="true">🌿</div>
-        <div class="info">
-          <h3>汎汎</h3>
-          <p class="subtitle">園藝治療老師</p>
-          <p class="bio">擅長以植物照護、空間綠化與感官活動，協助學員舒緩壓力、建立日常療癒儀式。</p>
-          <div class="badges">
-            <span class="badge">園藝照護</span>
-            <span class="badge">正念實作</span>
-            <span class="badge">長照與社福</span>
-          </div>
-          <div class="cta">
-            <a href="index.html?teacher=fanfan" class="btn primary">看汎汎的課程</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- 小D -->
-      <article class="teacher-card card">
-        <div class="avatar" aria-hidden="true">🎨</div>
-        <div class="info">
-          <h3>小D</h3>
-          <p class="subtitle">藝術治療老師</p>
-          <p class="bio">結合色彩、線條與自然素材，引導學員透過創作表達情緒、重建內在秩序。</p>
-          <div class="badges">
-            <span class="badge">藝術表達</span>
-            <span class="badge">情緒照護</span>
-            <span class="badge">手作療癒</span>
-          </div>
-          <div class="cta">
-            <a href="index.html?teacher=xd" class="btn primary">看小D的課程</a>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- 老師精選課程（由 app.js 動態渲染） -->
-  <section class="card teacher-picks">
-    <h2 id="teacher-picks-title">📚 老師精選課程</h2>
-    <div id="teacher-picks" class="grid cards"></div>
-  </section>
-    
-    <section class="card recommend">
+    <!-- 個人化推薦 -->
+    <section id="recommend" class="card recommend flow-md">
       <h2>🎯 個人化課程推薦</h2>
       <p class="muted">填寫你的基本資訊，我們會推薦最適合你的課程組合。</p>
       <form id="rec-form" class="form-grid">
@@ -129,7 +155,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      <small>© 2025 園藝治療課程平台</small>
+      <small>© 2025 園藝與藝術治療課程平台</small>
     </div>
   </footer>
 
@@ -152,4 +178,3 @@
   </dialog>
 </body>
 </html>
-
