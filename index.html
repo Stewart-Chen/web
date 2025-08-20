@@ -21,6 +21,47 @@
   </header>
 
   <main class="container">
+    <!-- 個人化推薦區塊 -->
+    <section class="card recommend">
+      <h2>🎯 個人化課程推薦</h2>
+      <p class="muted">填寫你的基本資訊，我們會推薦最適合你的課程組合。</p>
+      <form id="rec-form" class="form-grid">
+        <label>年齡
+          <input type="number" id="age" min="5" max="120" placeholder="例如 28" required />
+        </label>
+        <label>性別
+          <select id="gender" required>
+            <option value="">— 選擇 —</option>
+            <option value="female">女性</option>
+            <option value="male">男性</option>
+            <option value="nonbinary">非二元/不透露</option>
+          </select>
+        </label>
+        <label>興趣（可多選，以逗號分隔）
+          <input type="text" id="interests" placeholder="室內植物, 多肉, 正念, 手作, 園藝入門" />
+        </label>
+        <label>職業
+          <select id="profession">
+            <option value="">— 選擇 —</option>
+            <option value="student">學生</option>
+            <option value="teacher">教師/輔導</option>
+            <option value="healthcare">醫護/照護</option>
+            <option value="office">上班族</option>
+            <option value="retired">退休</option>
+            <option value="other">其他</option>
+          </select>
+        </label>
+        <div class="actions">
+          <button type="submit" class="primary">產生推薦</button>
+          <button type="reset" class="secondary">清除</button>
+        </div>
+      </form>
+      <div id="rec-results" class="grid cards"></div>
+    </section>
+  </main>
+
+  
+  <main class="container">
     <section class="hero">
       <h2>用園藝療癒身心</h2>
       <p>在這裡，你可以瀏覽課程、報名加入、依照節奏完成每個單元。</p>
