@@ -42,6 +42,8 @@ body{
   background: #f8fff8;
   border: none;
   box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  padding: 1rem 0 2rem;
+  border-bottom: 1px solid #e0e0e0;
 }
 .site-header h1{ margin: 0; color: var(--brand); font-weight: 600; }
 nav a{
@@ -74,6 +76,10 @@ nav a:hover { text-decoration: underline; }
   border-radius: var(--radius);
   display: grid;
   align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
 }
 .hero h2{ font-size: 2rem; margin: 0 0 8px; color: #388e3c; }
 .hero p{ color: #555; }
@@ -257,5 +263,25 @@ body::before{
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
-  margin: 20px 0;
+  margin: 30px 0 40px;
+}
+.hero-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  padding: 30px;
+  margin-top: 20px;
+}
+
+/* 如果 Hero 裡面有標題、副標題 */
+.hero-card h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.hero-card p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
 }
