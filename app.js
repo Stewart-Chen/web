@@ -1,7 +1,7 @@
 // ====== CONFIG ======
 // 1) 填入你的 Supabase 專案 URL 與匿名金鑰（安全：僅擁有者權限受 RLS 限制）
-const SUPABASE_URL = "https://YOUR-PROJECT-ref.supabase.co"; // ← 改成你的
-const SUPABASE_ANON_KEY = "YOUR-ANON-KEY"; // ← 改成你的
+const SUPABASE_URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
 
 // 2) 建立 Supabase 用戶端
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
