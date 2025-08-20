@@ -349,7 +349,13 @@ const TEACHERS = {
   },
 };
 
-function renderTeacherPicks(key){
+function normalizeTitle(s){
+  if (!s) return '';
+  // 去掉全形括號內註記（例如 "（小D）"）、空白，轉小寫
+  return s.replace(/（.*?）/g,'').replace(/\s+/g,'').toLowerCase();
+}
+
+async function renderTeacherPicks(key){
   const wrap = document.getElementById('teacher-picks');
   const titleEl = document.getElementById('teacher-picks-title');
   if (!wrap || !titleEl) return;
@@ -362,18 +368,43 @@ function renderTeacherPicks(key){
   }
 
   titleEl.textContent = `📚 ${teacher.name} 的精選課程`;
-  wrap.innerHTML = teacher.picks.map(c => `
-    <article class="course-card">
-      <h3>${c.title}</h3>
-      <div class="course-meta">
-        <span class="badge">${c.level}</span>
-        ${c.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
-      </div>
-      <div class="cta">
-        <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
-      </div>
-    </article>
-  `).join('');
+
+  // 1) 先把該老師已發佈的課程抓回來
+  const { data: courses, error } = await supabase
+    .from('courses')
+    .select('id,title,summary,teacher,cover_url')
+    .eq('published', true)
+    .eq('teacher', key);
+
+  if (error){ console.error('load teacher picks error:', error); }
+
+  // 2) 建一個以「去註記後的標題」為 key 的 map，方便對應
+  const mapByTitle = new Map(
+    (courses || []).map(c => [ normalizeTitle(c.title), c ])
+  );
+
+  // 3) 逐一產卡片；能對到 id 的就給正確連結，對不到就顯示「即將上架」
+  wrap.innerHTML = teacher.picks.map(pick => {
+    const match = mapByTitle.get(normalizeTitle(pick.title));
+    const href  = match ? `course.html?id=${match.id}` : null;
+    const cover = match?.cover_url || `https://picsum.photos/seed/${normalizeTitle(pick.title)}/640/360`;
+
+    return `
+      <article class="course-card">
+        <img src="${cover}" alt="${pick.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
+        <h3>${pick.title}</h3>
+        <div class="course-meta">
+          <span class="badge">${pick.level}</span>
+          ${pick.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
+        </div>
+        <div class="cta">
+          ${href
+            ? `<a href="${href}" class="btn primary">查看課程</a>`
+            : `<button class="btn" disabled title="尚未上架">即將上架</button>`}
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
