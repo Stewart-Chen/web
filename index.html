@@ -22,7 +22,73 @@
   </header>
 
   <main class="container">
-    <!-- 個人化推薦區塊 -->
+    <section class="hero">
+      <h2>用園藝療癒身心</h2>
+      <p>在這裡，你可以瀏覽課程、報名加入、依照節奏完成每個單元。</p>
+      <p class="note">🌸 與植物相處，培養耐心，療癒心靈。</p>
+    </section>
+
+    <section>
+      <h3>課程一覽</h3>
+      <div id="courses" class="grid"></div>
+      <div id="courses-empty" class="muted hidden">目前沒有課程。</div>
+    </section>
+
+  <section class="hero card">
+    <h2>用園藝療癒身心 · 與好老師一起走</h2>
+    <p>在這裡，你可以依自己的步調學習，從植物與創作中找回穩定與專注。</p>
+    <p class="note">🌸 小小的綠意，帶來大的平靜。</p>
+  </section>
+
+  <!-- 我們的老師 -->
+  <section class="teachers">
+    <h2>👩‍🏫 我們的老師</h2>
+
+    <div class="teacher-grid">
+      <!-- 汎汎 -->
+      <article class="teacher-card card">
+        <div class="avatar" aria-hidden="true">🌿</div>
+        <div class="info">
+          <h3>汎汎</h3>
+          <p class="subtitle">園藝治療老師</p>
+          <p class="bio">擅長以植物照護、空間綠化與感官活動，協助學員舒緩壓力、建立日常療癒儀式。</p>
+          <div class="badges">
+            <span class="badge">園藝照護</span>
+            <span class="badge">正念實作</span>
+            <span class="badge">長照與社福</span>
+          </div>
+          <div class="cta">
+            <a href="index.html?teacher=fanfan" class="btn primary">看汎汎的課程</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 小D -->
+      <article class="teacher-card card">
+        <div class="avatar" aria-hidden="true">🎨</div>
+        <div class="info">
+          <h3>小D</h3>
+          <p class="subtitle">藝術治療老師</p>
+          <p class="bio">結合色彩、線條與自然素材，引導學員透過創作表達情緒、重建內在秩序。</p>
+          <div class="badges">
+            <span class="badge">藝術表達</span>
+            <span class="badge">情緒照護</span>
+            <span class="badge">手作療癒</span>
+          </div>
+          <div class="cta">
+            <a href="index.html?teacher=xd" class="btn primary">看小D的課程</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 老師精選課程（由 app.js 動態渲染） -->
+  <section class="card teacher-picks">
+    <h2 id="teacher-picks-title">📚 老師精選課程</h2>
+    <div id="teacher-picks" class="grid cards"></div>
+  </section>
+    
     <section class="card recommend">
       <h2>🎯 個人化課程推薦</h2>
       <p class="muted">填寫你的基本資訊，我們會推薦最適合你的課程組合。</p>
@@ -58,21 +124,6 @@
         </div>
       </form>
       <div id="rec-results" class="grid cards"></div>
-    </section>
-  </main>
-
-  
-  <main class="container">
-    <section class="hero">
-      <h2>用園藝療癒身心</h2>
-      <p>在這裡，你可以瀏覽課程、報名加入、依照節奏完成每個單元。</p>
-      <p class="note">🌸 與植物相處，培養耐心，療癒心靈。</p>
-    </section>
-
-    <section>
-      <h3>課程一覽</h3>
-      <div id="courses" class="grid"></div>
-      <div id="courses-empty" class="muted hidden">目前沒有課程。</div>
     </section>
   </main>
 
