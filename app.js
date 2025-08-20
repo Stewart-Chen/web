@@ -615,6 +615,25 @@ document.getElementById('admin-hard-delete')?.addEventListener('click', async ()
   if (error) return alert('刪除失敗：' + error.message);
   alert('已永久刪除'); await adminRefresh();
 });
+// 刪除選取單元
+document.getElementById('admin-lesson-delete')?.addEventListener('click', async ()=>{
+  if (!await isAdmin()) return alert('只有管理者可以操作');
+
+  const courseId = Number($('#ac-id').value || 0);
+  const lessonId = Number($('#al-id').value || 0); // 由「編輯」時帶入的選取單元 id
+
+  if (!courseId) return alert('請先選擇或建立課程');
+  if (!lessonId) return alert('請先在清單中點「編輯」選取要刪除的單元');
+
+  if (!confirm('確定要刪除這個單元？此動作不可復原。')) return;
+
+  const { error } = await supabase.from('lessons').delete().eq('id', lessonId);
+  if (error) return alert('刪除失敗：' + error.message);
+
+  alert('已刪除單元');
+  $('#al-id').value = '';                 // 清掉選取的單元 id
+  await adminLoadLessons(courseId);       // 重新載入單元清單
+});
 
 // ====== Admin 連結顯示控制 ======
 async function updateAdminLink(){
