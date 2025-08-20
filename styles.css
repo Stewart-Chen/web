@@ -23,3 +23,102 @@ label { display:block; margin: 10px 0; }
 input { width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
 .prose p { margin: 0 0 12px 0; }
 
+/* --- Personalized Recommender Styles --- */
+:root{
+  --radius: 14px;
+  --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
+  --shadow-md: 0 10px 30px rgba(0,0,0,.08);
+  --brand: #2e7d32;
+  --brand-2: #81c784;
+}
+
+body{
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(129,199,132,.15), transparent 60%),
+    radial-gradient(1000px 600px at -10% 100%, rgba(76,175,80,.10), transparent 60%);
+}
+
+.card.recommend{
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0,0,0,.06);
+  backdrop-filter: saturate(110%) blur(2px);
+}
+
+.form-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-block: 12px 8px;
+}
+.form-grid label{
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+.form-grid input, .form-grid select{
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.15);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.actions{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+}
+button.primary{
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+button.secondary{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 999px;
+  padding: 10px 16px;
+}
+.muted{ color: rgba(0,0,0,.6); }
+
+.grid.cards{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+.course-card{
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: var(--shadow-sm);
+  background: #fff;
+}
+.course-card h3{ margin: 0; }
+.course-meta{
+  font-size: .9rem;
+  color: rgba(0,0,0,.65);
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.badge{
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.1);
+  font-size: .78rem;
+}
+.course-card .cta{
+  margin-top: 6px;
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+.course-card .cta a{
+  text-decoration: none;
+  font-weight: 700;
+}
