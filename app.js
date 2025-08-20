@@ -62,7 +62,7 @@ async function loadCourses(){
     .from('courses')
     .select('id,title,summary,cover_url,created_at')
     .eq('published', true)
-    .is('deleted_at', null)               // 只顯示未軟刪
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (error) { console.error(error); return; }
@@ -243,176 +243,216 @@ function initPage(){
   if (document.getElementById('course-info')) loadCourse();
 }
 
-// ====== 個人化推薦（修正版：點「查看課程」連到 DB 的數字 id） ======
-const COURSES = [
-  { id:'intro-garden',       title:'園藝治療入門',       level:'初階',   audience:['student','office','retired','teacher'], tags:['園藝入門','身心紓壓'], gender: 'all' },
-  { id:'indoor-plants',      title:'室內植物照護術',     level:'初階',   audience:['office','student','retired'],           tags:['室內植物','綠化空間'], gender: 'all' },
-  { id:'succulents-art',     title:'多肉與小景設計',     level:'初/中階', audience:['student','office','other'],            tags:['多肉','手作'], gender: 'all' },
-  { id:'mindfulness-garden', title:'正念與園藝冥想',     level:'中階',   audience:['teacher','healthcare','office'],        tags:['正念','身心健康'], gender: 'all' },
-  { id:'therapeutic-design', title:'治療性花園設計',     level:'進階',   audience:['healthcare','teacher'],                tags:['照護','設計','長照'], gender: 'all' },
-  { id:'kids-horti',         title:'親子自然感官探索',   level:'親子',   audience:['teacher','other'],                     tags:['親子','教育','感官'], gender:'all' },
-];
+// ====== 個人化推薦（改成從資料庫選） ======
 
-// 將標題做一致化（去掉全形括號註記、可選前綴、空白、轉小寫）
+// 標題/內文正規化（供封面 seed 與關鍵字比對）
 function normalizeTitle(s){
   if (!s) return '';
   return s
-    .replace(/（.*?）/g, '')         // 去掉（汎汎）
-    .replace(/^[^：:]*[：:]\s*/, '') // 去掉「照護場域：」這類前綴
+    .replace(/（.*?）/g, '')         // 去掉（汎汎）之類
+    .replace(/^[^：:]*[：:]\s*/, '') // 去掉「照護場域：」前綴
     .replace(/\s+/g, '')
     .toLowerCase();
 }
+
+// 從課程文字推導 tags/level（若 DB 沒有欄位，就用關鍵字推估）
+function deriveMetaFromText(course){
+  const text = `${course.title ?? ''} ${course.summary ?? ''} ${course.description ?? ''}`;
+  const has = (kw) => text.includes(kw);
+
+  const tags = [
+    ...(has('室內植物') ? ['室內植物'] : []),
+    ...(has('多肉') ? ['多肉'] : []),
+    ...(has('正念') || has('冥想') ? ['正念'] : []),
+    ...(has('親子') || has('兒童') ? ['親子'] : []),
+    ...(has('設計') ? ['設計'] : []),
+    ...(has('長照') || has('照護') ? ['長照'] : []),
+    ...(has('水彩') ? ['水彩'] : []),
+    ...(has('油畫') ? ['油畫'] : []),
+    ...(has('色彩') ? ['色彩'] : []),
+    ...(has('藝術') ? ['藝術'] : []),
+    ...(has('園藝') ? ['園藝'] : []),
+  ];
+
+  let level = '一般';
+  if (has('入門') || has('初階')) level = '初階';
+  else if (has('中階')) level = '中階';
+  else if (has('進階')) level = '進階';
+  else if (has('親子')) level = '親子';
+
+  return { tags, level };
+}
+
 function parseInterests(value){
   return (value || '').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
 }
-function scoreCourse(course, {age, gender, interests, profession}){
+function preferredTagsByProfession(prof){
+  switch (prof) {
+    case 'student':   return ['入門','室內植物','多肉','色彩','水彩'];
+    case 'office':    return ['室內植物','正念'];
+    case 'teacher':   return ['親子','教育','正念'];
+    case 'healthcare':return ['長照','照護','治療性','設計'];
+    case 'retired':   return ['室內植物','正念'];
+    default:          return [];
+  }
+}
+function scoreDbCourse(course, {age, gender, interests, profession}){
+  const { tags, level } = deriveMetaFromText(course);
+  const text = `${course.title ?? ''} ${course.summary ?? ''} ${course.description ?? ''}`;
+
   let score = 0;
-  if (course.audience.includes(profession)) score += 3;
-  const hit = interests.filter(k => course.tags.some(t => t.includes(k)));
-  score += hit.length * 2;
-  if (age <= 16 && course.id === 'kids-horti') score += 2;
-  if (age >= 55 && (course.id === 'mindfulness-garden' || course.id==='indoor-plants')) score += 1;
-  return score;
+
+  const prefs = preferredTagsByProfession(profession);
+  prefs.forEach(p => {
+    if (tags.some(t => t.includes(p)) || text.includes(p)) score += 2;
+  });
+
+  interests.forEach(k => {
+    if (tags.some(t => t.includes(k)) || text.includes(k)) score += 2;
+  });
+
+  if (age <= 16 && (tags.includes('親子') || text.includes('親子'))) score += 2;
+  if (age >= 55 && (tags.includes('正念') || tags.includes('室內植物') || text.includes('正念') || text.includes('室內植物'))) score += 1;
+
+  if (course.teacher === 'fanfan' && (text.includes('室內植物') || text.includes('正念'))) score += 1;
+  if (course.teacher === 'xd'     && (text.includes('色彩') || text.includes('水彩') || text.includes('油畫'))) score += 1;
+
+  const levelBonus = { '一般':0, '初階':0.5, '中階':0.8, '進階':1, '親子':0.6 };
+  score += levelBonus[level] ?? 0;
+
+  return { score, tags, level };
 }
 
-// 快取已發佈課程（避免每次打 API）
-let _publishedCourses = null;
-async function getPublishedCourses(){
-  if (_publishedCourses) return _publishedCourses;
-  const { data, error } = await supabase
-    .from('courses')
-    .select('id,title,summary,cover_url')
-    .eq('published', true)
-    .is('deleted_at', null);
-  if (error) { console.error(error); return []; }
-  _publishedCourses = data || [];
-  return _publishedCourses;
-}
-
-function renderRecommendations(list, dbMap){
+function renderRecommendationsFromDb(list){
   const box = document.getElementById('rec-results');
   if (!box) return;
   if (!list.length){
     box.innerHTML = `<p class="muted">沒有找到合適的推薦，試試不同的興趣關鍵字（如：室內植物、正念、多肉、親子）。</p>`;
     return;
   }
-  box.innerHTML = list.map(c => {
-    const match = dbMap.get(normalizeTitle(c.title)); // 用標題對 DB 課程
-    const href  = match ? `course.html?id=${match.id}` : null;
-    const cover = match?.cover_url || `https://picsum.photos/seed/${normalizeTitle(c.title)}/640/360`;
-    return `
-      <article class="course-card">
-        <img src="${cover}" alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
-        <h3>${c.title}</h3>
-        <div class="course-meta">
-          <span class="badge">${c.level}</span>
-          ${c.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
-        </div>
-        <div class="cta">
-          ${href
-            ? `<a href="${href}" class="btn primary">查看課程</a>`
-            : `<button class="btn" disabled title="尚未上架">即將上架</button>`}
-        </div>
-      </article>
-    `;
-  }).join('');
+
+  box.innerHTML = list.map(c => `
+    <article class="course-card">
+      <img src="${c.cover_url || `https://picsum.photos/seed/${normalizeTitle(c.title)}/640/360`}" alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
+      <h3>${c.title}</h3>
+      <div class="course-meta">
+        <span class="badge">${c._level || '一般'}</span>
+        ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
+      </div>
+      <div class="cta">
+        <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
+      </div>
+    </article>
+  ").join('');
 }
 
+// 綁定推薦表單：從 DB 取課程來計分
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('rec-form');
-  if (form){
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const age = parseInt(document.getElementById('age').value || '0', 10);
-      const gender = document.getElementById('gender').value || 'nonbinary';
-      const interests = parseInterests(document.getElementById('interests').value);
-      const profession = document.getElementById('profession').value || 'other';
+  if (!form) return;
 
-      const ranked = COURSES
-        .map(c => ({...c, _score: scoreCourse(c, {age, gender, interests, profession})}))
-        .filter(c => c._score > 0)
-        .sort((a,b) => b._score - a._score)
-        .slice(0, 6);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const published = await getPublishedCourses();
-      const dbMap = new Map(published.map(pc => [ normalizeTitle(pc.title), pc ]));
-      renderRecommendations(ranked, dbMap);
+    const age = parseInt(document.getElementById('age').value || '0', 10);
+    const gender = document.getElementById('gender').value || 'nonbinary';
+    const interests = parseInterests(document.getElementById('interests').value);
+    const profession = document.getElementById('profession').value || 'other';
+
+    const { data: courses, error } = await supabase
+      .from('courses')
+      .select('id,title,summary,description,cover_url,teacher')
+      .eq('published', true)
+      .is('deleted_at', null);
+
+    if (error) {
+      console.error('load courses for recommend error:', error);
+      renderRecommendationsFromDb([]);
+      return;
+    }
+
+    const scored = (courses || []).map(c => {
+      const r = scoreDbCourse(c, {age, gender, interests, profession});
+      return { ...c, _score: r.score, _tags: r.tags, _level: r.level };
     });
-  }
+
+    const top = scored
+      .filter(c => c._score > 0)
+      .sort((a,b) => b._score - a._score)
+      .slice(0, 6);
+
+    renderRecommendationsFromDb(top);
+  });
 });
 
-// ====== 老師與精選課程 ======
-const TEACHERS = {
-  fanfan: {
-    name: '汎汎',
-    role: '園藝治療老師',
-    picks: [
-      { id:'indoor-plants',       title:'室內植物照護術',     level:'初階', tags:['室內植物','綠化空間'] },
-      { id:'mindfulness-garden',  title:'正念與園藝冥想',     level:'中階', tags:['正念','身心健康'] },
-      { id:'therapeutic-design',  title:'治療性花園設計',     level:'進階', tags:['照護','設計','長照'] },
-    ],
-  },
-  xd: {
-    name: '小D',
-    role: '藝術治療老師',
-    picks: [
-      { id:'color-emotion',           title:'情緒色彩創作',       level:'初階', tags:['色彩','情緒表達','藝術'] },
-      { id:'watercolor-mindfulness',  title:'水彩與正念表達',     level:'中階', tags:['水彩','正念','藝術療癒'] },
-      { id:'oilpainting-healing',     title:'油畫的療癒表達',     level:'進階', tags:['油畫','深層情緒','藝術治療'] },
-    ],
-  },
+// ====== 老師精選（從資料庫選） ======
+
+// 顯示老師中文名/角色
+const TEACHER_META = {
+  fanfan: { name: '汎汪', role: '園藝治療老師' },
+  xd:     { name: '小D', role: '藝術治療老師' },
 };
 
-async function renderTeacherPicks(key){
+async function renderTeacherPicksFromDb(teacherKey){
   const wrap = document.getElementById('teacher-picks');
   const titleEl = document.getElementById('teacher-picks-title');
   if (!wrap || !titleEl) return;
 
-  const teacher = TEACHERS[key] || null;
-  if (!teacher){
+  const meta = TEACHER_META[teacherKey];
+  if (!teacherKey || !meta){
     titleEl.textContent = '📚 老師精選課程';
     wrap.innerHTML = `<p class="muted">點選上方「看某位老師的課程」或直接瀏覽下方課程列表。</p>`;
     return;
   }
 
-  titleEl.textContent = `📚 ${teacher.name} 的精選課程`;
+  titleEl.textContent = `📚 ${meta.name} 的精選課程`;
 
-  const { data: courses, error } = await supabase
+  // 從 DB 取該老師的已發佈課程（可視需求加上 limit，例如 .limit(3)）
+  const { data, error } = await supabase
     .from('courses')
-    .select('id,title,summary,teacher,cover_url')
+    .select('id,title,summary,cover_url,teacher,created_at,description')
     .eq('published', true)
     .is('deleted_at', null)
-    .eq('teacher', key);
+    .eq('teacher', teacherKey)
+    .order('created_at', { ascending: false });
+    // .limit(3) // 若要只顯示最新三門，解除這行註解
 
-  if (error){ console.error('load teacher picks error:', error); }
+  if (error) {
+    console.error('load teacher picks error:', error);
+    wrap.innerHTML = `<p class="muted">載入失敗。</p>`;
+    return;
+  }
 
-  const mapByTitle = new Map((courses || []).map(c => [ normalizeTitle(c.title), c ]));
+  if (!data || data.length === 0){
+    wrap.innerHTML = `<p class="muted">這位老師目前尚無已發佈的課程。</p>`;
+    return;
+  }
 
-  wrap.innerHTML = teacher.picks.map(pick => {
-    const match = mapByTitle.get(normalizeTitle(pick.title));
-    const href  = match ? `course.html?id=${match.id}` : null;
-    const cover = match?.cover_url || `https://picsum.photos/seed/${normalizeTitle(pick.title)}/640/360`;
+  // 可選：用 deriveMetaFromText 補一些標籤/level
+  const enriched = data.map(c => {
+    const { tags, level } = deriveMetaFromText(c);
+    return { ...c, _tags: tags, _level: level };
+  });
 
-    return `
-      <article class="course-card">
-        <img src="${cover}" alt="${pick.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
-        <h3>${pick.title}</h3>
-        <div class="course-meta">
-          <span class="badge">${pick.level}</span>
-          ${pick.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
-        </div>
-        <div class="cta">
-          ${href ? `<a href="${href}" class="btn primary">查看課程</a>` : `<button class="btn" disabled title="尚未上架">即將上架</button>`}
-        </div>
-      </article>
-    `;
-  }).join('');
+  wrap.innerHTML = enriched.map(c => `
+    <article class="course-card">
+      <img src="${c.cover_url || `https://picsum.photos/seed/${normalizeTitle(c.title)}/640/360`}" alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
+      <h3>${c.title}</h3>
+      <div class="course-meta">
+        <span class="badge">${c._level || '一般'}</span>
+        ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
+      </div>
+      <div class="cta">
+        <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
+      </div>
+    </article>
+  `).join('');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(location.search);
   const teacherKey = params.get('teacher'); // fanfan / xd
-  renderTeacherPicks(teacherKey);
+  renderTeacherPicksFromDb(teacherKey);
 });
 
 // ========== Admin Panel ==========
