@@ -274,13 +274,13 @@ body::before{
 }
 
 /* 如果 Hero 裡面有標題、副標題 */
-.hero-card h2 {
+.hero h2 {
   font-size: 2rem;
   margin-bottom: 15px;
   color: #333;
 }
 
-.hero-card p {
+.hero p {
   font-size: 1.1rem;
   color: #555;
   line-height: 1.6;
