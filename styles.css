@@ -423,3 +423,11 @@ nav a[aria-current="page"]{ text-decoration: underline; }
 }
 button.secondary{ background:#fff; border:1px solid rgba(0,0,0,.15); }
 
+#admin-courses .item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:8px 10px; border:1px solid #e6e6e6; border-radius:8px; margin-bottom:8px; background:#fff;
+}
+#admin-courses .item .meta { display:flex; gap:6px; flex-wrap:wrap; }
+#admin-courses .item .title { font-weight:600; }
+.btn.danger { background:#b00020; color:#fff; }
+
