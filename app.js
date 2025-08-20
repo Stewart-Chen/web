@@ -317,7 +317,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ====== 老師精選（從資料庫） ======
 const TEACHER_META = {
-  fanfan: { name: '汎汪', role: '園藝治療老師' }, // 顯示名：你要顯示「汎汪/汎汎」可自行調整
+  fanfan: { name: '汎汎', role: '園藝治療老師' },
   xd:     { name: '小D', role: '藝術治療老師' },
 };
 async function renderTeacherPicksFromDb(teacherKey){
