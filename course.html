@@ -3,15 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>課程內容 | 園藝治療</title>
+  <title>課程內容｜園藝與藝術治療課程平台</title>
+
+  <!-- 样式 -->
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Supabase & App -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="app.js"></script>
+
+  <noscript>
+    <style>
+      .need-js{ display:none; }
+      .nojs{ display:block; padding:12px; background:#fff3cd; border:1px solid #ffeeba; border-radius:8px; }
+    </style>
+  </noscript>
 </head>
 <body>
+  <!-- Header -->
   <header class="site-header">
     <div class="container">
-      <h1><a href="index.html" class="plain">🌿 園藝治療課程平台</a></h1>
+      <h1><a href="index.html" class="plain">🌿 園藝與藝術治療課程平台</a></h1>
       <nav>
         <a href="index.html">首頁</a>
         <a href="#" id="login-link">登入/註冊</a>
@@ -19,52 +32,91 @@
       </nav>
     </div>
   </header>
-  
-  <!-- 老師資訊，app.js 會依 URL 的 ?teacher 參數或課程 id 顯示 -->
-  <aside id="teacher-box" class="card" style="margin-top:12px; padding:12px;">
-    <strong>授課老師</strong>
-    <div id="teacher-box-content" class="course-meta" style="margin-top:6px;"></div>
-  </aside>
 
-  <main class="container">
-    <section id="course-info" class="card">
-      <h2 id="course-title">讀取中...</h2>
-      <p id="course-desc"></p>
-      <div class="row">
-        <button id="enroll-btn" class="primary">報名課程</button>
+  <!-- 主內容 -->
+  <main class="container flow-lg">
+    <!-- 課程資訊卡 -->
+    <section id="course-info" class="card need-js">
+      <header class="flow-md">
+        <h2 id="course-title">讀取中…</h2>
+        <p id="course-desc" class="muted">請稍候，正在載入課程內容。</p>
+      </header>
+
+      <div class="row" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+        <button id="enroll-btn" class="btn primary" title="登入後即可報名">報名課程</button>
         <span id="enrolled-badge" class="badge hidden">已報名</span>
+        <span id="enroll-hint" class="muted">（登入後才能報名）</span>
       </div>
     </section>
 
-    <section>
+    <!-- 授課老師 -->
+    <aside id="teacher-box" class="card">
+      <strong>授課老師</strong>
+      <div id="teacher-box-content" class="course-meta" style="margin-top:6px;">—</div>
+    </aside>
+
+    <!-- 單元列表 -->
+    <section class="flow-md need-js">
       <h3>單元列表</h3>
-      <ol id="lessons"></ol>
+      <ol id="lessons" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+        <!-- 由 app.js 動態渲染：每個 <li> 內有一個 .btn -->
+      </ol>
       <div id="lessons-empty" class="muted hidden">尚未開放單元。</div>
     </section>
 
-    <section class="card">
+    <!-- 學習進度 -->
+    <section class="card need-js">
       <h3>學習進度</h3>
-      <div id="progress"></div>
+      <div id="progress" class="muted">登入後可記錄進度。</div>
     </section>
+
+    <!-- JS 關閉時提示 -->
+    <p class="nojs" style="display:none;">你的瀏覽器未啟用 JavaScript，本頁功能將無法使用。</p>
   </main>
 
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
-      <small>© 2025 園藝治療課程平台</small>
+      <small>© 2025 園藝與藝術治療課程平台</small>
     </div>
   </footer>
 
-  <!-- Lesson modal -->
+  <!-- 單元內容 Modal -->
   <dialog id="lesson-modal">
     <form method="dialog" class="card">
       <h3 id="lesson-title">單元</h3>
-      <article id="lesson-content" class="prose"></article>
-      <div class="actions">
-        <button id="mark-done" class="primary">標記完成</button>
-        <button value="close" class="secondary">關閉</button>
+      <article id="lesson-content" class="prose" style="margin-top:6px;"></article>
+      <div class="actions" style="margin-top:10px; display:flex; gap:10px;">
+        <button id="mark-done" class="btn primary">標記完成</button>
+        <button value="close" class="btn secondary">關閉</button>
       </div>
+    </form>
+  </dialog>
+
+  <!-- 登入 / 註冊 Modal（與 index.html 同款，給 course.html 用） -->
+  <dialog id="auth-modal">
+    <form method="dialog" class="card" style="min-width: min(520px, 92vw);">
+      <h3>登入 / 註冊</h3>
+
+      <label>Email
+        <input type="email" id="auth-email" required placeholder="you@example.com" autocomplete="email" />
+      </label>
+
+      <label>密碼
+        <input type="password" id="auth-password" required placeholder="至少 6 碼" autocomplete="current-password" />
+      </label>
+
+      <div class="actions" style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+        <button id="btn-signin" value="signin" class="btn primary">登入</button>
+        <button id="btn-signup" value="signup" class="btn secondary">註冊</button>
+        <button value="cancel" class="btn">取消</button>
+      </div>
+
+      <!-- 小提醒：驗證信 -->
+      <p class="muted" style="margin:8px 0 0;">
+        首次註冊需到信箱收驗證信；若登入提示「Email not confirmed」，可再試註冊或重寄驗證信。
+      </p>
     </form>
   </dialog>
 </body>
 </html>
-
