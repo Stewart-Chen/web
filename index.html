@@ -8,6 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    new QRCode(document.getElementById("qrcode"), {
+      text: "https://stewart-chen.github.io/web/",
+      width: 200,
+      height: 200
+    });
+  </script>
 </head>
 <body>
   <header class="site-header">
@@ -165,11 +173,7 @@
   <footer class="site-footer">
     <div class="container">
       <small>© 2025 園藝與藝術治療課程平台</small>
-      <div style="margin-top:10px;">
-        <img 
-          src="https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=https%3A%2F%2Fstewart-chen.github.io%2Fweb%2F"  
-          alt="QR Code 到園藝與藝術治療平台">
-      </div>
+      <div id="qrcode"></div>
     </div>
   </footer>
 
