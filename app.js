@@ -19,20 +19,37 @@ if (logoutLink) logoutLink.addEventListener('click', async (e)=>{ e.preventDefau
 if (authModal) {
   const email = document.getElementById('auth-email');
   const passwd = document.getElementById('auth-password');
-  document.getElementById('btn-signin')?.addEventListener('click', async (e)=>{
-    e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: passwd.value });
-    if (error) { console.error(error); return; }
-    authModal.close(); location.reload();
+// === 登入（失敗時 alert）===
+document.getElementById('btn-signin')?.addEventListener('click', async (e)=>{
+  e.preventDefault();
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value, password: passwd.value
   });
-  document.getElementById('btn-signup')?.addEventListener('click', async (e)=>{
-    e.preventDefault();
-    const { error } = await supabase.auth.signUp({ email: email.value, password: passwd.value });
-    if (error) { console.error(error); return; }
-    alert('已寄出驗證郵件（如有設定）。登入後即可使用。');
-    authModal.close(); location.reload();
+  if (error) {
+    alert('登入失敗：' + (error.message || '發生未知錯誤'));
+    console.error(error);
+    return;
+  }
+  authModal.close(); 
+  location.reload();
+});
+
+// === 註冊（失敗時 alert）===
+document.getElementById('btn-signup')?.addEventListener('click', async (e)=>{
+  e.preventDefault();
+  const { error } = await supabase.auth.signUp({
+    email: email.value, password: passwd.value
   });
-}
+  if (error) {
+    alert('註冊失敗：' + (error.message || '發生未知錯誤'));
+    console.error(error);
+    return;
+  }
+  alert('已寄出驗證郵件（如有設定）。登入後即可使用。');
+  authModal.close(); 
+  location.reload();
+});
+
 
 // 目前使用者
 let currentUser = null;
