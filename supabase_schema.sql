@@ -170,64 +170,57 @@ using (auth.uid() = user_id);
 -- ========== 5) Seed Data ==========
 -- --- fanfan ---
 insert into public.courses (title, summary, description, cover_url, teacher, published)
-select '室內植物照護術（汎汎）',
+select '室內植物照護術',
        '用日常植物建立穩定的自我照顧',
        '學會選擇、照護與觀察室內植物，建立可持續的綠色照護流程。',
        'https://picsum.photos/seed/indoor-plants/640/360',
        'fanfan', true
-where not exists (select 1 from public.courses where title='室內植物照護術（汎汪）' or title='室內植物照護術（汎汎）');
+where not exists (select 1 from public.courses where title='室內植物照護術');
 
 insert into public.courses (title, summary, description, cover_url, teacher, published)
-select '正念與園藝冥想（汎汎）',
+select '正念與園藝冥想',
        '結合正念與園藝，透過呼吸與照護建立日常療癒儀式。',
        '以簡單的園藝任務搭配正念引導，培養專注與穩定感。',
        'https://picsum.photos/seed/mindfulness-garden/640/360',
        'fanfan', true
-where not exists (select 1 from public.courses where title in ('正念與園藝冥想（汎汪）','正念與園藝冥想（汎汪）','正念與園藝冥想（汎汎）'));
+where not exists (select 1 from public.courses where title in ('正念與園藝冥想'));
 
 insert into public.courses (title, summary, description, cover_url, teacher, published)
-select '治療性花園設計（汎汎）',
+select '治療性花園設計',
        '在照護場域中打造支持身心的綠色空間。',
        '面向長照/社福場域，介紹設計原則與實作案例。',
        'https://picsum.photos/seed/therapeutic-design/640/360',
        'fanfan', true
-where not exists (select 1 from public.courses where title in ('治療性花園設計（汎汪）','治療性花園設計（汎汎）'));
-
--- 修正舊 typo
-update public.courses set title='治療性花園設計（汎汪）' where false; -- 佔位，避免誤改
-update public.courses set title='治療性花園設計（汎汎）' where title='治療性花園設計（汎汪）';
+where not exists (select 1 from public.courses where title in ('治療性花園設計'));
 
 -- fanfan lessons
 insert into public.lessons (course_id, order_no, title, content)
 select id, 1, '植物與你：基礎觀察', '從觀察開始建立連結。'
 from public.courses c
-where c.title='室內植物照護術（汎汪）' or c.title='室內植物照護術（汎汪）'; -- 若有舊資料可改為對應
--- 上面兩行如有疑慮，改成：
--- where c.title='室內植物照護術（汎汪）' or c.title='室內植物照護術（汎汪）';
+where c.title='室內植物照護術';
 
 -- --- xd ---
 insert into public.courses (title, summary, description, cover_url, teacher, published)
-select '情緒色彩創作（小D）',
+select '情緒色彩創作',
        '用色彩表達情緒，探索自我內在狀態。',
        '透過基礎色彩學與自由創作，建立安全的情緒表達空間。',
        'https://picsum.photos/seed/color-emotion/640/360',
        'xd', true
-where not exists (select 1 from public.courses where title='情緒色彩創作（小D）');
+where not exists (select 1 from public.courses where title='情緒色彩創作');
 
 insert into public.courses (title, summary, description, cover_url, teacher, published)
-select '水彩與正念表達（小D）',
+select '水彩與正念表達',
        '以水彩作畫練習專注，結合正念進行情緒照護。',
        '水彩技巧 + 正念實作，幫助舒緩壓力並提升覺察力。',
        'https://picsum.photos/seed/watercolor-mindfulness/640/360',
        'xd', true
-where not exists (select 1 from public.courses where title='水彩與正念表達（小D）');
+where not exists (select 1 from public.courses where title='水彩與正念表達');
 
 insert into public.courses (title, summary, description, cover_url, teacher, published)
-select '油畫的療癒表達（小D）',
+select '油畫的療癒表達',
        '用油畫筆觸探索深層情緒，適合進階創作學員。',
        '藉由油畫的層次與厚度，在創作中釋放與整合情緒。',
        'https://picsum.photos/seed/oilpainting-healing/640/360',
        'xd', true
-where not exists (select 1 from public.courses where title='油畫的療癒表達（小D）');
+where not exists (select 1 from public.courses where title='油畫的療癒表達');
 
--- （如需完整 lessons 種子，可依原稿追加，並在 where not exists 中比對該課程+order_no）
