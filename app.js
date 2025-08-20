@@ -332,9 +332,9 @@ const TEACHERS = {
     name: '小D',
     role: '藝術治療老師',
     picks: [
-      { id:'succulents-art', title:'多肉與小景設計', level:'初/中階', tags:['多肉','手作'] },
-      { id:'mindfulness-garden', title:'正念與園藝冥想', level:'中階', tags:['正念','身心健康'] },
-      { id:'intro-garden', title:'園藝治療入門', level:'初階', tags:['園藝入門','身心紓壓'] },
+      { id:'color-emotion', title:'情緒色彩創作', level:'初階', tags:['色彩','情緒表達','藝術'] },
+      { id:'watercolor-mindfulness', title:'水彩與正念表達', level:'中階', tags:['水彩','正念','藝術療癒'] },
+      { id:'oilpainting-healing', title:'油畫的療癒表達', level:'進階', tags:['油畫','深層情緒','藝術治療'] },
     ],
   },
 };
