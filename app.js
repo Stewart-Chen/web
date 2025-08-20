@@ -413,3 +413,227 @@ window.addEventListener('DOMContentLoaded', () => {
   renderTeacherPicks(teacherKey);
 });
 
+// ========== Admin Panel ==========
+
+// 1) 判斷是否為管理者
+async function isAdmin() {
+  if (!currentUser) return false;
+  const { data, error } = await supabase
+    .from('admins').select('user_id').eq('user_id', currentUser.id).maybeSingle();
+  return !!data && !error;
+}
+
+// 2) 觸發方式：Ctrl+Shift+A、標題點 5 次、或 ?admin=1
+(function adminTriggers(){
+  const dlg = document.getElementById('admin-panel');
+  if (!dlg) return;
+
+  async function openIfAdmin() {
+    if (!currentUser) { showAuthModal(); return; }
+    if (!(await isAdmin())) { alert('需要管理者權限'); return; }
+    dlg.showModal();
+    await adminRefresh();
+  }
+
+  // 鍵盤
+  window.addEventListener('keydown', (e)=>{
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+      e.preventDefault(); openIfAdmin();
+    }
+  });
+  // 連點標題
+  const headerTitle = document.querySelector('.site-header h1, .site-header a.plain');
+  let clickCount = 0, timer = null;
+  headerTitle?.addEventListener('click', ()=>{
+    clickCount++; clearTimeout(timer);
+    timer = setTimeout(()=>{ clickCount = 0; }, 600);
+    if (clickCount >= 5) { clickCount = 0; openIfAdmin(); }
+  });
+  // ?admin=1
+  if (new URLSearchParams(location.search).get('admin') === '1') {
+    openIfAdmin();
+  }
+})();
+
+// 3) UI 綁定
+async function adminRefresh(){
+  // 載入課程清單（包含未發佈與已軟刪）
+  const wrap = document.getElementById('admin-courses');
+  if (!wrap) return;
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id,title,teacher,published,deleted_at,created_at')
+    .order('created_at', { ascending: false });
+  if (error) { wrap.innerHTML = `<p class="muted">載入失敗：${error.message}</p>`; return; }
+
+  wrap.innerHTML = (data||[]).map(c => `
+    <div class="item" data-id="${c.id}">
+      <div>
+        <div class="title">${c.title}</div>
+        <div class="meta">
+          <span class="badge">老師：${c.teacher || '—'}</span>
+          <span class="badge">${c.published ? '已發佈' : '未發佈'}</span>
+          ${c.deleted_at ? '<span class="badge">已刪除</span>' : ''}
+          <span class="muted">${new Date(c.created_at).toLocaleString()}</span>
+        </div>
+      </div>
+      <div>
+        <button class="btn" data-act="edit">編輯</button>
+      </div>
+    </div>
+  `).join('');
+
+  wrap.querySelectorAll('[data-act="edit"]').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      const id = Number(e.currentTarget.closest('.item').dataset.id);
+      const { data: one } = await supabase.from('courses').select('*').eq('id', id).maybeSingle();
+      adminFillCourseForm(one);
+      await adminLoadLessons(one?.id);
+    });
+  });
+}
+
+function adminFillCourseForm(c){
+  // 填入表單
+  document.getElementById('ac-id').value       = c?.id ?? '';
+  document.getElementById('ac-title').value    = c?.title ?? '';
+  document.getElementById('ac-summary').value  = c?.summary ?? '';
+  document.getElementById('ac-desc').value     = c?.description ?? '';
+  document.getElementById('ac-cover').value    = c?.cover_url ?? '';
+  document.getElementById('ac-teacher').value  = c?.teacher ?? '';
+  document.getElementById('ac-published').checked = !!c?.published;
+
+  const sd = document.getElementById('admin-soft-delete');
+  const hd = document.getElementById('admin-hard-delete');
+  sd.disabled = !c?.id;
+  hd.disabled = !c?.id;
+}
+
+async function adminLoadLessons(courseId){
+  const box = document.getElementById('admin-lessons');
+  if (!courseId) { box.innerHTML = '<p class="muted">先選擇或建立課程。</p>'; return; }
+  const { data, error } = await supabase
+    .from('lessons').select('id,order_no,title,content').eq('course_id', courseId).order('order_no');
+  if (error) { box.innerHTML = `<p class="muted">讀取失敗：${error.message}</p>`; return; }
+
+  box.innerHTML = (data||[]).map(l => `
+    <div class="item" data-lid="${l.id}">
+      <div><strong>${l.order_no}.</strong> ${l.title}</div>
+      <div>
+        <button class="btn" data-act="edit-lesson">編輯</button>
+      </div>
+    </div>
+  `).join('');
+
+  box.querySelectorAll('[data-act="edit-lesson"]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const wrap = e.currentTarget.closest('.item');
+      const lid = Number(wrap.dataset.lid);
+      const title = wrap.querySelector('div').textContent.replace(/^\s*\d+\.\s*/,'').trim();
+      document.getElementById('al-id').value = lid;
+      // 取詳細內容
+      supabase.from('lessons').select('*').eq('id', lid).maybeSingle().then(({data})=>{
+        document.getElementById('al-order').value = data?.order_no ?? 1;
+        document.getElementById('al-title').value = data?.title ?? '';
+        document.getElementById('al-content').value = data?.content ?? '';
+      });
+    });
+  });
+}
+
+// 4) 事件：刷新 / 新增課程 / 儲存 / 刪除
+document.getElementById('admin-refresh')?.addEventListener('click', adminRefresh);
+
+document.getElementById('admin-new-course')?.addEventListener('click', ()=>{
+  adminFillCourseForm(null);
+  document.getElementById('admin-lessons').innerHTML = '<p class="muted">尚無單元。</p>';
+});
+
+document.getElementById('admin-course-form')?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  if (!await isAdmin()) { alert('只有管理者可以操作'); return; }
+
+  const payload = {
+    title:   document.getElementById('ac-title').value.trim(),
+    summary: document.getElementById('ac-summary').value.trim() || null,
+    description: document.getElementById('ac-desc').value.trim() || null,
+    cover_url: document.getElementById('ac-cover').value.trim() || null,
+    teacher: document.getElementById('ac-teacher').value,
+    published: document.getElementById('ac-published').checked,
+  };
+  const id = Number(document.getElementById('ac-id').value || 0);
+
+  if (id) {
+    const { error } = await supabase.from('courses').update(payload).eq('id', id);
+    if (error) return alert('更新失敗：' + error.message);
+    alert('課程已更新');
+  } else {
+    const { error } = await supabase.from('courses').insert([payload]);
+    if (error) return alert('建立失敗：' + error.message);
+    alert('課程已建立');
+  }
+  await adminRefresh();
+});
+
+document.getElementById('admin-soft-delete')?.addEventListener('click', async ()=>{
+  if (!await isAdmin()) return alert('只有管理者可以操作');
+  const id = Number(document.getElementById('ac-id').value || 0);
+  if (!id) return;
+  if (!confirm('移到回收（可復原）？')) return;
+  const { error } = await supabase.from('courses')
+    .update({ deleted_at: new Date().toISOString(), published: false })
+    .eq('id', id);
+  if (error) return alert('刪除失敗：' + error.message);
+  alert('已移到回收'); await adminRefresh();
+});
+
+document.getElementById('admin-hard-delete')?.addEventListener('click', async ()=>{
+  if (!await isAdmin()) return alert('只有管理者可以操作');
+  const id = Number(document.getElementById('ac-id').value || 0);
+  if (!id) return;
+  if (!confirm('⚠ 永久刪除課程與所有單元，確定？')) return;
+  const { error } = await supabase.from('courses').delete().eq('id', id);
+  if (error) return alert('刪除失敗：' + error.message);
+  alert('已永久刪除'); await adminRefresh();
+});
+
+// 5) 單元新增/更新/刪除
+document.getElementById('admin-lesson-form')?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  if (!await isAdmin()) return alert('只有管理者可以操作');
+
+  const courseId = Number(document.getElementById('ac-id').value || 0);
+  if (!courseId) return alert('請先選擇或建立課程');
+
+  const payload = {
+    course_id: courseId,
+    order_no:  Number(document.getElementById('al-order').value || 1),
+    title:     document.getElementById('al-title').value.trim(),
+    content:   document.getElementById('al-content').value.trim() || null,
+  };
+  const id = Number(document.getElementById('al-id').value || 0);
+
+  if (id) {
+    const { error } = await supabase.from('lessons').update(payload).eq('id', id);
+    if (error) return alert('更新單元失敗：' + error.message);
+    alert('單元已更新');
+  } else {
+    const { error } = await supabase.from('lessons').insert([payload]);
+    if (error) return alert('新增單元失敗：' + error.message);
+    alert('單元已新增');
+  }
+  document.getElementById('al-id').value = '';
+  await adminLoadLessons(courseId);
+});
+
+document.getElementById('admin-lesson-delete')?.addEventListener('click', async ()=>{
+  if (!await isAdmin()) return alert('只有管理者可以操作');
+  const lid = Number(document.getElementById('al-id').value || 0);
+  const cid = Number(document.getElementById('ac-id').value || 0);
+  if (!lid) return alert('請先點選要刪除的單元（於列表選擇「編輯」）');
+  if (!confirm('刪除這個單元？')) return;
+  const { error } = await supabase.from('lessons').delete().eq('id', lid);
+  if (error) return alert('刪除單元失敗：' + error.message);
+  document.getElementById('al-id').value = '';
+  await adminLoadLessons(cid);
+});
