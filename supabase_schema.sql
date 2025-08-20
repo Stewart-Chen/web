@@ -96,6 +96,9 @@ alter table public.courses     enable row level security;
 alter table public.lessons     enable row level security;
 alter table public.enrollments enable row level security;
 alter table public.progress    enable row level security;
+alter table public.enrollments add column if not exists fullname text;
+alter table public.enrollments add column if not exists phone    text;
+alter table public.enrollments add column if not exists line_id  text;
 
 -- ========== 4) Policies（先刪同名，方便重跑） ==========
 drop policy if exists "read published courses"            on public.courses;
