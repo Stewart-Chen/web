@@ -152,13 +152,6 @@
       </form>
       <div id="rec-results" class="grid cards"></div>
     </section>
-    <section class="card flow-md" id="qrcode-box">
-      <h2>📱 手機快速開啟</h2>
-      <p class="muted">掃描下方 QR Code 就能打開本平台：</p>
-      <img 
-        src="https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=https://stewart-chen.github.io/web/" 
-        alt="QR Code 到園藝與藝術治療平台" />
-    </section>
 
   </main>
 
@@ -166,19 +159,19 @@
     <div class="container">
       <small>© 2025 園藝與藝術治療課程平台</small>
       <div id="qrcode"></div>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var el = document.getElementById('qrcode');
-    if (!el) return; // 沒有容器就不跑，避免報錯
-    new QRCode(el, {
-      text: "https://stewart-chen.github.io/web/",
-      width: 200,
-      height: 200,
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  });
-</script>
+      <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var el = document.getElementById('qrcode');
+          if (!el) return; // 沒有容器就不跑，避免報錯
+          new QRCode(el, {
+            text: "https://stewart-chen.github.io/web/",
+            width: 200,
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        });
+      </script>
       
     </div>
   </footer>
