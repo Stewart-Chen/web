@@ -119,6 +119,29 @@
     </p>
   </form>
 </dialog>
+<!-- 報名資料 dialog -->
+<dialog id="enroll-dialog">
+  <form id="enroll-form" class="card" method="dialog" style="min-width:min(480px, 92vw);">
+    <h3 style="margin-top:0;">課程報名資訊</h3>
+    <p class="muted" style="margin-top:-6px;">請填寫聯絡資訊以完成報名</p>
 
+    <div class="form-grid" style="margin-top:10px;">
+      <label>姓名（必填）
+        <input id="enroll-name" type="text" required placeholder="請輸入姓名">
+      </label>
+      <label>電話（必填）
+        <input id="enroll-phone" type="tel" required placeholder="例如 09xx-xxx-xxx">
+      </label>
+      <label>LINE ID（選填）
+        <input id="enroll-line" type="text" placeholder="選填">
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="button" onclick="document.getElementById('enroll-dialog').close()">取消</button>
+      <button class="btn primary" type="submit">送出報名</button>
+    </div>
+  </form>
+</dialog>
 </body>
 </html>
