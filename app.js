@@ -144,7 +144,7 @@ async function loadCourse(){
     lessonsEmpty?.classList.remove('hidden');
   } else if (lessonsEl){
     lessonsEl.innerHTML = lessons.map(ls => `
-      <li><button class="btn" data-lesson="${ls.id}">${ls.order_no}. ${ls.title}</button></li>
+      <li><button class="btn" data-lesson="${ls.id}">${ls.title}</button></li>
     `).join('');
   }
 
