@@ -215,3 +215,88 @@ body::before {
   pointer-events: none;
 }
 
+/* 🌿 溫馨園藝治療風格 */
+@media (prefers-color-scheme: light){
+  body {
+    background:
+      linear-gradient(160deg, #fdfcf9, #f1f8f4);
+  }
+}
+body {
+  font-family: 'Noto Serif TC', serif;
+  color: #333;
+}
+.site-header, .site-footer {
+  background: #f8fff8;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  border: none;
+}
+.site-header h1 { color: #2e7d32; font-weight: 600; }
+nav a { color: #2e7d32; font-weight: 500; }
+
+.hero {
+  padding: 28px;
+  text-align: center;
+  background: linear-gradient(120deg, #e8f5e9, #fff);
+  border: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,.05);
+  border-radius: 16px;
+}
+.hero h2 { font-size: 2rem; margin: 0 0 8px; color: #388e3c; }
+.hero p { color: #555; }
+.hero .note { color: #6a6a6a; }
+
+/* 老師區塊 */
+.teachers { margin-top: 22px; }
+.teachers h2 { margin-bottom: 12px; color: #2e7d32; }
+.teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+.teacher-card {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 16px;
+  align-items: center;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+.teacher-card .avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 32px;
+  background: #e8f5e9;
+  border: 1px solid rgba(0,0,0,.05);
+}
+.teacher-card .subtitle { color: #388e3c; margin: 2px 0 6px; font-weight: 600; }
+.teacher-card .bio { color: #555; margin: 0 0 8px; }
+.teacher-card .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.teacher-card .badge {
+  background: #c8e6c9;
+  color: #2e7d32;
+  border: none;
+  font-weight: 600;
+}
+.teacher-card .cta { margin-top: 8px; }
+.btn.primary, button.primary {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  color: #fff; border: none; border-radius: 999px; padding: 10px 18px; font-weight: 700;
+}
+.btn.primary:hover { background: linear-gradient(135deg, #81c784, #388e3c); }
+
+/* 精選課程格線（共用） */
+.grid.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px; margin-top: 14px;
+}
+.course-card {
+  display: grid; gap: 6px; padding: 14px; border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.08); background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+.course-card h3 { margin: 0; }
+.course-meta { font-size: .9rem; color: rgba(0,0,0,.65); display: flex; gap: 8px; flex-wrap: wrap; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(0,0,0,.1); font-size: .78rem; }
