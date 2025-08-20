@@ -638,15 +638,18 @@ document.getElementById('admin-lesson-delete')?.addEventListener('click', async 
   await adminLoadLessons(cid);
 });
 
-// 假設從後端或 localStorage 得知使用者是否是管理員
-const isAdmin = true; // 改成你實際的判斷邏輯
-
-if (isAdmin) {
+// 等 DOM Ready 後判斷
+window.addEventListener('DOMContentLoaded', async () => {
   const adminLink = document.getElementById('admin-link');
-  adminLink.classList.remove('hidden'); // 顯示課程管理按鈕
+  if (!adminLink) return;
 
-  adminLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('admin-panel').showModal();
-  });
-}
+  if (await isAdmin()) {
+    adminLink.classList.remove('hidden');
+    adminLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      document.getElementById('admin-panel').showModal();
+      await adminRefresh(); // 額外載入資料
+    });
+  }
+});
+
