@@ -131,6 +131,16 @@ async function loadCourse(){
   titleEl.textContent = course.title;
   descEl.textContent = course.description ?? course.summary ?? '';
 
+  const teacherBox = document.getElementById('teacher-box-content');
+if (teacherBox) {
+  const TEACHER_META = {
+    fanfan: { name: '汎汎', role: '園藝治療老師' },
+    xd:     { name: '小D', role: '藝術治療老師' }
+  };
+  const meta = TEACHER_META[course.teacher];
+  teacherBox.textContent = meta ? `${meta.name}｜${meta.role}` : (course.teacher || '—');
+}
+  
   // (B) 單元列表：公開可讀（隸屬已發佈課程）
   const { data: lessons, error: lsErr } = await supabase
     .from('lessons')
@@ -372,27 +382,3 @@ window.addEventListener('DOMContentLoaded', () => {
   renderTeacherPicks(teacherKey);
 });
 
-// 在 course.html 顯示老師資訊（從 URL ?teacher 或依課程 id 推斷）
-function showCourseTeacher(){
-  const box = document.getElementById('teacher-box-content');
-  if (!box) return;
-  const params = new URLSearchParams(location.search);
-  let key = params.get('teacher');
-
-  // 若沒有帶 teacher，可依課程 id 做最簡映射（必要時自行維護）
-  const id = params.get('id'); // 如 indoor-plants, succulents-art, ...
-  if (!key && id){
-    const map = {
-      'indoor-plants':'fanfan',
-      'therapeutic-design':'fanfan',
-      'mindfulness-garden':'fanfan',
-      'succulents-art':'xd',
-      'intro-garden':'xd',
-    };
-    key = map[id];
-  }
-
-  const t = TEACHERS[key];
-  box.textContent = t ? `${t.name}｜${t.role}` : '—';
-}
-window.addEventListener('DOMContentLoaded', showCourseTeacher);
