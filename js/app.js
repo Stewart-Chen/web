@@ -82,7 +82,9 @@ async function loadCourses(){
   empty?.classList.add('hidden');
 
   list.innerHTML = data.map(c => `
-    <article class="card course-card" data-category="${c.category || ''}">
+    <article class="card course-card"
+             data-category="${c.teacher === 'fanfan' ? 'horti' : c.teacher === 'xd' ? 'art' : ''}"
+             data-teacher="${c.teacher || ''}">
       <img src="${c.cover_url || 'https://picsum.photos/seed/'+c.id+'/640/360'}" 
            alt="封面" 
            style="width:100%; height:160px; object-fit:cover; border-radius:8px" />
