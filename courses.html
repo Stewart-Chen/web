@@ -59,51 +59,45 @@
     </section>
   </main>
 
-  <script>
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof loadCourses === 'function') loadCourses();
-
-  const form  = document.getElementById('course-filters');
-  const clear = document.getElementById('btn-clear');
-  const kw    = document.getElementById('kw');
-  const cat   = document.getElementById('cat');
-  const list  = document.getElementById('courses');
-  const empty = document.getElementById('courses-empty');
-
-  function filterCards() {
-    const keyword  = (kw.value || '').trim().toLowerCase();
-    const category = (cat.value || '').trim();
-    const cards = list ? Array.from(list.children) : []; // <article> 都會抓到
-
-    let visibleCount = 0;
-    cards.forEach(card => {
-      const text = (card.innerText || '').toLowerCase();
-
-      // 這裡自己用文字來推斷類型，不需要 data-cat
-      let cardCat = '';
-      if (text.includes('園藝')) cardCat = 'horti';
-      if (text.includes('藝術') || text.includes('色彩') || text.includes('水彩') || text.includes('油畫')) {
-        cardCat = 'art';
+   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof loadCourses === 'function') loadCourses();
+    
+      const form  = document.getElementById('course-filters');
+      const clear = document.getElementById('btn-clear');
+      const kw    = document.getElementById('kw');
+      const cat   = document.getElementById('cat');
+      const list  = document.getElementById('courses');
+      const empty = document.getElementById('courses-empty');
+    
+      function filterCards() {
+        const keyword  = (kw.value || '').trim().toLowerCase();
+        const category = (cat.value || '').trim();
+        const cards = list ? Array.from(list.children) : [];
+    
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const text    = (card.innerText || '').toLowerCase();
+          const cardCat = card.dataset.category || '';   // ✅ 改這裡，直接讀 data-category
+    
+          const hitKw  = !keyword || text.includes(keyword);
+          const hitCat = !category || cardCat === category;
+    
+          const show = hitKw && hitCat;
+          card.style.display = show ? '' : 'none';
+          if (show) visibleCount++;
+        });
+    
+        empty?.classList.toggle('hidden', visibleCount !== 0);
       }
-
-      const hitKw  = !keyword || text.includes(keyword);
-      const hitCat = !category || cardCat === category;
-
-      const show = hitKw && hitCat;
-      card.style.display = show ? '' : 'none';
-      if (show) visibleCount++;
+    
+      form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
+      clear?.addEventListener('click', () => { kw.value = ''; cat.value = ''; filterCards(); });
+    
+      // 載入課程後先跑一次過濾
+      setTimeout(filterCards, 1000);
     });
-
-    empty?.classList.toggle('hidden', visibleCount !== 0);
-  }
-
-  form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
-  clear?.addEventListener('click', () => { kw.value = ''; cat.value = ''; filterCards(); });
-
-  // 載入課程後先跑一次過濾（避免初始空白）
-  setTimeout(filterCards, 1000);
-});
-</script>
+  </script>
 
 
 </body>
