@@ -18,7 +18,7 @@
         <div class="nav-left">
           <a href="index.html">首頁</a>
           <a href="courses.html">探索課程</a>
-
+          <a href="teachers.html">教學團隊</a>
           <div class="dropdown">
             <a href="#" class="dropbtn">線上服務</a>
             <div class="dropdown-content">
