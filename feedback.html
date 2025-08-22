@@ -3,8 +3,13 @@
 <head>
   <meta charset="utf-8">
   <title>課後滿意度</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 樣式與字型 -->
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- JS：外部/共用/應用 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="js/shared-dialog.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
@@ -12,10 +17,163 @@
   <script defer src="js/app.js"></script>
 </head>
 <body>
-  <header class="site-header"><h1>課後滿意度</h1></header>
-  <main class="container">
-    <p>這裡放「課後滿意度」的問卷或表單。</p>
+  <!-- shared-layout.js 會自動插入 header/footer -->
+  <main class="container flow-lg">
+    <section class="card">
+      <header class="flow-md">
+        <h2>課後滿意度</h2>
+        <p class="muted">請以今天的實際感受作答；除「留言」外，其餘皆為選擇題。</p>
+      </header>
+
+      <form id="feedback-form" class="flow-md">
+        <!-- 1. 整體滿意度 -->
+        <fieldset class="card">
+          <legend><strong>1）整體滿意度</strong>（1 很不滿意 → 5 非常滿意）</legend>
+          <div class="actions" role="radiogroup" aria-label="整體滿意度">
+            <label><input type="radio" name="overall" value="1" required> 1</label>
+            <label><input type="radio" name="overall" value="2"> 2</label>
+            <label><input type="radio" name="overall" value="3"> 3</label>
+            <label><input type="radio" name="overall" value="4"> 4</label>
+            <label><input type="radio" name="overall" value="5"> 5</label>
+          </div>
+        </fieldset>
+
+        <!-- 2. 教學清晰度 -->
+        <fieldset class="card">
+          <legend><strong>2）老師教學清晰度</strong></legend>
+          <div class="actions" role="radiogroup" aria-label="教學清晰度">
+            <label><input type="radio" name="clarity" value="1" required> 1</label>
+            <label><input type="radio" name="clarity" value="2"> 2</label>
+            <label><input type="radio" name="clarity" value="3"> 3</label>
+            <label><input type="radio" name="clarity" value="4"> 4</label>
+            <label><input type="radio" name="clarity" value="5"> 5</label>
+          </div>
+        </fieldset>
+
+        <!-- 3. 內容實用性 -->
+        <fieldset class="card">
+          <legend><strong>3）課程內容實用性</strong></legend>
+          <div class="actions" role="radiogroup" aria-label="內容實用性">
+            <label><input type="radio" name="usefulness" value="1" required> 1</label>
+            <label><input type="radio" name="usefulness" value="2"> 2</label>
+            <label><input type="radio" name="usefulness" value="3"> 3</label>
+            <label><input type="radio" name="usefulness" value="4"> 4</label>
+            <label><input type="radio" name="usefulness" value="5"> 5</label>
+          </div>
+        </fieldset>
+
+        <!-- 4. 上課節奏 -->
+        <fieldset class="card">
+          <legend><strong>4）上課節奏</strong></legend>
+          <div class="actions" role="radiogroup" aria-label="上課節奏">
+            <label><input type="radio" name="pace" value="slow" required> 偏慢</label>
+            <label><input type="radio" name="pace" value="just"> 剛好</label>
+            <label><input type="radio" name="pace" value="fast"> 偏快</label>
+          </div>
+        </fieldset>
+
+        <!-- 5. 是否願意推薦 -->
+        <fieldset class="card">
+          <legend><strong>5）你願意推薦給朋友嗎？</strong></legend>
+          <div class="actions" role="radiogroup" aria-label="是否推薦">
+            <label><input type="radio" name="recommend" value="yes" required> 願意</label>
+            <label><input type="radio" name="recommend" value="maybe"> 不確定</label>
+            <label><input type="radio" name="recommend" value="no"> 不願意</label>
+          </div>
+        </fieldset>
+
+        <!-- 6. 參與方式（可複選） -->
+        <fieldset class="card">
+          <legend><strong>6）今天的參與方式（可複選）</strong></legend>
+          <div class="actions" aria-label="參與方式">
+            <label><input type="checkbox" name="participants" value="self"> 個人</label>
+            <label><input type="checkbox" name="participants" value="family"> 與家人</label>
+            <label><input type="checkbox" name="participants" value="classmates"> 與同學</label>
+            <label><input type="checkbox" name="participants" value="others"> 其他夥伴</label>
+          </div>
+        </fieldset>
+
+        <!-- 留言（唯一的填寫題，非必填） -->
+        <fieldset class="card">
+          <legend><strong>留言（選填）</strong></legend>
+          <textarea name="comment" rows="4" placeholder="想對老師或課程團隊說的話…（選填）"></textarea>
+        </fieldset>
+
+        <!-- 按鈕列 -->
+        <div class="actions" style="justify-content:flex-end;">
+          <button type="button" class="btn" id="btn-cancel">取消</button>
+          <button type="reset" class="btn secondary">重填</button>
+          <button type="submit" class="btn primary">送出</button>
+        </div>
+      </form>
+    </section>
   </main>
+
+  <!-- 頁面專用的提交腳本（依賴 app.js 已建立的 supabase 與登入檢查） -->
+  <script>
+    // 等待 app.js 初始化完成
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('feedback-form');
+      const btnCancel = document.getElementById('btn-cancel');
+
+      // 取消 → 回上一頁或首頁
+      btnCancel?.addEventListener('click', () => {
+        if (document.referrer) history.back();
+        else location.href = 'index.html';
+      });
+
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        // 需要登入（使用 app.js 內的 requireAuthOrOpenModal 與 currentUser）
+        if (typeof requireAuthOrOpenModal === 'function') {
+          if (!requireAuthOrOpenModal(e)) return;
+        }
+
+        // 蒐集資料
+        const fd = new FormData(form);
+
+        // 多選 checkbox：取所有值
+        const participants = [];
+        form.querySelectorAll('input[name="participants"]:checked').forEach(cb => {
+          participants.push(cb.value);
+        });
+
+        // 從 URL 取 course id（若有）
+        const params = new URLSearchParams(location.search);
+        const courseId = params.get('id') ? Number(params.get('id')) : null;
+
+        // 取得目前使用者（app.js 內建 currentUser）
+        const user = (typeof currentUser !== 'undefined') ? currentUser : null;
+
+        const payload = {
+          user_id: user ? user.id : null,
+          course_id: courseId,
+          overall: Number(fd.get('overall')),
+          clarity: Number(fd.get('clarity')),
+          usefulness: Number(fd.get('usefulness')),
+          pace: String(fd.get('pace')),
+          recommend: String(fd.get('recommend')),
+          participants, // array
+          comment: String(fd.get('comment') || ''),
+          submitted_at: new Date().toISOString()
+        };
+
+        try {
+          const { error } = await supabase
+            .from('feedback')
+            .insert(payload);
+
+          if (error) throw error;
+          alert('感謝你的回饋！我們已收到。');
+          // 成功後導回課程或首頁
+          if (courseId) location.href = `course.html?id=${courseId}`;
+          else location.href = 'index.html';
+        } catch (err) {
+          console.error(err);
+          alert('送出失敗，請稍後再試或聯絡我們。');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-
