@@ -239,6 +239,12 @@ nav .dropdown:focus-within .dropbtn{
   color: rgba(0,0,0,.65);
   display:flex; gap:8px; flex-wrap:wrap;
 }
+.course-card h4 {
+  margin: 0 0 4px 0;  /* 標題下方只留 4px 間距 */
+}
+.course-card p.muted {
+  margin: 0;          /* 移除段落預設的 margin */
+}
 .badge{
   display:inline-block;
   padding: 2px 8px;
