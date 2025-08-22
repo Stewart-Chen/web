@@ -363,3 +363,89 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
+/* 導覽列：左右區塊 */
+.main-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+/* 左側導覽群組：沿用你之前的緊湊設定 */
+.nav-left{
+  display:inline-flex;
+  align-items:center;
+  gap: var(--nav-gap, 8px);
+}
+.nav-left a,
+.nav-left .dropbtn{
+  display:inline-block;
+  padding: var(--nav-pad-y,4px) var(--nav-pad-x,6px);
+  color: var(--brand);
+  font-weight: 500;
+  text-decoration: none;
+  line-height: 1;
+  border-radius: 6px;
+}
+.nav-left a:hover,
+.nav-left .dropbtn:hover { text-decoration: underline; }
+.nav-left .dropbtn::after{ content:" ▾"; font-weight: 600; }
+
+/* 下拉選單（可保留你之前的顏色） */
+.nav-left .dropdown{ position: relative; display:inline-block; }
+.nav-left .dropdown-content{
+  display:none; position:absolute; left:0; top:calc(100% + 6px);
+  min-width: 180px; background:#fff; border:1px solid rgba(0,0,0,.08);
+  border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding:6px 0; z-index:99;
+}
+.nav-left .dropdown-content a{
+  display:block; padding:8px 12px; color:var(--ink); text-decoration:none;
+  white-space:nowrap; border-radius:6px; margin:2px 6px;
+}
+.nav-left .dropdown-content a:hover,
+.nav-left .dropdown-content a:focus-visible{
+  background:#e8f5e9; color:var(--brand); outline:none;
+}
+.nav-left .dropdown:hover .dropdown-content,
+.nav-left .dropdown:focus-within .dropdown-content{ display:block; }
+
+/* 右側登入/登出：膠囊綠色 CTA */
+.nav-right{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+}
+.btn.nav-cta{
+  border: none;
+  background: linear-gradient(135deg, var(--brand-2), #a5d6a7);
+  color: #0d4220; /* 深一點的綠，對比清晰又融入整體 */
+  border-radius: 999px;
+  padding: 8px 14px;
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  text-decoration:none;
+}
+.btn.nav-cta:hover{
+  background: linear-gradient(135deg, #a5d6a7, var(--brand-2));
+}
+.btn.nav-cta.secondary{
+  background:#fff;
+  color: var(--brand);
+  border: 1px solid rgba(0,0,0,.12);
+}
+.btn.nav-cta.secondary:hover{
+  background:#f4f9f4;
+}
+
+/* 讓 SVG 圖示繼承文字色，不變形 */
+.btn.nav-cta svg{ display:block; }
+
+/* 手機時稍微收緊 */
+@media (max-width: 640px){
+  .btn.nav-cta{ padding: 8px 12px; }
+  .nav-left{ gap: 6px; }
+}
