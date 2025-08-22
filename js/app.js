@@ -83,7 +83,7 @@ async function loadCourses(){
 
   list.innerHTML = data.map(c => `
     <article class="card course-card"
-             data-category="${c.teacher === 'fanfan' ? 'horti' : c.teacher === 'xd' ? 'art' : ''}"
+             data-category="${c.category || ''}"
              data-teacher="${c.teacher || ''}">
       <img src="${c.cover_url || 'https://picsum.photos/seed/'+c.id+'/640/360'}" 
            alt="封面" 
