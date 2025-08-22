@@ -8,21 +8,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="shared-dialog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script defer src="shared-layout.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <h1 class="fancy-title">🌿 園藝與藝術治療課程平台</h1>
-      <nav>
-        <a href="index.html" aria-current="page">首頁</a>
-        <a href="#" id="login-link">登入/註冊</a>
-        <a href="#" id="logout-link" class="hidden">登出</a>
-        <a href="#" id="admin-link" class="hidden">課程管理</a>
-      </nav>
-    </div>
-  </header>
-
   <main class="container flow-lg">
     <!-- Hero -->
     <section class="hero card">
@@ -153,30 +143,6 @@
       </form>
       <div id="rec-results" class="grid cards"></div>
     </section>
-
   </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <small>© 2025 園藝與藝術治療課程平台</small>
-      <div id="qrcode"></div>
-      <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          var el = document.getElementById('qrcode');
-          if (!el) return; // 沒有容器就不跑，避免報錯
-          new QRCode(el, {
-            text: "https://stewart-chen.github.io/web/",
-            width: 200,
-            height: 200,
-            correctLevel: QRCode.CorrectLevel.M
-          });
-        });
-      </script>
-      
-    </div>
-  </footer>
-
-
 </body>
 </html>
