@@ -15,8 +15,6 @@
       <nav>
         <a href="index.html">首頁</a>
         <a href="#" id="login-link">登入/註冊</a>
-        <a href="#" id="logout-link" class="hidden">登出</a>
-        <a href="#" id="admin-link" class="hidden">課程管理</a>
         <div class="dropdown">
           <a href="#" class="dropbtn">小工具</a>
           <div class="dropdown-content">
@@ -24,6 +22,8 @@
             <a href="feedback.html">課後滿意度</a>
           </div>
         </div>
+        <a href="#" id="logout-link" class="hidden">登出</a>
+        <a href="#" id="admin-link" class="hidden">課程管理</a>
       </nav>
     </div>
   </header>
