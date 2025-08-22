@@ -292,5 +292,48 @@ body::before{
   color: #555;
   line-height: 1.6;
 }
+/* 基本 nav 裡的 dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  display: inline-block;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: var(--ink); /* 你的主文字色 */
+}
+
+.dropbtn:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* 下拉清單 */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #111;   /* 黑色背景 */
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 99;
+}
+
+.dropdown-content a {
+  color: #fff;
+  padding: 10px 14px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #333;
+}
+
+/* hover 出現 */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
 #enroll-dialog::backdrop { background: rgba(0,0,0,.25); }
 #enroll-form .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
