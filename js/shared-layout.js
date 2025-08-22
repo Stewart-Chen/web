@@ -19,8 +19,8 @@
         <a href="#" id="admin-link" class="hidden">課程管理</a>
         <select id="tools-select" style="margin-left:12px; padding:4px 6px; border-radius:6px;">
           <option value="">小工具</option>
-          <option value="mood">情緒紀錄</option>
-          <option value="feedback">課後滿意度</option>
+          <option value="mood.html">情緒紀錄</option>
+          <option value="feedback.html">課後滿意度</option>
         </select>
       </nav>
     </div>
