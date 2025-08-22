@@ -528,10 +528,12 @@ input[type="checkbox"] {
 
   /* 標題靠左、字級變小一點 */
   .site-title{
-    margin: 0;
-    font-size: 1.25rem;
+    margin: 0 auto;        /* 自動左右外距 */
+    font-size: 1.4rem;
     line-height: 1.2;
-    white-space: nowrap;    /* 避免標題自己換行 */
+    white-space: nowrap;   /* 避免換行 */
+    text-align: center;    /* 文字置中 */
+    flex: 1 1 100%;        /* 讓它佔滿一行寬度 *//
   }
 
   /* nav 跟在標題右邊，空間不夠時自動換到下一行 */
@@ -564,7 +566,7 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: 1 1 100%;         /* 不夠寬時自動落到下一行 */
+    flex: 0 1 auto;         /* 不夠寬時自動落到下一行 */
     justify-content: flex-end;
   }
   .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
