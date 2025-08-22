@@ -67,7 +67,7 @@ async function loadCourses(){
 
   const { data, error } = await supabase
     .from('courses')
-    .select('id,title,summary,cover_url,created_at')
+    .select('id,title,summary,cover_url,created_at,category') // ✨ 把 category 撈回來
     .eq('published', true)
     .is('deleted_at', null)
     .order('created_at', { ascending: false });
@@ -82,8 +82,10 @@ async function loadCourses(){
   empty?.classList.add('hidden');
 
   list.innerHTML = data.map(c => `
-    <article class="card">
-      <img src="${c.cover_url || 'https://picsum.photos/seed/'+c.id+'/640/360'}" alt="封面" style="width:100%; height:160px; object-fit:cover; border-radius:8px" />
+    <article class="card course-card" data-category="${c.category || ''}">
+      <img src="${c.cover_url || 'https://picsum.photos/seed/'+c.id+'/640/360'}" 
+           alt="封面" 
+           style="width:100%; height:160px; object-fit:cover; border-radius:8px" />
       <h4>${c.title}</h4>
       <p class="muted">${c.summary ?? ''}</p>
       <a class="btn" href="course.html?id=${c.id}">查看課程</a>
