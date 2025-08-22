@@ -12,6 +12,8 @@
   <!-- Supabase & App -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="shared-dialog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script defer src="shared-layout.js"></script>
   <script defer src="app.js"></script>
 
   <noscript>
@@ -22,18 +24,6 @@
   </noscript>
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header">
-    <div class="container">
-      <h1><a href="index.html" class="plain">🌿 園藝與藝術治療課程平台</a></h1>
-      <nav>
-        <a href="index.html">首頁</a>
-        <a href="#" id="login-link">登入/註冊</a>
-        <a href="#" id="logout-link" class="hidden">登出</a>
-      </nav>
-    </div>
-  </header>
-
   <!-- 主內容 -->
   <main class="container flow-lg">
     <!-- 課程資訊卡 -->
@@ -74,13 +64,5 @@
     <!-- JS 關閉時提示 -->
     <p class="nojs" style="display:none;">你的瀏覽器未啟用 JavaScript，本頁功能將無法使用。</p>
   </main>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <small>© 2025 園藝與藝術治療課程平台</small>
-    </div>
-  </footer>
-
 </body>
 </html>
