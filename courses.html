@@ -60,48 +60,51 @@
   </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form  = document.getElementById('course-filters');
-      const clear = document.getElementById('btn-clear');
-      const kw    = document.getElementById('kw');
-      const cat   = document.getElementById('cat');
-      const list  = document.getElementById('courses');
-      const empty = document.getElementById('courses-empty');
-    
-      function filterCards() {
-        const keyword  = (kw?.value || '').trim().toLowerCase();
-        const category = (cat?.value || '').trim();
-    
-        const cards = Array.from(list ? list.children : []); // 不依賴 .course-card
-        let visibleCount = 0;
-    
-        cards.forEach(card => {
-          const text = (card.textContent || '').toLowerCase();
-          const hasCat = card.hasAttribute('data-cat');       // 可有可無
-          const cardCat = card.getAttribute('data-cat') || '';
-    
-          const hitKw  = !keyword || text.includes(keyword);
-          // 沒有 data-cat 時視為符合 → 不會把卡片整批隱藏
-          const hitCat = !category || !hasCat || cardCat === category;
-    
-          const show = hitKw && hitCat;
-          card.style.display = show ? '' : 'none';
-          if (show) visibleCount++;
-        });
-    
-        empty?.classList.toggle('hidden', visibleCount !== 0);
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof loadCourses === 'function') loadCourses();
+
+  const form  = document.getElementById('course-filters');
+  const clear = document.getElementById('btn-clear');
+  const kw    = document.getElementById('kw');
+  const cat   = document.getElementById('cat');
+  const list  = document.getElementById('courses');
+  const empty = document.getElementById('courses-empty');
+
+  function filterCards() {
+    const keyword  = (kw.value || '').trim().toLowerCase();
+    const category = (cat.value || '').trim();
+    const cards = list ? Array.from(list.children) : []; // <article> 都會抓到
+
+    let visibleCount = 0;
+    cards.forEach(card => {
+      const text = (card.innerText || '').toLowerCase();
+
+      // 這裡自己用文字來推斷類型，不需要 data-cat
+      let cardCat = '';
+      if (text.includes('園藝')) cardCat = 'horti';
+      if (text.includes('藝術') || text.includes('色彩') || text.includes('水彩') || text.includes('油畫')) {
+        cardCat = 'art';
       }
-    
-      // 綁定事件（即使前面別的檔案出錯，這段也會嘗試綁定）
-      form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
-      clear?.addEventListener('click', () => { if (kw) kw.value=''; if (cat) cat.value=''; filterCards(); });
-    
-      // 等動態載入完成後再跑一次過濾（loadCourses 可能不存在或不是 Promise，都處理）
-      let p = null;
-      try { p = (typeof loadCourses === 'function') ? loadCourses() : null; } catch (_) {}
-      Promise.resolve(p).finally(() => filterCards());
+
+      const hitKw  = !keyword || text.includes(keyword);
+      const hitCat = !category || cardCat === category;
+
+      const show = hitKw && hitCat;
+      card.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
     });
-  </script>
+
+    empty?.classList.toggle('hidden', visibleCount !== 0);
+  }
+
+  form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
+  clear?.addEventListener('click', () => { kw.value = ''; cat.value = ''; filterCards(); });
+
+  // 載入課程後先跑一次過濾（避免初始空白）
+  setTimeout(filterCards, 1000);
+});
+</script>
+
 
 </body>
 </html>
