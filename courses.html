@@ -74,14 +74,19 @@
       function filterCards() {
         const keyword = (kw.value || '').trim().toLowerCase();
         const category = (cat.value || '').trim();
-        const cards = document.querySelectorAll('#courses .course-card');
+        // 不依賴 .course-card，直接抓 #courses 的所有子節點
+        const list = document.getElementById('courses');
+        const cards = Array.from(list ? list.children : []);
 
         let visibleCount = 0;
         cards.forEach(card => {
-          const text = card.innerText.toLowerCase();
+          const text = (card.textContent || '').toLowerCase();
+          const hasCat = card.hasAttribute('data-cat');
           const cardCat = card.getAttribute('data-cat') || '';
-          const hitKw = !keyword || text.includes(keyword);
-          const hitCat = !category || cardCat === category;
+      
+          const hitKw  = !keyword || text.includes(keyword);
+          const hitCat = !category || !hasCat || cardCat === category; // ← 沒 data-cat 視為通過
+      
           const show = hitKw && hitCat;
           card.style.display = show ? '' : 'none';
           if (show) visibleCount++;
