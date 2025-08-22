@@ -508,3 +508,109 @@ input[type="checkbox"] {
   color: inherit;
   text-decoration: none;
 }
+
+
+/* =========================
+   手機版（<= 720px）排版修正
+   ========================= */
+@media (max-width: 720px){
+  /* 容器邊距縮小，避免左右擠壓 */
+  .container { padding: 0 12px; }
+
+  /* Header：上下更緊湊，標題與 nav 改為同列靠左 + 可換行 */
+  .site-header { padding: 8px 0 10px; margin-bottom: 12px; }
+  .header-bar{
+    display: flex;
+    flex-wrap: wrap;        /* 允許換行 */
+    align-items: center;
+    gap: 10px;              /* 標題與 nav 距離縮小 */
+  }
+
+  /* 標題靠左、字級變小一點 */
+  .site-title{
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    white-space: nowrap;    /* 避免標題自己換行 */
+  }
+
+  /* nav 跟在標題右邊，空間不夠時自動換到下一行 */
+  .main-nav{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 100%;         /* 讓 nav 佔滿這一行寬度 */
+    flex-wrap: wrap;        /* 允許 nav 內容換行 */
+  }
+
+  /* 左側選單群：可自動換行 */
+  .nav-left{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+    flex-wrap: wrap;        /* 允許首頁/小工具/管理換行 */
+  }
+  .nav-left a,
+  .nav-left .dropbtn{
+    font-size: 14px;
+    padding: 4px 6px;       /* 內距更緊湊，點擊仍足夠 */
+    line-height: 1.2;
+  }
+
+  /* 右側登入/登出：推到該行最右邊；若換行，就在第二行靠右 */
+  .nav-right{
+    margin-left: auto;      /* 此行最右 */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 100%;         /* 不夠寬時自動落到下一行 */
+    justify-content: flex-end;
+  }
+  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
+
+  /* 下拉選單（小螢幕）：改為非絕對定位，像清單自然展開，不會溢出 */
+  .nav-left .dropdown{ position: relative; }
+  .nav-left .dropdown-content{
+    position: static;       /* 取消 absolute，避免超出螢幕 */
+    display: none;          /* 預設隱藏，靠 focus/hover 顯示 */
+    width: 100%;
+    min-width: 0;
+    margin-top: 2px;
+    padding: 4px;
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: 8px;
+    box-shadow: none;       /* 手機上簡化陰影 */
+    background: #fff;
+  }
+  .nav-left .dropdown-content a{
+    display: block;
+    padding: 10px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    margin: 2px 0;
+  }
+  /* 仍保留 hover/focus-within 開啟（手機點擊會觸發 focus） */
+  .nav-left .dropdown:hover .dropdown-content,
+  .nav-left .dropdown:focus-within .dropdown-content{ display: block; }
+
+  /* 表單：radio/checkbox 更好點 */
+  input[type="radio"],
+  input[type="checkbox"]{
+    width: auto;
+    margin-right: 6px;
+    accent-color: var(--brand);
+  }
+  .actions label{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 10px;
+  }
+
+  /* Footer 的 QRCode 在手機不要撐版：縮小或隱藏擇一 */
+  #qrcode canvas, #qrcode img{
+    width: 120px !important;
+    height: 120px !important;
+  }
+}
