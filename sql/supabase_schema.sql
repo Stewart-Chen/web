@@ -1,6 +1,6 @@
 -- =========================================
 -- 園藝與藝術治療課程平台：初始化（可重複執行）
--- 合併版 init.sql（加上 courses.category）
+-- 合併版 init.sql（含 courses.category）
 -- =========================================
 
 -- ---------- 0) 共用函式 ----------
@@ -117,7 +117,7 @@ create table if not exists public.courses (
   description text,
   cover_url   text,
   teacher     text,                             -- 之後由 FK 連到 teachers(code)
-  category    text check (category in ('horti','art')),  -- ← 新增：課程類別
+  category    text check (category in ('horti','art')),  -- 課程類別（園藝/藝術）
   published   boolean not null default false,
   deleted_at  timestamptz,
   created_at  timestamptz not null default now()
@@ -188,14 +188,33 @@ begin
 end
 $$;
 
--- （可選）對舊資料依 teacher 回填 category（只填尚未設定者）
+-- 3-3) 補上 category 欄位 / 檢查約束 / 回填（可重複執行）
+alter table public.courses
+  add column if not exists category text;  -- 先確保欄位存在
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.courses'::regclass
+      and conname  = 'courses_category_check'
+  ) then
+    alter table public.courses
+      add constraint courses_category_check
+      check (category in ('horti','art'));
+  end if;
+end
+$$;
+
+-- 依 teacher 回填 category（僅填尚未設定者）
 update public.courses
 set category = case
   when teacher = 'fanfan' then 'horti'
   when teacher = 'xd'     then 'art'
-  else null
+  else category
 end
-where category is null and teacher is not null;
+where category is null;
 
 -- ---------- 4) 先回填/種子 teachers，再建立 FK ----------
 -- 4-1) 種子師資（避免 FK 失敗；與 courses 取用一致）
@@ -246,7 +265,7 @@ $$;
 -- ---------- 5) 索引與額外約束 ----------
 create index if not exists idx_courses_created_at      on public.courses(created_at);
 create index if not exists idx_courses_teacher         on public.courses(teacher);
-create index if not exists idx_courses_category        on public.courses(category); -- ← 新增：類別索引
+create index if not exists idx_courses_category        on public.courses(category); -- 類別索引
 create index if not exists idx_courses_pub_notdeleted  on public.courses(published, deleted_at);
 create index if not exists idx_lessons_course_id       on public.lessons(course_id);
 create index if not exists idx_lessons_order_no        on public.lessons(order_no);
@@ -407,7 +426,7 @@ where not exists (select 1 from public.courses where title='油畫的療癒表�
 -- 為每門課隨機新增 0~5 個「不同的」 lessons（可重複執行；不重複同名；order_no 承接）
 WITH per_course AS (
   SELECT
-    c.id   AS course_id,
+    c.id    AS course_id,
     c.title AS course_title,
     COALESCE((SELECT MAX(order_no) FROM public.lessons WHERE course_id = c.id), 0) AS base_order
   FROM public.courses c
