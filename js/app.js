@@ -708,3 +708,8 @@ supabase.auth.getUser().then(({ data }) => {
   updateAdminLink();
   initPage();
 });
+document.getElementById('tools-select')?.addEventListener('change', function(){
+  if (this.value) {
+    window.location.href = this.value; // 跳轉到對應頁面
+  }
+});
