@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>課程全覽｜園藝與藝術治療課程平台</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 樣式與字型（與全站一致） -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- JS：外部/共用/應用 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/shared-dialog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script defer src="js/shared-layout.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <!-- shared-layout.js 會自動插入 header/footer -->
+
+  <main class="container flow-lg">
+    <section class="hero card hero-card">
+      <div class="hero-content">
+        <h2>課程全覽</h2>
+        <p class="lead">探索我們的園藝與藝術治療課程，找到最適合你的節奏與主題。</p>
+        <div class="chips">
+          <a class="chip" href="#courses">全部課程</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 可選的搜尋/篩選（保留結構，未連動；需要時可在 app.js 擴充） -->
+    <section class="card">
+      <form id="course-filters" class="form-grid">
+        <label>
+          關鍵字
+          <input type="search" id="kw" placeholder="輸入課程名稱或簡述…" />
+        </label>
+        <label>
+          類型
+          <select id="cat">
+            <option value="">全部</option>
+            <option value="horti">園藝療癒</option>
+            <option value="art">藝術療癒</option>
+          </select>
+        </label>
+        <div class="actions" style="justify-content:flex-end; align-self:end;">
+          <button type="button" id="btn-clear" class="btn">清除</button>
+          <button type="submit" class="btn primary">套用</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 課程清單 -->
+    <section id="courses-section" class="flow-md">
+      <div id="courses-empty" class="muted hidden">目前沒有可顯示的課程。</div>
+      <ol id="courses" class="grid cards" aria-live="polite" aria-busy="true"></ol>
+    </section>
+  </main>
+
+  <!-- 頁面專用小腳本：呼叫 app.js 的載入函式；提供最小的本地篩選（可選） -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 呼叫既有的載入邏輯：app.js 內的 loadCourses()
+      if (typeof loadCourses === 'function') loadCourses();
+
+      //（可選）本地端最小篩選：不改動 DB，只在現有 DOM 上過濾
+      const form = document.getElementById('course-filters');
+      const clear = document.getElementById('btn-clear');
+      const kw = document.getElementById('kw');
+      const cat = document.getElementById('cat');
+
+      function filterCards() {
+        const keyword = (kw.value || '').trim().toLowerCase();
+        const category = (cat.value || '').trim();
+        const cards = document.querySelectorAll('#courses .course-card');
+
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const text = card.innerText.toLowerCase();
+          const cardCat = card.getAttribute('data-cat') || '';
+          const hitKw = !keyword || text.includes(keyword);
+          const hitCat = !category || cardCat === category;
+          const show = hitKw && hitCat;
+          card.style.display = show ? '' : 'none';
+          if (show) visibleCount++;
+        });
+
+        document.getElementById('courses-empty')?.classList.toggle('hidden', visibleCount !== 0);
+      }
+
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        filterCards();
+      });
+      clear?.addEventListener('click', () => {
+        kw.value = ''; cat.value = '';
+        filterCards();
+      });
+
+      // 當 app.js 動態載入完成後，如果它有加上 data-cat，可直接使用上面過濾；
+      // 若沒有 data-cat，過濾只會用關鍵字，類型下拉不影響（安全退化）。
+    });
+  </script>
+</body>
+</html>
+
