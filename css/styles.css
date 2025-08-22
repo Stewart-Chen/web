@@ -343,3 +343,23 @@ body::before{
 }
 .hero h2 { font-size: 2rem; margin-bottom: 15px; color: #333; }
 .hero p  { font-size: 1.1rem; color: #555; line-height: 1.6; }
+
+/* 修正 checkbox / radio 不要被撐滿 */
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 6px;      /* 與文字留點距離 */
+  accent-color: var(--brand); /* 使用品牌綠色 */
+  box-shadow: none;       /* 移除通用 box-shadow */
+  cursor: pointer;
+}
+
+/* 讓 label 內的選項在一行，不要斷行 */
+.actions label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 12px;   /* 多個選項間距 */
+  cursor: pointer;
+}
+
