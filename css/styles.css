@@ -394,7 +394,7 @@ input[type="checkbox"] {
 .nav-left .dropbtn{
   color: var(--brand);
   font-weight: 600;                 /* 視覺更穩 */
-  font-size: 15px;                  /* 比 body 小一點點 */
+  font-size: 18px;                  /* 比 body 小一點點 */
   letter-spacing: .02em;
   line-height: 1.2;
   padding: 4px 6px;                 /* 更小的內距 */
@@ -495,7 +495,7 @@ input[type="checkbox"] {
 .site-title {
   font-family: 'Noto Serif TC', serif;
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--brand);
   background: linear-gradient(90deg, #4caf50, #81c784, #aed581);
