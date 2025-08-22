@@ -18,7 +18,7 @@
         <a href="#" id="logout-link" class="hidden">登出</a>
         <a href="#" id="admin-link" class="hidden">課程管理</a>
         <div class="dropdown">
-          <a href="#" class="dropbtn">小工具 ▾</a>
+          <a href="#" class="dropbtn">小工具</a>
           <div class="dropdown-content">
             <a href="mood.html">情緒紀錄</a>
             <a href="feedback.html">課後滿意度</a>
