@@ -8,8 +8,8 @@
 
   <!-- Header -->
   <header class="site-header">
-    <div class="container">
-      <h1 class="fancy-title">
+    <div class="container header-bar">
+      <h1 class="site-title">
         <a href="index.html" class="plain">🌿 園藝與藝術治療課程平台</a>
       </h1>
       
