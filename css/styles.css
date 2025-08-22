@@ -1,9 +1,7 @@
 /* =========================================
-   園藝與藝術治療課程平台：精簡整合 CSS
-   - 去除重複宣告與相互覆寫
-   - 一致的變數、陰影、圓角與字型
-   - 導覽列 dropdown 與連結樣式完全統一
-   - 修正 teacher-card 內距與 CTA 按鈕距離
+   園藝與藝術治療課程平台：精簡整合（緊湊版）
+   - nav 按鈕間距與內距縮小，貼近原始格式
+   - 下拉選單保留 hover / focus 開啟，白底卡片風
    ========================================= */
 
 /* ---- 基礎設計變數 ---- */
@@ -16,6 +14,11 @@
   --brand-2: #81c784;
   --ink: #333;
   --muted: rgba(0,0,0,.6);
+
+  /* 新增：導覽列緊湊參數 */
+  --nav-gap: 8px;         /* 連結彼此的間距（更小） */
+  --nav-pad-y: 4px;       /* 連結上下 padding（更小） */
+  --nav-pad-x: 6px;       /* 連結左右 padding（更小） */
 }
 
 /* ---- Reset / Base ---- */
@@ -50,63 +53,84 @@ body{
 
 .site-header h1{ margin: 0; color: var(--brand); font-weight: 600; }
 
-/* 讓 nav 內容在一行，間距一致 */
-nav { display: inline-block; }
-nav > * { vertical-align: middle; }
+/* 讓 nav 內容在一行，並用 gap 控制一致間距（更緊湊） */
+nav{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nav-gap);
+}
 
-/* nav 連結與 drop 按鈕完全一致 */
+/* nav 連結與 drop 按鈕完全一致（緊湊 padding） */
 nav a,
 nav .dropbtn{
   display: inline-block;
-  padding: 8px 12px;
-  margin-left: 12px;            /* 與原本首頁/登入一致的間距 */
+  padding: var(--nav-pad-y) var(--nav-pad-x);
   color: var(--brand);
   font-weight: 500;
   text-decoration: none;
   line-height: 1;
+  border-radius: 6px;
 }
 nav a:hover,
 nav .dropbtn:hover { text-decoration: underline; }
 nav a[aria-current="page"]{ text-decoration: underline; }
 
-/* dropdown 容器 */
+/* dropdown 容器（緊湊） */
 nav .dropdown{
-  display: inline-block;
   position: relative;
-  margin-left: 12px;            /* 與 nav a 的 margin 對齊 */
+  display: inline-block;
 }
 
-/* 小工具按鈕：自動帶箭頭 */
+/* 小工具按鈕：自動帶箭頭（▾） */
 nav .dropbtn::after{
   content: " ▾";
   font-weight: 600;
 }
 
-/* 下拉清單（黑底白字） */
+/* 下拉清單：白底卡片、陰影、圓角，與全站一致 */
 nav .dropdown-content{
   display: none;
   position: absolute;
   left: 0;
-  top: calc(100% + 8px);
-  background: #111;
+  top: calc(100% + 6px);          /* 與按鈕距離縮小 */
   min-width: 180px;
-  border-radius: 8px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
   padding: 6px 0;
-  box-shadow: 0 8px 16px rgba(0,0,0,.2);
   z-index: 99;
 }
+
+/* 選項：墨色字；hover 用淡綠底＋綠字 */
 nav .dropdown-content a{
   display: block;
-  color: #fff;
-  padding: 10px 14px;
+  padding: 8px 12px;              /* 比前版更緊湊 */
+  color: var(--ink);
   text-decoration: none;
   white-space: nowrap;
+  border-radius: 6px;
+  margin: 2px 6px;
 }
-nav .dropdown-content a:hover{ background: #333; }
+nav .dropdown-content a:hover,
+nav .dropdown-content a:focus-visible{
+  background: #e8f5e9;
+  color: var(--brand);
+  outline: none;
+}
 
-/* 滑過或鍵盤 focus 皆可展開 */
+/* 展開條件：滑過或鍵盤 focus 都能開 */
 nav .dropdown:hover .dropdown-content,
-nav .dropdown:focus-within .dropdown-content{ display: block; }
+nav .dropdown:focus-within .dropdown-content{
+  display: block;
+}
+
+/* 下拉開啟時，讓按鈕有微弱開啟狀態 */
+nav .dropdown:hover .dropbtn,
+nav .dropdown:focus-within .dropbtn{
+  background: rgba(46,125,50,0.06);
+  text-decoration: none;
+}
 
 /* ---- 卡片 ---- */
 .card{
@@ -289,7 +313,7 @@ dialog::backdrop { background: rgba(0,0,0,.2); }
 #admin-courses .item .meta { display:flex; gap:6px; flex-wrap:wrap; }
 #admin-courses .item .title { font-weight:600; }
 
-/* ---- 額外小點綴：淡紋理（可留可去） ---- */
+/* ---- 背景紋理（可留可去） ---- */
 body::before{
   content:"";
   position: fixed; inset: 0;
