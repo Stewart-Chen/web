@@ -3,13 +3,163 @@
 <head>
   <meta charset="utf-8">
   <title>情緒紀錄</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 樣式與字型 -->
   <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- JS：外部/共用/應用（與其他頁一致） -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/shared-dialog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script defer src="js/shared-layout.js"></script>
+  <script defer src="js/app.js"></script>
 </head>
 <body>
-  <header class="site-header"><h1>情緒紀錄</h1></header>
-  <main class="container">
-    <p>這裡放「情緒紀錄」的功能內容。</p>
+  <!-- shared-layout.js 會自動插入 header/footer -->
+  <main class="container flow-lg">
+    <section class="card">
+      <header class="flow-md">
+        <h2>情緒紀錄（今天）</h2>
+        <p class="muted">請用選擇題記錄你今天的狀態；只有「備註」是選填。</p>
+      </header>
+
+      <form id="mood-form" class="flow-md">
+        <!-- 1. 今日心情（1~5） -->
+        <fieldset class="card">
+          <legend><strong>1）今天的心情</strong></legend>
+          <div class="actions" role="radiogroup" aria-label="今天的心情">
+            <label><input type="radio" name="mood" value="1" required> 😞 很糟</label>
+            <label><input type="radio" name="mood" value="2"> 🙁 不佳</label>
+            <label><input type="radio" name="mood" value="3"> 😐 普通</label>
+            <label><input type="radio" name="mood" value="4"> 🙂 好</label>
+            <label><input type="radio" name="mood" value="5"> 😄 很棒</label>
+          </div>
+        </fieldset>
+
+        <!-- 2. 精力 -->
+        <fieldset class="card">
+          <legend><strong>2）精力</strong></legend>
+          <div class="actions" role="radiogroup" aria-label="精力">
+            <label><input type="radio" name="energy" value="low" required> 低</label>
+            <label><input type="radio" name="energy" value="mid"> 中</label>
+            <label><input type="radio" name="energy" value="high"> 高</label>
+          </div>
+        </fieldset>
+
+        <!-- 3. 壓力 -->
+        <fieldset class="card">
+          <legend><strong>3）壓力</strong></legend>
+          <div class="actions" role="radiogroup" aria-label="壓力">
+            <label><input type="radio" name="stress" value="low" required> 低</label>
+            <label><input type="radio" name="stress" value="mid"> 中</label>
+            <label><input type="radio" name="stress" value="high"> 高</label>
+          </div>
+        </fieldset>
+
+        <!-- 4. 標籤（可複選） -->
+        <fieldset class="card">
+          <legend><strong>4）今天影響心情的面向（可複選）</strong></legend>
+          <div class="actions" aria-label="影響面向">
+            <label><input type="checkbox" name="tags" value="work"> 工作</label>
+            <label><input type="checkbox" name="tags" value="family"> 家庭</label>
+            <label><input type="checkbox" name="tags" value="study"> 學業</label>
+            <label><input type="checkbox" name="tags" value="social"> 人際</label>
+            <label><input type="checkbox" name="tags" value="health"> 健康</label>
+            <label><input type="checkbox" name="tags" value="weather"> 天氣</label>
+            <label><input type="checkbox" name="tags" value="finance"> 財務</label>
+            <label><input type="checkbox" name="tags" value="other"> 其他</label>
+          </div>
+        </fieldset>
+
+        <!-- 5. 活動（可複選） -->
+        <fieldset class="card">
+          <legend><strong>5）做了哪些活動（可複選）</strong></legend>
+          <div class="actions" aria-label="活動">
+            <label><input type="checkbox" name="activities" value="exercise"> 運動/走路</label>
+            <label><input type="checkbox" name="activities" value="art"> 藝術/手作</label>
+            <label><input type="checkbox" name="activities" value="plants"> 照顧植物</label>
+            <label><input type="checkbox" name="activities" value="meditation"> 正念/冥想</label>
+            <label><input type="checkbox" name="activities" value="music"> 音樂</label>
+            <label><input type="checkbox" name="activities" value="rest"> 休息/睡眠</label>
+          </div>
+        </fieldset>
+
+        <!-- 備註（選填） -->
+        <fieldset class="card">
+          <legend><strong>備註（選填）</strong></legend>
+          <textarea name="note" rows="3" placeholder="想補充的心情小語…（選填）"></textarea>
+        </fieldset>
+
+        <!-- 按鈕列 -->
+        <div class="actions" style="justify-content:flex-end;">
+          <button type="button" class="btn" id="btn-cancel">取消</button>
+          <button type="reset" class="btn secondary">重填</button>
+          <button type="submit" class="btn primary">送出</button>
+        </div>
+      </form>
+    </section>
   </main>
+
+  <!-- 單頁提交腳本 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('mood-form');
+      const btnCancel = document.getElementById('btn-cancel');
+
+      btnCancel?.addEventListener('click', () => {
+        if (document.referrer) history.back();
+        else location.href = 'index.html';
+      });
+
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        // 需要登入
+        if (typeof requireAuthOrOpenModal === 'function'){
+          if (!requireAuthOrOpenModal(e)) return;
+        }
+
+        const fd = new FormData(form);
+        // 取複選值
+        const tags = [];
+        form.querySelectorAll('input[name="tags"]:checked').forEach(cb => tags.push(cb.value));
+        const activities = [];
+        form.querySelectorAll('input[name="activities"]:checked').forEach(cb => activities.push(cb.value));
+
+        // URL 若帶有課程 id（可選）：mood.html?id=123
+        const params = new URLSearchParams(location.search);
+        const courseId = params.get('id') ? Number(params.get('id')) : null;
+
+        const user = (typeof currentUser !== 'undefined') ? currentUser : null;
+
+        const payload = {
+          user_id: user ? user.id : null,
+          course_id: courseId,
+          // 今日日期（只留日期，方便之後查「今天」）
+          mood_date: new Date().toISOString().slice(0,10), // YYYY-MM-DD
+          mood: Number(fd.get('mood')),
+          energy: String(fd.get('energy')),
+          stress: String(fd.get('stress')),
+          tags,        // text[]
+          activities,  // text[]
+          note: String(fd.get('note') || ''),
+          submitted_at: new Date().toISOString()
+        };
+
+        try {
+          const { error } = await supabase.from('moods').insert(payload);
+          if (error) throw error;
+          alert('已記錄今天的心情，辛苦了 🌿');
+          // 回到課程或首頁
+          if (courseId) location.href = `course.html?id=${courseId}`;
+          else location.href = 'index.html';
+        } catch (err) {
+          console.error(err);
+          alert('送出失敗，請稍後再試或聯絡我們。');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-
