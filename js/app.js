@@ -67,7 +67,7 @@ async function loadCourses(){
 
   const { data, error } = await supabase
     .from('courses')
-    .select('id,title,summary,cover_url,created_at,category') // ✨ 把 category 撈回來
+    .select('id,title,summary,cover_url,created_at,teacher,category') // ✨ 把 category 撈回來
     .eq('published', true)
     .is('deleted_at', null)
     .order('created_at', { ascending: false });
