@@ -12,20 +12,37 @@
       <h1 class="fancy-title">
         <a href="index.html" class="plain">🌿 園藝與藝術治療課程平台</a>
       </h1>
-      <nav>
-        <a href="index.html">首頁</a>
-        <div class="dropdown">
-          <a href="#" class="dropbtn">小工具</a>
-          <div class="dropdown-content">
-            <a href="mood.html">情緒紀錄</a>
-            <a href="feedback.html">課後滿意度</a>
+      
+      <!-- 導覽列：左邊連結、右邊登入/登出 -->
+      <nav class="main-nav">
+        <div class="nav-left">
+          <a href="index.html">首頁</a>
+
+          <div class="dropdown">
+            <a href="#" class="dropbtn">小工具</a>
+            <div class="dropdown-content">
+              <a href="mood.html">情緒紀錄</a>
+              <a href="feedback.html">課後滿意度</a>
+            </div>
           </div>
+
+          <a href="#" id="admin-link" class="hidden">課程管理</a>
         </div>
-        <a href="#" id="admin-link" class="hidden">課程管理</a>
-        <a href="#" id="login-link">登入/註冊</a>
-        <a href="#" id="logout-link" class="hidden">登出</a>
-        
+
+        <div class="nav-right">
+          <!-- 登入按鈕：膠囊綠色、含人形圖示 -->
+          <a href="#" id="login-link" class="btn nav-cta">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" focusable="false">
+              <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z" fill="currentColor"/>
+            </svg>
+            <span>登入</span>
+          </a>
+
+          <!-- 登出按鈕：同位置，預設隱藏 -->
+          <a href="#" id="logout-link" class="btn nav-cta secondary hidden">登出</a>
+        </div>
       </nav>
+      
     </div>
   </header>
 
