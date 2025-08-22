@@ -65,7 +65,7 @@
         try {
           const { data, error } = await supabase
             .from('teachers')
-            .select('id, name, title, bio, avatar_url, tags')
+            .select('code, name, title, bio, avatar_url, tags')
             .order('name', { ascending: true });
           if (error) throw error;
           return data || [];
