@@ -2,7 +2,8 @@
    園藝與藝術治療課程平台：精簡整合 CSS
    - 去除重複宣告與相互覆寫
    - 一致的變數、陰影、圓角與字型
-   - 修正 teacher-card 內距與 CTA 按鈕太近
+   - 導覽列 dropdown 與連結樣式完全統一
+   - 修正 teacher-card 內距與 CTA 按鈕距離
    ========================================= */
 
 /* ---- 基礎設計變數 ---- */
@@ -25,7 +26,6 @@ body{
   color: var(--ink);
   margin: 0;
   line-height: 1.6;
-  /* 溫柔背景 */
   background: linear-gradient(160deg, #fdfcf9, #f1f8f4);
 }
 .container{ max-width: var(--container); margin: 0 auto; padding: 0 16px; }
@@ -33,7 +33,7 @@ body{
 .muted{ color: var(--muted); }
 .plain { color: inherit; text-decoration: none; }
 
-/* 間距工具：讓頁面不擁擠 */
+/* 間距工具 */
 .flow-md > * + * { margin-top: 18px; }
 .flow-lg > * + * { margin-top: 28px; }
 
@@ -45,22 +45,68 @@ body{
   padding: 1rem 0 2rem;
   border-bottom: 1px solid #e0e0e0;
 }
-.site-header {
-  margin-bottom: 24px; /* header 下方空隙 */
-}
+.site-header { margin-bottom: 24px; }
+.site-footer { margin-top: 32px; }
 
-.site-footer {
-  margin-top: 32px; /* footer 上方空隙 */
-}
 .site-header h1{ margin: 0; color: var(--brand); font-weight: 600; }
-nav a{
+
+/* 讓 nav 內容在一行，間距一致 */
+nav { display: inline-block; }
+nav > * { vertical-align: middle; }
+
+/* nav 連結與 drop 按鈕完全一致 */
+nav a,
+nav .dropbtn{
+  display: inline-block;
+  padding: 8px 12px;
+  margin-left: 12px;            /* 與原本首頁/登入一致的間距 */
   color: var(--brand);
   font-weight: 500;
   text-decoration: none;
-  margin-left: 12px;
+  line-height: 1;
 }
+nav a:hover,
+nav .dropbtn:hover { text-decoration: underline; }
 nav a[aria-current="page"]{ text-decoration: underline; }
-nav a:hover { text-decoration: underline; }
+
+/* dropdown 容器 */
+nav .dropdown{
+  display: inline-block;
+  position: relative;
+  margin-left: 12px;            /* 與 nav a 的 margin 對齊 */
+}
+
+/* 小工具按鈕：自動帶箭頭 */
+nav .dropbtn::after{
+  content: " ▾";
+  font-weight: 600;
+}
+
+/* 下拉清單（黑底白字） */
+nav .dropdown-content{
+  display: none;
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  background: #111;
+  min-width: 180px;
+  border-radius: 8px;
+  padding: 6px 0;
+  box-shadow: 0 8px 16px rgba(0,0,0,.2);
+  z-index: 99;
+}
+nav .dropdown-content a{
+  display: block;
+  color: #fff;
+  padding: 10px 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+nav .dropdown-content a:hover{ background: #333; }
+
+/* 滑過或鍵盤 focus 皆可展開 */
+nav .dropdown:hover .dropdown-content,
+nav .dropdown:focus-within .dropdown-content{ display: block; }
 
 /* ---- 卡片 ---- */
 .card{
@@ -75,7 +121,7 @@ nav a:hover { text-decoration: underline; }
 
 /* ---- Hero ---- */
 .hero{
-  padding: 28px;
+  padding: 40px 20px;
   text-align: center;
   background: linear-gradient(120deg, #e8f5e9, #ffffff);
   border: none;
@@ -85,8 +131,6 @@ nav a:hover { text-decoration: underline; }
   align-items: center;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 40px 20px;
-  text-align: center;
 }
 .hero h2{ font-size: 2rem; margin: 0 0 8px; color: #388e3c; }
 .hero p{ color: #555; }
@@ -134,10 +178,7 @@ nav a:hover { text-decoration: underline; }
   display:grid;place-items:center;font-size:32px;
   background:#e8f5e9;border:1px solid rgba(0,0,0,.05);
 }
-.teacher-card .info{
-  display: grid;
-  gap: 10px;              /* 讓內部元素有基本間距 */
-}
+.teacher-card .info{ display: grid; gap: 10px; }
 .teacher-card .subtitle{ color:#388e3c; margin: 0; font-weight: 600; }
 .teacher-card .bio{ color:#555; margin: 0; }
 .teacher-card .badges{ display:flex; gap:8px; flex-wrap:wrap; }
@@ -145,10 +186,8 @@ nav a:hover { text-decoration: underline; }
   background:#c8e6c9; color: var(--brand);
   border: none; font-weight: 600;
 }
-/* ✅ 讓 CTA 與上面內容拉開距離 */
-.teacher-card .cta{
-  margin-top: 12px;
-}
+/* CTA 與上面內容拉開距離 */
+.teacher-card .cta{ margin-top: 12px; }
 
 /* ---- 精選課程 / 課程格線 ---- */
 .grid{
@@ -193,9 +232,7 @@ nav a:hover { text-decoration: underline; }
   gap: 16px;
   margin-block: 12px 8px;
 }
-.form-grid label{
-  display:grid; gap:8px; font-weight: 600;
-}
+.form-grid label{ display:grid; gap:8px; font-weight: 600; }
 label { display:block; }
 input, select, textarea{
   width:100%;
@@ -205,9 +242,7 @@ input, select, textarea{
   box-shadow: var(--shadow-sm);
   font-family: inherit;
 }
-.actions{
-  display:flex; gap:10px; align-items:center; margin-top: 6px;
-}
+.actions{ display:flex; gap:10px; align-items:center; margin-top: 6px; }
 
 /* ---- 按鈕 ---- */
 button, .btn{
@@ -236,15 +271,15 @@ button.secondary, .btn.secondary{
   background: #fff;
   border: 1px solid rgba(0,0,0,.15);
 }
-.btn.danger{
-  background:#b00020; color:#fff; border:none;
-}
+.btn.danger{ background:#b00020; color:#fff; border:none; }
 
 /* ---- Prose ---- */
 .prose p { margin: 0 0 12px 0; }
 
 /* ---- Dialog ---- */
 dialog::backdrop { background: rgba(0,0,0,.2); }
+#enroll-dialog::backdrop { background: rgba(0,0,0,.25); }
+#enroll-form .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
 
 /* ---- Admin 面板列表 ---- */
 #admin-courses .item{
@@ -261,6 +296,8 @@ body::before{
   background-image: url('https://www.transparenttextures.com/patterns/green-dust-and-scratches.png');
   opacity: .05; pointer-events: none;
 }
+
+/* 標題特效（可留可去） */
 .fancy-title {
   font-family: 'Noto Serif TC', serif;
   font-size: 2.5rem;
@@ -272,6 +309,8 @@ body::before{
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
   margin: 30px 0 40px;
 }
+
+/* Hero 卡片補充 */
 .hero-card {
   background: #ffffff;
   border-radius: 12px;
@@ -279,65 +318,5 @@ body::before{
   padding: 30px;
   margin-top: 20px;
 }
-
-/* 如果 Hero 裡面有標題、副標題 */
-.hero h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.hero p {
-  font-size: 1.1rem;
-  color: #555;
-  line-height: 1.6;
-}
-
-/* nav 裡所有連結統一樣式 */
-nav a,
-nav .dropbtn {
-  display: inline-block;
-  padding: 8px 12px;        /* 和 a 相同的間距 */
-  text-decoration: none;
-  color: inherit;           /* 繼承父層顏色 */
-  font: inherit;            /* 繼承字體 */
-}
-
-/* hover 狀態統一 */
-nav a:hover,
-nav .dropbtn:hover {
-  background: rgba(0,0,0,0.05);  /* 或用你原本 nav 的 hover 樣式 */
-}
-
-/* dropdown 容器維持 inline-block */
-nav .dropdown {
-  display: inline-block;
-  position: relative;
-}
-
-/* 下拉選單統一樣式 */
-nav .dropdown-content {
-  display: none;
-  position: absolute;
-  background: #111;
-  min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0,0,0,.2);
-  z-index: 99;
-}
-
-nav .dropdown-content a {
-  display: block;
-  color: #fff;
-  padding: 10px 14px;
-}
-
-nav .dropdown-content a:hover {
-  background: #333;
-}
-
-nav .dropdown:hover .dropdown-content {
-  display: block;
-}
-
-#enroll-dialog::backdrop { background: rgba(0,0,0,.25); }
-#enroll-form .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+.hero h2 { font-size: 2rem; margin-bottom: 15px; color: #333; }
+.hero p  { font-size: 1.1rem; color: #555; line-height: 1.6; }
