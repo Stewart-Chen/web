@@ -529,11 +529,15 @@ input[type="checkbox"] {
   /* 標題靠左、字級變小一點 */
   .site-title{
     margin: 0 auto;        /* 自動左右外距 */
-    font-size: 1.4rem;
-    line-height: 1.2;
+    font-size: 1.5rem;
+    line-height: 1.4;
     white-space: nowrap;   /* 避免換行 */
     text-align: center;    /* 文字置中 */
     flex: 1 1 100%;        /* 讓它佔滿一行寬度 *//
+    background: linear-gradient(90deg, #4caf50, #81c784, #aed581);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 1px 2px 20px rgba(0,0,0,.20);
   }
 
   /* nav 跟在標題右邊，空間不夠時自動換到下一行 */
@@ -614,5 +618,44 @@ input[type="checkbox"] {
   #qrcode canvas, #qrcode img{
     width: 120px !important;
     height: 120px !important;
+  }
+}
+
+/* 讓每個題目的選項用 grid 排版，自動換行 */
+fieldset.card .actions{
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  gap: 8px;
+}
+
+/* 每個選項做成小膠囊 */
+fieldset.card .actions label{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 8px;
+  background: #fff;
+  margin: 0;             /* 交給 grid 控制間距 */
+  cursor: pointer;
+}
+
+/* radio/checkbox 不要被撐滿；用品牌色美化 */
+input[type="radio"], input[type="checkbox"]{
+  width: auto;
+  margin: 0;
+  accent-color: var(--brand);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+/* 手機微調更緊湊 */
+@media (max-width: 720px){
+  fieldset.card{ padding: 12px; }
+  fieldset.card .actions{
+    gap: 6px;
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
   }
 }
