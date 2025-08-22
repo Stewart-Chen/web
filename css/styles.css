@@ -372,9 +372,18 @@ input[type="checkbox"] {
 .main-nav{
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
+  flex: 1;                /* 讓右側能推到最右 */
 }
-
+/* 左側選單 */
+.main-nav > a,
+.main-nav .dropbtn {
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  padding: 4px 6px;
+}
 /* 左側導覽群組：沿用你之前的緊湊設定 */
 .nav-left{
   display: flex;
@@ -436,9 +445,10 @@ input[type="checkbox"] {
 
 /* 右側登入/登出：膠囊綠色 CTA */
 .nav-right{
-  display:inline-flex;
-  align-items:center;
-  gap: 8px;
+  margin-left: auto;      /* 把登入按鈕推到最右 */
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 .btn.nav-cta{
   border: none;
@@ -478,15 +488,21 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 28px;
 }
 
 /* 標題樣式（左對齊） */
 .site-title {
+  font-family: 'Noto Serif TC', serif;
   margin: 0;
   font-size: 1.6rem;
   font-weight: 700;
   color: var(--brand);
+  background: linear-gradient(90deg, #4caf50, #81c784, #aed581);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 2px 6px rgba(0,0,0,.18); /* 稍柔和 */
+  white-space: nowrap;
 }
 .site-title a {
   color: inherit;
