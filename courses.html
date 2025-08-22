@@ -104,8 +104,13 @@
       }
     
       form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
-      clear?.addEventListener('click', () => { kw.value = ''; cat.value = ''; filterCards(); });
-    
+      clear?.addEventListener('click', () => {
+        kw.value = '';
+        cat.value = '';
+        teacher.value = '';      // ← 加這行
+        filterCards();
+      });
+
       // 載入課程後先跑一次過濾
       setTimeout(filterCards, 1000);
     });
