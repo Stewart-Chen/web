@@ -68,7 +68,6 @@ nav .dropbtn{
   color: var(--brand);
   font-weight: 600;
   text-decoration: none;
-  line-height: 1;
   border-radius: 6px;
 }
 nav a:hover,
