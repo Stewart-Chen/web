@@ -292,46 +292,50 @@ body::before{
   color: #555;
   line-height: 1.6;
 }
-/* 基本 nav 裡的 dropdown */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
 
-.dropbtn {
+/* nav 裡所有連結統一樣式 */
+nav a,
+nav .dropbtn {
   display: inline-block;
-  padding: 8px 12px;
+  padding: 8px 12px;        /* 和 a 相同的間距 */
   text-decoration: none;
-  color: var(--ink); /* 你的主文字色 */
+  color: inherit;           /* 繼承父層顏色 */
+  font: inherit;            /* 繼承字體 */
 }
 
-.dropbtn:hover {
-  background: rgba(0,0,0,0.05);
+/* hover 狀態統一 */
+nav a:hover,
+nav .dropbtn:hover {
+  background: rgba(0,0,0,0.05);  /* 或用你原本 nav 的 hover 樣式 */
 }
 
-/* 下拉清單 */
-.dropdown-content {
+/* dropdown 容器維持 inline-block */
+nav .dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+/* 下拉選單統一樣式 */
+nav .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #111;   /* 黑色背景 */
+  background: #111;
   min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px rgba(0,0,0,.2);
   z-index: 99;
 }
 
-.dropdown-content a {
+nav .dropdown-content a {
+  display: block;
   color: #fff;
   padding: 10px 14px;
-  text-decoration: none;
-  display: block;
 }
 
-.dropdown-content a:hover {
-  background-color: #333;
+nav .dropdown-content a:hover {
+  background: #333;
 }
 
-/* hover 出現 */
-.dropdown:hover .dropdown-content {
+nav .dropdown:hover .dropdown-content {
   display: block;
 }
 
