@@ -17,11 +17,13 @@
         <a href="#" id="login-link">登入/註冊</a>
         <a href="#" id="logout-link" class="hidden">登出</a>
         <a href="#" id="admin-link" class="hidden">課程管理</a>
-        <select id="tools-select" style="margin-left:12px; padding:4px 6px; border-radius:6px;">
-          <option value="">小工具</option>
-          <option value="mood.html">情緒紀錄</option>
-          <option value="feedback.html">課後滿意度</option>
-        </select>
+        <div class="dropdown">
+          <a href="#" class="dropbtn">小工具 ▾</a>
+          <div class="dropdown-content">
+            <a href="mood.html">情緒紀錄</a>
+            <a href="feedback.html">課後滿意度</a>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
