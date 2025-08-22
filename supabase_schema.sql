@@ -315,3 +315,23 @@ SELECT course_id, order_no, lesson_title, lesson_content
 FROM numbered;
 
 
+create table if not exists public.feedback (
+  id           bigserial primary key,
+  user_id      uuid references auth.users(id) on delete set null,
+  course_id    bigint references public.courses(id) on delete set null,
+  overall      smallint check (overall between 1 and 5),
+  clarity      smallint check (clarity between 1 and 5),
+  usefulness   smallint check (usefulness between 1 and 5),
+  pace         text check (pace in ('slow','just','fast')),
+  recommend    text check (recommend in ('yes','maybe','no')),
+  participants text[] default '{}'::text[], -- 例如 {'self','family'}
+  comment      text,
+  submitted_at timestamptz default now()
+);
+
+-- 可選：加速查詢
+create index if not exists feedback_user_idx on public.feedback(user_id);
+create index if not exists feedback_course_idx on public.feedback(course_id);
+
+
+
