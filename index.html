@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="shared-dialog.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -176,32 +177,7 @@
     </div>
   </footer>
 
-  <!-- Auth modal（統一版） -->
-<dialog id="auth-modal">
-  <form method="dialog" class="card" style="min-width:min(520px,92vw);">
-    <h3>登入 / 註冊</h3>
 
-    <label>Email
-      <input type="email" id="auth-email" required placeholder="you@example.com" autocomplete="email" />
-    </label>
-
-    <label>密碼
-      <input type="password" id="auth-password" required placeholder="至少 6 碼" autocomplete="current-password" />
-    </label>
-
-    <div class="actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
-      <button id="btn-signin"  value="signin"  class="btn primary">登入</button>
-      <button id="btn-signup"  value="signup"  class="btn secondary">註冊</button>
-
-      <!-- 取消：改成 button，避免驗證 -->
-      <button type="button" class="btn" onclick="document.getElementById('auth-modal').close()">取消</button>
-    </div>
-
-    <p class="muted" style="margin:8px 0 0;">
-      若顯示「Email not confirmed」，請到信箱點驗證連結或再試註冊以重寄驗證信。
-    </p>
-  </form>
-</dialog>
 <!-- 隱藏管理面板 -->
 <dialog id="admin-panel">
   <div method="dialog" class="card" style="min-width:min(980px,95vw);">
