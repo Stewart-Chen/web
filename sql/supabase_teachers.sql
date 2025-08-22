@@ -106,7 +106,7 @@ insert into public.teachers (code, name, title)
 select distinct
   c.teacher as code,
   case c.teacher
-    when 'fanfan' then '芳芳'
+    when 'fanfan' then '汎汎'
     when 'xd'     then '小D'
     else c.teacher
   end as name,
