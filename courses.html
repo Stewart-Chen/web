@@ -59,55 +59,50 @@
     </section>
   </main>
 
-  <!-- 頁面專用小腳本：呼叫 app.js 的載入函式；提供最小的本地篩選（可選） -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 呼叫既有的載入邏輯：app.js 內的 loadCourses()
-      if (typeof loadCourses === 'function') loadCourses();
-
-      //（可選）本地端最小篩選：不改動 DB，只在現有 DOM 上過濾
-      const form = document.getElementById('course-filters');
+      const form  = document.getElementById('course-filters');
       const clear = document.getElementById('btn-clear');
-      const kw = document.getElementById('kw');
-      const cat = document.getElementById('cat');
-
+      const kw    = document.getElementById('kw');
+      const cat   = document.getElementById('cat');
+      const list  = document.getElementById('courses');
+      const empty = document.getElementById('courses-empty');
+    
       function filterCards() {
-        const keyword = (kw.value || '').trim().toLowerCase();
-        const category = (cat.value || '').trim();
-        // 不依賴 .course-card，直接抓 #courses 的所有子節點
-        const list = document.getElementById('courses');
-        const cards = Array.from(list ? list.children : []);
-
+        const keyword  = (kw?.value || '').trim().toLowerCase();
+        const category = (cat?.value || '').trim();
+    
+        const cards = Array.from(list ? list.children : []); // 不依賴 .course-card
         let visibleCount = 0;
+    
         cards.forEach(card => {
           const text = (card.textContent || '').toLowerCase();
-          const hasCat = card.hasAttribute('data-cat');
+          const hasCat = card.hasAttribute('data-cat');       // 可有可無
           const cardCat = card.getAttribute('data-cat') || '';
-      
+    
           const hitKw  = !keyword || text.includes(keyword);
-          const hitCat = !category || !hasCat || cardCat === category; // ← 沒 data-cat 視為通過
-      
+          // 沒有 data-cat 時視為符合 → 不會把卡片整批隱藏
+          const hitCat = !category || !hasCat || cardCat === category;
+    
           const show = hitKw && hitCat;
           card.style.display = show ? '' : 'none';
           if (show) visibleCount++;
         });
-
-        document.getElementById('courses-empty')?.classList.toggle('hidden', visibleCount !== 0);
+    
+        empty?.classList.toggle('hidden', visibleCount !== 0);
       }
-
-      form?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        filterCards();
-      });
-      clear?.addEventListener('click', () => {
-        kw.value = ''; cat.value = '';
-        filterCards();
-      });
-
-      // 當 app.js 動態載入完成後，如果它有加上 data-cat，可直接使用上面過濾；
-      // 若沒有 data-cat，過濾只會用關鍵字，類型下拉不影響（安全退化）。
+    
+      // 綁定事件（即使前面別的檔案出錯，這段也會嘗試綁定）
+      form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
+      clear?.addEventListener('click', () => { if (kw) kw.value=''; if (cat) cat.value=''; filterCards(); });
+    
+      // 等動態載入完成後再跑一次過濾（loadCourses 可能不存在或不是 Promise，都處理）
+      let p = null;
+      try { p = (typeof loadCourses === 'function') ? loadCourses() : null; } catch (_) {}
+      Promise.resolve(p).finally(() => filterCards());
     });
   </script>
+
 </body>
 </html>
 
