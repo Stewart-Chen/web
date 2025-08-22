@@ -45,6 +45,14 @@
             <option value="art">藝術療癒</option>
           </select>
         </label>
+        <label>
+          老師
+          <select id="teacher">
+            <option value="">全部</option>
+            <option value="fanfan">汎汎（園藝治療）</option>
+            <option value="xd">小D（藝術治療）</option>
+          </select>
+        </label>
         <div class="actions" style="justify-content:flex-end; align-self:end;">
           <button type="button" id="btn-clear" class="btn">清除</button>
           <button type="submit" class="btn primary">套用</button>
@@ -69,25 +77,29 @@
       const cat   = document.getElementById('cat');
       const list  = document.getElementById('courses');
       const empty = document.getElementById('courses-empty');
+      const teacher = document.getElementById('teacher');
     
       function filterCards() {
         const keyword  = (kw.value || '').trim().toLowerCase();
         const category = (cat.value || '').trim();
+        const teacherVal = (teacher.value || '').trim();
         const cards = list ? Array.from(list.children) : [];
-    
+      
         let visibleCount = 0;
         cards.forEach(card => {
           const text    = (card.innerText || '').toLowerCase();
-          const cardCat = card.dataset.category || '';   // ✅ 改這裡，直接讀 data-category
-    
+          const cardCat = card.dataset.category || '';
+          const cardTeacher = card.dataset.teacher || '';   // ✅ 這裡讀 data-teacher
+      
           const hitKw  = !keyword || text.includes(keyword);
           const hitCat = !category || cardCat === category;
-    
-          const show = hitKw && hitCat;
+          const hitTch = !teacherVal || cardTeacher === teacherVal;
+      
+          const show = hitKw && hitCat && hitTch;
           card.style.display = show ? '' : 'none';
           if (show) visibleCount++;
         });
-    
+      
         empty?.classList.toggle('hidden', visibleCount !== 0);
       }
     
