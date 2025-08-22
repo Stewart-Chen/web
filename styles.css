@@ -45,6 +45,13 @@ body{
   padding: 1rem 0 2rem;
   border-bottom: 1px solid #e0e0e0;
 }
+.site-header {
+  margin-bottom: 24px; /* header 下方空隙 */
+}
+
+.site-footer {
+  margin-top: 32px; /* footer 上方空隙 */
+}
 .site-header h1{ margin: 0; color: var(--brand); font-weight: 600; }
 nav a{
   color: var(--brand);
