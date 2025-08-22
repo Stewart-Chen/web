@@ -394,7 +394,7 @@ input[type="checkbox"] {
 .nav-left .dropbtn{
   color: var(--brand);
   font-weight: 600;                 /* 視覺更穩 */
-  font-size: 18px;                  /* 比 body 小一點點 */
+  font-size: 16px;                  /* 比 body 小一點點 */
   letter-spacing: .02em;
   line-height: 1.2;
   padding: 4px 6px;                 /* 更小的內距 */
