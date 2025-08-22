@@ -1,6 +1,6 @@
 -- =========================================
 -- 園藝與藝術治療課程平台：初始化（可重複執行）
--- 合併版 init.sql
+-- 合併版 init.sql（加上 courses.category）
 -- =========================================
 
 -- ---------- 0) 共用函式 ----------
@@ -117,6 +117,7 @@ create table if not exists public.courses (
   description text,
   cover_url   text,
   teacher     text,                             -- 之後由 FK 連到 teachers(code)
+  category    text check (category in ('horti','art')),  -- ← 新增：課程類別
   published   boolean not null default false,
   deleted_at  timestamptz,
   created_at  timestamptz not null default now()
@@ -187,6 +188,15 @@ begin
 end
 $$;
 
+-- （可選）對舊資料依 teacher 回填 category（只填尚未設定者）
+update public.courses
+set category = case
+  when teacher = 'fanfan' then 'horti'
+  when teacher = 'xd'     then 'art'
+  else null
+end
+where category is null and teacher is not null;
+
 -- ---------- 4) 先回填/種子 teachers，再建立 FK ----------
 -- 4-1) 種子師資（避免 FK 失敗；與 courses 取用一致）
 insert into public.teachers (code, name, title)
@@ -200,7 +210,7 @@ insert into public.teachers (code, name, title)
 select distinct
   c.teacher as code,
   case c.teacher
-    when 'fanfan' then '汎汎'  -- 若你要固定用「汎汎」，可改成 '汎汎'
+    when 'fanfan' then '汎汎'
     when 'xd'     then '小D'
     else c.teacher
   end as name,
@@ -236,6 +246,7 @@ $$;
 -- ---------- 5) 索引與額外約束 ----------
 create index if not exists idx_courses_created_at      on public.courses(created_at);
 create index if not exists idx_courses_teacher         on public.courses(teacher);
+create index if not exists idx_courses_category        on public.courses(category); -- ← 新增：類別索引
 create index if not exists idx_courses_pub_notdeleted  on public.courses(published, deleted_at);
 create index if not exists idx_lessons_course_id       on public.lessons(course_id);
 create index if not exists idx_lessons_order_no        on public.lessons(order_no);
@@ -333,29 +344,29 @@ to authenticated
 using (auth.uid() = user_id);
 
 -- ---------- 8) 種子課程/單元資料（可重複執行） ----------
--- --- fanfan ---
-insert into public.courses (title, summary, description, cover_url, teacher, published)
+-- --- fanfan（園藝） ---
+insert into public.courses (title, summary, description, cover_url, teacher, category, published)
 select '室內植物照護術',
        '用日常植物建立穩定的自我照顧',
        '學會選擇、照護與觀察室內植物，建立可持續的綠色照護流程。',
        'https://picsum.photos/seed/indoor-plants/640/360',
-       'fanfan', true
+       'fanfan', 'horti', true
 where not exists (select 1 from public.courses where title='室內植物照護術');
 
-insert into public.courses (title, summary, description, cover_url, teacher, published)
+insert into public.courses (title, summary, description, cover_url, teacher, category, published)
 select '正念與園藝冥想',
        '結合正念與園藝，透過呼吸與照護建立日常療癒儀式。',
        '以簡單的園藝任務搭配正念引導，培養專注與穩定感。',
        'https://picsum.photos/seed/mindfulness-garden/640/360',
-       'fanfan', true
+       'fanfan', 'horti', true
 where not exists (select 1 from public.courses where title='正念與園藝冥想');
 
-insert into public.courses (title, summary, description, cover_url, teacher, published)
+insert into public.courses (title, summary, description, cover_url, teacher, category, published)
 select '治療性花園設計',
        '在照護場域中打造支持身心的綠色空間。',
        '面向長照/社福場域，介紹設計原則與實作案例。',
        'https://picsum.photos/seed/therapeutic-design/640/360',
-       'fanfan', true
+       'fanfan', 'horti', true
 where not exists (select 1 from public.courses where title='治療性花園設計');
 
 -- fanfan lessons（第一堂）
@@ -368,29 +379,29 @@ where c.title='室內植物照護術'
     where l.course_id = c.id and l.order_no = 1 and l.title = '植物與你：基礎觀察'
   );
 
--- --- xd ---
-insert into public.courses (title, summary, description, cover_url, teacher, published)
+-- --- xd（藝術） ---
+insert into public.courses (title, summary, description, cover_url, teacher, category, published)
 select '情緒色彩創作',
        '用色彩表達情緒，探索自我內在狀態。',
        '透過基礎色彩學與自由創作，建立安全的情緒表達空間。',
        'https://picsum.photos/seed/color-emotion/640/360',
-       'xd', true
+       'xd', 'art', true
 where not exists (select 1 from public.courses where title='情緒色彩創作');
 
-insert into public.courses (title, summary, description, cover_url, teacher, published)
+insert into public.courses (title, summary, description, cover_url, teacher, category, published)
 select '水彩與正念表達',
        '以水彩作畫練習專注，結合正念進行情緒照護。',
        '水彩技巧 + 正念實作，幫助舒緩壓力並提升覺察力。',
        'https://picsum.photos/seed/watercolor-mindfulness/640/360',
-       'xd', true
+       'xd', 'art', true
 where not exists (select 1 from public.courses where title='水彩與正念表達');
 
-insert into public.courses (title, summary, description, cover_url, teacher, published)
+insert into public.courses (title, summary, description, cover_url, teacher, category, published)
 select '油畫的療癒表達',
        '用油畫筆觸探索深層情緒，適合進階創作學員。',
        '藉由油畫的層次與厚度，在創作中釋放與整合情緒。',
        'https://picsum.photos/seed/oilpainting-healing/640/360',
-       'xd', true
+       'xd', 'art', true
 where not exists (select 1 from public.courses where title='油畫的療癒表達');
 
 -- 為每門課隨機新增 0~5 個「不同的」 lessons（可重複執行；不重複同名；order_no 承接）
