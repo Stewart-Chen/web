@@ -10,9 +10,14 @@
   <header class="site-header">
     <div class="container header-bar">
       <h1 class="site-title">
-        <a href="index.html" class="plain">🌿 園藝與藝術治療課程平台</a>
-      </h1>
-      
+        <a href="index.html" class="plain brand">
+          <img src="img/logo.png" alt="HeartHub Studio Logo" class="logo">
+          <span class="title-text">
+            <strong>HeartHub Studio 心聚坊</strong>
+            <small>Airbnb × WeWork × INBODY</small>
+          </span>
+        </a>
+      </h1>   
       <!-- 導覽列：左邊連結、右邊登入/登出 -->
       <nav class="main-nav">
         <div class="nav-left">
