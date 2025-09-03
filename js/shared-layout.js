@@ -11,7 +11,7 @@
     <div class="container header-bar">
       <h1 class="site-title">
         <a href="index.html" class="plain brand">
-          <img src="img/logo.png" alt="HeartHub Studio Logo" class="logo">
+          <img src="img/logo.png" alt="HeartHub Studio Logo" class="logo" width="42" height="42">
           <span class="title-text">
             <strong>HeartHub Studio 心聚坊</strong>
             <small>Airbnb × WeWork × INBODY</small>
