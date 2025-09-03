@@ -665,3 +665,30 @@ input[type="radio"], input[type="checkbox"]{
     grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
   }
 }
+/* Site title with logo */
+.site-title { margin: 0; }
+.site-title .brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.site-title .logo{
+  width: 28px;     /* 需要更大就調這裡 */
+  height: auto;
+  display: block;
+}
+.site-title .title-text{
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.site-title .title-text strong{
+  font-weight: 700;
+  font-size: 1.1rem;  /* 視覺主標 */
+}
+.site-title .title-text small{
+  font-size: 0.85rem; /* 副標 */
+  color: var(--muted);
+}
