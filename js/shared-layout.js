@@ -15,8 +15,19 @@
           <span class="title-text">HeartHub Studio 心聚坊</span>
         </div>
       </h1>   
+
+      <!-- 漢堡按鈕（手機用） -->
+      <button class="hamburger" id="navToggle"
+              aria-label="主選單"
+              aria-expanded="false"
+              aria-controls="mobileMenu">
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+      </button>
+    
       <!-- 導覽列：左邊連結、右邊登入/登出 -->
-      <nav class="main-nav">
+      <nav class="main-nav nav-desktop">
         <div class="nav-left">
           <a href="index.html">首頁</a>
           <a href="courses.html">探索課程</a>
@@ -28,7 +39,6 @@
               <a href="feedback.html">學習回饋表</a>
             </div>
           </div>
-
           <a href="#" id="admin-link" class="hidden">課程管理</a>
         </div>
 
@@ -40,13 +50,25 @@
             </svg>
             <span>登入</span>
           </a>
-
-          <!-- 登出按鈕：同位置，預設隱藏 -->
           <a href="#" id="logout-link" class="btn nav-cta secondary hidden">登出</a>
         </div>
-      </nav>
-      
+      </nav>      
     </div>
+
+    <!-- 手機抽屜選單 -->
+    <nav class="nav-mobile" id="mobileMenu" aria-label="主選單（手機）">
+      <a href="index.html">首頁</a>
+      <a href="courses.html">探索課程</a>
+      <a href="teachers.html">教學團隊</a>
+      <div class="group">
+        <span class="group-title">線上服務</span>
+        <a href="mood.html" class="sub">心情溫度計</a>
+        <a href="feedback.html" class="sub">學習回饋表</a>
+      </div>
+      <a href="#" id="admin-link-m" class="hidden">課程管理</a>
+    </nav>
+    <div class="backdrop" id="backdrop" hidden></div>
+    
   </header>
 
   <!-- Footer -->
