@@ -725,6 +725,7 @@ input[type="radio"], input[type="checkbox"]{
 }
 
 /* === 手機選單（抽屜） === */
+/*
 .nav-mobile{
   position: fixed;
   left: 8px; right: 8px; top: 72px;                   /* 與 header 留一點距離 */
@@ -741,6 +742,20 @@ input[type="radio"], input[type="checkbox"]{
   transition: transform .18s ease, opacity .18s ease;
   z-index: 999;
 }
+*/
+
+/* 右側滑入版本（可替換上面的 .nav-mobile 區段） */
+.nav-mobile{
+  position: fixed; top:0; right:0; bottom:0;
+  width: 78vw; max-width: 360px;
+  background:#fff; padding: 16px 12px;
+  border-left: 1px solid var(--divider);
+  box-shadow: var(--shadow);
+  display:grid; gap:6px; overflow:auto; z-index:999;
+  transform: translateX(100%);
+  opacity:1; pointer-events:none; transition: transform .22s ease;
+}
+body.menu-open .nav-mobile{ transform: translateX(0); pointer-events:auto; }
 
 /* 手機選單的項目樣式（解決過大間距、顏色不一致） */
 .nav-mobile a{
