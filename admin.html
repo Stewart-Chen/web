@@ -42,11 +42,7 @@
 
   <!-- Supabase SDK（本頁唯一 client：sb） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    window.SUPABASE_URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
-    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
-    window.sb = window.sb || window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-  </script>
+  <script defer src="js/shared-layout.js"></script>
 
   <!-- 守門：非登入/非管理者 → 導回首頁（不再強制切換 Header 的登入/登出） -->
   <script>
@@ -78,8 +74,7 @@
       window.QRCode = function(){}; window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
     }
   </script>
-  <script defer src="js/shared-layout.js"></script>
-
+  
   <main class="container page-admin">
     <section class="admin-wrap">
       <!-- 左欄：課程清單 -->
