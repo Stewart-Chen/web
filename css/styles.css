@@ -16,13 +16,13 @@
   --muted: rgba(0,0,0,.6);
 
   /* 新增：導覽列緊湊參數 */
-  --nav-gap: 8px;         /* 連結彼此的間距（更小） */
-  --nav-pad-y: 4px;       /* 連結上下 padding（更小） */
-  --nav-pad-x: 6px;       /* 連結左右 padding（更小） */
+  --nav-gap: 8px;
+  --nav-pad-y: 4px;
+  --nav-pad-x: 6px;
 
-     --brand-green: #2e7d32;        /* 標題字的深綠 */
-  --brand-green-2: #36a66a;      /* 登入按鈕那種綠 */
-  --mint-bg: #f4fbf6;            /* 你的頁面淡綠底 */
+  --brand-green: #2e7d32;
+  --brand-green-2: #36a66a;
+  --mint-bg: #f4fbf6;
   --text-strong: #1f2d1f;
   --text: #2c3a2c;
   --muted: #5f6f5f;
@@ -58,10 +58,10 @@ body{
   border-bottom: 1px solid #e0e0e0;
 }
 .site-header{
-  padding: 10px 0 12px;             /* 原本 1rem 0 2rem → 改小 */
+  padding: 10px 0 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,.05);
-  border-bottom: 1px solid #e7efe7; /* 更淡的分隔線 */
-  margin-bottom: 14px;              /* 原本 24 → 14，減少 header 與內容距離 */
+  border-bottom: 1px solid #e7efe7;
+  margin-bottom: 14px;
 }
 .site-footer { margin-top: 32px; }
 
@@ -89,23 +89,17 @@ nav .dropbtn:hover { text-decoration: underline; }
 nav a[aria-current="page"]{ text-decoration: underline; }
 
 /* dropdown 容器（緊湊） */
-nav .dropdown{
-  position: relative;
-  display: inline-block;
-}
+nav .dropdown{ position: relative; display: inline-block; }
 
 /* 小工具按鈕：自動帶箭頭（▾） */
-nav .dropbtn::after{
-  content: " ▾";
-  font-weight: 600;
-}
+nav .dropbtn::after{ content: " ▾"; font-weight: 600; }
 
-/* 下拉清單：白底卡片、陰影、圓角，與全站一致 */
+/* 下拉清單：白底卡片、陰影、圓角 */
 nav .dropdown-content{
   display: none;
   position: absolute;
   left: 0;
-  top: calc(100% + 6px);          /* 與按鈕距離縮小 */
+  top: calc(100% + 6px);
   min-width: 180px;
   background: #fff;
   border: 1px solid rgba(0,0,0,.08);
@@ -115,10 +109,10 @@ nav .dropdown-content{
   z-index: 99;
 }
 
-/* 選項：墨色字；hover 用淡綠底＋綠字 */
+/* 下拉選項 */
 nav .dropdown-content a{
   display: block;
-  padding: 8px 12px;              /* 比前版更緊湊 */
+  padding: 8px 12px;
   color: var(--ink);
   text-decoration: none;
   white-space: nowrap;
@@ -132,13 +126,11 @@ nav .dropdown-content a:focus-visible{
   outline: none;
 }
 
-/* 展開條件：滑過或鍵盤 focus 都能開 */
+/* 下拉展開條件 */
 nav .dropdown:hover .dropdown-content,
-nav .dropdown:focus-within .dropdown-content{
-  display: block;
-}
+nav .dropdown:focus-within .dropdown-content{ display: block; }
 
-/* 下拉開啟時，讓按鈕有微弱開啟狀態 */
+/* 下拉開啟狀態 */
 nav .dropdown:hover .dropbtn,
 nav .dropdown:focus-within .dropbtn{
   background: rgba(46,125,50,0.06);
@@ -198,8 +190,6 @@ nav .dropdown:focus-within .dropbtn{
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap:16px;
 }
-
-/* 卡片結構：左側 avatar、右側 info */
 .teacher-card{
   display:grid;
   grid-template-columns: 88px 1fr;
@@ -223,7 +213,6 @@ nav .dropdown:focus-within .dropbtn{
   background:#c8e6c9; color: var(--brand);
   border: none; font-weight: 600;
 }
-/* CTA 與上面內容拉開距離 */
 .teacher-card .cta{ margin-top: 12px; }
 
 /* ---- 精選課程 / 課程格線 ---- */
@@ -233,7 +222,6 @@ nav .dropdown:focus-within .dropbtn{
   gap: 16px;
 }
 .grid.cards{ margin-top: 14px; }
-
 .course-card{
   display:grid; gap: 6px;
   padding: 14px;
@@ -248,12 +236,8 @@ nav .dropdown:focus-within .dropbtn{
   color: rgba(0,0,0,.65);
   display:flex; gap:8px; flex-wrap:wrap;
 }
-.course-card h4 {
-  margin: 0 0 4px 0;  /* 標題下方只留 4px 間距 */
-}
-.course-card p.muted {
-  margin: 0;          /* 移除段落預設的 margin */
-}
+.course-card h4 { margin: 0 0 4px 0; }
+.course-card p.muted { margin: 0; }
 .badge{
   display:inline-block;
   padding: 2px 8px;
@@ -304,15 +288,13 @@ button, .btn{
 }
 button.primary, .btn.primary{
   background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: #fff;
-  border: none;
+  color: #fff; border: none;
 }
 button.primary:hover, .btn.primary:hover{
   background: linear-gradient(135deg, #81c784, #388e3c);
 }
 button.secondary, .btn.secondary{
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.15);
+  background: #fff; border: 1px solid rgba(0,0,0,.15);
 }
 .btn.danger{ background:#b00020; color:#fff; border:none; }
 
@@ -349,7 +331,7 @@ body::before{
   background: linear-gradient(90deg, #4caf50, #81c784, #aed581);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 1px 2px 6px rgba(0,0,0,.18); /* 稍柔和 */
+  text-shadow: 1px 2px 6px rgba(0,0,0,.18);
   margin: 30px 0 40px;
 }
 
@@ -365,132 +347,58 @@ body::before{
 .hero p  { font-size: 1.1rem; color: #555; line-height: 1.6; }
 
 /* 修正 checkbox / radio 不要被撐滿 */
-input[type="radio"],
-input[type="checkbox"] {
-  width: auto;
-  margin-right: 6px;      /* 與文字留點距離 */
-  accent-color: var(--brand); /* 使用品牌綠色 */
-  box-shadow: none;       /* 移除通用 box-shadow */
-  cursor: pointer;
+input[type="radio"], input[type="checkbox"]{
+  width: auto; margin: 0 6px 0 0;
+  accent-color: var(--brand); box-shadow: none; cursor: pointer;
 }
 
 /* 讓 label 內的選項在一行，不要斷行 */
-.actions label {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-right: 12px;   /* 多個選項間距 */
-  cursor: pointer;
+.actions label{
+  display: inline-flex; align-items: center; gap: 4px; margin-right: 12px; cursor: pointer;
 }
 
 /* 導覽列：左右區塊 */
 .main-nav{
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;                /* 讓右側能推到最右 */
+  display: flex; align-items: center; gap: 16px; flex: 1;
 }
-/* 左側選單 */
-.main-nav > a,
-.main-nav .dropbtn {
-  color: var(--brand);
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  padding: 4px 6px;
+.main-nav > a, .main-nav .dropbtn{
+  color: var(--brand); font-weight: 600; font-size: 15px; text-decoration: none; padding: 4px 6px;
 }
-/* 左側導覽群組：沿用你之前的緊湊設定 */
 .nav-left{
-  display: flex;
-  align-items: center;
-  gap: 12px;                       /* 原本用 var → 直接更緊湊 */
+  display: flex; align-items: center; gap: 12px;
 }
-.nav-left a,
-.nav-left .dropbtn{
-  color: var(--brand);
-  font-weight: 600;                 /* 視覺更穩 */
-  font-size: 16px;                  /* 比 body 小一點點 */
-  letter-spacing: .02em;
-  line-height: 1.2;
-  padding: 4px 6px;                 /* 更小的內距 */
-  border-radius: 6px;
-  text-decoration: none;
+.nav-left a, .nav-left .dropbtn{
+  color: var(--brand); font-weight: 600; font-size: 16px; letter-spacing: .02em;
+  line-height: 1.2; padding: 4px 6px; border-radius: 6px; text-decoration: none;
 }
-.nav-left a:hover,
-.nav-left .dropbtn:hover{
-  background: rgba(46,125,50,.08);
-  text-decoration: none;
-}
+.nav-left a:hover, .nav-left .dropbtn:hover{ background: rgba(46,125,50,.08); text-decoration: none; }
 .nav-left .dropbtn::after{ content:" ▾"; font-weight: 700; }
 
-/* 下拉選單（可保留你之前的顏色） */
 .nav-left .dropdown{ position: relative; }
 .nav-left .dropdown-content{
-  display: none;
-  position: absolute;
-  left: 0;
-  top: calc(100% + 4px);            /* 更靠近按鈕 */
-  min-width: 160px;
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 10px;
-  box-shadow: var(--shadow-sm);
-  padding: 4px 0;
-  z-index: 99;
+  display: none; position: absolute; left: 0; top: calc(100% + 4px);
+  min-width: 160px; background: #fff; border: 1px solid rgba(0,0,0,.08);
+  border-radius: 10px; box-shadow: var(--shadow-sm); padding: 4px 0; z-index: 99;
 }
-/* 下拉項目：字級略小、內距更小；hover 用淡綠底 + 品牌綠 */
 .nav-left .dropdown-content a{
-  display: block;
-  padding: 7px 10px;
-  font-size: 14.5px;
-  color: var(--ink);
-  text-decoration: none;
-  border-radius: 6px;
-  margin: 2px 6px;
-  white-space: nowrap;
+  display: block; padding: 7px 10px; font-size: 14.5px; color: var(--ink);
+  text-decoration: none; border-radius: 6px; margin: 2px 6px; white-space: nowrap;
 }
 .nav-left .dropdown-content a:hover,
-.nav-left .dropdown-content a:focus-visible{
-  background: #e8f5e9;
-  color: var(--brand);
-  outline: none;
-}
+.nav-left .dropdown-content a:focus-visible{ background: #e8f5e9; color: var(--brand); outline: none; }
 .nav-left .dropdown:hover .dropdown-content,
 .nav-left .dropdown:focus-within .dropdown-content{ display:block; }
 
-/* 右側登入/登出：膠囊綠色 CTA */
-.nav-right{
-  margin-left: auto;      /* 把登入按鈕推到最右 */
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+/* 右側登入/登出 */
+.nav-right{ margin-left: auto; display: flex; gap: 10px; align-items: center; }
 .btn.nav-cta{
-  border: none;
-  background: linear-gradient(135deg, var(--brand-2), #a5d6a7);
-  color: #0d4220; /* 深一點的綠，對比清晰又融入整體 */
-  border-radius: 999px;
-  padding: 8px 14px;
-  box-shadow: var(--shadow-sm);
-  font-weight: 700;
-  display:inline-flex;
-  align-items:center;
-  gap: 8px;
-  text-decoration:none;
+  border: none; background: linear-gradient(135deg, var(--brand-2), #a5d6a7);
+  color: #0d4220; border-radius: 999px; padding: 8px 14px; box-shadow: var(--shadow-sm);
+  font-weight: 700; display:inline-flex; align-items:center; gap: 8px; text-decoration:none;
 }
-.btn.nav-cta:hover{
-  background: linear-gradient(135deg, #a5d6a7, var(--brand-2));
-}
-.btn.nav-cta.secondary{
-  background:#fff;
-  color: var(--brand);
-  border: 1px solid rgba(0,0,0,.12);
-}
-.btn.nav-cta.secondary:hover{
-  background:#f4f9f4;
-}
-
-/* 讓 SVG 圖示繼承文字色，不變形 */
+.btn.nav-cta:hover{ background: linear-gradient(135deg, #a5d6a7, var(--brand-2)); }
+.btn.nav-cta.secondary{ background:#fff; color: var(--brand); border: 1px solid rgba(0,0,0,.12); }
+.btn.nav-cta.secondary:hover{ background:#f4f9f4; }
 .btn.nav-cta svg{ display:block; }
 
 /* 手機時稍微收緊 */
@@ -498,237 +406,127 @@ input[type="checkbox"] {
   .btn.nav-cta{ padding: 8px 12px; }
   .nav-left{ gap: 6px; }
 }
+
 /* Header: 左邊標題，右邊導覽 */
-.header-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 28px;
+.header-bar{
+  display: flex; align-items: center; justify-content: space-between; gap: 28px;
 }
 
-/* 標題樣式（左對齊） */
-.site-title {
-  font-family: 'Noto Serif TC', serif;
-  margin: 0;
-  letter-spacing:.2px;
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--brand);
-  background: var(--brand-2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 1px 2px 20px rgba(0,0,0,.20); /* 稍柔和 */
-  white-space: nowrap;
+/* 標題樣式 */
+.site-title{
+  font-family: 'Noto Serif TC', serif; margin: 0; letter-spacing:.2px; font-size: 1.5rem;
+  font-weight: 900; color: var(--brand); background: var(--brand-2);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: 1px 2px 20px rgba(0,0,0,.20); white-space: nowrap;
 }
-.site-title a {
-  color: inherit;
-  text-decoration: none;
-}
-
+.site-title a{ color: inherit; text-decoration: none; }
 
 /* =========================
    手機版（<= 720px）排版修正
    ========================= */
 @media (max-width: 720px){
-  /* 容器邊距縮小，避免左右擠壓 */
   .container { padding: 0 12px; }
-
-  /* Header：上下更緊湊，標題與 nav 改為同列靠左 + 可換行 */
   .site-header { padding: 8px 0 10px; margin-bottom: 12px; }
-  .header-bar{
-    display: flex;
-    flex-wrap: wrap;        /* 允許換行 */
-    align-items: center;
-    gap: 10px;              /* 標題與 nav 距離縮小 */
-  }
+  .header-bar{ display: flex; flex-wrap: nowrap; align-items: center; gap: 10px; } /* 不換行 */
 
-  /* 標題靠左、字級變小一點 */
   .site-title{
-    margin: 0 auto;        /* 自動左右外距 */
-    font-size: 1.5rem;
-    line-height: 1.4;
-    white-space: nowrap;   /* 避免換行 */
-    text-align: center;    /* 文字置中 */
-    flex: 1 1 100%;        /* 讓它佔滿一行寬度 *//
+    margin: 0; font-size: 1.5rem; line-height: 1.4; white-space: nowrap; text-align: left;
+    flex: 0 1 auto;
     background: linear-gradient(90deg, #4caf50, #81c784, #aed581);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     text-shadow: 1px 2px 20px rgba(0,0,0,.20);
   }
 
-  /* nav 跟在標題右邊，空間不夠時自動換到下一行 */
-  .main-nav{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1 1 100%;         /* 讓 nav 佔滿這一行寬度 */
-    flex-wrap: wrap;        /* 允許 nav 內容換行 */
-  }
+  .main-nav{ display: flex; align-items: center; gap: 10px; flex: 1 1 auto; flex-wrap: nowrap; }
 
-  /* 左側選單群：可自動換行 */
-  .nav-left{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1 1 auto;
-    flex-wrap: wrap;        /* 允許首頁/小工具/管理換行 */
-  }
-  .nav-left a,
-  .nav-left .dropbtn{
-    font-size: 14px;
-    padding: 4px 6px;       /* 內距更緊湊，點擊仍足夠 */
-    line-height: 1.2;
-  }
-
-  /* 右側登入/登出：推到該行最右邊；若換行，就在第二行靠右 */
-  .nav-right{
-    margin-left: auto;      /* 此行最右 */
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 0 1 auto;         /* 不夠寬時自動落到下一行 */
-    justify-content: flex-end;
-  }
+  .nav-left{ display: none; } /* 小螢幕改用抽屜 */
+  .nav-right{ margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
 
-  /* 下拉選單（小螢幕）：改為非絕對定位，像清單自然展開，不會溢出 */
-  .nav-left .dropdown{ position: relative; }
-  .nav-left .dropdown-content{
-    position: static;       /* 取消 absolute，避免超出螢幕 */
-    display: none;          /* 預設隱藏，靠 focus/hover 顯示 */
-    width: 100%;
-    min-width: 0;
-    margin-top: 2px;
-    padding: 4px;
-    border: 1px solid rgba(0,0,0,.08);
-    border-radius: 8px;
-    box-shadow: none;       /* 手機上簡化陰影 */
-    background: #fff;
-  }
-  .nav-left .dropdown-content a{
-    display: block;
-    padding: 10px 10px;
-    font-size: 14px;
-    border-radius: 6px;
-    margin: 2px 0;
-  }
-  /* 仍保留 hover/focus-within 開啟（手機點擊會觸發 focus） */
-  .nav-left .dropdown:hover .dropdown-content,
-  .nav-left .dropdown:focus-within .dropdown-content{ display: block; }
-
-  /* 表單：radio/checkbox 更好點 */
-  input[type="radio"],
-  input[type="checkbox"]{
-    width: auto;
-    margin-right: 6px;
-    accent-color: var(--brand);
-  }
-  .actions label{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-right: 10px;
-  }
-
-  /* Footer 的 QRCode 在手機不要撐版：縮小或隱藏擇一 */
-  #qrcode canvas, #qrcode img{
-    width: 120px !important;
-    height: 120px !important;
-  }
+  /* Footer 的 QRCode 縮小 */
+  #qrcode canvas, #qrcode img{ width: 120px !important; height: 120px !important; }
 }
 
 /* 讓每個題目的選項用 grid 排版，自動換行 */
 fieldset.card .actions{
-  display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
-  gap: 8px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(56px, 1fr)); gap: 8px;
 }
-
-/* 每個選項做成小膠囊 */
 fieldset.card .actions label{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 10px;
-  border: 1px solid rgba(0,0,0,.12);
-  border-radius: 8px;
-  background: #fff;
-  margin: 0;             /* 交給 grid 控制間距 */
-  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 10px; border: 1px solid rgba(0,0,0,.12); border-radius: 8px;
+  background: #fff; margin: 0; cursor: pointer;
 }
-
-/* radio/checkbox 不要被撐滿；用品牌色美化 */
-input[type="radio"], input[type="checkbox"]{
-  width: auto;
-  margin: 0;
-  accent-color: var(--brand);
-  box-shadow: none;
-  cursor: pointer;
-}
-
-/* 手機微調更緊湊 */
 @media (max-width: 720px){
   fieldset.card{ padding: 12px; }
-  fieldset.card .actions{
-    gap: 6px;
-    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
-  }
+  fieldset.card .actions{ gap: 6px; grid-template-columns: repeat(auto-fit, minmax(48px, 1fr)); }
 }
+
 /* Site title with logo */
 .site-title { margin: 0; }
-.site-title .brand{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: inherit;
-}
-.site-title .logo{
-  width: 42px;
-  height: 42px;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,.1));
+.site-title .brand{ display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.site-title .logo{ width: 42px; height: 42px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.1)); }
 
-}
-
-/* === Header 排版與漢堡鍵 === */
+/* === Header 視覺（淡玻璃） === */
 .site-header .header-bar{
   display:flex; align-items:center; justify-content:space-between; gap:12px;
   min-height: 64px;
   background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.6));
   backdrop-filter: saturate(150%) blur(6px);
 }
-.site-header .brand .title-text{
-  color: var(--brand-green);
-  font-weight: 700;
-  letter-spacing:.5px;
-}
+.site-header .brand .title-text{ color: var(--brand-green); font-weight: 700; letter-spacing:.5px; }
 
-/* 漢堡鍵：位置、顏色、對齊 */
+/* ====== 漢堡鍵美化（覆蓋舊樣式） ====== */
 .hamburger{
-  width:44px; height:44px; display:grid; place-items:center;
-  border:0; background:transparent; cursor:pointer;
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  border: 1px solid rgba(46,125,50,.18);
+  border-radius: 12px;
+  background: rgba(46,125,50,.06);
+  backdrop-filter: saturate(130%) blur(2px);
+  box-shadow: 0 2px 10px rgba(46,125,50,.08);
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
 }
-.hamburger .bar{ width:22px; height:2px; background:#2b2b2b; position:relative; display:block; }
-.hamburger .bar::before,.hamburger .bar::after{
-  content:""; position:absolute; left:0; width:22px; height:2px; background:#2b2b2b;
+.hamburger:hover{ background: rgba(46,125,50,.09); }
+.hamburger:active{ transform: scale(.96); }
+.hamburger:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(46,125,50,.18), 0 2px 10px rgba(0,0,0,.06);
 }
-.hamburger .bar::before{ top:-7px; } .hamburger .bar::after{ top:7px; }
-.hamburger:active .bar,
-.hamburger:active .bar::before,
-.hamburger:active .bar::after{ transform: scaleX(.92); }
+/* 三條線（含 before/after） */
+.hamburger .bar{
+  position: relative; width: 20px; height: 2px; background: #2e7d32;
+  border-radius: 2px; transition: background .18s ease, transform .18s ease;
+}
+.hamburger .bar::before,
+.hamburger .bar::after{
+  content:""; position:absolute; left:0; width:20px; height:2px; background:#2e7d32;
+  border-radius:2px; transition: transform .18s ease, opacity .18s ease;
+}
+.hamburger .bar::before{ transform: translateY(-6px); }
+.hamburger .bar::after { transform: translateY( 6px); }
+/* 開啟狀態：變成 X */
+body.menu-open .hamburger{ background: rgba(46,125,50,.10); }
+body.menu-open .hamburger .bar{ background: transparent; }
+body.menu-open .hamburger .bar::before{ transform: rotate(45deg); }
+body.menu-open .hamburger .bar::after { transform: rotate(-45deg); }
 
 /* 桌機維持你原本導覽；手機改用抽屜式 */
 @media (max-width: 899px){
   .nav-desktop .nav-left{ display:none; }
-  .site-header .nav-right{ margin-left:auto; } /* 讓登入在最右側 */
+  .site-header .nav-right{ margin-left:auto; }
+  .hamburger{ display: grid; order: 2; } /* 置於標題與登入之間 */
+}
+@media (min-width: 900px){
+  .hamburger{ display:none; }
 }
 
-/* === 手機選單（抽屜） === */
-/*
+/* === 手機選單（抽屜卡片） === */
 .nav-mobile{
   position: fixed;
-  left: 8px; right: 8px; top: 72px;                   /* 與 header 留一點距離 */
+  left: 8px; right: 8px; top: 72px;
   height: auto; max-height: calc(100dvh - 96px);
   background: #fff;
   border: 1px solid var(--divider);
@@ -742,61 +540,28 @@ input[type="radio"], input[type="checkbox"]{
   transition: transform .18s ease, opacity .18s ease;
   z-index: 999;
 }
-*/
-
-/* 右側滑入版本（可替換上面的 .nav-mobile 區段） */
-.nav-mobile{
-  position: fixed; top:0; right:0; bottom:0;
-  width: 78vw; max-width: 360px;
-  background:#fff; padding: 16px 12px;
-  border-left: 1px solid var(--divider);
-  box-shadow: var(--shadow);
-  display:grid; gap:6px; overflow:auto; z-index:999;
-  transform: translateX(100%);
-  opacity:1; pointer-events:none; transition: transform .22s ease;
-}
-body.menu-open .nav-mobile{ transform: translateX(0); pointer-events:auto; }
-
-/* 手機選單的項目樣式（解決過大間距、顏色不一致） */
 .nav-mobile a{
-  display:flex; align-items:center;
-  gap:10px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  text-decoration:none;
-  color: var(--text);
-  font-size: 16px; line-height: 1.25;
-  margin: 0;                          /* 把舊站可能的外距歸零，避免大落差 */
+  display:flex; align-items:center; gap:10px;
+  padding: 12px 14px; border-radius: 10px; text-decoration:none;
+  color: var(--text); font-size: 16px; line-height: 1.25; margin: 0;
 }
 .nav-mobile a:hover{ background: var(--mint-bg); }
-
-/* 群組標題「線上服務」 */
 .nav-mobile .group{ padding-top: 6px; margin-top: 4px; border-top: 1px solid var(--divider); }
 .nav-mobile .group-title{
-  display:block; padding: 8px 6px 6px 6px; margin: 0 6px;
-  font-size: 12px; letter-spacing: .4px; text-transform: none;
-  color: var(--muted);
+  display:block; padding: 8px 6px 6px; margin: 0 6px;
+  font-size: 12px; letter-spacing: .4px; color: var(--muted);
 }
 .nav-mobile a.sub{ padding-left: 20px; }
 
 /* 遮罩 */
-.backdrop{
-  position: fixed; inset:0; background: rgba(0,0,0,.28);
-  display:none; z-index: 998;
-}
+.backdrop{ position: fixed; inset:0; background: rgba(0,0,0,.28); display:none; z-index: 998; }
 
 /* 開啟狀態 */
 body.menu-open .nav-mobile{ transform: translateY(0); opacity:1; pointer-events:auto; }
 body.menu-open .backdrop{ display:block; }
 body.menu-open{ overflow:hidden; }
 
-/* RWD：小螢幕顯示漢堡，隱藏左側連結；大螢幕顯示完整導覽 */
-@media (max-width: 899px) {
-  .nav-desktop .nav-left { display: none; }
-  .hamburger { display: grid; place-items: center; }
-  .header-bar { display:flex; align-items:center; justify-content:space-between; gap: 8px; }
-}
-@media (min-width: 900px) {
-  .nav-mobile, .backdrop { display: none !important; }
-  .hamburger { display: none; }
+/* RWD：區塊顯示切換 */
+@media (min-width: 900px){
+  .nav-mobile, .backdrop{ display:none !important; }
 }
