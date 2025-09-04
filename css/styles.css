@@ -427,35 +427,67 @@ input[type="radio"], input[type="checkbox"]{
 @media (max-width: 720px){
   .container { padding: 0 12px; }
   .site-header { padding: 8px 0 10px; margin-bottom: 12px; }
+
+  /* 允許換行 */
   .header-bar{
-    flex-wrap: wrap;           /* 原本被設成 nowrap，這裡覆蓋 */
+    display: flex;
+    flex-wrap: wrap;           /* 讓元件能分兩行 */
+    align-items: center;
     gap: 10px;
   }
 
-  .site-title{
-    order: 1;
-    flex: 1 1 100%;
-    font-size: 1.25rem;        /* 你可改 1.2~1.4rem 視覺調整 */
-    line-height: 1.35;
-    white-space: normal;       /* 允許自動換行（覆蓋 nowrap） */
-    text-align: left;          /* 要置中改成 center */
+  /* 第二行：先放登入（最左） */
+  .main-nav{
+    order: 2;
+    flex: 0 1 auto;            /* 依內容寬度 */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
   }
-  .site-title .brand{ flex-wrap: wrap; }
-  
-   /* 如果標題太長仍不想溢出，補上換行策略 */
-  .site-title, .site-title .title-text{
+  .nav-left{ display: none !important; } /* 小螢幕改用抽屜 */
+  .nav-right{
+    margin-left: 0;            /* 不再推到最右 */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
+
+  /* 標題：放在登入後面，佔中間空間，強制分成兩行 */
+  .site-title{
+    order: 3;
+    flex: 1 1 auto;            /* 佔據中間剩餘寬度 */
+    font-size: 1.25rem;        /* 可改 1.2~1.4rem */
+    line-height: 1.35;
+    white-space: normal;       /* 允許自動換行 */
+    text-align: left;
+    margin: 0 6px;
     word-break: break-word;
     overflow-wrap: anywhere;
   }
-  .main-nav{ display: flex; align-items: center; gap: 10px; flex: 1 1 auto; flex-wrap: nowrap; }
+  /* 關鍵：限制字串寬度 ≈ 16 個字元，使「心聚坊」落到第二行 */
+  .site-title .title-text{
+    display: block;
+    max-width: 16ch;           /* HeartHub Studio 約 15ch，剛好換行 */
+    white-space: normal;
+  }
+  .site-title .brand{ flex-wrap: wrap; }
 
-  .nav-left{ display: none; } /* 小螢幕改用抽屜 */
-  .nav-right{ margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
+  /* 漢堡：排在最右（第二行右側） */
+  .hamburger{
+    order: 4;
+    margin-left: auto;         /* 吸到最右 */
+    display: grid;
+  }
 
   /* Footer 的 QRCode 縮小 */
-  #qrcode canvas, #qrcode img{ width: 120px !important; height: 120px !important; }
+  #qrcode canvas, #qrcode img{
+    width: 120px !important;
+    height: 120px !important;
+  }
 }
+
 
 /* 讓每個題目的選項用 grid 排版，自動換行 */
 fieldset.card .actions{
