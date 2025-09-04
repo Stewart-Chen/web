@@ -37,7 +37,15 @@
               <a href="feedback.html">學習回饋表</a>
             </div>
           </div>
-          <a href="admin.html" id="admin-link" class="hidden">課程管理</a>
+          
+          <div class="dropdown hidden" id="admin-group-desktop">
+            <a href="#" class="dropbtn">管理編輯</a>
+            <div class="dropdown-content">
+              <a href="admin.html">課程管理</a>
+              <a href="admin-teachers.html">師資專區</a>
+            </div>
+          </div>
+
         </div>
 
         <div class="nav-right">
@@ -63,7 +71,13 @@
         <a href="mood.html" class="sub">心聚指標</a>
         <a href="feedback.html" class="sub">學習回饋表</a>
       </div>
-      <a href="admin.html" id="admin-link-m" class="hidden">課程管理</a>
+
+      <div class="group hidden" id="admin-group-mobile">
+        <span class="group-title">管理編輯</span>
+        <a href="admin.html" class="sub">課程管理</a>
+        <a href="admin-teachers.html" class="sub">師資專區</a>
+      </div>
+
     </nav>
     <div class="backdrop" id="backdrop" hidden></div>
     
@@ -130,7 +144,7 @@
   }
 
 // === 同步「課程管理」：桌機/手機一起顯示或隱藏，並同步 href ===
-(function syncAdminLinkSetup(){
+/*(function syncAdminLinkSetup(){
   const adminDesktop = document.getElementById('admin-link');
   const adminMobile  = document.getElementById('admin-link-m');
 
@@ -156,8 +170,31 @@
     new MutationObserver(syncAdminLink)
       .observe(adminDesktop, { attributes: true, attributeFilter: ['class','href'] });
   }
-})();
+})();*/
 
+// === 顯示「管理編輯」群組（僅管理者） ===
+(async function revealAdminGroups(){
+  try {
+    // 先抓目前登入
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return; // 未登入，不顯示
+
+    // 查是不是 admins 表成員
+    const { data, error } = await supabase
+      .from('admins')
+      .select('user_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (error || !data) return; // 不是管理者，不顯示
+
+    // 顯示桌機與手機兩個群組
+    document.getElementById('admin-group-desktop')?.classList.remove('hidden');
+    document.getElementById('admin-group-mobile')?.classList.remove('hidden');
+  } catch (err) {
+    console.warn('revealAdminGroups error:', err);
+  }
+})();
 
   
 })();
