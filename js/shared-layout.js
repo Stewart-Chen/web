@@ -173,40 +173,48 @@
 })();*/
 
 
+// === 在 shared-layout.js 內，取代原本 revealAdminGroups ===
 (function () {
-  // 等 DOM 準備好（含 shared-layout 注入完）
   function onReady(cb) {
     if (document.readyState !== 'loading') cb();
     else document.addEventListener('DOMContentLoaded', cb);
   }
 
-  onReady(async () => {
-    // 用你專案已建立的 client（優先 sb，退而求其次 supabase）
-    const client = window.sb || window.supabase;
-    if (!client) { console.warn('No Supabase client found'); return; }
+  // 等待 sb/supabase client（最多 3 秒）
+  async function waitForSupabaseClient(maxTries = 30, interval = 100) {
+    for (let i = 0; i < maxTries; i++) {
+      const c = window.sb || window.supabase; // 你的專案是用 sb
+      if (c && c.auth) return c;
+      await new Promise(r => setTimeout(r, interval));
+    }
+    return null;
+  }
 
+  async function revealAdminGroups() {
     try {
-      // 先取使用者（避免解構炸掉，給預設值）
+      const client = await waitForSupabaseClient();
+      if (!client) return; // 沒有 client 就安靜跳過
+
       const { data: userData } = await client.auth.getUser();
       const user = userData?.user;
-      if (!user) return; // 未登入就不顯示
+      if (!user) return; // 未登入不顯示
 
-      // 查 admins 表
       const { data, error } = await client
         .from('admins')
         .select('user_id')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (error || !data) return; // 不是管理者就不顯示
+      if (error || !data) return; // 非管理者不顯示
 
-      // 顯示桌機與手機兩個群組
       document.getElementById('admin-group-desktop')?.classList.remove('hidden');
       document.getElementById('admin-group-mobile')?.classList.remove('hidden');
     } catch (err) {
       console.warn('revealAdminGroups_error:', err);
     }
-  });
+  }
+
+  onReady(revealAdminGroups);
 })();
 
 
