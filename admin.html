@@ -46,6 +46,12 @@
 
   <!-- 守門：非登入/非管理者 → 導回首頁（不再強制切換 Header 的登入/登出） -->
   <script>
+    function waitForSB(cb, tries=60){
+      if (window.sb) return cb();
+      if (tries <= 0) return console.error('guard: sb not ready');
+      setTimeout(()=>waitForSB(cb, tries-1), 100);
+    }
+    
     async function guardAdminPage() {
       try {
         const { data: userData } = await sb.auth.getUser();
@@ -64,7 +70,7 @@
         location.replace('index.html');
       }
     }
-    guardAdminPage();
+    waitForSB(guardAdminPage);
   </script>
 </head>
 <body>
