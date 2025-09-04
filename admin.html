@@ -8,7 +8,7 @@
   <!-- 站內主樣式 -->
   <link rel="stylesheet" href="css/styles.css" />
 
-  <!-- Admin 頁面在身分檢查期間先隱藏 main，通過後再顯示，避免閃屏 -->
+  <!-- Admin 在身分檢查期間先隱藏 main，通過後再顯示，避免閃屏 -->
   <style>
     html[data-guard="checking"] main { visibility: hidden; }
     main.page-admin { padding-top: 14px; padding-bottom: 32px; }
@@ -37,18 +37,41 @@
     @media (max-width: 900px){ .admin-wrap { grid-template-columns: 1fr; } }
   </style>
 
-  <!-- Supabase SDK -->
+  <!-- Supabase SDK（僅此一份 client：sb） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- 建立供本頁使用的 Supabase client -->
   <script>
     window.SUPABASE_URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
     window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
     window.sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
   </script>
 
-  <!-- 守門：非登入/非管理者，導回首頁 -->
+  <!-- 守門：非登入/非管理者 → 導回首頁；通過後同步 Header UI（只顯示登出） -->
   <script>
+    // 等待 shared-layout 注入完成後，切換 Header 的登入/登出顯示
+    function syncHeaderAuthUI() {
+      const tryOnce = () => {
+        const login  = document.getElementById('login-link');
+        const logout = document.getElementById('logout-link');
+        const adminD = document.getElementById('admin-link');
+        const adminM = document.getElementById('admin-link-m');
+        if (login || logout || adminD || adminM) {
+          login?.classList.add('hidden');       // 後台只顯示登出
+          logout?.classList.remove('hidden');
+          adminD?.classList.remove('hidden');   // 若 header 有課程管理連結 → 顯示
+          adminM?.classList.remove('hidden');
+          return true;
+        }
+        return false;
+      };
+      if (!tryOnce()) {
+        // 若 shared-layout 尚未掛載完成，稍後再試幾次
+        let count = 0;
+        const t = setInterval(() => {
+          if (tryOnce() || (++count > 20)) clearInterval(t);
+        }, 100);
+      }
+    }
+
     async function guardAdminPage() {
       try {
         const { data: userData } = await sb.auth.getUser();
@@ -60,38 +83,36 @@
 
         if (error || !data) { location.replace('index.html'); return; }
 
-        // 通過 → 顯示內容
+        // 通過 → 顯示內容，並同步 Header UI
         document.documentElement.removeAttribute('data-guard');
+        // 等到 DOM 有 header 後再切換 UI
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', syncHeaderAuthUI);
+        } else {
+          syncHeaderAuthUI();
+        }
       } catch (err) {
         console.error('guard error:', err);
         location.replace('index.html');
       }
     }
     guardAdminPage();
-    document.addEventListener('DOMContentLoaded', () => {
-      // 已通過守門 = 一定是管理者
-      document.getElementById('admin-link')?.classList.remove('hidden');
-      document.getElementById('admin-link-m')?.classList.remove('hidden');
-    });
-
   </script>
 </head>
 <body>
 
-  <!-- 共用 Header / Footer（若 shared-layout.js 中會產生 QRCode，請確認已加 guard；否則本頁會提供 no-op 的 QRCode 以避免報錯） -->
+  <!-- 共用 Header / Footer -->
   <script>
     // 提供一個最小的 QRCode no-op，以防 shared-layout.js 在沒有 QRCode 函式庫時報錯
     if (typeof window.QRCode === 'undefined') {
-      window.QRCode = function(){}; window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
+      window.QRCode = function(){};
+      window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
     }
   </script>
   <script defer src="js/shared-layout.js"></script>
 
   <main class="container page-admin">
-    <h2 class="fancy-title" style="margin-top:10px;">管理面板</h2>
-
     <section class="admin-wrap">
-
       <!-- 左欄：課程清單 -->
       <div class="admin-col">
         <div class="admin-card">
@@ -160,7 +181,7 @@
     </section>
   </main>
 
-  <!-- 注意：本頁不需要引入 app.js，避免與 admin.js 角色混淆 -->
+  <!-- 本頁專用管理程式（不要載入 app.js 以免混淆） -->
   <script src="js/admin.js"></script>
 </body>
 </html>
