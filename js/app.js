@@ -1,7 +1,10 @@
 // ====== CONFIG ======
 const SUPABASE_URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+//const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+window.sb = window.sb || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = window.sb;
 
 // ====== 小工具 ======
 function $(sel, root=document){ return root.querySelector(sel); }
