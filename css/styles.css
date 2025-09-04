@@ -435,7 +435,7 @@ input[type="radio"], input[type="checkbox"]{
     gap: 10px;
   }
 
-  /* 標題：第一行佔左邊，可換行 */
+  /* 第一行：標題在左，可換行 */
   .site-title{
     order: 1;
     flex: 1 1 auto;
@@ -450,25 +450,28 @@ input[type="radio"], input[type="checkbox"]{
     white-space: normal;
   }
 
-  /* 漢堡：排在第一行右側 */
+  /* 第一行：漢堡在右 */
   .hamburger{
     order: 2;
     margin-left: auto;
     display: grid;
   }
 
-  /* 登入區：獨立在第二行靠右 */
-  .nav-right{
-    order: 3;
-    flex: 1 1 100%;
+  /* 第二行：讓整個 main-nav（含登入）排到下一行且靠右 */
+  .main-nav{
+    order: 3;                 /* ★ 關鍵：把 main-nav 放在標題與漢堡之後 */
+    flex: 1 1 100%;           /* 佔滿第二行 */
     display: flex;
     justify-content: flex-end;
-    margin-top: 6px;
+    align-items: center;
+    gap: 10px;
   }
-  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
 
-  /* 移除桌機左側選單 */
+  /* 移除桌機左側選單（手機用抽屜） */
   .nav-left{ display: none !important; }
+
+  /* 登入按鈕微縮 */
+  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
 
   /* Footer QRCode 縮小 */
   #qrcode canvas, #qrcode img{
@@ -476,6 +479,7 @@ input[type="radio"], input[type="checkbox"]{
     height: 120px !important;
   }
 }
+
 
 
 
@@ -610,7 +614,7 @@ body.menu-open{ overflow:hidden; }
   .site-title{
     order: 1 !important;
     flex: 1 1 auto;
-    font-size: 1.15rem;         /* 再小一點 */
+    font-size: 1.3rem;         /* 再小一點 */
     line-height: 1.35;
     white-space: normal;        /* 允許換行 */
     margin: 0;
