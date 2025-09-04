@@ -10,13 +10,10 @@
   <header class="site-header">
     <div class="container header-bar">
       <h1 class="site-title">
-        <a href="index.html" class="plain brand">
+        <div class="plain brand">
           <img src="img/logo.png" alt="HeartHub Studio Logo" class="logo" width="42" height="42">
-          <span class="title-text">
-            <strong>心聚坊</strong>
-            <small>HeartHub Studio</small>
-          </span>
-        </a>
+          <span class="title-text">HeartHub Studio 心聚坊</span>
+        </div>
       </h1>   
       <!-- 導覽列：左邊連結、右邊登入/登出 -->
       <nav class="main-nav">
