@@ -33,7 +33,7 @@
           <div class="dropdown">
             <a href="#" class="dropbtn">線上服務</a>
             <div class="dropdown-content">
-              <a href="mood.html">心情溫度計</a>
+              <a href="mood.html">心聚指標</a>
               <a href="feedback.html">學習回饋表</a>
             </div>
           </div>
@@ -60,7 +60,7 @@
       <a href="teachers.html">教學團隊</a>
       <div class="group">
         <span class="group-title">線上服務</span>
-        <a href="mood.html" class="sub">心情溫度計</a>
+        <a href="mood.html" class="sub">心聚指標</a>
         <a href="feedback.html" class="sub">學習回饋表</a>
       </div>
       <a href="admin.html" id="admin-link-m" class="hidden">課程管理</a>
