@@ -68,6 +68,12 @@
       }
     }
     guardAdminPage();
+    document.addEventListener('DOMContentLoaded', () => {
+      // 已通過守門 = 一定是管理者
+      document.getElementById('admin-link')?.classList.remove('hidden');
+      document.getElementById('admin-link-m')?.classList.remove('hidden');
+    });
+
   </script>
 </head>
 <body>
@@ -79,7 +85,7 @@
       window.QRCode = function(){}; window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
     }
   </script>
-  <script src="js/shared-layout.js"></script>
+  <script defer src="js/shared-layout.js"></script>
 
   <main class="container page-admin">
     <h2 class="fancy-title" style="margin-top:10px;">管理面板</h2>
