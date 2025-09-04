@@ -86,7 +86,7 @@
   // 初始化 QRCode
   document.addEventListener('DOMContentLoaded', function () {
     var el = document.getElementById('qrcode');
-    if (!el) return;
+    if (!el || typeof QRCode === "undefined") return;
     new QRCode(el, {
       text: "https://stewart-chen.github.io/web/",
       width: 200,
