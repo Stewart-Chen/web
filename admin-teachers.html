@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hant" data-guard="checking">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>師資專區｜HeartHub Studio 心聚坊</title>
+
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    html[data-guard="checking"] main { visibility: hidden; }
+    main.page-admin { padding-top: 14px; padding-bottom: 32px; }
+    .admin-wrap { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:12px; }
+    .admin-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:6px; }
+    .admin-tools { display:flex; gap:8px; flex-wrap:wrap; }
+    .admin-col { min-width:0; }
+    .admin-card { padding:16px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:12px; box-shadow: var(--shadow-sm); }
+    #teacher-list .item{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:8px 10px; border:1px solid #e6e6e6; border-radius:8px; margin-bottom:8px; background:#fff;
+    }
+    #teacher-list { max-height: 360px; overflow: auto; }
+    @media (max-width: 900px){ .admin-wrap { grid-template-columns: 1fr; } }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.SUPABASE_URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
+    window.sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  </script>
+
+  <!-- 守門：非登入/非管理者，導回首頁 -->
+  <script>
+    async function guardAdminPage() {
+      try {
+        const { data: userData } = await sb.auth.getUser();
+        const user = userData?.user;
+        if (!user) { location.replace('index.html?need_login=1'); return; }
+        const { data, error } = await sb.from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
+        if (error || !data) { location.replace('index.html'); return; }
+        document.documentElement.removeAttribute('data-guard');
+      } catch (err) {
+        console.error('guard error:', err);
+        location.replace('index.html');
+      }
+    }
+    guardAdminPage();
+  </script>
+</head>
+<body>
+  <!-- QRCode no-op，避免 shared-layout 報錯 -->
+  <script>
+    if (typeof window.QRCode === 'undefined') {
+      window.QRCode = function(){}; window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
+    }
+  </script>
+  <script defer src="js/shared-layout.js"></script>
+
+  <main class="container page-admin">
+    <h2 class="fancy-title" style="margin-top:10px;">師資專區</h2>
+    <section class="admin-wrap">
+      <!-- 左欄：老師清單 -->
+      <div class="admin-col">
+        <div class="admin-card">
+          <header class="admin-header">
+            <h3 style="margin:0;">老師清單</h3>
+            <div class="admin-tools">
+              <button type="button" class="btn" id="teacher-refresh">重新整理</button>
+              <button type="button" class="btn primary" id="teacher-new">＋ 新增老師</button>
+            </div>
+          </header>
+          <div id="teacher-list" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <!-- 右欄：老師資料 -->
+      <div class="admin-col">
+        <div class="admin-card">
+          <h3 style="margin:0;">老師資料</h3>
+          <form id="teacher-form" class="form-grid" style="margin-top:12px;">
+            <input type="hidden" id="t-id" />
+            <label>識別 slug（例：fanfan, xd）<input id="t-slug" required /></label>
+            <label>姓名 <input id="t-name" required /></label>
+            <label>角色/頭銜 <input id="t-role" placeholder="園藝治療老師…" /></label>
+            <label>頭像網址 <input id="t-avatar" placeholder="https://..." /></label>
+            <label>專長（逗號分隔） <input id="t-specialties" placeholder="室內植物, 正念, 水彩" /></label>
+            <label>介紹 / 簡歷 <textarea id="t-bio" rows="5"></textarea></label>
+
+            <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="submit" class="btn primary">儲存</button>
+              <button type="button" id="teacher-delete" class="btn danger">刪除</button>
+            </div>
+          </form>
+          <p class="muted" style="margin-top:8px;">＊請先建立 slug，前台可用來對應顯示與連結。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/admin-teachers.js"></script>
+</body>
+</html>
+
