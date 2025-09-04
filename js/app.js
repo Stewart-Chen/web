@@ -445,7 +445,7 @@ async function isAdmin() {
 }
 
 // 2) 連結顯示控制（導向 admin.html，不再開 dialog）
-async function updateAdminLink(){
+/*async function updateAdminLink(){
   const linkDesktop = document.getElementById('admin-link');
   const linkMobile  = document.getElementById('admin-link-m');
   const targets = [linkDesktop, linkMobile].filter(Boolean);
@@ -463,7 +463,7 @@ async function updateAdminLink(){
     a.classList.toggle('hidden', !ok);
     a.setAttribute('href', 'admin.html'); // 一律導到獨立頁
   });
-}
+}*/
 
 // ====== Auth 初始化（同步桌機/手機的登入/登出顯示） ======
 supabase.auth.onAuthStateChange((_event, session) => {
@@ -474,7 +474,7 @@ supabase.auth.onAuthStateChange((_event, session) => {
   ['#logout-link', '#logout-link-m'].forEach(sel => {
     document.querySelector(sel)?.classList.toggle('hidden', !currentUser);
   });
-  updateAdminLink();
+  //updateAdminLink();
 });
 
 supabase.auth.getUser().then(({ data }) => {
@@ -483,13 +483,7 @@ supabase.auth.getUser().then(({ data }) => {
     ['#login-link', '#login-link-m'].forEach(sel => document.querySelector(sel)?.classList.add('hidden'));
     ['#logout-link', '#logout-link-m'].forEach(sel => document.querySelector(sel)?.classList.remove('hidden'));
   }
-  updateAdminLink();
+  //updateAdminLink();
   initPage();
 });
 
-// 工具下拉（若有）
-document.getElementById('tools-select')?.addEventListener('change', function(){
-  if (this.value) {
-    window.location.href = this.value; // 跳轉到對應頁面
-  }
-});
