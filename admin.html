@@ -43,6 +43,7 @@
   <!-- Supabase SDK（本頁唯一 client：sb） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="js/shared-layout.js"></script>
+  <script defer src="js/admin.js"></script>
 
   <!-- 守門：非登入/非管理者 → 導回首頁（不再強制切換 Header 的登入/登出） -->
   <script>
@@ -150,8 +151,5 @@
       </div>
     </section>
   </main>
-
-  <!-- 管理頁專用邏輯（不要載入 app.js 以免混淆） -->
-  <script src="js/admin.js"></script>
 </body>
 </html>
