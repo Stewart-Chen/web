@@ -22,8 +22,6 @@
               aria-expanded="false"
               aria-controls="mobileMenu">
         <span class="bar" aria-hidden="true"></span>
-        <span class="bar" aria-hidden="true"></span>
-        <span class="bar" aria-hidden="true"></span>
       </button>
     
       <!-- 導覽列：左邊連結、右邊登入/登出 -->
