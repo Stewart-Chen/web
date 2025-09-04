@@ -172,29 +172,43 @@
   }
 })();*/
 
-// === 顯示「管理編輯」群組（僅管理者） ===
-(async function revealAdminGroups(){
-  try {
-    // 先抓目前登入
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return; // 未登入，不顯示
 
-    // 查是不是 admins 表成員
-    const { data, error } = await supabase
-      .from('admins')
-      .select('user_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (error || !data) return; // 不是管理者，不顯示
-
-    // 顯示桌機與手機兩個群組
-    document.getElementById('admin-group-desktop')?.classList.remove('hidden');
-    document.getElementById('admin-group-mobile')?.classList.remove('hidden');
-  } catch (err) {
-    console.warn('revealAdminGroups error:', err);
+(function () {
+  // 等 DOM 準備好（含 shared-layout 注入完）
+  function onReady(cb) {
+    if (document.readyState !== 'loading') cb();
+    else document.addEventListener('DOMContentLoaded', cb);
   }
+
+  onReady(async () => {
+    // 用你專案已建立的 client（優先 sb，退而求其次 supabase）
+    const client = window.sb || window.supabase;
+    if (!client) { console.warn('No Supabase client found'); return; }
+
+    try {
+      // 先取使用者（避免解構炸掉，給預設值）
+      const { data: userData } = await client.auth.getUser();
+      const user = userData?.user;
+      if (!user) return; // 未登入就不顯示
+
+      // 查 admins 表
+      const { data, error } = await client
+        .from('admins')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error || !data) return; // 不是管理者就不顯示
+
+      // 顯示桌機與手機兩個群組
+      document.getElementById('admin-group-desktop')?.classList.remove('hidden');
+      document.getElementById('admin-group-mobile')?.classList.remove('hidden');
+    } catch (err) {
+      console.warn('revealAdminGroups_error:', err);
+    }
+  });
 })();
+
 
   
 })();
