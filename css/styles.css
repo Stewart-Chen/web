@@ -501,8 +501,9 @@ input[type="checkbox"] {
 .site-title {
   font-family: 'Noto Serif TC', serif;
   margin: 0;
+  letter-spacing:.2px;
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 900;
   color: var(--brand);
   background: linear-gradient(90deg, #4caf50, #81c784, #aed581);
   -webkit-background-clip: text;
@@ -679,17 +680,4 @@ input[type="radio"], input[type="checkbox"]{
   height: 42px;
   filter: drop-shadow(0 4px 10px rgba(0,0,0,.1));
 
-}
-.site-title .title-text{
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-.site-title .title-text strong{
-  font-weight: 700;
-  font-size: 1.1rem;  /* 視覺主標 */
-}
-.site-title .title-text small{
-  font-size: 0.85rem; /* 副標 */
-  color: var(--muted);
 }
