@@ -428,65 +428,55 @@ input[type="radio"], input[type="checkbox"]{
   .container { padding: 0 12px; }
   .site-header { padding: 8px 0 10px; margin-bottom: 12px; }
 
-  /* 允許換行 */
   .header-bar{
     display: flex;
-    flex-wrap: wrap;           /* 讓元件能分兩行 */
+    flex-wrap: wrap;       /* 允許換行 */
     align-items: center;
     gap: 10px;
   }
 
-  /* 第二行：先放登入（最左） */
-  .main-nav{
-    order: 2;
-    flex: 0 1 auto;            /* 依內容寬度 */
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: nowrap;
-  }
-  .nav-left{ display: none !important; } /* 小螢幕改用抽屜 */
-  .nav-right{
-    margin-left: 0;            /* 不再推到最右 */
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
-
-  /* 標題：放在登入後面，佔中間空間，強制分成兩行 */
+  /* 標題：第一行佔左邊，可換行 */
   .site-title{
-    order: 3;
-    flex: 1 1 auto;            /* 佔據中間剩餘寬度 */
-    font-size: 1.25rem;        /* 可改 1.2~1.4rem */
+    order: 1;
+    flex: 1 1 auto;
+    font-size: 1.25rem;
     line-height: 1.35;
-    white-space: normal;       /* 允許自動換行 */
+    white-space: normal;
     text-align: left;
-    margin: 0 6px;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+    margin: 0;
   }
-  /* 關鍵：限制字串寬度 ≈ 16 個字元，使「心聚坊」落到第二行 */
   .site-title .title-text{
     display: block;
-    max-width: 16ch;           /* HeartHub Studio 約 15ch，剛好換行 */
     white-space: normal;
   }
-  .site-title .brand{ flex-wrap: wrap; }
 
-  /* 漢堡：排在最右（第二行右側） */
+  /* 漢堡：排在第一行右側 */
   .hamburger{
-    order: 4;
-    margin-left: auto;         /* 吸到最右 */
+    order: 2;
+    margin-left: auto;
     display: grid;
   }
 
-  /* Footer 的 QRCode 縮小 */
+  /* 登入區：獨立在第二行靠右 */
+  .nav-right{
+    order: 3;
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
+
+  /* 移除桌機左側選單 */
+  .nav-left{ display: none !important; }
+
+  /* Footer QRCode 縮小 */
   #qrcode canvas, #qrcode img{
     width: 120px !important;
     height: 120px !important;
   }
 }
+
 
 
 /* 讓每個題目的選項用 grid 排版，自動換行 */
