@@ -681,3 +681,48 @@ input[type="radio"], input[type="checkbox"]{
   filter: drop-shadow(0 4px 10px rgba(0,0,0,.1));
 
 }
+
+/* 漢堡按鈕 */
+.hamburger {
+  width: 44px; height: 44px; border: 0; background: transparent; cursor: pointer;
+  display: none; /* 桌機隱藏、手機顯示（見 media query） */
+}
+.hamburger .bar { width: 22px; height: 2px; background:#333; display:block; position:relative; }
+.hamburger .bar::before, .hamburger .bar::after {
+  content:""; position:absolute; left:0; width:22px; height:2px; background:#333;
+}
+.hamburger .bar::before { top:-7px; } .hamburger .bar::after { top:7px; }
+
+/* 手機抽屜選單 + 背景遮罩 */
+.nav-mobile {
+  position: fixed; left: 0; right: 0; top: 64px; /* 視你的 header 高度微調 */
+  height: calc(100dvh - 64px);
+  background: #fff;
+  transform: translateY(-8px);
+  opacity: 0; pointer-events: none;
+  transition: transform .2s ease, opacity .2s ease;
+  display: grid; gap: 8px; padding: 12px 16px 24px; overflow-y: auto; z-index: 999;
+}
+.nav-mobile .group { margin-top: 6px; }
+.nav-mobile .group-title { font-size: 13px; color:#666; display:block; margin:10px 0 2px; }
+.nav-mobile a { color:#333; text-decoration:none; padding:10px 12px; border-radius:8px; }
+.nav-mobile a:hover { background:#f5f6f7; }
+.nav-mobile a.sub { padding-left:22px; }
+
+.backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.34); z-index: 998; display: none; }
+
+/* 開啟狀態 */
+body.menu-open .nav-mobile { transform: translateY(0); opacity: 1; pointer-events: auto; }
+body.menu-open .backdrop { display: block; }
+body.menu-open { overflow: hidden; }
+
+/* RWD：小螢幕顯示漢堡，隱藏左側連結；大螢幕顯示完整導覽 */
+@media (max-width: 899px) {
+  .nav-desktop .nav-left { display: none; }
+  .hamburger { display: grid; place-items: center; }
+  .header-bar { display:flex; align-items:center; justify-content:space-between; gap: 8px; }
+}
+@media (min-width: 900px) {
+  .nav-mobile, .backdrop { display: none !important; }
+  .hamburger { display: none; }
+}
