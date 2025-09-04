@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>管理面板｜HeartHub Studio 心聚坊</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- 你的其它共用 CSS / 字型也照常引入 -->
+  <script src="js/qrcode.min.js" defer></script>
+  <script src="js/shared-layout.js" defer></script>
+  <!-- 這支以前放 dialog 的檔現在也會載入，但裡面不再注入 admin-panel -->
+  <script src="js/shared-dialog.js" defer></script>
+  <!-- 你的資料存取 / 後台 CRUD 腳本（若有） -->
+  <script src="js/admin.js" defer></script>
+  <style>
+    /* 頁面版型（脫離 dialog 後的小調整） */
+    .page-admin .admin-shell{
+      background:#fff; border:1px solid rgba(0,0,0,.06);
+      border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08);
+      padding:16px;
+    }
+    .page-admin header.page-head{
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      margin: 12px 0 14px;
+    }
+    @media (max-width:720px){
+      .page-admin header.page-head{ flex-wrap:wrap; gap:8px; }
+    }
+    .page-admin .two-cols{
+      display:grid; grid-template-columns: 1fr 1fr; gap:16px;
+    }
+    @media (max-width:900px){
+      .page-admin .two-cols{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="page-admin">
+
+  <main class="container">
+    <div class="admin-shell">
+      <header class="page-head">
+        <h2 style="margin:0;">管理面板</h2>
+        <div class="muted">只有授權管理者可存取</div>
+      </header>
+
+      <section class="two-cols">
+        <!-- 左：課程清單 -->
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <h3 style="margin:0;">課程清單</h3>
+            <div style="display:flex;gap:8px;">
+              <button type="button" class="btn" id="admin-refresh">重新整理</button>
+              <button type="button" class="btn primary" id="admin-new-course">＋ 新增課程</button>
+            </div>
+          </div>
+          <div id="admin-courses" style="margin-top:8px;max-height:340px;overflow:auto;"></div>
+        </div>
+
+        <!-- 右：課程編輯表單 -->
+        <div>
+          <h3 style="margin:0;">課程內容</h3>
+          <form id="admin-course-form" class="form-grid" style="margin-top:8px;">
+            <input type="hidden" id="ac-id" />
+            <label>標題 <input id="ac-title" required /></label>
+            <label>摘要 <input id="ac-summary" /></label>
+            <label>描述 <textarea id="ac-desc" rows="4"></textarea></label>
+            <label>封面網址 <input id="ac-cover" placeholder="https://..." /></label>
+            <label>授課老師
+              <select id="ac-teacher" required>
+                <option value="">— 選擇 —</option>
+                <option value="fanfan">汎汎（園藝）</option>
+                <option value="xd">小D（藝術）</option>
+              </select>
+            </label>
+            <label><input type="checkbox" id="ac-published" /> 已發佈（公開可見）</label>
+
+            <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="submit" class="btn primary">儲存</button>
+              <button type="button" id="admin-soft-delete" class="btn secondary">移到回收（軟刪除）</button>
+              <button type="button" id="admin-hard-delete" class="btn danger">永久刪除</button>
+            </div>
+          </form>
+
+          <hr />
+
+          <!-- 單元管理 -->
+          <h3 style="margin:0;">單元（Lessons）</h3>
+          <div id="admin-lessons" style="margin-top:8px;max-height:220px;overflow:auto;"></div>
+          <form id="admin-lesson-form" class="form-grid" style="margin-top:8px;">
+            <input type="hidden" id="al-id" />
+            <label>順序 <input type="number" id="al-order" min="1" value="1" required /></label>
+            <label>標題 <input id="al-title" required /></label>
+            <label>內容 <textarea id="al-content" rows="3"></textarea></label>
+            <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="submit" class="btn">新增 / 更新單元</button>
+              <button type="button" id="admin-lesson-delete" class="btn danger">刪除選取單元</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <p class="muted" style="margin-top:10px;">＊只有被加入管理者清單的帳號才能看到這個面板。</p>
+    </div>
+  </main>
+
+  <script>
+    // 例：簡單的「權限守門」—— 不是管理者就導回首頁或開登入
+    // 你原本如何判斷管理者（例如 localStorage 或 auth 狀態），在此替換
+    (function guard(){
+      try{
+        const isAdmin = window.HeartAuth?.isAdmin?.() || false; // 替換成你的判斷
+        if (!isAdmin) {
+          // 若想改成顯示登入 modal，也可以用 document.getElementById('auth-modal').showModal()
+          location.replace('index.html');
+        }
+      }catch(_){}
+    })();
+  </script>
+</body>
+</html>
+
