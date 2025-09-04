@@ -96,5 +96,48 @@
       correctLevel: QRCode.CorrectLevel.M
     });
   });
+
+  // === 手機選單 ===
+  const btn = document.getElementById('navToggle');
+  const menu = document.getElementById('mobileMenu');
+  const backdrop = document.getElementById('backdrop');
+
+  function openMenu() {
+    document.body.classList.add('menu-open');
+    btn.setAttribute('aria-expanded', 'true');
+    backdrop.hidden = false;
+    const firstLink = menu.querySelector('a');
+    firstLink && firstLink.focus();
+  }
+  function closeMenu() {
+    document.body.classList.remove('menu-open');
+    btn.setAttribute('aria-expanded', 'false');
+    backdrop.hidden = true;
+    btn.focus();
+  }
+  if (btn) {
+    btn.addEventListener('click', () => {
+      document.body.classList.contains('menu-open') ? closeMenu() : openMenu();
+    });
+  }
+  if (backdrop) backdrop.addEventListener('click', closeMenu);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('menu-open')) closeMenu();
+  });
+  if (menu) {
+    menu.addEventListener('click', (e) => {
+      const a = e.target.closest('a');
+      if (a) closeMenu();
+    });
+  }
+
+  // 如果你原本會把 admin-link 移除 hidden，順便同步手機選單的那個
+  const adminDesktop = document.getElementById('admin-link');
+  const adminMobile  = document.getElementById('admin-link-m');
+  if (adminDesktop && adminMobile && !adminDesktop.classList.contains('hidden')) {
+    adminMobile.classList.remove('hidden');
+  }
+
+  
 })();
 
