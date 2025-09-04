@@ -37,7 +37,7 @@
               <a href="feedback.html">學習回饋表</a>
             </div>
           </div>
-          <a href="#" id="admin-link" class="hidden">課程管理</a>
+          <a href="admin.html" id="admin-link" class="hidden">課程管理</a>
         </div>
 
         <div class="nav-right">
@@ -63,7 +63,7 @@
         <a href="mood.html" class="sub">心情溫度計</a>
         <a href="feedback.html" class="sub">學習回饋表</a>
       </div>
-      <a href="#" id="admin-link-m" class="hidden">課程管理</a>
+      <a href="admin.html" id="admin-link-m" class="hidden">課程管理</a>
     </nav>
     <div class="backdrop" id="backdrop" hidden></div>
     
