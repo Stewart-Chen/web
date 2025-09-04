@@ -5,8 +5,6 @@
   let currentUser = null;
 
 // --- Auth UI 同步：讓抬頭按鈕正確顯示登入/登出 ---
-let currentUser = null; // 後面 admin 功能也會用到
-
 const headerLogin  = document.getElementById('login-link');   // 共用抬頭的登入按鈕
 const headerLogout = document.getElementById('logout-link');  // 共用抬頭的登出按鈕
 const mobileLogin  = document.getElementById('mobile-login-link');  // 如果你有放到手機抽屜
