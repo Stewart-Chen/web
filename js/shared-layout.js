@@ -41,6 +41,7 @@
           <a href="index.html">首頁</a>
           <a href="courses.html">探索課程</a>
           <a href="teachers.html">教學團隊</a>
+          <a href="teachers.html"療癒商城</a>
           <div class="dropdown">
             <a href="#" class="dropbtn">線上服務</a>
             <div class="dropdown-content">
@@ -77,6 +78,7 @@
       <a href="index.html">首頁</a>
       <a href="courses.html">探索課程</a>
       <a href="teachers.html">教學團隊</a>
+      <a href="teachers.html">療癒商城</a>
       <div class="group">
         <span class="group-title">線上服務</span>
         <a href="mood.html" class="sub">心聚指標</a>
