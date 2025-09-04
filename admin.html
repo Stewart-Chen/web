@@ -196,7 +196,10 @@
         .from('courses')
         .select('id,title,teacher,published,deleted_at,created_at')
         .order('created_at', { ascending: false });
-      if (error) { wrap.innerHTML = \`<p class="muted">載入失敗：\${error.message}</p>\`; return; }
+      if (error) { 
+        wrap.innerHTML = `<p class="muted">載入失敗：${error?.message || error}</p>`; 
+        return; 
+      }
 
       wrap.innerHTML = (data||[]).map(c => \`
         <div class="item" data-id="\${c.id}">
