@@ -4,6 +4,47 @@
   const sb = window.sb;
   let currentUser = null;
 
+// --- Auth UI 同步：讓抬頭按鈕正確顯示登入/登出 ---
+let currentUser = null; // 後面 admin 功能也會用到
+
+const headerLogin  = document.getElementById('login-link');   // 共用抬頭的登入按鈕
+const headerLogout = document.getElementById('logout-link');  // 共用抬頭的登出按鈕
+const mobileLogin  = document.getElementById('mobile-login-link');  // 如果你有放到手機抽屜
+const mobileLogout = document.getElementById('mobile-logout-link');
+
+function renderAuthUI(user){
+  const loggedIn = !!user;
+  headerLogin?.classList.toggle('hidden',  loggedIn);
+  headerLogout?.classList.toggle('hidden', !loggedIn);
+  mobileLogin?.classList.toggle('hidden',  loggedIn);
+  mobileLogout?.classList.toggle('hidden', !loggedIn);
+}
+
+sb.auth.onAuthStateChange((_evt, session) => {
+  currentUser = session?.user || null;
+  renderAuthUI(currentUser);
+});
+
+// 初始載入時跑一次
+sb.auth.getUser().then(({ data }) => {
+  currentUser = data?.user ?? null;
+  renderAuthUI(currentUser);
+});
+
+// （可選）處理登出按鈕點擊
+headerLogout?.addEventListener('click', async (e) => {
+  e.preventDefault();
+  await sb.auth.signOut();
+  // 依需求可導回首頁或留在本頁：
+  // location.replace('index.html');
+});
+mobileLogout?.addEventListener('click', async (e) => {
+  e.preventDefault();
+  await sb.auth.signOut();
+  // location.replace('index.html');
+});
+
+  
   // 取得目前使用者（部分動作要用）
   async function ensureUser() {
     if (currentUser) return currentUser;
