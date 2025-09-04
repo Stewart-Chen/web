@@ -129,12 +129,35 @@
     });
   }
 
-  // 如果你原本會把 admin-link 移除 hidden，順便同步手機選單的那個
+// === 同步「課程管理」：桌機/手機一起顯示或隱藏，並同步 href ===
+(function syncAdminLinkSetup(){
   const adminDesktop = document.getElementById('admin-link');
   const adminMobile  = document.getElementById('admin-link-m');
-  if (adminDesktop && adminMobile && !adminDesktop.classList.contains('hidden')) {
-    adminMobile.classList.remove('hidden');
+
+  function syncAdminLink(){
+    if (!adminMobile) return;
+    if (!adminDesktop) { adminMobile.classList.add('hidden'); return; }
+
+    // 依桌機版 hidden 狀態切換手機版
+    const hidden = adminDesktop.classList.contains('hidden');
+    adminMobile.classList.toggle('hidden', hidden);
+
+    // 複製 href（若有設定）
+    const href = adminDesktop.getAttribute('href');
+    if (href) adminMobile.setAttribute('href', href);
   }
+
+  // 初次同步
+  syncAdminLink();
+
+  // 登入／權限變更時，你的程式可能會增減 .hidden 或修改 href
+  // 用 MutationObserver 監聽變化並同步到手機
+  if (adminDesktop) {
+    new MutationObserver(syncAdminLink)
+      .observe(adminDesktop, { attributes: true, attributeFilter: ['class','href'] });
+  }
+})();
+
 
   
 })();
