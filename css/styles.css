@@ -571,9 +571,6 @@ body.menu-open{ overflow:hidden; }
    .site-header .header-bar{
       gap: 3px;
    }
-   .site-title .brand{
-      gap: 20px;
-   }
   /* 第一行：標題在左，可分兩行；漢堡在右 */
   .site-title{
     order: 1 !important;
