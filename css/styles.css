@@ -675,7 +675,7 @@ input[type="radio"], input[type="checkbox"]{
   color: inherit;
 }
 .site-title .logo{
-  width: 22px;     /* 需要更大就調這裡 */
+  width: 50px;     /* 需要更大就調這裡 */
   height: auto;
   display: block;
 }
