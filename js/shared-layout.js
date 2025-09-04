@@ -2,6 +2,17 @@
 (function(){
   if (document.getElementById('shared-layout-mounted')) return;
 
+  // ========= Supabase client 初始化 =========
+  if (!window.sb) {
+    window.SUPABASE_URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
+    window.sb = window.supabase.createClient(
+      window.SUPABASE_URL,
+      window.SUPABASE_ANON_KEY
+    );
+  }
+  const sb = window.sb;  // 全域 client
+
   var tpl = document.createElement('template');
   tpl.innerHTML = `
   <div id="shared-layout-mounted" hidden></div>
