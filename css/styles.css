@@ -427,16 +427,26 @@ input[type="radio"], input[type="checkbox"]{
 @media (max-width: 720px){
   .container { padding: 0 12px; }
   .site-header { padding: 8px 0 10px; margin-bottom: 12px; }
-  .header-bar{ display: flex; flex-wrap: nowrap; align-items: center; gap: 10px; } /* 不換行 */
-
-  .site-title{
-    margin: 0; font-size: 1.5rem; line-height: 1.4; white-space: nowrap; text-align: left;
-    flex: 0 1 auto;
-    background: linear-gradient(90deg, #4caf50, #81c784, #aed581);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    text-shadow: 1px 2px 20px rgba(0,0,0,.20);
+  .header-bar{
+    flex-wrap: wrap;           /* 原本被設成 nowrap，這裡覆蓋 */
+    gap: 10px;
   }
 
+  .site-title{
+    order: 1;
+    flex: 1 1 100%;
+    font-size: 1.25rem;        /* 你可改 1.2~1.4rem 視覺調整 */
+    line-height: 1.35;
+    white-space: normal;       /* 允許自動換行（覆蓋 nowrap） */
+    text-align: left;          /* 要置中改成 center */
+  }
+  .site-title .brand{ flex-wrap: wrap; }
+  
+   /* 如果標題太長仍不想溢出，補上換行策略 */
+  .site-title, .site-title .title-text{
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
   .main-nav{ display: flex; align-items: center; gap: 10px; flex: 1 1 auto; flex-wrap: nowrap; }
 
   .nav-left{ display: none; } /* 小螢幕改用抽屜 */
