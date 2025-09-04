@@ -597,3 +597,58 @@ body.menu-open{ overflow:hidden; }
 @media (min-width: 900px){
   .nav-mobile, .backdrop{ display:none !important; }
 }
+/* === 超小螢幕：max-width: 360px === */
+@media (max-width: 360px){
+
+  /* 允許換行 */
+  .header-bar{
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* 第一行：標題在左，可分兩行；漢堡在右 */
+  .site-title{
+    order: 1 !important;
+    flex: 1 1 auto;
+    font-size: 1.15rem;         /* 再小一點 */
+    line-height: 1.35;
+    white-space: normal;        /* 允許換行 */
+    margin: 0;
+    text-align: left;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  /* 讓「HeartHub Studio / 心聚坊」自然斷行 */
+  .site-title .title-text{
+    display: block;
+    max-width: 16ch;            /* 視覺剛好在 HeartHub Studio 後換行 */
+  }
+  .site-title .brand{ flex-wrap: wrap; }
+
+  .hamburger{
+    order: 2 !important;
+    margin-left: auto;
+    display: grid;
+  }
+
+  /* 第二行：登入按鈕靠右（在漢堡下方） */
+  .header-bar > .main-nav{
+    order: 3 !important;        /* 把整個 nav 擺到標題與漢堡之後 */
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .nav-right{
+    margin-left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .btn.nav-cta{
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  /* 左側清單收起（抽屜顯示） */
+  .nav-left{ display: none !important; }
+}
