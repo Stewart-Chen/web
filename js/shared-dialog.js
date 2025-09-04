@@ -1,12 +1,66 @@
 // === shared-dialog.js ===
-// Auto-generated shared dialog DOM
+// Auto-generated shared dialog DOM + responsive modal styles/behaviors
 (function(){
   if (document.getElementById('shared-dialogs-mounted')) return;
+
+  // --- inject modal CSS (works across pages, no need to edit site CSS) ---
+  if (!document.getElementById('shared-dialog-style')) {
+    const style = document.createElement('style');
+    style.id = 'shared-dialog-style';
+    style.textContent = `
+/* 基本尺寸：置中卡片，內容可捲動 */
+dialog {
+  padding: 0; border: none; margin: 0;
+  width: min(520px, 92vw);
+  max-width: 92vw;
+  max-height: 90dvh;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  overflow: hidden;
+  z-index: 1000;
+}
+dialog::backdrop { background: rgba(0,0,0,.35); }
+
+/* 內容容器：負責捲動 */
+dialog .panel, dialog form.card {
+  padding: 16px 18px;
+  overflow: auto;
+  max-height: calc(90dvh - 32px);
+}
+
+/* 管理面板比較大 */
+#admin-panel {
+  width: min(980px, 95vw);
+  max-width: 95vw;
+}
+
+/* 超小螢幕：改為全螢幕 bottom sheet 風格 */
+@media (max-width: 420px){
+  dialog {
+    width: 100dvw; height: 100dvh;
+    max-width: none; max-height: none;
+    inset: 0; transform: none; border-radius: 0;
+  }
+  dialog .panel, dialog form.card {
+    height: 100%; max-height: none; padding: 16px;
+  }
+}
+
+/* 開啟任一 dialog 時鎖住頁面滾動 */
+body.modal-open { overflow: hidden; }
+    `.trim();
+    document.head.appendChild(style);
+  }
+
+  // --- dialogs markup ---
   var tpl = document.createElement('template');
   tpl.innerHTML = `
   <div id="shared-dialogs-mounted" hidden></div>
+
   <dialog id="lesson-modal">
-    <form method="dialog" class="card">
+    <form method="dialog" class="card panel">
       <h3 id="lesson-title">單元</h3>
       <article id="lesson-content" class="prose" style="margin-top:6px;"></article>
       <div class="actions" style="margin-top:10px; display:flex; gap:10px;">
@@ -17,7 +71,7 @@
   </dialog>
 
   <dialog id="auth-modal">
-    <form method="dialog" class="card" style="min-width:min(520px,92vw);">
+    <form method="dialog" class="card panel">
       <h3>登入 / 註冊</h3>
       <label>Email
         <input type="email" id="auth-email" required placeholder="you@example.com" autocomplete="email" />
@@ -37,7 +91,7 @@
   </dialog>
 
   <dialog id="enroll-dialog">
-    <form id="enroll-form" class="card" method="dialog" style="min-width:min(480px, 92vw);">
+    <form id="enroll-form" class="card panel" method="dialog">
       <h3 style="margin-top:0;">課程報名資訊</h3>
       <p class="muted" style="margin-top:-6px;">請填寫聯絡資訊以完成報名</p>
       <div class="form-grid" style="margin-top:10px;">
@@ -58,9 +112,9 @@
     </form>
   </dialog>
 
-  <!-- 隱藏管理面板 -->
+  <!-- 管理面板 -->
   <dialog id="admin-panel">
-    <div method="dialog" class="card" style="min-width:min(980px,95vw);">
+    <div class="card panel">
       <header style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <h3 style="margin:0;">管理面板</h3>
         <div>
@@ -127,8 +181,24 @@
       <p class="muted" style="margin-top:10px;">＊只有被加入管理者清單的帳號才能看到這個面板。</p>
     </div>
   </dialog>
-  
   `.trim();
-  document.body.appendChild(tpl.content);
-})();
 
+  document.body.appendChild(tpl.content);
+
+  // --- behaviors: lock scroll when any dialog open ---
+  function bindModalLock(dlg){
+    if (!dlg) return;
+    dlg.addEventListener('close',  () => document.body.classList.remove('modal-open'));
+    dlg.addEventListener('cancel', () => document.body.classList.remove('modal-open'));
+    const origShow = dlg.showModal ? dlg.showModal.bind(dlg) : null;
+    if (origShow) {
+      dlg.showModal = function(){
+        origShow();
+        document.body.classList.add('modal-open');
+      };
+    }
+  }
+  ['lesson-modal','auth-modal','enroll-dialog','admin-panel'].forEach(id=>{
+    bindModalLock(document.getElementById(id));
+  });
+})();
