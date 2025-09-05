@@ -10,46 +10,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="../js/shared-layout.js"></script>
+  <script defer src="../js/admin_js/admin-guard.js"></script>
   <script defer src="../js/admin_js/admin-teachers.js"></script>
   <script defer src="../js/app.js"></script>
-
-  <script>
-    function waitForSB(cb, tries=60){
-      if (window.sb) return cb();
-      if (tries <= 0) return console.error('guard: sb not ready');
-      setTimeout(()=>waitForSB(cb, tries-1), 100);
-    }
-    
-    async function guardAdminPage() {
-      try {
-        const { data: userData } = await sb.auth.getUser();
-        const user = userData?.user;
-        if (!user) { location.replace('index.html?need_login=1'); return; }
-
-        const { data, error } = await sb
-          .from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
-
-        if (error || !data) { location.replace('index.html'); return; }
-
-        // 通過 → 顯示內容
-        document.documentElement.removeAttribute('data-guard');
-      } catch (err) {
-        console.error('guard error:', err);
-        location.replace('index.html');
-      }
-    }
-    waitForSB(guardAdminPage);
-  </script>
 </head>
 <body>
-  <!-- QRCode no-op，避免 shared-layout 報錯 -->
-  <script>
-    if (typeof window.QRCode === 'undefined') {
-      window.QRCode = function(){}; window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
-    }
-  </script>
-  
-
   <main class="container page-admin">
     <h2 class="fancy-title" style="margin-top:10px;">師資專區</h2>
     <section class="admin-wrap">
@@ -66,7 +31,6 @@
           <div id="teacher-list" style="margin-top:10px;"></div>
         </div>
       </div>
-
       <!-- 右欄：老師資料 -->
       <div class="admin-col">
         <div class="admin-card">
@@ -79,7 +43,6 @@
             <label>頭像網址 <input id="t-avatar" placeholder="https://..." /></label>
             <label>專長（逗號分隔） <input id="t-specialties" placeholder="室內植物, 正念, 水彩" /></label>
             <label>介紹 / 簡歷 <textarea id="t-bio" rows="5"></textarea></label>
-
             <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
               <button type="submit" class="btn primary">儲存</button>
               <button type="button" id="teacher-delete" class="btn danger">刪除</button>
@@ -92,4 +55,3 @@
   </main>
 </body>
 </html>
-
