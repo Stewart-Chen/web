@@ -63,7 +63,7 @@
       // 取得師資資料
       async function fetchTeachers() {
         try {
-          const { data, error } = await supabase
+          const { data, error } = await sb
             .from('teachers')
             .select('code, name, title, bio, avatar_url, tags')
             .order('name', { ascending: true });
