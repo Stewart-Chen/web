@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>量表編輯｜HeartHub Studio 心聚坊</title>
+
+  <!-- 樣式 -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- JS：Supabase / 共用 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/shared-layout.js"></script>
+  <script defer src="js/shared-dialog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script defer src="js/app.js"></script>
+
+  <style>
+    .hidden{ display:none!important; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    .wrap { word-break: break-all; }
+    .grid3 { display:grid; grid-template-columns:repeat(3, minmax(160px,1fr)); gap:16px; }
+    .grid2 { display:grid; grid-template-columns:repeat(2, minmax(200px,1fr)); gap:12px; }
+    .chip { display:inline-block; padding:2px 8px; border-radius:12px; background:#eef2ff; color:#374151; font-size:12px; }
+    .right { text-align:right; }
+    .muted small { opacity:.8; }
+    .btn.copy { padding:6px 10px; font-size:12px; }
+  </style>
+</head>
+<body>
+  <main class="container flow-lg">
+    <!-- 頁首 -->
+    <section class="card">
+      <header class="flow-md">
+        <h2>量表編輯｜心聚 1 分鐘</h2>
+        <p class="muted">同一支表單 <code class="mono">one-minute.html</code> 以 <code class="mono">tp=pre|post|72h</code> 切換。這頁用來快速產生 <strong>課前/課後/72h</strong> 三個表單連結與 QR，並提供測試課程工具。</p>
+      </header>
+    </section>
+
+    <!-- A. 用現有課程 id 重新整理 QR -->
+    <section class="card">
+      <h3>A. 用現有課程 id 重新整理 QR</h3>
+
+      <div class="grid2">
+        <label>選擇課程（最近 50 筆）
+          <select id="course-select" style="width:100%;">
+            <option value="">— 請選擇課程 —</option>
+          </select>
+        </label>
+
+        <label>或手動輸入課程 ID
+          <input id="course-input" type="number" placeholder="例如 55" />
+        </label>
+      </div>
+
+      <div class="grid2" style="align-items:end;">
+        <label>場次編號（session，可空）
+          <input id="session-input" type="number" placeholder="例如 101" />
+        </label>
+
+        <div class="right">
+          <button id="btn-refresh" class="btn">重新整理連結與 QR</button>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:8px;">
+        <a id="btn-pre"  class="btn">課前表單</a>
+        <a id="btn-post" class="btn secondary">課後表單</a>
+        <a id="btn-72h"  class="btn outline">72 小時追蹤</a>
+      </div>
+
+      <div class="grid3" style="margin-top:12px;">
+        <div>
+          <div id="qr-pre"></div>
+          <p class="muted wrap mono" id="url-pre">—</p>
+          <button class="btn copy" data-copy="#url-pre">複製連結</button>
+        </div>
+        <div>
+          <div id="qr-post"></div>
+          <p class="muted wrap mono" id="url-post">—</p>
+          <button class="btn copy" data-copy="#url-post">複製連結</button>
+        </div>
+        <div>
+          <div id="qr-72h"></div>
+          <p class="muted wrap mono" id="url-72h">—</p>
+          <button class="btn copy" data-copy="#url-72h">複製連結</button>
+        </div>
+      </div>
+
+      <p class="muted">
+        <small>提示：若 <code class="mono">course</code> 留空，連結仍可用，但插入 <code class="mono">one_minute</code> 時若設有外鍵，會失敗；建議總是帶入存在的課程 id。</small>
+      </p>
+    </section>
+
+    <!-- B. 測試課程工具（建立 / 查詢 / 清除） -->
+    <section class="card">
+      <h3>B. 測試課程工具（僅管理員）</h3>
+      <p class="muted">快速建立一筆【測試】課程（category：<span class="chip">horti</span>），或查詢／清除。需要 RLS 允許目前登入者可對 <code class="mono">public.courses</code> 進行 <em>insert/delete/select</em>。</p>
+
+      <div class="actions">
+        <button id="btn-create-course" class="btn">建立測試課程</button>
+        <button id="btn-list-course" class="btn secondary">查詢測試課程</button>
+        <button id="btn-clear-course" class="btn danger">清除測試課程</button>
+      </div>
+
+      <pre id="admin-log" class="mono" style="white-space:pre-wrap; background:#f6f8fa; padding:12px; border-radius:8px; margin-top:10px; max-height:320px; overflow:auto;">（操作結果會顯示在這裡）</pre>
+    </section>
+
+    <!-- C. 說明 -->
+    <section class="card">
+      <h3>C. 操作說明</h3>
+      <ul class="muted">
+        <li>這頁只產生「連結與 QR」，實際表單頁是 <code class="mono">one-minute.html</code>（同一頁用 <code class="mono">tp=pre|post|72h</code> 切換）。</li>
+        <li>為了避免與既有工具衝突，本頁使用 <code class="mono">sel()</code> 作為唯一選擇器。</li>
+        <li>若建立／刪除課程失敗，多半是 RLS 限制：請用管理員帳號或在伺服器端以 Service Role 呼叫。</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    // === 唯一 selector，避免和 app.js 的工具衝突 ===
+    const sel = (s, root=document) => root.querySelector(s);
+
+    // Supabase client（沿用 app.js 已初始化的 window.supabase）
+    async function supa() {
+      if (window.supabase) return window.supabase;
+      // 若你需要單頁自行初始化，取消下一行註解並填入 URL/KEY
+      // return supabase.createClient('https://YOUR-PROJECT.supabase.co', 'anon-or-service-role-key');
+      throw new Error('Supabase 尚未初始化（請在 app.js 內初始化 window.supabase）');
+    }
+
+    // 取得目前路徑的專案根（用於組連結）
+    function baseRoot() {
+      // e.g. /course.html -> /
+      return location.origin + location.pathname.replace(/admin-one-minutes\.html.*/, '');
+    }
+
+    // 建立三條表單連結
+    function buildLinks(courseId, sessionId) {
+      const base = baseRoot();
+      const c = courseId ? `&course=${Number(courseId)}` : '';
+      const s = sessionId ? `&session=${Number(sessionId)}` : '';
+      return {
+        pre : `${base}one-minute.html?tp=pre${s}${c}`,
+        post: `${base}one-minute.html?tp=post${s}${c}`,
+        h72 : `${base}one-minute.html?tp=72h${s}${c}`,
+      };
+    }
+
+    // 重畫 QR＋按鈕＋連結
+    function renderAll() {
+      const cid = sel('#course-input').value || sel('#course-select').value || '';
+      const sid = sel('#session-input').value || '';
+      const links = buildLinks(cid, sid);
+
+      // 按鈕
+      sel('#btn-pre').href  = links.pre;
+      sel('#btn-post').href = links.post;
+      sel('#btn-72h').href  = links.h72;
+
+      // 文字
+      sel('#url-pre').textContent  = links.pre;
+      sel('#url-post').textContent = links.post;
+      sel('#url-72h').textContent  = links.h72;
+
+      // QR
+      sel('#qr-pre').innerHTML  = '';
+      sel('#qr-post').innerHTML = '';
+      sel('#qr-72h').innerHTML  = '';
+      new QRCode(sel('#qr-pre'),  { text: links.pre,  width:128, height:128 });
+      new QRCode(sel('#qr-post'), { text: links.post, width:128, height:128 });
+      new QRCode(sel('#qr-72h'),  { text: links.h72,  width:128, height:128 });
+    }
+
+    // 複製連結
+    function bindCopyButtons() {
+      document.querySelectorAll('.btn.copy').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const selTarget = btn.getAttribute('data-copy');
+          const text = sel(selTarget).textContent.trim();
+          try {
+            await navigator.clipboard.writeText(text);
+            btn.textContent = '已複製';
+            setTimeout(() => btn.textContent = '複製連結', 1200);
+          } catch (e) {
+            alert('複製失敗，請手動選取文字複製');
+          }
+        });
+      });
+    }
+
+    // 載入最近課程到下拉（預設抓 50 筆，若需要可加鍵字搜尋）
+    async function loadCourseOptions() {
+      try {
+        const s = await supa();
+        const { data, error } = await s.from('courses')
+          .select('id,title,category,published,created_at')
+          .order('created_at', { ascending:false })
+          .limit(50);
+        if (error) throw error;
+
+        const selBox = sel('#course-select');
+        selBox.innerHTML = '<option value="">— 請選擇課程 —</option>';
+        (data || []).forEach(row => {
+          const opt = document.createElement('option');
+          opt.value = row.id;
+          opt.textContent = `#${row.id}｜${row.title}（${row.category||'—'}）`;
+          selBox.appendChild(opt);
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // 測試課程工具（建立 / 查詢 / 清除）
+    const log = (msg) => {
+      const el = sel('#admin-log');
+      el.textContent = (el.textContent ? el.textContent + '\n' : '') + msg;
+    };
+
+    async function bindAdminTools() {
+      const s = await supa();
+
+      sel('#btn-create-course')?.addEventListener('click', async () => {
+        try {
+          const title = '【測試】園藝療癒體驗 ' + new Date().toLocaleString();
+          const payload = { title, summary:'用來測心聚 1 分鐘表單流程', category:'horti', published:true };
+          const { data, error } = await s.from('courses').insert(payload).select('id,title,category,created_at').single();
+          if (error) throw error;
+          log('✅ 建立成功：id=' + data.id + '｜' + data.title);
+          // 自動選到剛建立的課程
+          sel('#course-input').value = data.id;
+          sel('#course-select').value = '';
+          renderAll();
+        } catch (e) {
+          console.error(e); log('❌ 建立失敗：' + (e.message || e));
+        }
+      });
+
+      sel('#btn-list-course')?.addEventListener('click', async () => {
+        try {
+          const { data, error } = await s.from('courses')
+            .select('id,title,category,published,created_at')
+            .ilike('title','【測試】%')
+            .order('created_at', { ascending:false })
+            .limit(20);
+          if (error) throw error;
+          if (!data || data.length===0) return log('ℹ️ 查無【測試】課程。');
+          log('📃 測試課程清單：\n' + data.map(r => `- id=${r.id}｜${r.title}｜${r.category}｜${r.created_at}`).join('\n'));
+        } catch (e) {
+          console.error(e); log('❌ 查詢失敗：' + (e.message || e));
+        }
+      });
+
+      sel('#btn-clear-course')?.addEventListener('click', async () => {
+        if (!confirm('確定要刪除所有「【測試】」開頭的課程嗎？')) return;
+        try {
+          const { data, error } = await s.from('courses')
+            .delete()
+            .ilike('title','【測試】%')
+            .select('id');
+          if (error) throw error;
+          log('🗑️ 已刪除 ' + (data?.length || 0) + ' 筆測試課程。');
+          // 清空選擇
+          sel('#course-input').value = '';
+          sel('#course-select').value = '';
+          renderAll();
+          // 重新載入下拉
+          loadCourseOptions();
+        } catch (e) {
+          console.error(e); log('❌ 刪除失敗：' + (e.message || e));
+        }
+      });
+    }
+
+    // 綁定事件
+    function bindUI() {
+      sel('#btn-refresh')?.addEventListener('click', renderAll);
+      sel('#course-select')?.addEventListener('change', () => {
+        sel('#course-input').value = sel('#course-select').value || '';
+        renderAll();
+      });
+      sel('#course-input')?.addEventListener('input', () => {
+        sel('#course-select').value = ''; // 手動輸入時清除下拉選擇
+      });
+      sel('#session-input')?.addEventListener('input', renderAll);
+      bindCopyButtons();
+    }
+
+    // 初始化
+    (async () => {
+      try {
+        await loadCourseOptions();
+        await bindAdminTools();
+        bindUI();
+        renderAll();
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  </script>
+</body>
+</html>
+
