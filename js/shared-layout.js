@@ -38,24 +38,24 @@
       <!-- 導覽列：左邊連結、右邊登入/登出 -->
       <nav class="main-nav nav-desktop">
         <div class="nav-left">
-          <a href="index.html">首頁</a>
-          <a href="courses.html">探索課程</a>
-          <a href="teachers.html">教學團隊</a>
-          <a href="teachers.html">療癒商城</a>
+          <a href="/web/index.html">首頁</a>
+          <a href="/web/courses.html">探索課程</a>
+          <a href="/web/teachers.html">教學團隊</a>
+          <a href="/web/teachers.html">療癒商城</a>
           <div class="dropdown">
             <a href="#" class="dropbtn">線上服務</a>
             <div class="dropdown-content">
-              <a href="one-minute.html">心聚指標</a>
-              <a href="feedback.html">學習回饋表</a>
+              <a href="/web/one-minute.html">心聚指標</a>
+              <a href="/web/feedback.html">學習回饋表</a>
             </div>
           </div>
           
           <div class="dropdown hidden" id="admin-group-desktop">
             <a href="#" class="dropbtn">管理編輯</a>
             <div class="dropdown-content">
-              <a href="admin_page/admin.html">課程管理</a>
-              <a href="admin_page/admin-teachers.html">師資專區</a>
-              <a href="admin_page/admin-one-minutes.html">量表編輯</a>
+              <a href="/web/admin_page/admin.html">課程管理</a>
+              <a href="/web/admin_page/admin-teachers.html">師資專區</a>
+              <a href="/web/admin_page/admin-one-minutes.html">量表編輯</a>
             </div>
           </div>
 
@@ -76,21 +76,21 @@
 
     <!-- 手機抽屜選單 -->
     <nav class="nav-mobile" id="mobileMenu" aria-label="主選單（手機）">
-      <a href="index.html">首頁</a>
-      <a href="courses.html">探索課程</a>
-      <a href="teachers.html">教學團隊</a>
-      <a href="teachers.html">療癒商城</a>
+      <a href="/web/index.html">首頁</a>
+      <a href="/web/courses.html">探索課程</a>
+      <a href="/web/teachers.html">教學團隊</a>
+      <a href="/web/teachers.html">療癒商城</a>
       <div class="group">
         <span class="group-title">線上服務</span>
-        <a href="one-minute.html" class="sub">心聚指標</a>
-        <a href="feedback.html" class="sub">學習回饋表</a>
+        <a href="/web/one-minute.html" class="sub">心聚指標</a>
+        <a href="/web/feedback.html" class="sub">學習回饋表</a>
       </div>
 
       <div class="group hidden" id="admin-group-mobile">
         <span class="group-title">管理編輯</span>
-        <a href="admin_page/admin.html" class="sub">課程管理</a>
-        <a href="admin_page/admin-teachers.html" class="sub">師資專區</a>
-        <a href="admin_page/admin-one-minutes.html" class="sub">量表編輯</a>
+        <a href="/web/admin_page/admin.html" class="sub">課程管理</a>
+        <a href="/web/admin_page/admin-teachers.html" class="sub">師資專區</a>
+        <a href="/web/admin_page/admin-one-minutes.html" class="sub">量表編輯</a>
       </div>
 
     </nav>
