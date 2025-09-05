@@ -1,0 +1,83 @@
+/* 共用：守門時隱藏、整體間距 */
+html[data-guard="checking"] main { visibility: hidden; }
+main.page-admin { padding-top: 14px; padding-bottom: 32px; }
+
+/* 兩欄排版 */
+.admin-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+.admin-col { min-width: 0; }
+
+/* 卡片外觀 */
+.admin-card {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 標頭工具列 */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+.admin-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 表格網格輔助 */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(220px,1fr)); gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(180px,1fr)); gap: 16px; }
+
+/* 字型 / 文字樣式 */
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+.wrap { word-break: break-all; }
+
+/* 按鈕特例 */
+.btn.copy { padding: 6px 10px; font-size: 12px; }
+
+/* 列表 item（課程 / 單元） */
+#admin-courses .item,
+#admin-lessons .item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+#admin-courses,
+#admin-lessons {
+  max-height: 360px;
+  overflow: auto;
+}
+
+/* 列表 item（老師清單） */
+#teacher-list .item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+#teacher-list { max-height: 360px; overflow: auto; }
+
+/* RWD：手機單欄 */
+@media (max-width: 900px) {
+  .admin-wrap { grid-template-columns: 1fr; }
+}
+
