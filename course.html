@@ -5,23 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>課程內容｜HeartHub Studio 心聚坊</title>
 
-  <!-- 樣式 -->
+  <!-- 样式 -->
   <link rel="stylesheet" href="css/styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- Supabase & 共用 -->
+  <!-- Supabase & App -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="js/shared-layout.js"></script>
   <script defer src="js/shared-dialog.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script defer src="js/app.js"></script>
-
-  <style>
-    .hidden{ display:none!important; }
-    .grid3 { display:grid; grid-template-columns:repeat(3, minmax(160px,1fr)); gap:16px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
-    .wrap { word-break: break-all; }
-  </style>
 
   <noscript>
     <style>
@@ -33,7 +26,6 @@
 <body>
   <!-- 主內容 -->
   <main class="container flow-lg">
-
     <!-- 課程資訊卡 -->
     <section id="course-info" class="card need-js">
       <header class="flow-md">
@@ -58,7 +50,7 @@
     <section class="flow-md need-js">
       <h3>單元列表</h3>
       <ol id="lessons" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
-        <!-- 由 app.js 動態渲染 -->
+        <!-- 由 app.js 動態渲染：每個 <li> 內有一個 .btn -->
       </ol>
       <div id="lessons-empty" class="muted hidden">尚未開放單元。</div>
     </section>
@@ -69,151 +61,8 @@
       <div id="progress" class="muted">登入後可記錄進度。</div>
     </section>
 
-    <!-- ＝＝ 新增：心聚 1 分鐘 三鍵＋三 QR ＝＝ -->
-    <section class="card need-js">
-      <h3>心聚 1 分鐘 · 場內操作</h3>
-      <p class="muted">同一支表單（one-minute.html），用參數 <code class="mono">tp=pre|post|72h</code> 切換課前/課後/72h。</p>
-
-      <div class="row" style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
-        <label>場次編號（session）：
-          <input id="session-input" type="number" placeholder="例如 101" style="width:160px;">
-        </label>
-        <span class="muted">課程 id 會自動抓網址參數 <code class="mono">id</code>。</span>
-      </div>
-
-      <div class="actions" style="margin-top:8px;">
-        <a id="btn-pre"  class="btn">課前表單</a>
-        <a id="btn-post" class="btn secondary">課後表單</a>
-        <a id="btn-72h"  class="btn outline">72 小時追蹤</a>
-      </div>
-
-      <div class="grid3" style="margin-top:12px;">
-        <div><div id="qr-pre"></div><p class="muted wrap mono" id="url-pre">—</p></div>
-        <div><div id="qr-post"></div><p class="muted wrap mono" id="url-post">—</p></div>
-        <div><div id="qr-72h"></div><p class="muted wrap mono" id="url-72h">—</p></div>
-      </div>
-    </section>
-
-    <!-- ＝＝ 新增：測試課程（建立／查詢／清除）＝＝ -->
-    <section class="card need-js" id="admin-tools">
-      <h3>測試課程工具（僅管理員）</h3>
-      <p class="muted">快速建立一筆【測試】課程（category：<code class="mono">horti</code>），或查詢／清除。</p>
-
-      <div class="actions">
-        <button id="btn-create-course" class="btn">建立測試課程</button>
-        <button id="btn-list-course" class="btn secondary">查詢測試課程</button>
-        <button id="btn-clear-course" class="btn danger">清除測試課程</button>
-      </div>
-
-      <pre id="admin-log" class="mono" style="white-space:pre-wrap; background:#f6f8fa; padding:12px; border-radius:8px; margin-top:10px; max-height:300px; overflow:auto;">（操作結果會顯示在這裡）</pre>
-      <p class="muted">提示：若失敗，多半是 RLS 限制或 anon 角色不可寫入 <code>courses</code>；見下方注意事項。</p>
-    </section>
-
     <!-- JS 關閉時提示 -->
     <p class="nojs" style="display:none;">你的瀏覽器未啟用 JavaScript，本頁功能將無法使用。</p>
   </main>
-
-  <script>
-  // === 唯一全域小工具：sel()，避免與 app.js 的 qs() 衝突 ===
-  const sel = (s, root=document) => root.querySelector(s);
-
-  // 取得課程與場次參數
-  const params    = new URLSearchParams(location.search);
-  const courseId  = params.get('id') ? Number(params.get('id')) : null;
-  const defaultSession = params.get('session') || '';
-  const sessionInput = sel('#session-input');
-  if (sessionInput) sessionInput.value = defaultSession;
-
-  // 產生 one-minute 連結
-  function buildOneMinuteUrls() {
-    const sid = sessionInput && sessionInput.value ? Number(sessionInput.value) : '';
-    const base = location.origin + location.pathname.replace(/course\.html.*/, '');
-    const uPre  = `${base}one-minute.html?tp=pre${sid?`&session=${sid}`:''}${courseId?`&course=${courseId}`:''}`;
-    const uPost = `${base}one-minute.html?tp=post${sid?`&session=${sid}`:''}${courseId?`&course=${courseId}`:''}`;
-    const u72h  = `${base}one-minute.html?tp=72h${sid?`&session=${sid}`:''}${courseId?`&course=${courseId}`:''}`;
-    return {uPre,uPost,u72h};
-  }
-
-  function renderQRCards() {
-    const {uPre,uPost,u72h} = buildOneMinuteUrls();
-    // 按鈕
-    sel('#btn-pre').href  = uPre;
-    sel('#btn-post').href = uPost;
-    sel('#btn-72h').href  = u72h;
-    // 文字
-    sel('#url-pre').textContent  = uPre;
-    sel('#url-post').textContent = uPost;
-    sel('#url-72h').textContent  = u72h;
-    // QR（清空重畫）
-    sel('#qr-pre').innerHTML = '';  new QRCode(sel('#qr-pre'),  {text:uPre,  width:128, height:128});
-    sel('#qr-post').innerHTML = ''; new QRCode(sel('#qr-post'), {text:uPost, width:128, height:128});
-    sel('#qr-72h').innerHTML = '';  new QRCode(sel('#qr-72h'),  {text:u72h,  width:128, height:128});
-  }
-
-  // 初始渲染 QR
-  renderQRCards();
-  // 改變 session 時，重畫連結與 QR
-  sessionInput?.addEventListener('input', renderQRCards);
-
-  // === 測試課程：建立 / 查詢 / 清除 ===
-  // 需要 RLS 允許目前登入者寫入/刪除 public.courses
-  async function supa() {
-    // 若 app.js 已初始化 window.supabase，沿用；否則請在 app.js 內初始化
-    if (window.supabase) return window.supabase;
-    // 備援：若無全域 supabase，這裡可自行初始化（填入你的 URL/KEY）
-    // return supabase.createClient('https://YOUR-PROJECT.supabase.co', 'anon-or-service-role-key');
-    throw new Error('Supabase 尚未初始化（請在 app.js 內初始化 window.supabase）');
-  }
-
-  const log = (msg) => {
-    const el = sel('#admin-log');
-    el.textContent = (el.textContent ? el.textContent + '\n' : '') + msg;
-  };
-
-  sel('#btn-create-course')?.addEventListener('click', async () => {
-    try {
-      const s = await supa();
-      const title = '【測試】園藝療癒體驗 ' + new Date().toLocaleString();
-      const payload = { title, summary:'用來測心聚 1 分鐘表單流程', category:'horti', published:true };
-      const { data, error } = await s.from('courses').insert(payload).select('id,title,category,created_at').single();
-      if (error) throw error;
-      log('✅ 建立成功：id=' + data.id + '｜' + data.title);
-      if (!courseId) log('ℹ️ 你可以用 ?id=' + data.id + ' 重新載入本頁，讓 QR 自動帶入 course=' + data.id);
-    } catch (e) {
-      console.error(e); log('❌ 建立失敗：' + (e.message || e));
-    }
-  });
-
-  sel('#btn-list-course')?.addEventListener('click', async () => {
-    try {
-      const s = await supa();
-      const { data, error } = await s.from('courses')
-        .select('id,title,category,published,created_at')
-        .ilike('title','【測試】%')
-        .order('created_at', { ascending:false })
-        .limit(20);
-      if (error) throw error;
-      if (!data || data.length===0) return log('ℹ️ 查無【測試】課程。');
-      log('📃 測試課程清單：\n' + data.map(r => `- id=${r.id}｜${r.title}｜${r.category}｜${r.created_at}`).join('\n'));
-    } catch (e) {
-      console.error(e); log('❌ 查詢失敗：' + (e.message || e));
-    }
-  });
-
-  sel('#btn-clear-course')?.addEventListener('click', async () => {
-    if (!confirm('確定要刪除所有「【測試】」開頭的課程嗎？')) return;
-    try {
-      const s = await supa();
-      const { data, error } = await s.from('courses')
-        .delete()
-        .ilike('title','【測試】%')
-        .select('id');
-      if (error) throw error;
-      log('🗑️ 已刪除 ' + (data?.length || 0) + ' 筆測試課程。');
-    } catch (e) {
-      console.error(e); log('❌ 刪除失敗：' + (e.message || e));
-    }
-  });
-  </script>
 </body>
 </html>
