@@ -220,7 +220,7 @@
         };
 
         try {
-          const { error } = await supabase.from('one_minute').insert(payload);
+          const { error } = await sb.from('one_minute').insert(payload);
           if (error) throw error;
           alert('已送出，謝謝你的回饋 🌿');
 
