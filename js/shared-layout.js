@@ -40,7 +40,7 @@
             <div class="dropdown">
               <a href="#" class="dropbtn">線上服務</a>
               <div class="dropdown-content">
-                <a href="/web/one-minute.html">心聚指標</a>
+                <a href="/web/one-minute.html">心聚1分鐘</a>
                 <a href="/web/feedback.html">學習回饋表</a>
               </div>
             </div>
@@ -72,7 +72,7 @@
         <a href="/web/teachers.html">療癒商城</a>
         <div class="group">
           <span class="group-title">線上服務</span>
-          <a href="/web/one-minute.html" class="sub">心聚指標</a>
+          <a href="/web/one-minute.html" class="sub">心聚1分鐘</a>
           <a href="/web/feedback.html" class="sub">學習回饋表</a>
         </div>
         <div class="group hidden" id="admin-group-mobile">
