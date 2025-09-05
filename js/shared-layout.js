@@ -7,7 +7,6 @@
   // ========= Supabase client =========
   (function ensureSupabase() {
     if (!window.sb) {
-      // 你的專案設定（保持與既有一致）
       const URL = "https://ilhmywiktdqilmaisbyp.supabase.co";
       const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaG15d2lrdGRxaWxtYWlzYnlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTczODcsImV4cCI6MjA3MTIzMzM4N30.qCpu7NhwaEkmyFJmg9MB6MrkcqmPiywGV2c_U3U9h4c";
       if (window.supabase?.createClient) {
@@ -105,13 +104,11 @@
     </footer>
   `.trim();
 
-  // 挂載（若已存在就不再插入）
-  if (!document.querySelector("header.site-header")) {
-    document.body.prepend(tpl.content.firstElementChild);
-  }
-  if (!document.querySelector("footer.site-footer")) {
-    document.body.appendChild(tpl.content.lastElementChild);
-  }
+  const frag = tpl.content.cloneNode(true);
+  const header = frag.querySelector("header.site-header");
+  const footer = frag.querySelector("footer.site-footer");
+  if (!document.querySelector("header.site-header")) document.body.prepend(header);
+  if (!document.querySelector("footer.site-footer")) document.body.appendChild(footer);
 
   // ========= 手機選單 =========
   (function mobileMenu() {
@@ -158,7 +155,7 @@
   // ========= Auth / Admin 顯示 / 事件 =========
   window.currentUser = null;
 
-  // 給 app.js 用：未登入就開登入視窗
+  // 提供給其他頁：未登入就開登入視窗
   window.requireAuthOrOpenModal = function (e) {
     if (!window.currentUser) {
       if (e?.preventDefault) e.preventDefault();
@@ -168,8 +165,11 @@
     return true;
   };
 
-  // 綁定登入/登出 & 註冊（需要 auth-modal 存在，若沒找到會稍後再試）
+  // --- 只綁一次的 Auth UI 綁定（避免跳兩次） ---
   function bindAuthUI(retry = 10) {
+    // 全域一次性旗標（已綁就直接跳出）
+    if (window.__AUTH_UI_BOUND__) return;
+
     const loginLink  = document.getElementById("login-link");
     const logoutLink = document.getElementById("logout-link");
     const dlg        = document.getElementById("auth-modal");
@@ -179,42 +179,59 @@
     const btnIn      = document.getElementById("btn-signin");
     const btnUp      = document.getElementById("btn-signup");
 
-    // Header 登入/登出按鈕
-    loginLink?.addEventListener("click", (e) => { e.preventDefault(); dlg?.showModal(); });
-    logoutLink?.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); });
-
-    // 元件尚未注入（shared-dialog.js 還沒掛）→ 等一下再綁
+    // 若對話框尚未注入，稍後再試（但已綁就不再重試）
     if (!dlg || !emailEl || !pwdEl || !btnIn || !btnUp) {
-      if (retry > 0) setTimeout(() => bindAuthUI(retry - 1), 150);
+      if (!window.__AUTH_UI_BOUND__ && retry > 0) setTimeout(() => bindAuthUI(retry - 1), 150);
       return;
     }
 
-    function setPwdAutocomplete(mode){ pwdEl.setAttribute("autocomplete", mode === "signup" ? "new-password" : "current-password"); }
+    // 去重：每個元素只綁一次
+    if (loginLink && !loginLink.dataset.bound) {
+      loginLink.addEventListener("click", (e) => { e.preventDefault(); dlg.showModal(); }, { passive: false });
+      loginLink.dataset.bound = "1";
+    }
+    if (logoutLink && !logoutLink.dataset.bound) {
+      logoutLink.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); }, { passive: false });
+      logoutLink.dataset.bound = "1";
+    }
 
-    btnIn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      setPwdAutocomplete("signin");
-      const { error } = await sb.auth.signInWithPassword({
-        email: (emailEl.value || "").trim(),
-        password: (pwdEl.value || "").trim()
-      });
-      if (error) { alert("登入失敗：" + (error.message || "未知錯誤")); return; }
-      dlg.close();
-      // 不重整：onAuthStateChange 會廣播 auth:changed
-    });
+    function setPwdAutocomplete(mode){
+      pwdEl.setAttribute("autocomplete", mode === "signup" ? "new-password" : "current-password");
+    }
 
-    btnUp.addEventListener("click", async (e) => {
-      e.preventDefault();
-      setPwdAutocomplete("signup");
-      const { error } = await sb.auth.signUp({
-        email: (emailEl.value || "").trim(),
-        password: (pwdEl.value || "").trim(),
-        options: { data: { nickname: (nickEl?.value || "").trim() || null } }
+    if (btnIn && !btnIn.dataset.bound) {
+      btnIn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        setPwdAutocomplete("signin");
+        const { error } = await sb.auth.signInWithPassword({
+          email: (emailEl.value || "").trim(),
+          password: (pwdEl.value || "").trim()
+        });
+        if (error) { alert("登入失敗：" + (error.message || "未知錯誤")); return; }
+        dlg.close();
+        // 不重整：onAuthStateChange 會廣播 auth:changed
       });
-      if (error) { alert("註冊失敗：" + (error.message || "未知錯誤")); return; }
-      alert("已寄出驗證郵件（如有設定）。驗證後即可登入。");
-      dlg.close();
-    });
+      btnIn.dataset.bound = "1";
+    }
+
+    if (btnUp && !btnUp.dataset.bound) {
+      btnUp.addEventListener("click", async (e) => {
+        e.preventDefault();
+        setPwdAutocomplete("signup");
+        const { error } = await sb.auth.signUp({
+          email: (emailEl.value || "").trim(),
+          password: (pwdEl.value || "").trim(),
+          options: { data: { nickname: (nickEl?.value || "").trim() || null } }
+        });
+        if (error) { alert("註冊失敗：" + (error.message || "未知錯誤")); return; }
+        alert("已寄出驗證郵件（如有設定）。驗證後即可登入。");
+        dlg.close();
+      });
+      btnUp.dataset.bound = "1";
+    }
+
+    // ✅ 標記：這頁的 Auth UI 已綁定
+    window.__AUTH_UI_BOUND__ = true;
   }
 
   // Admin 群組顯示/隱藏
@@ -255,7 +272,6 @@
       document.getElementById("login-link")?.classList.toggle("hidden", !!window.currentUser);
       document.getElementById("logout-link")?.classList.toggle("hidden", !window.currentUser);
       revealAdminGroups();
-      // 廣播 init
       document.dispatchEvent(new CustomEvent("auth:changed", {
         detail: { event: "init", user: window.currentUser }
       }));
@@ -264,8 +280,7 @@
     }
   })();
 
-  // dialogs 掛載好再綁（shared-dialog.js 會發這個事件）
+  // dialogs 掛載好再綁；也在 DOMContentLoaded 再嘗試一次
   document.addEventListener("dialogs:mounted", () => bindAuthUI());
-  // 若 shared-dialog 較晚載入，這裡也先嘗試綁一次
   document.addEventListener("DOMContentLoaded", () => bindAuthUI());
 })();
