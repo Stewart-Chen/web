@@ -159,7 +159,7 @@
         };
 
         try {
-          const { error } = await supabase
+          const { error } = await sb
             .from('feedback')
             .insert(payload);
 
