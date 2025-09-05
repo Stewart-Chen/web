@@ -7,7 +7,7 @@
 
   <!-- 若 styles.css 已載入字型，可刪掉下一行 Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
 
   <!-- Admin 身分檢查期間先隱藏 main，通過後再顯示 -->
   <style>
@@ -42,9 +42,9 @@
 
   <!-- Supabase SDK（本頁唯一 client：sb） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="js/shared-layout.js"></script>
-  <script defer src="js/admin_js/admin.js"></script>
-  <script defer src="js/app.js"></script>
+  <script defer src="../js/shared-layout.js"></script>
+  <script defer src="../js/admin_js/admin.js"></script>
+  <script defer src="../js/app.js"></script>
 
   <!-- 守門：非登入/非管理者 → 導回首頁（不再強制切換 Header 的登入/登出） -->
   <script>
