@@ -8,37 +8,7 @@
   <!-- 若 styles.css 已載入字型，可刪掉下一行 Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css" />
-
-  <!-- Admin 身分檢查期間先隱藏 main，通過後再顯示 -->
-  <style>
-    html[data-guard="checking"] main { visibility: hidden; }
-    main.page-admin { padding-top: 14px; padding-bottom: 32px; }
-    .admin-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 12px;
-    }
-    .admin-header {
-      display:flex; justify-content:space-between; align-items:center; gap:12px;
-      margin-top: 6px;
-    }
-    .admin-tools { display:flex; gap:8px; flex-wrap:wrap; }
-    .admin-col { min-width: 0; }
-    .admin-card {
-      padding:16px; background:#fff; border:1px solid rgba(0,0,0,.06);
-      border-radius:12px; box-shadow: var(--shadow-sm);
-    }
-    /* 列表 item（沿用全站風格） */
-    #admin-courses .item, #admin-lessons .item{
-      display:flex; justify-content:space-between; align-items:center;
-      padding:8px 10px; border:1px solid #e6e6e6; border-radius:8px; margin-bottom:8px; background:#fff;
-    }
-    #admin-courses, #admin-lessons { max-height: 360px; overflow: auto; }
-
-    /* RWD：手機單欄 */
-    @media (max-width: 900px){ .admin-wrap { grid-template-columns: 1fr; } }
-  </style>
+  <link rel="stylesheet" href="../css/admin.css" />
 
   <!-- Supabase SDK（本頁唯一 client：sb） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
