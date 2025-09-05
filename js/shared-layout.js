@@ -35,7 +35,7 @@
         <span class="bar" aria-hidden="true"></span>
       </button>
     
-      <!-- 導覽列：左邊連結、右邊登入/登出 -->
+      <!-- 導覽列 -->
       <nav class="main-nav nav-desktop">
         <div class="nav-left">
           <a href="/web/index.html">首頁</a>
@@ -49,7 +49,6 @@
               <a href="/web/feedback.html">學習回饋表</a>
             </div>
           </div>
-          
           <div class="dropdown hidden" id="admin-group-desktop">
             <a href="#" class="dropbtn">管理編輯</a>
             <div class="dropdown-content">
@@ -58,17 +57,10 @@
               <a href="/web/admin_page/admin-one-minutes.html">量表編輯</a>
             </div>
           </div>
-
         </div>
 
         <div class="nav-right">
-          <!-- 登入按鈕：膠囊綠色、含人形圖示 -->
-          <a href="#" id="login-link" class="btn nav-cta">
-            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" focusable="false">
-              <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z" fill="currentColor"/>
-            </svg>
-            <span>登入</span>
-          </a>
+          <a href="#" id="login-link" class="btn nav-cta">登入</a>
           <a href="#" id="logout-link" class="btn nav-cta secondary hidden">登出</a>
         </div>
       </nav>      
@@ -85,18 +77,27 @@
         <a href="/web/one-minute.html" class="sub">心聚指標</a>
         <a href="/web/feedback.html" class="sub">學習回饋表</a>
       </div>
-
       <div class="group hidden" id="admin-group-mobile">
         <span class="group-title">管理編輯</span>
         <a href="/web/admin_page/admin.html" class="sub">課程管理</a>
         <a href="/web/admin_page/admin-teachers.html" class="sub">師資專區</a>
         <a href="/web/admin_page/admin-one-minutes.html" class="sub">量表編輯</a>
       </div>
-
     </nav>
     <div class="backdrop" id="backdrop" hidden></div>
-    
   </header>
+
+  <!-- Auth Modal -->
+  <dialog id="auth-modal">
+    <form method="dialog" id="auth-form">
+      <label>Email <input id="auth-email" type="email" required /></label>
+      <label>Password <input id="auth-password" type="password" required /></label>
+      <menu>
+        <button id="btn-signin" value="signin">登入</button>
+        <button id="btn-signup" value="signup">註冊</button>
+      </menu>
+    </form>
+  </dialog>
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -107,9 +108,10 @@
   </footer>
   `.trim();
 
-  // 插入 body 頭尾
+  // 插入 body
   const frag = tpl.content;
   document.body.prepend(frag.querySelector('header'));
+  document.body.appendChild(frag.querySelector('dialog'));
   document.body.appendChild(frag.querySelector('footer'));
 
   // 初始化 QRCode
@@ -128,111 +130,69 @@
   const btn = document.getElementById('navToggle');
   const menu = document.getElementById('mobileMenu');
   const backdrop = document.getElementById('backdrop');
+  function openMenu(){ document.body.classList.add('menu-open'); btn.setAttribute('aria-expanded','true'); backdrop.hidden=false; }
+  function closeMenu(){ document.body.classList.remove('menu-open'); btn.setAttribute('aria-expanded','false'); backdrop.hidden=true; }
+  btn?.addEventListener('click', ()=>{ document.body.classList.contains('menu-open')?closeMenu():openMenu(); });
+  backdrop?.addEventListener('click', closeMenu);
+  window.addEventListener('keydown', (e)=>{ if (e.key==='Escape'&&document.body.classList.contains('menu-open')) closeMenu(); });
+  menu?.addEventListener('click',(e)=>{ if (e.target.closest('a')) closeMenu(); });
 
-  function openMenu() {
-    document.body.classList.add('menu-open');
-    btn.setAttribute('aria-expanded', 'true');
-    backdrop.hidden = false;
-    const firstLink = menu.querySelector('a');
-    firstLink && firstLink.focus();
-  }
-  function closeMenu() {
-    document.body.classList.remove('menu-open');
-    btn.setAttribute('aria-expanded', 'false');
-    backdrop.hidden = true;
-    btn.focus();
-  }
-  if (btn) {
-    btn.addEventListener('click', () => {
-      document.body.classList.contains('menu-open') ? closeMenu() : openMenu();
+  // === Auth / 登入登出 ===
+  const authModal = document.getElementById('auth-modal');
+  window.currentUser = null;
+  window.requireAuthOrOpenModal = function(e){
+    if (!window.currentUser){
+      if (e) e.preventDefault();
+      if (authModal && !authModal.open) authModal.showModal();
+      return false;
+    }
+    return true;
+  };
+
+  function bindAuthUI(){
+    document.getElementById('login-link')?.addEventListener('click',(e)=>{ e.preventDefault(); authModal?.showModal(); });
+    document.getElementById('logout-link')?.addEventListener('click',async(e)=>{ e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+
+    const email=document.getElementById('auth-email');
+    const passwd=document.getElementById('auth-password');
+    document.getElementById('btn-signin')?.addEventListener('click',async(e)=>{
+      e.preventDefault();
+      const { error } = await sb.auth.signInWithPassword({ email: email.value, password: passwd.value });
+      if (error){ alert('登入失敗：'+(error.message||'未知錯誤')); return; }
+      authModal.close(); location.reload();
+    });
+    document.getElementById('btn-signup')?.addEventListener('click',async(e)=>{
+      e.preventDefault();
+      const { error } = await sb.auth.signUp({ email: email.value, password: passwd.value });
+      if (error){ alert('註冊失敗：'+(error.message||'未知錯誤')); return; }
+      alert('已寄出驗證郵件'); authModal.close(); location.reload();
     });
   }
-  if (backdrop) backdrop.addEventListener('click', closeMenu);
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.body.classList.contains('menu-open')) closeMenu();
+
+  sb.auth.onAuthStateChange((_evt, session)=>{
+    window.currentUser = session?.user || null;
+    document.getElementById('login-link')?.classList.toggle('hidden',!!window.currentUser);
+    document.getElementById('logout-link')?.classList.toggle('hidden',!window.currentUser);
   });
-  if (menu) {
-    menu.addEventListener('click', (e) => {
-      const a = e.target.closest('a');
-      if (a) closeMenu();
-    });
-  }
-
-// === 同步「課程管理」：桌機/手機一起顯示或隱藏，並同步 href ===
-/*(function syncAdminLinkSetup(){
-  const adminDesktop = document.getElementById('admin-link');
-  const adminMobile  = document.getElementById('admin-link-m');
-
-  function syncAdminLink(){
-    if (!adminMobile) return;
-    if (!adminDesktop) { adminMobile.classList.add('hidden'); return; }
-
-    // 依桌機版 hidden 狀態切換手機版
-    const hidden = adminDesktop.classList.contains('hidden');
-    adminMobile.classList.toggle('hidden', hidden);
-
-    // 複製 href（若有設定）
-    const href = adminDesktop.getAttribute('href');
-    if (href) adminMobile.setAttribute('href', href);
-  }
-
-  // 初次同步
-  syncAdminLink();
-
-  // 登入／權限變更時，你的程式可能會增減 .hidden 或修改 href
-  // 用 MutationObserver 監聽變化並同步到手機
-  if (adminDesktop) {
-    new MutationObserver(syncAdminLink)
-      .observe(adminDesktop, { attributes: true, attributeFilter: ['class','href'] });
-  }
-})();*/
-
-
-// === 在 shared-layout.js 內，取代原本 revealAdminGroups ===
-(function () {
-  function onReady(cb) {
-    if (document.readyState !== 'loading') cb();
-    else document.addEventListener('DOMContentLoaded', cb);
-  }
-
-  // 等待 sb/supabase client（最多 3 秒）
-  async function waitForSupabaseClient(maxTries = 30, interval = 100) {
-    for (let i = 0; i < maxTries; i++) {
-      const c = window.sb || window.supabase; // 你的專案是用 sb
-      if (c && c.auth) return c;
-      await new Promise(r => setTimeout(r, interval));
+  sb.auth.getUser().then(({ data })=>{
+    window.currentUser = data?.user ?? null;
+    if (window.currentUser){
+      document.getElementById('login-link')?.classList.add('hidden');
+      document.getElementById('logout-link')?.classList.remove('hidden');
     }
-    return null;
-  }
+  });
 
-  async function revealAdminGroups() {
-    try {
-      const client = await waitForSupabaseClient();
-      if (!client) return; // 沒有 client 就安靜跳過
+  document.addEventListener('DOMContentLoaded', bindAuthUI);
 
-      const { data: userData } = await client.auth.getUser();
-      const user = userData?.user;
-      if (!user) return; // 未登入不顯示
+  // === Admin 區塊顯示 ===
+  (async function revealAdminGroups(){
+    const { data: userData } = await sb.auth.getUser();
+    const user = userData?.user;
+    if (!user) return;
+    const { data, error } = await sb.from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
+    if (error||!data) return;
+    document.getElementById('admin-group-desktop')?.classList.remove('hidden');
+    document.getElementById('admin-group-mobile')?.classList.remove('hidden');
+  })();
 
-      const { data, error } = await client
-        .from('admins')
-        .select('user_id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (error || !data) return; // 非管理者不顯示
-
-      document.getElementById('admin-group-desktop')?.classList.remove('hidden');
-      document.getElementById('admin-group-mobile')?.classList.remove('hidden');
-    } catch (err) {
-      console.warn('revealAdminGroups_error:', err);
-    }
-  }
-
-  onReady(revealAdminGroups);
 })();
-
-
-  
-})();
-
