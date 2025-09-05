@@ -118,7 +118,7 @@ body.modal-open { overflow: hidden; }
           <label>密碼
             <input type="password" id="signup-password" required placeholder="至少 6 碼" autocomplete="new-password" />
           </label>
-          <label>暱稱（必填）
+          <label>暱稱
             <input type="text" id="signup-nickname" required placeholder="例如：小芳、David" autocomplete="nickname" />
           </label>
           <div class="actions">
