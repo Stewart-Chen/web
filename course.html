@@ -72,13 +72,13 @@
     <!-- ＝＝ 新增：心聚 1 分鐘 三鍵＋三 QR ＝＝ -->
     <section class="card need-js">
       <h3>心聚 1 分鐘 · 場內操作</h3>
-      <p class="muted">同一支表單（one-minute.html），以網址參數 tp 切換課前/課後/72h。</p>
+      <p class="muted">同一支表單（one-minute.html），用參數 <code class="mono">tp=pre|post|72h</code> 切換課前/課後/72h。</p>
 
       <div class="row" style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
         <label>場次編號（session）：
           <input id="session-input" type="number" placeholder="例如 101" style="width:160px;">
         </label>
-        <span class="muted">課程 id 會自動帶入網址參數 <code class="mono">id</code>。</span>
+        <span class="muted">課程 id 會自動抓網址參數 <code class="mono">id</code>。</span>
       </div>
 
       <div class="actions" style="margin-top:8px;">
@@ -97,7 +97,7 @@
     <!-- ＝＝ 新增：測試課程（建立／查詢／清除）＝＝ -->
     <section class="card need-js" id="admin-tools">
       <h3>測試課程工具（僅管理員）</h3>
-      <p class="muted">快速建立一筆【測試】課程（category 會用 <code class="mono">horti</code>），或查詢／清除。</p>
+      <p class="muted">快速建立一筆【測試】課程（category：<code class="mono">horti</code>），或查詢／清除。</p>
 
       <div class="actions">
         <button id="btn-create-course" class="btn">建立測試課程</button>
@@ -106,7 +106,7 @@
       </div>
 
       <pre id="admin-log" class="mono" style="white-space:pre-wrap; background:#f6f8fa; padding:12px; border-radius:8px; margin-top:10px; max-height:300px; overflow:auto;">（操作結果會顯示在這裡）</pre>
-      <p class="muted">提示：若你看不到資料，多半是 RLS 權限限制或 anon 角色不可寫入 courses，見下方注意事項。</p>
+      <p class="muted">提示：若失敗，多半是 RLS 限制或 anon 角色不可寫入 <code>courses</code>；見下方注意事項。</p>
     </section>
 
     <!-- JS 關閉時提示 -->
@@ -114,19 +114,19 @@
   </main>
 
   <script>
-  // === 工具函式 ===
-  const qs = (s, root=document) => root.querySelector(s);
+  // === 唯一全域小工具：sel()，避免與 app.js 的 qs() 衝突 ===
+  const sel = (s, root=document) => root.querySelector(s);
 
   // 取得課程與場次參數
   const params    = new URLSearchParams(location.search);
   const courseId  = params.get('id') ? Number(params.get('id')) : null;
-  const defaultSession = params.get('session') || ''; // 若網址有帶，預設填入
-  const sessionInput = qs('#session-input');
+  const defaultSession = params.get('session') || '';
+  const sessionInput = sel('#session-input');
   if (sessionInput) sessionInput.value = defaultSession;
 
   // 產生 one-minute 連結
   function buildOneMinuteUrls() {
-    const sid = sessionInput.value ? Number(sessionInput.value) : '';
+    const sid = sessionInput && sessionInput.value ? Number(sessionInput.value) : '';
     const base = location.origin + location.pathname.replace(/course\.html.*/, '');
     const uPre  = `${base}one-minute.html?tp=pre${sid?`&session=${sid}`:''}${courseId?`&course=${courseId}`:''}`;
     const uPost = `${base}one-minute.html?tp=post${sid?`&session=${sid}`:''}${courseId?`&course=${courseId}`:''}`;
@@ -137,17 +137,17 @@
   function renderQRCards() {
     const {uPre,uPost,u72h} = buildOneMinuteUrls();
     // 按鈕
-    qs('#btn-pre').href  = uPre;
-    qs('#btn-post').href = uPost;
-    qs('#btn-72h').href  = u72h;
+    sel('#btn-pre').href  = uPre;
+    sel('#btn-post').href = uPost;
+    sel('#btn-72h').href  = u72h;
     // 文字
-    qs('#url-pre').textContent  = uPre;
-    qs('#url-post').textContent = uPost;
-    qs('#url-72h').textContent  = u72h;
+    sel('#url-pre').textContent  = uPre;
+    sel('#url-post').textContent = uPost;
+    sel('#url-72h').textContent  = u72h;
     // QR（清空重畫）
-    qs('#qr-pre').innerHTML = '';  new QRCode(qs('#qr-pre'),  {text:uPre,  width:128, height:128});
-    qs('#qr-post').innerHTML = ''; new QRCode(qs('#qr-post'), {text:uPost, width:128, height:128});
-    qs('#qr-72h').innerHTML = '';  new QRCode(qs('#qr-72h'),  {text:u72h,  width:128, height:128});
+    sel('#qr-pre').innerHTML = '';  new QRCode(sel('#qr-pre'),  {text:uPre,  width:128, height:128});
+    sel('#qr-post').innerHTML = ''; new QRCode(sel('#qr-post'), {text:uPost, width:128, height:128});
+    sel('#qr-72h').innerHTML = '';  new QRCode(sel('#qr-72h'),  {text:u72h,  width:128, height:128});
   }
 
   // 初始渲染 QR
@@ -156,22 +156,21 @@
   sessionInput?.addEventListener('input', renderQRCards);
 
   // === 測試課程：建立 / 查詢 / 清除 ===
-  // 前提：需要 RLS 允許目前登入者寫入/刪除 public.courses
-  // 若你用 anon key 而 RLS 僅允許 service_role，這三顆會失敗（屬預期）
+  // 需要 RLS 允許目前登入者寫入/刪除 public.courses
   async function supa() {
-    // 若 app.js 已初始化 window.supabase，沿用；否則請在 app.js 內完成初始化
+    // 若 app.js 已初始化 window.supabase，沿用；否則請在 app.js 內初始化
     if (window.supabase) return window.supabase;
-    // 備用：若無全域 supabase，這裡可以初始化（填入你的 URL/KEY）
+    // 備援：若無全域 supabase，這裡可自行初始化（填入你的 URL/KEY）
     // return supabase.createClient('https://YOUR-PROJECT.supabase.co', 'anon-or-service-role-key');
     throw new Error('Supabase 尚未初始化（請在 app.js 內初始化 window.supabase）');
   }
 
   const log = (msg) => {
-    const el = qs('#admin-log');
+    const el = sel('#admin-log');
     el.textContent = (el.textContent ? el.textContent + '\n' : '') + msg;
   };
 
-  qs('#btn-create-course')?.addEventListener('click', async () => {
+  sel('#btn-create-course')?.addEventListener('click', async () => {
     try {
       const s = await supa();
       const title = '【測試】園藝療癒體驗 ' + new Date().toLocaleString();
@@ -179,14 +178,13 @@
       const { data, error } = await s.from('courses').insert(payload).select('id,title,category,created_at').single();
       if (error) throw error;
       log('✅ 建立成功：id=' + data.id + '｜' + data.title);
-      // 若本頁沒有 courseId，可提示用這個 id 重新載入
       if (!courseId) log('ℹ️ 你可以用 ?id=' + data.id + ' 重新載入本頁，讓 QR 自動帶入 course=' + data.id);
     } catch (e) {
       console.error(e); log('❌ 建立失敗：' + (e.message || e));
     }
   });
 
-  qs('#btn-list-course')?.addEventListener('click', async () => {
+  sel('#btn-list-course')?.addEventListener('click', async () => {
     try {
       const s = await supa();
       const { data, error } = await s.from('courses')
@@ -202,7 +200,7 @@
     }
   });
 
-  qs('#btn-clear-course')?.addEventListener('click', async () => {
+  sel('#btn-clear-course')?.addEventListener('click', async () => {
     if (!confirm('確定要刪除所有「【測試】」開頭的課程嗎？')) return;
     try {
       const s = await supa();
