@@ -431,40 +431,6 @@ window.addEventListener('DOMContentLoaded', () => {
   renderTeacherPicksFromDb(teacherKey);
 });
 
-// ========== Admin 權限（僅控制連結可見；真正操作在 admin.html / admin.js） ==========
-
-// 1) 判斷是否為管理者（查 admins 表）
-async function isAdmin() {
-  if (!currentUser) return false;
-  const { data, error } = await supabase
-    .from('admins')
-    .select('user_id')
-    .eq('user_id', currentUser.id)
-    .maybeSingle();
-  return !!data && !error;
-}
-
-// 2) 連結顯示控制（導向 admin.html，不再開 dialog）
-/*async function updateAdminLink(){
-  const linkDesktop = document.getElementById('admin-link');
-  const linkMobile  = document.getElementById('admin-link-m');
-  const targets = [linkDesktop, linkMobile].filter(Boolean);
-
-  if (!targets.length) return;
-
-  if (!currentUser) {
-    targets.forEach(a => a.classList.add('hidden'));
-    return;
-  }
-
-  const ok = await isAdmin();
-  targets.forEach(a => {
-    if (!a) return;
-    a.classList.toggle('hidden', !ok);
-    a.setAttribute('href', 'admin.html'); // 一律導到獨立頁
-  });
-}*/
-
 // ====== Auth 初始化（同步桌機/手機的登入/登出顯示） ======
 supabase.auth.onAuthStateChange((_event, session) => {
   currentUser = session?.user || null;
@@ -474,7 +440,6 @@ supabase.auth.onAuthStateChange((_event, session) => {
   ['#logout-link', '#logout-link-m'].forEach(sel => {
     document.querySelector(sel)?.classList.toggle('hidden', !currentUser);
   });
-  //updateAdminLink();
 });
 
 supabase.auth.getUser().then(({ data }) => {
@@ -483,7 +448,6 @@ supabase.auth.getUser().then(({ data }) => {
     ['#login-link', '#login-link-m'].forEach(sel => document.querySelector(sel)?.classList.add('hidden'));
     ['#logout-link', '#logout-link-m'].forEach(sel => document.querySelector(sel)?.classList.remove('hidden'));
   }
-  //updateAdminLink();
   initPage();
 });
 
