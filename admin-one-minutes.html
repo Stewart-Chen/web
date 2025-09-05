@@ -1,143 +1,153 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-guard="checking">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>量表編輯｜HeartHub Studio 心聚坊</title>
 
-  <!-- 樣式 -->
-  <link rel="stylesheet" href="css/styles.css" />
+  <!-- 樣式與字型（比照 admin.html） -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- JS：Supabase / 共用 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="js/shared-layout.js"></script>
-  <script defer src="js/shared-dialog.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script defer src="js/app.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
 
   <style>
-    .hidden{ display:none!important; }
+    html[data-guard="checking"] main { visibility: hidden; }
+    main.page-admin { padding-top: 14px; padding-bottom: 32px; }
+    .admin-wrap { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:12px; }
+    .admin-card { padding:16px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:12px; box-shadow:var(--shadow-sm); }
+    .grid2 { display:grid; grid-template-columns:repeat(2,minmax(220px,1fr)); gap:12px; }
+    .grid3 { display:grid; grid-template-columns:repeat(3,minmax(180px,1fr)); gap:16px; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
     .wrap { word-break: break-all; }
-    .grid3 { display:grid; grid-template-columns:repeat(3, minmax(160px,1fr)); gap:16px; }
-    .grid2 { display:grid; grid-template-columns:repeat(2, minmax(200px,1fr)); gap:12px; }
-    .chip { display:inline-block; padding:2px 8px; border-radius:12px; background:#eef2ff; color:#374151; font-size:12px; }
-    .right { text-align:right; }
-    .muted small { opacity:.8; }
     .btn.copy { padding:6px 10px; font-size:12px; }
+    @media (max-width: 900px){ .admin-wrap { grid-template-columns:1fr; } }
   </style>
+
+  <!-- SDK / 共用腳本（比照 admin.html） -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/shared-layout.js"></script>
+  <script defer src="js/admin.js"></script>
+  <script defer src="js/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+  <!-- 守門：使用 sb（和 admin.html 一致） -->
+  <script>
+    function waitForSB(cb, tries=60){
+      if (window.sb) return cb();
+      if (tries <= 0) return console.error('guard: sb not ready');
+      setTimeout(()=>waitForSB(cb, tries-1), 100);
+    }
+    async function guardAdminPage() {
+      try {
+        const { data: userData } = await sb.auth.getUser();
+        const user = userData?.user;
+        if (!user) { location.replace('index.html?need_login=1'); return; }
+        const { data, error } = await sb.from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
+        if (error || !data) { location.replace('index.html'); return; }
+        document.documentElement.removeAttribute('data-guard');
+      } catch (err) {
+        console.error('guard error:', err);
+        location.replace('index.html');
+      }
+    }
+    waitForSB(guardAdminPage);
+  </script>
 </head>
 <body>
-  <main class="container flow-lg">
-    <!-- 頁首 -->
-    <section class="card">
-      <header class="flow-md">
-        <h2>量表編輯｜心聚 1 分鐘</h2>
-        <p class="muted">同一支表單 <code class="mono">one-minute.html</code> 以 <code class="mono">tp=pre|post|72h</code> 切換。這頁用來快速產生 <strong>課前/課後/72h</strong> 三個表單連結與 QR，並提供測試課程工具。</p>
-      </header>
-    </section>
+  <!-- 若缺 QRCode，提供 no-op（比照 admin.html 的容錯） -->
+  <script>
+    if (typeof window.QRCode === 'undefined') {
+      window.QRCode = function(){}; window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
+    }
+  </script>
 
-    <!-- A. 用現有課程 id 重新整理 QR -->
-    <section class="card">
-      <h3>A. 用現有課程 id 重新整理 QR</h3>
+  <main class="container page-admin">
+    <section class="admin-wrap">
+      <!-- 左欄：產生表單連結與 QR -->
+      <div class="admin-card">
+        <h3 style="margin:0;">A. 心聚 1 分鐘表單連結 / QR</h3>
+        <p class="muted" style="margin-top:6px;">
+          同一支 <code class="mono">one-minute.html</code>，以 <code class="mono">tp=pre|post|72h</code> 切換課前/課後/72h。
+          先選擇「現有課程」或手動輸入 id，再按「重新整理」。
+        </p>
 
-      <div class="grid2">
-        <label>選擇課程（最近 50 筆）
-          <select id="course-select" style="width:100%;">
-            <option value="">— 請選擇課程 —</option>
-          </select>
-        </label>
+        <div class="grid2" style="margin-top:10px;">
+          <label>選擇課程（最近 50 筆）
+            <select id="course-select">
+              <option value="">— 請選擇課程 —</option>
+            </select>
+          </label>
 
-        <label>或手動輸入課程 ID
-          <input id="course-input" type="number" placeholder="例如 55" />
-        </label>
-      </div>
+          <label>或手動輸入課程 ID
+            <input id="course-input" type="number" placeholder="例如 55" />
+          </label>
 
-      <div class="grid2" style="align-items:end;">
-        <label>場次編號（session，可空）
-          <input id="session-input" type="number" placeholder="例如 101" />
-        </label>
+          <label>場次編號（session，可空）
+            <input id="session-input" type="number" placeholder="例如 101" />
+          </label>
 
-        <div class="right">
-          <button id="btn-refresh" class="btn">重新整理連結與 QR</button>
+          <div style="display:flex; align-items:flex-end; justify-content:flex-end;">
+            <button id="btn-refresh" class="btn">重新整理連結與 QR</button>
+          </div>
         </div>
-      </div>
 
-      <div class="actions" style="margin-top:8px;">
-        <a id="btn-pre"  class="btn">課前表單</a>
-        <a id="btn-post" class="btn secondary">課後表單</a>
-        <a id="btn-72h"  class="btn outline">72 小時追蹤</a>
-      </div>
-
-      <div class="grid3" style="margin-top:12px;">
-        <div>
-          <div id="qr-pre"></div>
-          <p class="muted wrap mono" id="url-pre">—</p>
-          <button class="btn copy" data-copy="#url-pre">複製連結</button>
+        <div class="actions" style="margin-top:12px;">
+          <a id="btn-pre"  class="btn">課前表單</a>
+          <a id="btn-post" class="btn secondary">課後表單</a>
+          <a id="btn-72h"  class="btn outline">72 小時追蹤</a>
         </div>
-        <div>
-          <div id="qr-post"></div>
-          <p class="muted wrap mono" id="url-post">—</p>
-          <button class="btn copy" data-copy="#url-post">複製連結</button>
+
+        <div class="grid3" style="margin-top:12px;">
+          <div>
+            <div id="qr-pre"></div>
+            <p id="url-pre"  class="muted wrap mono">—</p>
+            <button class="btn copy" data-copy="#url-pre">複製連結</button>
+          </div>
+          <div>
+            <div id="qr-post"></div>
+            <p id="url-post" class="muted wrap mono">—</p>
+            <button class="btn copy" data-copy="#url-post">複製連結</button>
+          </div>
+          <div>
+            <div id="qr-72h"></div>
+            <p id="url-72h" class="muted wrap mono">—</p>
+            <button class="btn copy" data-copy="#url-72h">複製連結</button>
+          </div>
         </div>
-        <div>
-          <div id="qr-72h"></div>
-          <p class="muted wrap mono" id="url-72h">—</p>
-          <button class="btn copy" data-copy="#url-72h">複製連結</button>
-        </div>
+
+        <p class="muted" style="margin-top:8px;">
+          <small>提示：若 <code class="mono">course</code> 留空，連結仍可開啟頁面，但若 <code class="mono">one_minute.course_id</code> 設有外鍵，寫入會失敗。建議總是帶入存在的課程 id。</small>
+        </p>
       </div>
 
-      <p class="muted">
-        <small>提示：若 <code class="mono">course</code> 留空，連結仍可用，但插入 <code class="mono">one_minute</code> 時若設有外鍵，會失敗；建議總是帶入存在的課程 id。</small>
-      </p>
-    </section>
+      <!-- 右欄：測試課程工具 -->
+      <div class="admin-card">
+        <h3 style="margin:0;">B. 測試課程工具（僅管理員）</h3>
+        <p class="muted" style="margin-top:6px;">
+          快速建立一筆【測試】課程（category：<span class="mono">horti</span>），或查詢／清除。
+          需要 RLS 允許目前登入者可對 <code class="mono">public.courses</code> 進行 <em>insert/delete/select</em>。
+        </p>
 
-    <!-- B. 測試課程工具（建立 / 查詢 / 清除） -->
-    <section class="card">
-      <h3>B. 測試課程工具（僅管理員）</h3>
-      <p class="muted">快速建立一筆【測試】課程（category：<span class="chip">horti</span>），或查詢／清除。需要 RLS 允許目前登入者可對 <code class="mono">public.courses</code> 進行 <em>insert/delete/select</em>。</p>
+        <div class="actions" style="margin-top:8px;">
+          <button id="btn-create-course" class="btn">建立測試課程</button>
+          <button id="btn-list-course" class="btn secondary">查詢測試課程</button>
+          <button id="btn-clear-course" class="btn danger">清除測試課程</button>
+        </div>
 
-      <div class="actions">
-        <button id="btn-create-course" class="btn">建立測試課程</button>
-        <button id="btn-list-course" class="btn secondary">查詢測試課程</button>
-        <button id="btn-clear-course" class="btn danger">清除測試課程</button>
+        <pre id="admin-log" class="mono" style="white-space:pre-wrap; background:#f6f8fa; padding:12px; border-radius:8px; margin-top:10px; max-height:320px; overflow:auto;">（操作結果會顯示在這裡）</pre>
       </div>
-
-      <pre id="admin-log" class="mono" style="white-space:pre-wrap; background:#f6f8fa; padding:12px; border-radius:8px; margin-top:10px; max-height:320px; overflow:auto;">（操作結果會顯示在這裡）</pre>
-    </section>
-
-    <!-- C. 說明 -->
-    <section class="card">
-      <h3>C. 操作說明</h3>
-      <ul class="muted">
-        <li>這頁只產生「連結與 QR」，實際表單頁是 <code class="mono">one-minute.html</code>（同一頁用 <code class="mono">tp=pre|post|72h</code> 切換）。</li>
-        <li>為了避免與既有工具衝突，本頁使用 <code class="mono">sel()</code> 作為唯一選擇器。</li>
-        <li>若建立／刪除課程失敗，多半是 RLS 限制：請用管理員帳號或在伺服器端以 Service Role 呼叫。</li>
-      </ul>
     </section>
   </main>
 
   <script>
-    // === 唯一 selector，避免和 app.js 的工具衝突 ===
+    // 用 sel() 避免和其他工具函式衝突
     const sel = (s, root=document) => root.querySelector(s);
 
-    // Supabase client（沿用 app.js 已初始化的 window.supabase）
-    async function supa() {
-      if (window.supabase) return window.supabase;
-      // 若你需要單頁自行初始化，取消下一行註解並填入 URL/KEY
-      // return supabase.createClient('https://YOUR-PROJECT.supabase.co', 'anon-or-service-role-key');
-      throw new Error('Supabase 尚未初始化（請在 app.js 內初始化 window.supabase）');
-    }
-
-    // 取得目前路徑的專案根（用於組連結）
+    // 產生 one-minute 連結（課前/課後/72h）
     function baseRoot() {
-      // e.g. /course.html -> /
+      // e.g. /admin-one-minutes.html -> /
       return location.origin + location.pathname.replace(/admin-one-minutes\.html.*/, '');
     }
-
-    // 建立三條表單連結
-    function buildLinks(courseId, sessionId) {
+    function buildLinks(courseId, sessionId){
       const base = baseRoot();
       const c = courseId ? `&course=${Number(courseId)}` : '';
       const s = sessionId ? `&session=${Number(sessionId)}` : '';
@@ -147,9 +157,7 @@
         h72 : `${base}one-minute.html?tp=72h${s}${c}`,
       };
     }
-
-    // 重畫 QR＋按鈕＋連結
-    function renderAll() {
+    function renderAll(){
       const cid = sel('#course-input').value || sel('#course-select').value || '';
       const sid = sel('#session-input').value || '';
       const links = buildLinks(cid, sid);
@@ -159,7 +167,7 @@
       sel('#btn-post').href = links.post;
       sel('#btn-72h').href  = links.h72;
 
-      // 文字
+      // 連結文字
       sel('#url-pre').textContent  = links.pre;
       sel('#url-post').textContent = links.post;
       sel('#url-72h').textContent  = links.h72;
@@ -172,67 +180,61 @@
       new QRCode(sel('#qr-post'), { text: links.post, width:128, height:128 });
       new QRCode(sel('#qr-72h'),  { text: links.h72,  width:128, height:128 });
     }
-
-    // 複製連結
-    function bindCopyButtons() {
+    function bindCopyButtons(){
       document.querySelectorAll('.btn.copy').forEach(btn => {
         btn.addEventListener('click', async () => {
           const selTarget = btn.getAttribute('data-copy');
           const text = sel(selTarget).textContent.trim();
-          try {
-            await navigator.clipboard.writeText(text);
-            btn.textContent = '已複製';
-            setTimeout(() => btn.textContent = '複製連結', 1200);
-          } catch (e) {
-            alert('複製失敗，請手動選取文字複製');
-          }
+          try { await navigator.clipboard.writeText(text);
+            btn.textContent = '已複製'; setTimeout(()=>btn.textContent='複製連結', 1200);
+          } catch { alert('複製失敗，請手動選取文字複製'); }
         });
       });
     }
 
-    // 載入最近課程到下拉（預設抓 50 筆，若需要可加鍵字搜尋）
-    async function loadCourseOptions() {
+    // 載入最近 50 筆課程到下拉（用 sb，比照 admin.html）
+    async function loadCourseOptions(){
       try {
-        const s = await supa();
-        const { data, error } = await s.from('courses')
+        const { data, error } = await sb.from('courses')
           .select('id,title,category,published,created_at')
           .order('created_at', { ascending:false })
           .limit(50);
         if (error) throw error;
 
-        const selBox = sel('#course-select');
-        selBox.innerHTML = '<option value="">— 請選擇課程 —</option>';
-        (data || []).forEach(row => {
+        const box = sel('#course-select');
+        box.innerHTML = '<option value="">— 請選擇課程 —</option>';
+        (data||[]).forEach(row => {
           const opt = document.createElement('option');
           opt.value = row.id;
-          opt.textContent = `#${row.id}｜${row.title}（${row.category||'—'}）`;
-          selBox.appendChild(opt);
+          opt.textContent = `#${row.id}｜${row.title}（${row.category||"—"}）`;
+          box.appendChild(opt);
         });
       } catch (e) {
-        console.error(e);
+        console.error('loadCourseOptions:', e);
       }
     }
 
-    // 測試課程工具（建立 / 查詢 / 清除）
+    // 測試課程工具（走 sb；需要對 courses 的權限）
     const log = (msg) => {
       const el = sel('#admin-log');
       el.textContent = (el.textContent ? el.textContent + '\n' : '') + msg;
     };
-
-    async function bindAdminTools() {
-      const s = await supa();
-
+    function bindAdminTools(){
       sel('#btn-create-course')?.addEventListener('click', async () => {
         try {
           const title = '【測試】園藝療癒體驗 ' + new Date().toLocaleString();
           const payload = { title, summary:'用來測心聚 1 分鐘表單流程', category:'horti', published:true };
-          const { data, error } = await s.from('courses').insert(payload).select('id,title,category,created_at').single();
+          const { data, error } = await sb.from('courses')
+            .insert(payload)
+            .select('id,title,category,created_at').single();
           if (error) throw error;
           log('✅ 建立成功：id=' + data.id + '｜' + data.title);
           // 自動選到剛建立的課程
           sel('#course-input').value = data.id;
           sel('#course-select').value = '';
           renderAll();
+          // 刷新下拉
+          loadCourseOptions();
         } catch (e) {
           console.error(e); log('❌ 建立失敗：' + (e.message || e));
         }
@@ -240,7 +242,7 @@
 
       sel('#btn-list-course')?.addEventListener('click', async () => {
         try {
-          const { data, error } = await s.from('courses')
+          const { data, error } = await sb.from('courses')
             .select('id,title,category,published,created_at')
             .ilike('title','【測試】%')
             .order('created_at', { ascending:false })
@@ -256,7 +258,7 @@
       sel('#btn-clear-course')?.addEventListener('click', async () => {
         if (!confirm('確定要刪除所有「【測試】」開頭的課程嗎？')) return;
         try {
-          const { data, error } = await s.from('courses')
+          const { data, error } = await sb.from('courses')
             .delete()
             .ilike('title','【測試】%')
             .select('id');
@@ -274,15 +276,15 @@
       });
     }
 
-    // 綁定事件
-    function bindUI() {
+    // 綁定 UI 事件
+    function bindUI(){
       sel('#btn-refresh')?.addEventListener('click', renderAll);
       sel('#course-select')?.addEventListener('change', () => {
         sel('#course-input').value = sel('#course-select').value || '';
         renderAll();
       });
       sel('#course-input')?.addEventListener('input', () => {
-        sel('#course-select').value = ''; // 手動輸入時清除下拉選擇
+        sel('#course-select').value = ''; // 手動輸入時清空下拉
       });
       sel('#session-input')?.addEventListener('input', renderAll);
       bindCopyButtons();
@@ -291,8 +293,9 @@
     // 初始化
     (async () => {
       try {
+        // 這頁與 admin.html 一樣，sb 由 admin.js/app.js 初始化
         await loadCourseOptions();
-        await bindAdminTools();
+        bindAdminTools();
         bindUI();
         renderAll();
       } catch (e) {
@@ -302,4 +305,3 @@
   </script>
 </body>
 </html>
-
