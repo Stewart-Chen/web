@@ -10,49 +10,13 @@
   <link rel="stylesheet" href="../css/styles.css" />
   <link rel="stylesheet" href="../css/admin.css" />
 
-  <!-- Supabase SDK（本頁唯一 client：sb） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="../js/shared-layout.js"></script>
+  <script defer src="../js/admin_js/admin-guard.js"></script>
   <script defer src="../js/admin_js/admin.js"></script>
   <script defer src="../js/app.js"></script>
-
-  <!-- 守門：非登入/非管理者 → 導回首頁（不再強制切換 Header 的登入/登出） -->
-  <script>
-    function waitForSB(cb, tries=60){
-      if (window.sb) return cb();
-      if (tries <= 0) return console.error('guard: sb not ready');
-      setTimeout(()=>waitForSB(cb, tries-1), 100);
-    }
-    
-    async function guardAdminPage() {
-      try {
-        const { data: userData } = await sb.auth.getUser();
-        const user = userData?.user;
-        if (!user) { location.replace('index.html?need_login=1'); return; }
-
-        const { data, error } = await sb
-          .from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
-
-        if (error || !data) { location.replace('index.html'); return; }
-
-        // 通過 → 顯示內容
-        document.documentElement.removeAttribute('data-guard');
-      } catch (err) {
-        console.error('guard error:', err);
-        location.replace('index.html');
-      }
-    }
-    waitForSB(guardAdminPage);
-  </script>
 </head>
 <body>
-  <!-- 共用 Header / Footer（若沒有 QRCode 庫，提供 no-op 避免 shared-layout 報錯） -->
-  <script>
-    if (typeof window.QRCode === 'undefined') {
-      window.QRCode = function(){}; window.QRCode.CorrectLevel = {L:1,M:2,Q:3,H:4};
-    }
-  </script>
-  
   <main class="container page-admin">
     <section class="admin-wrap">
       <!-- 左欄：課程管理 -->
@@ -65,13 +29,11 @@
               <button type="button" class="btn primary" id="admin-new-course">＋ 新增課程</button>
             </div>
           </header>
-
           <div id="admin-courses" style="margin-top:10px;">
             <!-- 由 admin.js 產生清單 -->
           </div>
         </div>
       </div>
-
       <!-- 右欄：課程內容 + 單元 -->
       <div class="admin-col">
         <div class="admin-card">
@@ -90,7 +52,6 @@
               </select>
             </label>
             <label><input type="checkbox" id="ac-published" /> 已發佈（公開可見）</label>
-
             <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
               <button type="submit" class="btn primary">儲存</button>
               <button type="button" id="admin-soft-delete" class="btn secondary">移到回收（軟刪除）</button>
@@ -98,14 +59,11 @@
             </div>
           </form>
         </div>
-
         <div class="admin-card" style="margin-top:16px;">
           <h3 style="margin:0;">單元（Lessons）</h3>
-
           <div id="admin-lessons" style="margin-top:10px;">
             <!-- 由 admin.js 產生單元清單 -->
           </div>
-
           <form id="admin-lesson-form" class="form-grid" style="margin-top:12px;">
             <input type="hidden" id="al-id" />
             <label>順序 <input type="number" id="al-order" min="1" value="1" required /></label>
@@ -116,7 +74,6 @@
               <button type="button" id="admin-lesson-delete" class="btn danger">刪除選取單元</button>
             </div>
           </form>
-
           <p class="muted" style="margin-top:8px;">＊只有被加入管理者清單的帳號才能操作。</p>
         </div>
       </div>
