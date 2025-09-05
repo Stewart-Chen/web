@@ -1,25 +1,35 @@
 -- =========================================
--- moods：每日情緒紀錄
+-- one_minute：心聚 1 分鐘（課前 / 課後 / 72h）
 -- =========================================
 
-create table if not exists public.moods (
-  id            bigserial primary key,
-  user_id       uuid references auth.users(id) on delete set null,
-  course_id     bigint references public.courses(id) on delete set null,
+create table if not exists public.one_minute (
+  id               bigserial primary key,
+  user_id          uuid   references auth.users(id) on delete set null,
+  course_id        bigint references public.courses(id) on delete set null,
+  session_id       bigint,                                  -- 建議對應你的場次表（若有）
 
-  mood_date     date not null default (current_date),           -- 記錄日期（方便查「今天」）
-  mood          smallint check (mood between 1 and 5),          -- 1~5
-  energy        text check (energy in ('low','mid','high')),
-  stress        text check (stress in ('low','mid','high')),
-  tags          text[] default '{}'::text[],                    -- 影響面向（可複選）
-  activities    text[] default '{}'::text[],                    -- 活動（可複選）
-  note          text,                                           -- 備註（選填）
+  -- 三種時間點：pre / post / 72h
+  timepoint        text not null check (timepoint in ('pre','post','72h')),
 
-  submitted_at  timestamptz not null default now(),
-  updated_at    timestamptz not null default now()
+  -- 心聚四指標（1~5）
+  stability        smallint check (stability between 1 and 5),
+  recovery         smallint check (recovery between 1 and 5),
+  connectedness    smallint check (connectedness between 1 and 5),
+  focus            smallint check (focus between 1 and 5),
+
+  -- 輔助題（課後/72h 才會填）
+  nps              smallint check (nps between 0 and 10),    -- 0~10
+  one_line         text,                                     -- 一句話收穫
+  next_actions     text[] default '{}'::text[],              -- 課後的行動意向（post）
+  actions_done     text[] default '{}'::text[],              -- 72h 的行動完成（72h）
+  adoption_scope   text[] default '{}'::text[],              -- 帶到：個人/家人/同事/社團（post）
+
+  instrument_version text default 'v1',                      -- 量表版本（治理）
+  submitted_at     timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
 );
 
--- 觸發器：自動更新 updated_at
+-- 觸發器：自動更新 updated_at（若你專案已存在可略過）
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -30,20 +40,22 @@ begin
 end;
 $$;
 
-drop trigger if exists trg_moods_set_updated on public.moods;
-create trigger trg_moods_set_updated
-before update on public.moods
+drop trigger if exists trg_one_minute_set_updated on public.one_minute;
+create trigger trg_one_minute_set_updated
+before update on public.one_minute
 for each row execute function public.set_updated_at();
 
 -- 索引
-create index if not exists moods_user_idx      on public.moods(user_id);
-create index if not exists moods_course_idx    on public.moods(course_id);
-create index if not exists moods_date_idx      on public.moods(mood_date);
+create index if not exists one_minute_user_idx     on public.one_minute(user_id);
+create index if not exists one_minute_course_idx   on public.one_minute(course_id);
+create index if not exists one_minute_session_idx  on public.one_minute(session_id);
+create index if not exists one_minute_tp_idx       on public.one_minute(timepoint);
+create index if not exists one_minute_submitted_at on public.one_minute(submitted_at);
 
 -- 啟用 RLS
-alter table public.moods enable row level security;
+alter table public.one_minute enable row level security;
 
--- 輔助：是否為 service role
+-- （若你專案已經有 is_service_role() 就不用重建）
 create or replace function public.is_service_role()
 returns boolean
 language sql
@@ -55,29 +67,28 @@ as $$
   )::jsonb ->> 'role' = 'service_role'
 $$;
 
--- Policies
-drop policy if exists "Read own moods or service role" on public.moods;
-create policy "Read own moods or service role"
-on public.moods
+-- Policies（與 moods 相同概念）
+drop policy if exists "Read own records or service role" on public.one_minute;
+create policy "Read own records or service role"
+on public.one_minute
 for select
 using ( public.is_service_role() or auth.uid() = user_id );
 
-drop policy if exists "Insert own mood or service role" on public.moods;
-create policy "Insert own mood or service role"
-on public.moods
+drop policy if exists "Insert own record or service role" on public.one_minute;
+create policy "Insert own record or service role"
+on public.one_minute
 for insert
 with check ( public.is_service_role() or auth.uid() = user_id );
 
-drop policy if exists "Update own mood or service role" on public.moods;
-create policy "Update own mood or service role"
-on public.moods
+drop policy if exists "Update own record or service role" on public.one_minute;
+create policy "Update own record or service role"
+on public.one_minute
 for update
 using ( public.is_service_role() or auth.uid() = user_id )
 with check ( public.is_service_role() or auth.uid() = user_id );
 
-drop policy if exists "Delete by service role only" on public.moods;
+drop policy if exists "Delete by service role only" on public.one_minute;
 create policy "Delete by service role only"
-on public.moods
+on public.one_minute
 for delete
 using ( public.is_service_role() );
-
