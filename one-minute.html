@@ -2,31 +2,68 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <title>心聚1分鐘｜HeartHub Studio 心聚坊</title>
+  <title>心聚 1 分鐘｜HeartHub Studio 心聚坊</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 樣式與字型 -->
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- SDK / 共用腳本：順序很重要！ -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="js/shared-layout.js"></script>
   <script defer src="js/shared-dialog.js"></script>
   <script defer src="js/app.js"></script>
+
   <style>
     .hidden { display:none !important; }
+    .pill-group{ display:flex; gap:8px; flex-wrap:wrap; }
+    .pill{ padding:6px 12px; border:1px solid #ddd; border-radius:999px; background:#fff; cursor:pointer; }
+    .pill[aria-pressed="true"]{ background:#0ea5e9; color:#fff; border-color:#0ea5e9; }
+    .ctrl-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
   </style>
 </head>
 <body>
   <main class="container flow-lg">
+
+    <!-- A. 控制台：切換 tp + 輸入 course/session（預設：課前、ID 皆空） -->
+    <section class="card">
+      <h3 style="margin:0;">心聚 1 分鐘 — 控制台</h3>
+      <p class="muted" style="margin-top:6px;">選擇時間點與（可選）輸入課程 / 場次。按「套用到頁面」即可更新下方表單，不必重整。</p>
+
+      <div class="pill-group" role="group" aria-label="時間點">
+        <button class="pill" data-tp="pre"  aria-pressed="true">課前</button>
+        <button class="pill" data-tp="post" aria-pressed="false">課後</button>
+        <button class="pill" data-tp="72h"  aria-pressed="false">72 小時追蹤</button>
+      </div>
+
+      <div class="ctrl-grid" style="margin-top:10px;">
+        <label>課程 ID（可留空）
+          <input id="ctrl-course" type="number" inputmode="numeric" placeholder="例如 55">
+        </label>
+        <label>場次 ID（可留空）
+          <input id="ctrl-session" type="number" inputmode="numeric" placeholder="例如 101">
+        </label>
+        <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
+          <button id="ctrl-apply" class="btn">套用到頁面</button>
+          <button id="ctrl-write-url" class="btn secondary">把設定寫到網址</button>
+          <span id="ctrl-url" class="muted mono" style="word-break:break-all;"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- B. 表單本體 -->
     <section class="card">
       <header class="flow-md">
-        <h2>心聚1分鐘（<span id="tp-label">課前</span>）</h2>
+        <h2>心聚 1 分鐘（<span id="tp-label">課前</span>）</h2>
         <p class="muted">只要 1 分鐘，記錄你的狀態；這些資料會轉成「心聚指標」報告。</p>
       </header>
 
       <form id="one-minute-form" class="flow-md">
-        <!-- 隱藏欄位 -->
+        <!-- 隱藏欄位（由控制台維護） -->
         <input type="hidden" name="timepoint" id="timepoint" value="pre">
         <input type="hidden" name="session_id" id="session_id">
-        <input type="hidden" name="course_id" id="course_id">
+        <input type="hidden" name="course_id"  id="course_id">
 
         <!-- A. 四指標（1~5） -->
         <fieldset class="card">
@@ -73,7 +110,7 @@
           </div>
         </fieldset>
 
-        <!-- B. NPS（所有時間點可留著；72h 可選填） -->
+        <!-- B. NPS（72h 可選填） -->
         <fieldset class="card">
           <legend><strong>5）你願意推薦這堂課嗎？</strong>（0–10）</legend>
           <div class="actions" role="radiogroup" aria-label="NPS">
@@ -137,100 +174,215 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // ===== 狀態 =====
+      const pills = Array.from(document.querySelectorAll('.pill[data-tp]'));
+      const tpLabel = document.getElementById('tp-label');
+      const inputCourse  = document.getElementById('ctrl-course');
+      const inputSession = document.getElementById('ctrl-session');
+      const btnApply     = document.getElementById('ctrl-apply');
+      const btnWriteUrl  = document.getElementById('ctrl-write-url');
+      const urlBox       = document.getElementById('ctrl-url');
+
       const form = document.getElementById('one-minute-form');
       const btnCancel = document.getElementById('btn-cancel');
-      const tpLabel = document.getElementById('tp-label');
 
-      // 解析 URL 參數
-      const params   = new URLSearchParams(location.search);
-      const tp       = (params.get('tp') || 'pre').toLowerCase(); // 'pre' | 'post' | '72h'
-      const sessionId= params.get('session') ? Number(params.get('session')) : null;
-      const courseId = params.get('course')  ? Number(params.get('course'))  : null;
+      const hTimepoint = document.getElementById('timepoint');
+      const hCourseId  = document.getElementById('course_id');
+      const hSessionId = document.getElementById('session_id');
 
-      // 設定隱藏欄位
-      document.getElementById('timepoint').value = tp;
-      document.getElementById('session_id').value = sessionId || '';
-      document.getElementById('course_id').value  = courseId  || '';
-
-      // 顯示/隱藏區塊
       const elPostActions = document.getElementById('post-only-actions');
       const elPostScope   = document.getElementById('post-only-scope');
       const el72h         = document.getElementById('h72-only');
 
-      if (tp === 'pre') {
-        tpLabel.textContent = '課前';
-        elPostActions.classList.add('hidden');
-        elPostScope.classList.add('hidden');
-        el72h.classList.add('hidden');
-      } else if (tp === 'post') {
-        tpLabel.textContent = '課後';
-        elPostActions.classList.remove('hidden');
-        elPostScope.classList.remove('hidden');
-        el72h.classList.add('hidden');
-      } else { // 72h
-        tpLabel.textContent = '72 小時追蹤';
-        elPostActions.classList.add('hidden');
-        elPostScope.classList.add('hidden');
-        el72h.classList.remove('hidden');
+      // 預設：課前 / ids 皆空
+      let currentTp = 'pre';
+      let currentCourse = null;
+      let currentSession = null;
+
+      // 嘗試從網址帶初值（若無就用預設）
+      const params = new URLSearchParams(location.search);
+      if (['pre','post','72h'].includes((params.get('tp')||'').toLowerCase())) {
+        currentTp = params.get('tp').toLowerCase();
+      }
+      currentCourse  = params.get('course')  ? Number(params.get('course'))  : null;
+      currentSession = params.get('session') ? Number(params.get('session')) : null;
+
+      // 初始化控制台 UI
+      function syncPills(){
+        pills.forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.tp === currentTp)));
+      }
+      function applyStateToForm(){
+        // 隱藏欄位
+        hTimepoint.value = currentTp;
+        hCourseId.value  = currentCourse  ?? '';
+        hSessionId.value = currentSession ?? '';
+
+        // 顯示標籤
+        tpLabel.textContent = (currentTp === 'pre') ? '課前' : (currentTp === 'post' ? '課後' : '72 小時追蹤');
+
+        // 區塊顯示/隱藏
+        if (currentTp === 'pre'){
+          elPostActions.classList.add('hidden');
+          elPostScope.classList.add('hidden');
+          el72h.classList.add('hidden');
+        } else if (currentTp === 'post'){
+          elPostActions.classList.remove('hidden');
+          elPostScope.classList.remove('hidden');
+          el72h.classList.add('hidden');
+        } else { // 72h
+          elPostActions.classList.add('hidden');
+          elPostScope.classList.add('hidden');
+          el72h.classList.remove('hidden');
+        }
+
+        // 控制台輸入框
+        inputCourse.value  = currentCourse  ?? '';
+        inputSession.value = currentSession ?? '';
+
+        // 預覽連結
+        const base = location.origin + location.pathname;
+        const qs = new URLSearchParams();
+        qs.set('tp', currentTp);
+        if (currentCourse  != null && currentCourse  !== '') qs.set('course',  String(currentCourse));
+        if (currentSession != null && currentSession !== '') qs.set('session', String(currentSession));
+        urlBox.textContent = base + '?' + qs.toString();
       }
 
+      // 綁定 pill 點擊
+      pills.forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentTp = btn.dataset.tp;
+          syncPills();
+          applyStateToForm();
+        });
+      });
+
+      // 套用到頁面（不改網址）
+      btnApply.addEventListener('click', () => {
+        const c = inputCourse.value.trim();
+        const s = inputSession.value.trim();
+        currentCourse  = c === '' ? null : Number(c);
+        currentSession = s === '' ? null : Number(s);
+        syncPills();
+        applyStateToForm();
+      });
+
+      // 把狀態寫到網址（pushState，不刷新頁面）
+      btnWriteUrl.addEventListener('click', () => {
+        const base = location.origin + location.pathname;
+        const qs = new URLSearchParams();
+        qs.set('tp', currentTp);
+        if (currentCourse  != null && currentCourse  !== '') qs.set('course',  String(currentCourse));
+        if (currentSession != null && currentSession !== '') qs.set('session', String(currentSession));
+        const next = base + '?' + qs.toString();
+        history.pushState(null, '', next);
+        urlBox.textContent = next;
+      });
+
+      // 初始化一次
+      syncPills();
+      applyStateToForm();
+
+      // 取消返回
       btnCancel?.addEventListener('click', () => {
         if (document.referrer) history.back();
         else location.href = 'index.html';
       });
 
+      // ===== 送出（含穩健化 + display_name 帶入） =====
       form?.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // 需要登入（會自動開登入/註冊 dialog）
         if (typeof requireAuthOrOpenModal === 'function'){
           if (!requireAuthOrOpenModal(e)) return;
         }
 
+        const user = window.currentUser || null;
+        if (!user) { alert('請先登入再送出表單'); return; }
+
+        const displayName =
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.user_metadata?.nickname || null;
+
         const fd = new FormData(form);
+        const getChecked = (name) => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
 
-        // 取多選值
-        const getChecked = (name) => {
-          return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
-        };
-
-        // post 的「其他」補上
+        // post 的其他
         const nextActions = getChecked('next_actions');
         const naOther = (fd.get('next_actions_other')||'').trim();
         if (naOther) nextActions.push(naOther);
 
-        // 72h 的「其他」補上
+        // 72h 的其他
         const doneActions = getChecked('actions_done');
         const daOther = (fd.get('actions_done_other')||'').trim();
         if (daOther) doneActions.push(daOther);
 
+        const toNum = (v) => (v===null || v==='') ? null : Number(v);
+        const stability     = toNum(fd.get('stability'));
+        const recovery      = toNum(fd.get('recovery'));
+        const connectedness = toNum(fd.get('connectedness'));
+        const focus         = toNum(fd.get('focus'));
+        const nps           = toNum(fd.get('nps'));
+
+        if (![stability,recovery,connectedness,focus].every(n => typeof n === 'number' && n>=1 && n<=5)){
+          alert('四個核心指標需要 1~5 的分數'); return;
+        }
+        if (!(currentTp === 'pre' || currentTp === 'post' || currentTp === '72h')) {
+          alert('timepoint 錯誤'); return;
+        }
+        if (!(nps === null || (nps>=0 && nps<=10))) {
+          alert('NPS 需為 0–10'); return;
+        }
+
+        const supabase = window.sb;
+        if (!supabase) { alert('Supabase 尚未初始化'); return; }
+
         const payload = {
-          user_id: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : null,
-          course_id: courseId,
-          session_id: sessionId,
-          timepoint: tp,
-          stability: Number(fd.get('stability')),
-          recovery: Number(fd.get('recovery')),
-          connectedness: Number(fd.get('connectedness')),
-          focus: Number(fd.get('focus')),
-          nps: fd.get('nps') !== null ? Number(fd.get('nps')) : null,
+          user_id: user.id,
+          course_id: currentCourse ?? null,
+          session_id: currentSession ?? null,
+          timepoint: currentTp,
+          stability,
+          recovery,
+          connectedness,
+          focus,
+          nps,
           one_line: String(fd.get('one_line') || ''),
-          next_actions: (tp === 'post') ? nextActions : [],
-          actions_done: (tp === '72h') ? doneActions : [],
-          adoption_scope: (tp === 'post') ? getChecked('adoption_scope') : [],
+          next_actions: (currentTp === 'post') ? nextActions : [],
+          actions_done: (currentTp === '72h') ? doneActions : [],
+          adoption_scope: (currentTp === 'post') ? getChecked('adoption_scope') : [],
+          display_name: displayName || null,
           submitted_at: new Date().toISOString()
         };
 
         try {
-          const { error } = await sb.from('one_minute').insert(payload);
-          if (error) throw error;
+          const { error } = await supabase.from('one_minute').insert(payload);
+          if (error) {
+            console.error('[one_minute insert error]', error);
+            alert(`送出失敗：
+- code: ${error.code || 'n/a'}
+- message: ${error.message || 'n/a'}
+- details: ${error.details || 'n/a'}`);
+            return;
+          }
           alert('已送出，謝謝你的回饋 🌿');
-
-          // 導回
-          if (courseId) location.href = `course.html?id=${courseId}`;
+          if (currentCourse) location.href = `course.html?id=${currentCourse}`;
           else location.href = 'index.html';
         } catch (err) {
           console.error(err);
-          alert('送出失敗，請稍後再試或聯絡我們。');
+          alert('送出失敗（例外），請稍後再試或聯絡我們。');
         }
+      });
+
+      // 返回時維持 UI
+      window.addEventListener('popstate', () => {
+        const p = new URLSearchParams(location.search);
+        currentTp = (p.get('tp')||'pre').toLowerCase();
+        currentCourse  = p.get('course')  ? Number(p.get('course'))  : null;
+        currentSession = p.get('session') ? Number(p.get('session')) : null;
+        syncPills(); applyStateToForm();
       });
     });
   </script>
