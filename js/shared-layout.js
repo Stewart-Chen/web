@@ -53,9 +53,9 @@
           <div class="dropdown hidden" id="admin-group-desktop">
             <a href="#" class="dropbtn">管理編輯</a>
             <div class="dropdown-content">
-              <a href="admin.html">課程管理</a>
-              <a href="admin-teachers.html">師資專區</a>
-              <a href="admin-one-minutes.html">量表編輯</a>
+              <a href="admin_page/admin.html">課程管理</a>
+              <a href="admin_page/admin-teachers.html">師資專區</a>
+              <a href="admin_page/admin-one-minutes.html">量表編輯</a>
             </div>
           </div>
 
@@ -88,9 +88,9 @@
 
       <div class="group hidden" id="admin-group-mobile">
         <span class="group-title">管理編輯</span>
-        <a href="admin.html" class="sub">課程管理</a>
-        <a href="admin-teachers.html" class="sub">師資專區</a>
-        <a href="admin-one-minutes.html" class="sub">量表編輯</a>
+        <a href="admin_page/admin.html" class="sub">課程管理</a>
+        <a href="admin_page/admin-teachers.html" class="sub">師資專區</a>
+        <a href="admin_page/admin-one-minutes.html" class="sub">量表編輯</a>
       </div>
 
     </nav>
