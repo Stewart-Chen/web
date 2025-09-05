@@ -119,7 +119,7 @@
     var el = document.getElementById('qrcode');
     if (!el || typeof QRCode === "undefined") return;
     new QRCode(el, {
-      text: "https://stewart-chen.github.io/web/",
+      text: window.location.href,
       width: 200,
       height: 200,
       correctLevel: QRCode.CorrectLevel.M
