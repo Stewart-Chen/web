@@ -1,7 +1,7 @@
 // === shared-dialog.js ===
 // Shared dialogs (lesson/enroll/auth) with idempotent mounting & modal behaviors.
 (function(){
-  // 任何頁面只允許掛一次（避免重複注入）
+  // 防止重覆掛載
   if (window.__SHARED_DIALOGS_MOUNTED__) return;
   window.__SHARED_DIALOGS_MOUNTED__ = true;
 
@@ -32,6 +32,11 @@ dialog .panel, dialog form.card {
   max-height: calc(90dvh - 32px);
 }
 
+/* Form 排版與間距（避免被全站樣式擠成一行） */
+dialog form.card label { display:block; margin:8px 0; font-weight:600; }
+dialog form.card label input { width:100%; box-sizing:border-box; margin-top:6px; }
+dialog form.card .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+
 /* 管理面板比較大 */
 #admin-panel { width: min(980px, 95vw); max-width: 95vw; }
 
@@ -49,7 +54,6 @@ body.modal-open { overflow: hidden; }
 
   // --- 2) Helpers ---
   function ensureDialog(id, html){
-    // 若頁面上不存在該 id，才建立
     if (!document.getElementById(id)) {
       const t = document.createElement('template');
       t.innerHTML = html.trim();
@@ -64,22 +68,20 @@ body.modal-open { overflow: hidden; }
     dlg.addEventListener('cancel', off);
     if (dlg.showModal && !dlg.__patchedShowModal) {
       const orig = dlg.showModal.bind(dlg);
-      dlg.showModal = function(){
-        orig();
-        document.body.classList.add('modal-open');
-      };
+      dlg.showModal = function(){ orig(); document.body.classList.add('modal-open'); };
       dlg.__patchedShowModal = true;
     }
   }
 
   // --- 3) Mount dialogs (idempotent) ---
+
   // 3-1) 單元內容對話框
   const lessonDlg = ensureDialog('lesson-modal', `
     <dialog id="lesson-modal">
       <form method="dialog" class="card panel">
         <h3 id="lesson-title">單元</h3>
         <article id="lesson-content" class="prose" style="margin-top:6px;"></article>
-        <div class="actions" style="margin-top:10px; display:flex; gap:10px;">
+        <div class="actions" style="display:flex; gap:10px;">
           <button id="mark-done" class="btn primary">標記完成</button>
           <button value="close" class="btn secondary">關閉</button>
         </div>
@@ -87,23 +89,31 @@ body.modal-open { overflow: hidden; }
     </dialog>
   `);
 
-  // 3-2) Auth 對話框（若 shared-layout.js 已提供，就不再建立）
+  // 3-2) Auth 對話框（若頁面已存在同 id 則略過）
   const authDlg = document.getElementById('auth-modal') || ensureDialog('auth-modal', `
     <dialog id="auth-modal">
       <form method="dialog" class="card panel">
         <h3>登入 / 註冊</h3>
+
         <label>Email
           <input type="email" id="auth-email" required placeholder="you@example.com" autocomplete="email" />
         </label>
+
         <label>密碼
           <input type="password" id="auth-password" required placeholder="至少 6 碼" autocomplete="current-password" />
         </label>
-        <div class="actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
-          <button id="btn-signin"  value="signin"  class="btn primary">登入</button>
-          <button id="btn-signup"  value="signup"  class="btn secondary">註冊</button>
+
+        <label>怎麼稱呼（選填）
+          <input type="text" id="auth-nickname" placeholder="例如：小芳、David" autocomplete="nickname" />
+        </label>
+
+        <div class="actions">
+          <button id="btn-signin"  class="btn primary">登入</button>
+          <button id="btn-signup"  class="btn secondary">註冊</button>
           <button type="button" class="btn" onclick="document.getElementById('auth-modal').close()">取消</button>
         </div>
-        <p class="muted" style="margin:8px 0 0;">
+
+        <p class="muted" style="margin:6px 0 0;">
           若顯示「Email not confirmed」，請到信箱點驗證連結或再試註冊以重寄驗證信。
         </p>
       </form>
@@ -135,6 +145,9 @@ body.modal-open { overflow: hidden; }
     </dialog>
   `);
 
-  // --- 4) Behaviors: lock scroll when any dialog open ---
+  // --- 4) Behaviors ---
   [lessonDlg, authDlg, enrollDlg, document.getElementById('admin-panel')].forEach(bindModalLock);
+
+  // 通知其他腳本（例如 shared-layout.js）可以綁定按鈕事件
+  document.dispatchEvent(new Event('dialogs:mounted'));
 })();
