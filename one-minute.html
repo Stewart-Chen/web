@@ -15,16 +15,15 @@
   </style>
 </head>
 <body>
-  <header id="site-header"></header>
-
-  <main class="container narrow">
-    <section class="flow-lg">
+  <main class="container flow-lg">
+    <section class="card">
       <header class="flow-md">
         <h2>心聚1分鐘（<span id="tp-label">課前</span>）</h2>
+        <p class="muted">只要 1 分鐘，記錄你的狀態；這些資料會轉成「心聚指標」報告。</p>
       </header>
 
-      <!-- 控制面板：表格切換 + 手動輸入 Course/Session ID -->
-      <div id="control-panel" class="card" style="margin:10px 0; padding:12px;">
+      <!-- 控制面板：表格切換 + 手動輸入 Course / Session ID -->
+      <div id="control-panel" class="card" style="margin-bottom:12px;">
         <div class="grid2" style="align-items:end; gap:12px;">
           <div>
             <label style="display:block; font-weight:600; margin-bottom:6px;">表格切換</label>
@@ -35,10 +34,10 @@
             </div>
           </div>
           <div>
-            <label style="display:block; font-weight:600; margin-bottom:6px;">手動輸入 Course / Session ID</label>
+            <label style="display:block; font-weight:600; margin-bottom:6px;">手動輸入 Course / Session ID（可留空）</label>
             <div class="grid2" style="gap:8px;">
-              <input id="inp-course-id" type="number" inputmode="numeric" placeholder="course id（可留空）" />
-              <input id="inp-session-id" type="number" inputmode="numeric" placeholder="session id（可留空）" />
+              <input id="inp-course-id" type="number" inputmode="numeric" placeholder="course id">
+              <input id="inp-session-id" type="number" inputmode="numeric" placeholder="session id">
             </div>
             <div class="actions" style="justify-content:flex-start; margin-top:8px;">
               <button type="button" class="btn" id="btn-apply-ctrls">套用</button>
@@ -48,43 +47,27 @@
         </div>
       </div>
 
-      <p class="muted">
-        本表單用於課前/課後/72h 的一分鐘快速回饋。請依照當下時間點選擇上方切換。<br>
-        （若以網址帶入 <code>?tp=pre|post|72h&course=123&session=456</code>，會自動帶入。）
-      </p>
-
       <form id="one-minute-form" class="flow-md">
-        <!-- 隱藏欄位（若原始沒有則自動補齊） -->
-        <input type="hidden" id="timepoint" name="timepoint">
-        <input type="hidden" id="course_id" name="course_id">
-        <input type="hidden" id="session_id" name="session_id">
+        <!-- 隱藏欄位 -->
+        <input type="hidden" name="timepoint" id="timepoint" value="pre">
+        <input type="hidden" name="session_id" id="session_id">
+        <input type="hidden" name="course_id" id="course_id">
 
+        <!-- A. 四指標（1~5） -->
         <fieldset class="card">
-          <legend><strong>基本資訊</strong></legend>
-          <div class="grid2">
-            <label>姓名
-              <input type="text" name="name" placeholder="可留空" autocomplete="name">
-            </label>
-            <label>Email
-              <input type="email" name="email" placeholder="可留空" autocomplete="email">
-            </label>
+          <legend><strong>1）穩定度</strong>（1 不穩 → 5 很穩）</legend>
+          <div class="actions" role="radiogroup" aria-label="穩定度">
+            <label><input type="radio" name="stability" value="1" required>1</label>
+            <label><input type="radio" name="stability" value="2">2</label>
+            <label><input type="radio" name="stability" value="3">3</label>
+            <label><input type="radio" name="stability" value="4">4</label>
+            <label><input type="radio" name="stability" value="5">5</label>
           </div>
         </fieldset>
 
         <fieldset class="card">
-          <legend><strong>1）情緒狀態</strong>（1 很難受 → 5 很舒服）</legend>
-          <div class="actions" role="radiogroup" aria-label="情緒狀態">
-            <label><input type="radio" name="mood" value="1" required>1</label>
-            <label><input type="radio" name="mood" value="2">2</label>
-            <label><input type="radio" name="mood" value="3">3</label>
-            <label><input type="radio" name="mood" value="4">4</label>
-            <label><input type="radio" name="mood" value="5">5</label>
-          </div>
-        </fieldset>
-
-        <fieldset class="card">
-          <legend><strong>2）身體復原力</strong>（1 很弱 → 5 很好）</legend>
-          <div class="actions" role="radiogroup" aria-label="身體復原力">
+          <legend><strong>2）壓力復原</strong>（1 幾乎無法復原 → 5 很快能復原）</legend>
+          <div class="actions" role="radiogroup" aria-label="壓力復原">
             <label><input type="radio" name="recovery" value="1" required>1</label>
             <label><input type="radio" name="recovery" value="2">2</label>
             <label><input type="radio" name="recovery" value="3">3</label>
@@ -104,46 +87,70 @@
           </div>
         </fieldset>
 
-        <!-- 課後專屬區塊 -->
-        <section id="post-only-actions" class="card hidden">
-          <h3 style="margin-top:0;">課後：課程體驗</h3>
-          <label>今天課程讓我感到
-            <select name="post_feel">
-              <option value="">（請選擇）</option>
-              <option value="relaxed">放鬆</option>
-              <option value="energized">有能量</option>
-              <option value="neutral">普通</option>
-              <option value="tired">有些疲倦</option>
-            </select>
-          </label>
-          <label>今天最有感的一件事（可留空）
-            <textarea name="post_note" rows="3" placeholder="自由填寫"></textarea>
-          </label>
-        </section>
+        <fieldset class="card">
+          <legend><strong>4）專注力</strong>（1 很難專心 → 5 很能專心）</legend>
+          <div class="actions" role="radiogroup" aria-label="專注力">
+            <label><input type="radio" name="focus" value="1" required>1</label>
+            <label><input type="radio" name="focus" value="2">2</label>
+            <label><input type="radio" name="focus" value="3">3</label>
+            <label><input type="radio" name="focus" value="4">4</label>
+            <label><input type="radio" name="focus" value="5">5</label>
+          </div>
+        </fieldset>
 
-        <!-- 課後專屬：資料範圍 -->
-        <section id="post-only-scope" class="card hidden">
-          <h3 style="margin-top:0;">課後：資料範圍</h3>
-          <label class="checkbox"><input type="checkbox" name="share_to_course"> 同步至課程層級（匿名彙整）</label>
-          <label class="checkbox"><input type="checkbox" name="share_to_session"> 同步至單堂層級（匿名彙整）</label>
-        </section>
+        <!-- B. NPS（所有時間點可留著；72h 可選填） -->
+        <fieldset class="card">
+          <legend><strong>5）你願意推薦這堂課嗎？</strong>（0–10）</legend>
+          <div class="actions" role="radiogroup" aria-label="NPS">
+            <label><input type="radio" name="nps" value="0" required>0</label>
+            <label><input type="radio" name="nps" value="1">1</label>
+            <label><input type="radio" name="nps" value="2">2</label>
+            <label><input type="radio" name="nps" value="3">3</label>
+            <label><input type="radio" name="nps" value="4">4</label>
+            <label><input type="radio" name="nps" value="5">5</label>
+            <label><input type="radio" name="nps" value="6">6</label>
+            <label><input type="radio" name="nps" value="7">7</label>
+            <label><input type="radio" name="nps" value="8">8</label>
+            <label><input type="radio" name="nps" value="9">9</label>
+            <label><input type="radio" name="nps" value="10">10</label>
+          </div>
+        </fieldset>
 
-        <!-- 72h 專屬區塊 -->
-        <section id="h72-only" class="card hidden">
-          <h3 style="margin-top:0;">72h 回饋</h3>
-          <label>過去兩天的整體狀態
-            <select name="h72_state">
-              <option value="">（請選擇）</option>
-              <option value="better">更好</option>
-              <option value="same">差不多</option>
-              <option value="worse">較差</option>
-            </select>
-          </label>
-          <label>想補充的話（可留空）
-            <textarea name="h72_note" rows="3" placeholder="自由填寫"></textarea>
-          </label>
-        </section>
+        <!-- C. 一句話收穫（選填） -->
+        <fieldset class="card">
+          <legend><strong>6）今天最大的收穫</strong>（60字以內）</legend>
+          <textarea name="one_line" rows="2" maxlength="120" placeholder="例：我學會用3分鐘呼吸讓自己安定"></textarea>
+        </fieldset>
 
+        <!-- D. 課後限定：行動意向 + 關係圈 -->
+        <fieldset id="post-only-actions" class="card">
+          <legend><strong>7）接下來72小時你會做：</strong>（可複選）</legend>
+          <label><input type="checkbox" name="next_actions" value="breathing_3m">3分鐘呼吸</label>
+          <label><input type="checkbox" name="next_actions" value="horticulture_5m">5分鐘園藝照護</label>
+          <label><input type="checkbox" name="next_actions" value="art_10m">10分鐘藝術塗鴉</label>
+          <label><input type="checkbox" name="next_actions" value="gratitude_colleague">和同事/家人互相感謝</label>
+          <label>其他：<input type="text" name="next_actions_other" maxlength="40"></label>
+        </fieldset>
+
+        <fieldset id="post-only-scope" class="card">
+          <legend><strong>8）你會把練習帶到：</strong>（可複選）</legend>
+          <label><input type="checkbox" name="adoption_scope" value="self">個人</label>
+          <label><input type="checkbox" name="adoption_scope" value="family">家人</label>
+          <label><input type="checkbox" name="adoption_scope" value="coworkers">同事/同學</label>
+          <label><input type="checkbox" name="adoption_scope" value="community">社團/社群</label>
+        </fieldset>
+
+        <!-- 72h 限定：行動完成回報 -->
+        <fieldset id="h72-only" class="card">
+          <legend><strong>7）這72小時你完成了哪些行動？</strong>（可複選）</legend>
+          <label><input type="checkbox" name="actions_done" value="breathing_3m">3分鐘呼吸</label>
+          <label><input type="checkbox" name="actions_done" value="horticulture_5m">5分鐘園藝照護</label>
+          <label><input type="checkbox" name="actions_done" value="art_10m">10分鐘藝術塗鴉</label>
+          <label><input type="checkbox" name="actions_done" value="gratitude_colleague">和同事/家人互相感謝</label>
+          <label>其他：<input type="text" name="actions_done_other" maxlength="40"></label>
+        </fieldset>
+
+        <!-- 按鈕列 -->
         <div class="actions" style="justify-content:flex-end;">
           <button type="button" class="btn" id="btn-cancel">取消</button>
           <button type="reset" class="btn secondary">重填</button>
@@ -159,84 +166,79 @@
       const btnCancel = document.getElementById('btn-cancel');
       const tpLabel = document.getElementById('tp-label');
 
-      // 解析 URL 參數
-      const params   = new URLSearchParams(location.search);
-      const tp       = (params.get('tp') || 'pre').toLowerCase(); // 'pre' | 'post' | '72h'
-      const sessionId= params.get('session') ? Number(params.get('session')) : null;
-      const courseId = params.get('course')  ? Number(params.get('course'))  : null;
+      // 解析 URL 參數（若無參數，預設為課前、ID 皆空）
+      const params    = new URLSearchParams(location.search);
+      let tp          = (params.get('tp') || 'pre').toLowerCase(); // 'pre' | 'post' | '72h'
+      let sessionId   = params.get('session') ? Number(params.get('session')) : null;
+      let courseId    = params.get('course')  ? Number(params.get('course'))  : null;
 
-      // 設定隱藏欄位
-      document.getElementById('timepoint').value = tp;
-      document.getElementById('session_id').value = sessionId || '';
-      document.getElementById('course_id').value  = courseId  || '';
+      // 設定隱藏欄位（預設：tp='pre'、id 皆空；若網址有值則帶入）
+      document.getElementById('timepoint').value = tp || 'pre';
+      document.getElementById('session_id').value = sessionId ?? '';
+      document.getElementById('course_id').value  = courseId  ?? '';
 
-      // ==== UI controls for tp/course/session ====
-      const tpSwitch = document.getElementById('tp-switch');
-      const inpCourse = document.getElementById('inp-course-id');
-      const inpSession = document.getElementById('inp-session-id');
-      const btnApplyCtrls = document.getElementById('btn-apply-ctrls');
-      const ctrlsStatus = document.getElementById('ctrls-status');
+      // ---- 新增控制面板事件：tp 切換與手動輸入 id ----
+      const tpSwitch       = document.getElementById('tp-switch');
+      const inpCourse      = document.getElementById('inp-course-id');
+      const inpSession     = document.getElementById('inp-session-id');
+      const btnApplyCtrls  = document.getElementById('btn-apply-ctrls');
+      const ctrlsStatus    = document.getElementById('ctrls-status');
 
-      // Initialize controls based on URL (if provided) otherwise defaults (pre, empty IDs)
-      const uiInitTp = (params.get('tp') || 'pre').toLowerCase();
-      const uiInitCourse = params.get('course') ? Number(params.get('course')) : null;
-      const uiInitSession = params.get('session') ? Number(params.get('session')) : null;
-
-      // 如果網址有帶值就呈現，否則保持預設（課前、空白）
+      // 初始化控制面板（若 URL 有值就顯示，否則維持預設：課前、ID 空）
       document.querySelectorAll('#tp-switch input[name="tp_switch"]').forEach(r => {
-        r.checked = (r.value === uiInitTp);
+        r.checked = (r.value === (tp || 'pre'));
       });
+      inpCourse.value  = courseId ?? '';
+      inpSession.value = sessionId ?? '';
 
-      inpCourse.value = uiInitCourse ?? '';
-      inpSession.value = uiInitSession ?? '';
-
-      // helper: 套用 tp 到頁面（更新隱藏欄位與顯示區塊）
       function applyTp(tpValue){
-        document.getElementById('timepoint').value = tpValue;
-        // 重用原本顯示/隱藏邏輯
         const elPostActions = document.getElementById('post-only-actions');
         const elPostScope   = document.getElementById('post-only-scope');
         const el72h         = document.getElementById('h72-only');
 
-        if (tpValue === 'pre'){
+        document.getElementById('timepoint').value = tpValue;
+
+        if (tpValue === 'pre') {
           tpLabel.textContent = '課前';
           elPostActions.classList.add('hidden');
           elPostScope.classList.add('hidden');
           el72h.classList.add('hidden');
-        } else if (tpValue === 'post'){
+        } else if (tpValue === 'post') {
           tpLabel.textContent = '課後';
           elPostActions.classList.remove('hidden');
           elPostScope.classList.remove('hidden');
           el72h.classList.add('hidden');
-        } else {
-          tpLabel.textContent = '72h';
+        } else { // 72h
+          tpLabel.textContent = '72 小時追蹤';
           elPostActions.classList.add('hidden');
           elPostScope.classList.add('hidden');
           el72h.classList.remove('hidden');
         }
       }
 
-      // 初始化一次（依 URL 或預設）
-      applyTp(uiInitTp);
+      // 依目前（URL 或預設）初始化一次畫面
+      applyTp(tp || 'pre');
 
-      // 切換事件：即時改變畫面
+      // 切換表格（課前/課後/72h）
       tpSwitch?.addEventListener('change', () => {
-        const val = document.querySelector('#tp-switch input[name="tp_switch"]:checked')?.value || 'pre';
-        applyTp(val);
-        ctrlsStatus.textContent = `當前：${val.toUpperCase()} 表單`;
+        const current = document.querySelector('#tp-switch input[name="tp_switch"]:checked')?.value || 'pre';
+        tp = current; // 更新目前時間點
+        applyTp(current);
+        ctrlsStatus.textContent = `當前：${current.toUpperCase()} 表單`;
       });
 
-      // 套用 Course/Session ID（可為空）
+      // 套用手動輸入的 Course/Session ID（可為空）
       btnApplyCtrls?.addEventListener('click', () => {
-        const c = inpCourse.value.trim();
-        const s = inpSession.value.trim();
-        document.getElementById('course_id').value = c;
-        document.getElementById('session_id').value = s;
-        ctrlsStatus.textContent = `已套用 Course=${c||'∅'} / Session=${s||'∅'}`;
-      });
-      // ==== end UI controls ====
+        courseId  = inpCourse.value.trim()  ? Number(inpCourse.value.trim())  : null;
+        sessionId = inpSession.value.trim() ? Number(inpSession.value.trim()) : null;
 
-      // 顯示/隱藏區塊
+        document.getElementById('course_id').value  = courseId ?? '';
+        document.getElementById('session_id').value = sessionId ?? '';
+
+        ctrlsStatus.textContent = `已套用 Course=${(courseId ?? '∅')} / Session=${(sessionId ?? '∅')}`;
+      });
+
+      // 原本顯示/隱藏判斷（保留，確保首次載入也正確）
       const elPostActions = document.getElementById('post-only-actions');
       const elPostScope   = document.getElementById('post-only-scope');
       const el72h         = document.getElementById('h72-only');
@@ -252,7 +254,7 @@
         elPostScope.classList.remove('hidden');
         el72h.classList.add('hidden');
       } else { // 72h
-        tpLabel.textContent = '72h';
+        tpLabel.textContent = '72 小時追蹤';
         elPostActions.classList.add('hidden');
         elPostScope.classList.add('hidden');
         el72h.classList.remove('hidden');
@@ -270,41 +272,55 @@
         }
 
         const fd = new FormData(form);
-        const payload = Object.fromEntries(fd.entries());
+
+        // 取多選值
+        const getChecked = (name) => {
+          return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
+        };
+
+        // post 的「其他」補上
+        const nextActions = getChecked('next_actions');
+        const naOther = (fd.get('next_actions_other')||'').trim();
+        if (naOther) nextActions.push(naOther);
+
+        // 72h 的「其他」補上
+        const doneActions = getChecked('actions_done');
+        const daOther = (fd.get('actions_done_other')||'').trim();
+        if (daOther) doneActions.push(daOther);
+
+        // 送出時以「目前控制面板/隱藏欄位」為準
+        const currentTp       = document.getElementById('timepoint').value || 'pre';
+        const currentCourseId = document.getElementById('course_id').value ? Number(document.getElementById('course_id').value) : null;
+        const currentSessionId= document.getElementById('session_id').value ? Number(document.getElementById('session_id').value) : null;
+
+        const payload = {
+          user_id: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : null,
+          course_id: currentCourseId,
+          session_id: currentSessionId,
+          timepoint: currentTp,
+          stability: Number(fd.get('stability')),
+          recovery: Number(fd.get('recovery')),
+          connectedness: Number(fd.get('connectedness')),
+          focus: Number(fd.get('focus')),
+          nps: fd.get('nps') !== null ? Number(fd.get('nps')) : null,
+          one_line: String(fd.get('one_line') || ''),
+          next_actions: (currentTp === 'post') ? nextActions : [],
+          actions_done: (currentTp === '72h') ? doneActions : [],
+          adoption_scope: (currentTp === 'post') ? getChecked('adoption_scope') : [],
+          submitted_at: new Date().toISOString()
+        };
 
         try {
-          if (!window.supabaseClient) {
-            alert('尚未初始化資料庫連線。');
-            return;
-          }
-          const { data, error } = await window.supabaseClient
-            .from('one_minute')
-            .insert([{
-              timepoint: payload.timepoint || 'pre',
-              course_id: payload.course_id ? Number(payload.course_id) : null,
-              session_id: payload.session_id ? Number(payload.session_id) : null,
-              name: payload.name || null,
-              email: payload.email || null,
-              mood: payload.mood ? Number(payload.mood) : null,
-              recovery: payload.recovery ? Number(payload.recovery) : null,
-              connectedness: payload.connectedness ? Number(payload.connectedness) : null,
-              post_feel: payload.post_feel || null,
-              post_note: payload.post_note || null,
-              share_to_course: !!payload.share_to_course,
-              share_to_session: !!payload.share_to_session,
-              h72_state: payload.h72_state || null,
-              h72_note: payload.h72_note || null,
-            }]).select();
-
+          const { error } = await sb.from('one_minute').insert(payload);
           if (error) throw error;
-          alert('已送出，感謝你的回饋！');
-          form.reset();
-          // 維持控制面板的 tp/ID 狀態
-          const currentTp = document.querySelector('#tp-switch input[name="tp_switch"]:checked')?.value || 'pre';
-          applyTp(currentTp);
+          alert('已送出，謝謝你的回饋 🌿');
+
+          // 導回
+          if (currentCourseId) location.href = `course.html?id=${currentCourseId}`;
+          else location.href = 'index.html';
         } catch (err) {
           console.error(err);
-          alert('送出時發生錯誤，請稍後再試。');
+          alert('送出失敗，請稍後再試或聯絡我們。');
         }
       });
     });
