@@ -13,39 +13,9 @@
   <!-- SDK / 共用腳本 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="../js/shared-layout.js"></script>
+  <script defer src="../js/admin_js/admin-guard.js"></script>
   <script defer src="../js/app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-
-  <!-- 守門（等待 sb 就緒，再做管理者檢查） -->
-  <script>
-    function waitForSB(cb, tries=60){
-      if (window.sb) return cb();
-      if (tries <= 0) return console.error('[admin-one-minutes] sb not ready');
-      setTimeout(()=>waitForSB(cb, tries-1), 100);
-    }
-    async function guardAdminPage() {
-      try {
-        const { data: userData } = await sb.auth.getUser();
-        const user = userData?.user;
-        if (!user) { location.replace('../index.html?need_login=1'); return; }
-
-        const { data, error } = await sb
-          .from('admins')
-          .select('user_id')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (error || !data) { location.replace('../index.html'); return; }
-
-        // 通過 → 顯示內容
-        document.documentElement.removeAttribute('data-guard');
-      } catch (err) {
-        console.error('guard error:', err);
-        location.replace('../index.html');
-      }
-    }
-    waitForSB(guardAdminPage);
-  </script>
 </head>
 <body>
   <!-- 若缺 QRCode，提供 no-op 容錯 -->
