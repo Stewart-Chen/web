@@ -1,67 +1,11 @@
 // ====== CONFIG ======
-const supabase = window.sb;
+const sb = window.sb; // 由 shared-layout.js 初始化
 
 // ====== 小工具 ======
 function $(sel, root=document){ return root.querySelector(sel); }
 function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
-function qs(name){ return new URLSearchParams(location.search).get(name); }
-
-// ====== Auth UI（桌機＋手機） ======
-const authModal = document.getElementById('auth-modal');
-
-// 登入：開啟對話框
-['#login-link', '#login-link-m'].forEach(sel => {
-  const el = document.querySelector(sel);
-  if (el) el.addEventListener('click', (e)=>{
-    e.preventDefault();
-    authModal?.showModal();
-  });
-});
-// 登出：呼叫 supabase 後重新載入
-['#logout-link', '#logout-link-m'].forEach(sel => {
-  const el = document.querySelector(sel);
-  if (el) el.addEventListener('click', async (e)=>{
-    e.preventDefault();
-    await supabase.auth.signOut();
-    location.reload();
-  });
-});
-
-if (authModal) {
-  const email  = document.getElementById('auth-email');
-  const passwd = document.getElementById('auth-password');
-
-  // === 登入 ===
-  document.getElementById('btn-signin')?.addEventListener('click', async (e)=>{
-    e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.value, password: passwd.value
-    });
-    if (error) { alert('登入失敗：' + (error.message || '發生未知錯誤')); console.error(error); return; }
-    authModal.close();
-    location.reload();
-  });
-
-  // === 註冊 ===
-  document.getElementById('btn-signup')?.addEventListener('click', async (e)=>{
-    e.preventDefault();
-    const { error } = await supabase.auth.signUp({
-      email: email.value, password: passwd.value
-    });
-    if (error) { alert('註冊失敗：' + (error.message || '發生未知錯誤')); console.error(error); return; }
-    alert('已寄出驗證郵件（如有設定）。登入後即可使用。');
-    authModal.close();
-    location.reload();
-  });
-}
-
-// 目前使用者
-let currentUser = null;
-function showAuthModal(){ if (authModal && !authModal.open) authModal.showModal(); }
-function requireAuthOrOpenModal(e){
-  if (!currentUser){ if (e) e.preventDefault(); showAuthModal(); return false; }
-  return true;
-}
+function getParam(name){ return new URLSearchParams(location.search).get(name); }
+const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
 // ====== 首頁：載入課程 ======
 async function loadCourses(){
@@ -69,7 +13,7 @@ async function loadCourses(){
   const empty = document.getElementById('courses-empty');
   if (!list) return;
 
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('courses')
     .select('id,title,summary,cover_url,created_at,teacher,category')
     .eq('published', true)
@@ -101,7 +45,7 @@ async function loadCourses(){
 
 // ====== 課程頁 ======
 async function loadCourse(){
-  const idParam = qs('id');
+  const idParam = getParam('id');
   const idNum = Number(idParam);
   const titleEl = document.getElementById('course-title');
   const descEl = document.getElementById('course-desc');
@@ -118,7 +62,7 @@ async function loadCourse(){
   }
 
   // (A) 課程資訊
-  let { data: course, error } = await supabase
+  let { data: course, error } = await sb
     .from('courses')
     .select('*')
     .eq('id', idNum)
@@ -142,7 +86,7 @@ async function loadCourse(){
   }
 
   // (B) 單元列表
-  const { data: lessons, error: lsErr } = await supabase
+  const { data: lessons, error: lsErr } = await sb
     .from('lessons')
     .select('id, title, content, order_no')
     .eq('course_id', idNum)
@@ -158,12 +102,12 @@ async function loadCourse(){
 
   // (C) 報名狀態
   let enrolled = false;
-  if (currentUser){
-    const { data: en, error: enErr } = await supabase
+  if (getUser()){
+    const { data: en, error: enErr } = await sb
       .from('enrollments')
       .select('course_id')
       .eq('course_id', idNum)
-      .eq('user_id', currentUser.id)
+      .eq('user_id', getUser().id)
       .maybeSingle();
     if (!enErr && en) enrolled = true;
   }
@@ -171,10 +115,10 @@ async function loadCourse(){
     enrollBtn?.classList.add('hidden');
     enrolledBadge?.classList.remove('hidden');
   } else if (enrollBtn){
-    enrollBtn.title = currentUser ? '' : '請先登入';
+    enrollBtn.title = getUser() ? '' : '請先登入';
 
     enrollBtn.addEventListener('click', async (e)=>{
-      if (!requireAuthOrOpenModal(e)) return;
+      if (!window.requireAuthOrOpenModal?.(e)) return;
 
       // 開啟 dialog
       const dlg = document.getElementById('enroll-dialog');
@@ -195,11 +139,11 @@ async function loadCourse(){
           if (!phone) { alert('請填寫電話');  return; }
           if (!/^[0-9+\-() ]{8,20}$/.test(phone)) { alert('電話格式看起來不正確'); return; }
 
-          const { error: insErr } = await supabase
+          const { error: insErr } = await sb
             .from('enrollments')
             .insert({
               course_id: idNum,
-              user_id: currentUser.id,
+              user_id: getUser().id,
               fullname: name,
               phone: phone,
               line_id: line || null
@@ -226,7 +170,7 @@ async function loadCourse(){
     const btn = e.target.closest('button[data-lesson]');
     if (!btn) return;
 
-    if (!currentUser){ requireAuthOrOpenModal(e); return; }
+    if (!getUser()){ window.requireAuthOrOpenModal?.(e); return; }
     if (!enrolled){
       enrollBtn?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       enrollBtn?.classList.add('pulse');
@@ -244,9 +188,9 @@ async function loadCourse(){
     const markBtn = $('#mark-done');
     if (markBtn){
       markBtn.onclick = async ()=>{
-        if (!requireAuthOrOpenModal()) return;
-        const { error: upErr } = await supabase.from('progress').upsert({
-          user_id: currentUser.id,
+        if (!window.requireAuthOrOpenModal?.()) return;
+        const { error: upErr } = await sb.from('progress').upsert({
+          user_id: getUser().id,
           lesson_id: lesson.id,
           done_at: new Date().toISOString()
         });
@@ -259,13 +203,13 @@ async function loadCourse(){
 
   // (E) 進度
   async function loadProgress(lessonList){
-    if (!currentUser){ if (progressEl) progressEl.innerHTML = '<span class="muted">登入後可記錄進度。</span>'; return; }
+    if (!getUser()){ if (progressEl) progressEl.innerHTML = '<span class="muted">登入後可記錄進度。</span>'; return; }
     const ids = (lessonList || []).map(l => l.id);
     if (!ids.length){ if (progressEl) progressEl.innerHTML = '<span class="muted">尚無單元。</span>'; return; }
-    const { data: prog, error: pErr } = await supabase
+    const { data: prog, error: pErr } = await sb
       .from('progress')
       .select('lesson_id, done_at')
-      .eq('user_id', currentUser.id)
+      .eq('user_id', getUser().id)
       .in('lesson_id', ids);
     if (pErr) { console.error(pErr); return; }
     const doneSet = new Set((prog||[]).map(p=>p.lesson_id));
@@ -279,6 +223,7 @@ function initPage(){
   if (document.getElementById('courses') || document.getElementById('courses-list')) loadCourses();
   if (document.getElementById('course-info')) loadCourse();
 }
+document.addEventListener('DOMContentLoaded', initPage);
 
 // ====== 個人化推薦（從資料庫挑） ======
 function normalizeTitle(s){
@@ -351,7 +296,7 @@ function renderRecommendationsFromDb(list){
     </article>
   `).join('');
 }
-window.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('rec-form');
   if (!form) return;
   form.addEventListener('submit', async (e)=>{
@@ -361,7 +306,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const interests = parseInterests(document.getElementById('interests').value);
     const profession = document.getElementById('profession').value || 'other';
 
-    const { data: courses, error } = await supabase
+    const { data: courses, error } = await sb
       .from('courses')
       .select('id,title,summary,description,cover_url,teacher')
       .eq('published', true)
@@ -395,7 +340,7 @@ async function renderTeacherPicksFromDb(teacherKey){
   }
   titleEl.textContent = `📚 ${meta.name} 的精選課程`;
 
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('courses')
     .select('id,title,summary,cover_url,teacher,created_at,description')
     .eq('published', true)
@@ -425,29 +370,8 @@ async function renderTeacherPicksFromDb(teacherKey){
     </article>
   `).join('');
 }
-window.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(location.search);
   const teacherKey = params.get('teacher'); // fanfan / xd
   renderTeacherPicksFromDb(teacherKey);
 });
-
-// ====== Auth 初始化（同步桌機/手機的登入/登出顯示） ======
-supabase.auth.onAuthStateChange((_event, session) => {
-  currentUser = session?.user || null;
-  ['#login-link', '#login-link-m'].forEach(sel => {
-    document.querySelector(sel)?.classList.toggle('hidden', !!currentUser);
-  });
-  ['#logout-link', '#logout-link-m'].forEach(sel => {
-    document.querySelector(sel)?.classList.toggle('hidden', !currentUser);
-  });
-});
-
-supabase.auth.getUser().then(({ data }) => {
-  currentUser = data?.user ?? null;
-  if (currentUser) {
-    ['#login-link', '#login-link-m'].forEach(sel => document.querySelector(sel)?.classList.add('hidden'));
-    ['#logout-link', '#logout-link-m'].forEach(sel => document.querySelector(sel)?.classList.remove('hidden'));
-  }
-  initPage();
-});
-
