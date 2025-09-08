@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formMsg.innerHTML =
       `<div class="state-result">
          <img src="${iconSrc}" alt="狀態圖示" class="state-icon" width="40" height="40" loading="lazy" decoding="async">
-         <div><strong>你的即時狀態：${name}</strong><div class="muted">已成功記錄</div></div>
+         <div><strong>狀態：${name}</strong><div class="muted">已成功記錄</div></div>
        </div>`;
     formMsg.classList.remove('hidden');
   }
