@@ -77,3 +77,33 @@ fieldset.group{
   font-size: 0.9rem;
   line-height: 1.4;
 }
+/* 讓 A4 友善一點（可省略） */
+@page {
+  size: A4;
+  margin: 16mm;
+}
+
+/* 只在列印時生效 */
+@media print {
+  /* 隱藏不必要的 UI */
+  .pill-group,
+  #toggle-ids,
+  #id-section,
+  .dock,
+  #btn-fill-3,
+  #btn-print,
+  .progress { display: none !important; }
+
+  /* 卡片陰影去掉，顏色更乾淨 */
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+
+  /* 讓字再清楚一點 */
+  body { color: #000; }
+  .muted { color: #333; }
+
+  /* 避免頁尾被切開 */
+  .group, .card { page-break-inside: avoid; }
+}
