@@ -22,7 +22,7 @@
       <div class="container header-bar">
         <h1 class="site-title">
           <div class="plain brand">
-            <img src="/web/img/logo-cute.png" alt="HeartHub Studio Logo" class="logo" width="42" height="42">
+            <img src="/web/img/logo.png" alt="HeartHub Studio Logo" class="logo" width="42" height="42">
             <span class="title-text">HeartHub Studio <span class="no-break">心聚坊</span></span>
           </div>
         </h1>
