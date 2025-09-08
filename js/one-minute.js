@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleBtn.addEventListener('click', () => {
     isShown = !isShown;
     idSection.style.display = isShown ? 'block' : 'none';
-    toggleBtn.textContent = isShown ? '隱藏課程/場次 ID' : '顯示課程/場次 ID';
+    toggleBtn.textContent = isShown ? '隱藏ID' : '顯示ID';
   });
   
   const $  = (sel, ctx=document) => ctx.querySelector(sel);
