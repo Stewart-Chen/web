@@ -369,30 +369,128 @@ input[type="radio"], input[type="checkbox"]{
 .main-nav > a, .main-nav .dropbtn{
   color: var(--brand); font-weight: 600; font-size: 15px; text-decoration: none; padding: 4px 6px;
 }
-.nav-left{
-  display: flex; align-items: center; gap: 12px;
-}
-.nav-left a, .nav-left .dropbtn{
-  color: var(--brand); font-weight: 600; font-size: 16px; letter-spacing: .02em;
-  line-height: 1.2; padding: 4px 6px; border-radius: 6px; text-decoration: none;
-}
-.nav-left a:hover, .nav-left .dropbtn:hover{ background: rgba(46,125,50,.08); text-decoration: none; }
-.nav-left .dropbtn::after{ content:" ▾"; font-weight: 700; }
+/* ===== Nav（品牌綠膠囊 + 底線指示）===== */
 
-.nav-left .dropdown{ position: relative; }
-.nav-left .dropdown-content{
-  display: none; position: absolute; left: 0; top: calc(100% + 4px);
-  min-width: 160px; background: #fff; border: 1px solid rgba(0,0,0,.08);
-  border-radius: 10px; box-shadow: var(--shadow-sm); padding: 4px 0; z-index: 99;
+/* 主要容器（水平排列 + 間距） */
+.nav-left{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
+
+/* 項目：連結與 dropdown 觸發鍵統一外觀 */
+.nav-left a,
+.nav-left .dropbtn{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: .3px;
+  color: var(--brand-green);
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+/* 滑過：淡綠膠囊 */
+.nav-left a:hover,
+.nav-left .dropbtn:hover{
+  background: rgba(46,125,50,.08);
+  color: var(--brand-green);
+  text-decoration: none;
+}
+
+/* 焦點無障礙 */
+.nav-left a:focus-visible,
+.nav-left .dropbtn:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(46,125,50,.2);
+}
+
+/* 啟用（目前頁）/ 強化狀態：深一點的膠囊 + 陰影 */
+.nav-left a[aria-current="page"],
+.nav-left .dropbtn[aria-expanded="true"],
+body.menu-open .nav-left .dropbtn{
+  background: #e8f5e9;
+  color: #1b5e20;
+  box-shadow: 0 2px 8px rgba(46,125,50,.12);
+}
+
+/* 底線指示條（hover / active 時顯示） */
+.nav-left a::after,
+.nav-left .dropbtn::after{
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; bottom: -6px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-green) 0%, #a5d6a7 100%);
+  border-radius: 4px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .18s ease;
+}
+.nav-left a:hover::after,
+.nav-left .dropbtn:hover::after,
+.nav-left a[aria-current="page"]::after,
+.nav-left .dropbtn[aria-expanded="true"]::after{
+  transform: scaleX(1);
+}
+
+/* Dropdown：容器 */
+.nav-left .dropdown{ position: relative; }
+
+/* 觸發鍵帶箭頭 */
+.nav-left .dropbtn::before{ content: ""; }
+.nav-left .dropbtn::after{
+  content:"▾"; margin-left: 2px; font-weight: 800; line-height: 1;
+  transform: translateY(1px);
+  transition: transform .18s ease, opacity .18s ease;
+}
+/* 開啟時箭頭朝上 */
+.nav-left .dropdown:hover .dropbtn::after,
+.nav-left .dropdown:focus-within .dropbtn::after{
+  transform: rotate(180deg) translateY(-1px);
+}
+
+/* 下拉面板（輕玻璃卡片） */
+.nav-left .dropdown-content{
+  display: none;
+  position: absolute;
+  left: 0; top: calc(100% + 8px);
+  min-width: 200px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(6px) saturate(140%);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  padding: 6px;
+  z-index: 99;
+}
+
+/* 展開條件 */
+.nav-left .dropdown:hover .dropdown-content,
+.nav-left .dropdown:focus-within .dropdown-content{ display: block; }
+
+/* 下拉項目 */
 .nav-left .dropdown-content a{
-  display: block; padding: 7px 10px; font-size: 14.5px; color: var(--ink);
-  text-decoration: none; border-radius: 6px; margin: 2px 6px; white-space: nowrap;
+  display: block;
+  padding: 9px 12px;
+  margin: 2px 4px;
+  border-radius: 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
 }
 .nav-left .dropdown-content a:hover,
-.nav-left .dropdown-content a:focus-visible{ background: #e8f5e9; color: var(--brand); outline: none; }
-.nav-left .dropdown:hover .dropdown-content,
-.nav-left .dropdown:focus-within .dropdown-content{ display:block; }
+.nav-left .dropdown-content a:focus-visible{
+  background: #edf7ef;
+  color: var(--brand-green);
+  outline: none;
+}
 
 /* 右側登入/登出 */
 .nav-right{ margin-left: auto; display: flex; gap: 10px; align-items: center; }
