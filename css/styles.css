@@ -690,7 +690,6 @@ body.menu-open{ overflow:hidden; }
 
 /* 手機：避免被浮動列擋住（僅手機加大底部內距） */
 @media (max-width:480px){
-  .container{ padding-bottom: 170px; }
   .dock-inner{
     width: calc(100% - 12px);
     padding: 8px;
