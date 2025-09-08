@@ -1,7 +1,8 @@
 /* =========================================
-   園藝與藝術治療課程平台：精簡整合（緊湊版）
-   - nav 按鈕間距與內距縮小，貼近原始格式
-   - 下拉選單保留 hover / focus 開啟，白底卡片風
+   園藝與藝術治療課程平台：精簡整合（緊湊版 + 一分鐘頁面 / 浮動送出列 RWD）
+   - 延續原綠色品牌
+   - 導入一分鐘頁面樣式（pill、scale、page-hero、progress）
+   - 浮動送出列 .dock 行動版修正（≤480px 直向堆疊、安全區）
    ========================================= */
 
 /* ---- 基礎設計變數 ---- */
@@ -13,19 +14,19 @@
   --brand: #2e7d32;
   --brand-2: #81c784;
   --ink: #333;
-  --muted: rgba(0,0,0,.6);
+  --muted: #5f6f5f;
 
-  /* 新增：導覽列緊湊參數 */
+  /* 導覽列緊湊參數 */
   --nav-gap: 8px;
   --nav-pad-y: 4px;
   --nav-pad-x: 6px;
 
+  /* 延伸色彩（保留既有命名） */
   --brand-green: #2e7d32;
   --brand-green-2: #36a66a;
   --mint-bg: #f4fbf6;
   --text-strong: #1f2d1f;
   --text: #2c3a2c;
-  --muted: #5f6f5f;
   --divider: #e6efe8;
   --shadow: 0 10px 24px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06);
 }
@@ -277,7 +278,7 @@ button, .btn{
   padding: 10px 18px;
   font-weight: 700;
   cursor: pointer;
-  transition: background .3s ease, opacity .2s ease;
+  transition: background .3s ease, opacity .2s ease, transform .15s ease;
   border: 1px solid rgba(0,0,0,.15);
   background: #fff;
   color: var(--ink);
@@ -285,7 +286,9 @@ button, .btn{
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
+button:hover, .btn:hover{ transform: translateY(-1px); }
 button.primary, .btn.primary{
   background: linear-gradient(135deg, var(--brand), var(--brand-2));
   color: #fff; border: none;
@@ -297,6 +300,8 @@ button.secondary, .btn.secondary{
   background: #fff; border: 1px solid rgba(0,0,0,.15);
 }
 .btn.danger{ background:#b00020; color:#fff; border:none; }
+/* 供一分鐘頁用的小綠按鈕 */
+.btn.ok{ background:#ecfdf5; border:1px solid #b7ebc0; color:#1b5e20; }
 
 /* ---- Prose ---- */
 .prose p { margin: 0 0 12px 0; }
@@ -566,55 +571,152 @@ body.menu-open{ overflow:hidden; }
 @media (min-width: 900px){
   .nav-mobile, .backdrop{ display:none !important; }
 }
+
 /* === 超小螢幕：max-width: 360px === */
 @media (max-width: 360px){
-   .site-header .header-bar{
-      gap: 3px;
-   }
+   .site-header .header-bar{ gap: 3px; }
   /* 第一行：標題在左，可分兩行；漢堡在右 */
   .site-title{
     order: 1 !important;
     flex: 1 1 auto;
-    font-size: 1.5rem;         /* 再小一點 */
+    font-size: 1.5rem;
     line-height: 1.5;
-    white-space: normal;        /* 允許換行 */
+    white-space: normal;
     margin: 0;
     text-align: left;
     word-break: break-word;
     overflow-wrap: anywhere;
   }
-  /* 讓「HeartHub Studio / 心聚坊」自然斷行 */
-  .site-title .title-text{
-    display: block;
-    max-width: 16ch;            /* 視覺剛好在 HeartHub Studio 後換行 */
-  }
+  .site-title .title-text{ display: block; max-width: 16ch; }
   .site-title .brand{ flex-wrap: wrap; }
-
-  .hamburger{
-    order: 2 !important;
-    margin-left: auto;
-    display: grid;
-  }
-
-  /* 第二行：登入按鈕靠右（在漢堡下方） */
-  .header-bar > .main-nav{
-    order: 3 !important;        /* 把整個 nav 擺到標題與漢堡之後 */
-    flex: 1 1 100%;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .nav-right{
-    margin-left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .btn.nav-cta{
-    padding: 5px 10px;
-    font-size: 12px;
-    gap: 2px;
-  }
-
-  /* 左側清單收起（抽屜顯示） */
+  .hamburger{ order: 2 !important; margin-left: auto; display: grid; }
+  .header-bar > .main-nav{ order: 3 !important; flex: 1 1 100%; display: flex; justify-content: flex-end; }
+  .nav-right{ margin-left: 0; width: 100%; display: flex; justify-content: flex-end; }
+  .btn.nav-cta{ padding: 5px 10px; font-size: 12px; gap: 2px; }
   .nav-left{ display: none !important; }
+}
+
+/* =========================================================
+   一分鐘頁面風格（pill / scale / hero / progress / dock）
+   ========================================================= */
+
+/* 頁首 hero（輕綠漸層） */
+.page-hero{
+  background: linear-gradient(135deg, #e9f8ee 0%, #f6fff9 100%);
+  border: 1px solid #e2f1e6;
+  border-radius: 18px;
+  padding: 18px 16px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.page-hero .emoji{ font-size: 28px; }
+.page-hero h1{ font-size: 20px; margin: 0; letter-spacing: .5px; }
+
+/* segmented pills */
+.pill-group{ display:flex; flex-wrap:wrap; gap:8px; }
+.pill{
+  border-radius:999px; padding:8px 14px; border:1px solid #d7ead9; background:#fff; cursor:pointer;
+  font-weight:600; letter-spacing:.5px; transition:.2s background,.2s color,.2s border-color,.2s transform;
+  user-select:none;
+}
+.pill:hover{ transform:translateY(-1px); }
+.pill[aria-pressed="true"]{ background:var(--brand); color:#fff; border-color:var(--brand); }
+
+/* 控制台 grid / 輸入 */
+.ctrl-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+.field label{ font-weight:600; display:block; margin-bottom:6px; color:#0f172a; }
+.input, textarea, select{
+  width:100%; border:1px solid #d7ead9; border-radius:12px; padding:12px 12px;
+  outline:0; background:#fff; font-size:15px;
+}
+.input:focus, textarea:focus, select:focus{ box-shadow:0 0 0 4px rgba(46,125,50,.18); border-color:var(--brand); }
+
+/* 四指標量表 */
+.scale{ display:flex; gap:8px; flex-wrap:wrap; }
+.scale input{ position:absolute; opacity:0; pointer-events:none; }
+.scale .opt{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:44px; height:44px; padding:0 14px;
+  border-radius:12px; border:1px solid #d7ead9; background:#fff; cursor:pointer;
+  font-weight:700; transition:.2s background,.2s border-color,.2s transform; user-select:none;
+}
+.scale .opt:hover{ transform:translateY(-1px); }
+.scale input:checked + .opt{
+  background:#f1fbf3; border-color:var(--brand); outline:2px solid var(--brand); outline-offset:-2px;
+}
+
+/* 區塊標題與提示 */
+.legend{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.legend strong{ font-size:16px; }
+.hint{ font-size:13px; color:var(--muted); }
+
+/* NPS */
+.nps-row{ display:flex; flex-wrap:wrap; gap:8px; }
+.nps-row .opt{ min-width:40px; height:40px; }
+
+/* 工具列 */
+.toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+
+/* 進度條 */
+.progress{ height:10px; background:#eef4ef; border-radius:999px; overflow:hidden; }
+.progress > span{ display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--brand) 0%, #a5d6a7 100%); transition: width .25s ease; }
+
+/* 表單訊息與狀態結果 */
+.count{ font-size:12px; color:var(--muted); }
+.alert{ border-radius:12px; padding:12px; border:1px solid transparent; }
+.alert.ok{ background:#ecfdf5; border-color:#b7ebc0; }
+.alert.danger{ background:#fef2f2; border-color:#fecaca; }
+.state-result{ display:flex; align-items:center; gap:10px; font-size:18px; }
+.state-result .big{ font-size:26px; }
+
+/* ===== 浮動送出列（含行動版修正） ===== */
+.dock{
+  position:fixed;
+  left:0; right:0;
+  bottom:max(16px, env(safe-area-inset-bottom));   /* iOS 安全區 */
+  padding-bottom:env(safe-area-inset-bottom);
+  z-index:20;
+  display:flex; justify-content:center;
+  pointer-events:none;
+}
+.dock-inner{
+  pointer-events:auto;
+  background:#ffffffd9; backdrop-filter: blur(8px);
+  border:1px solid #e5efe7; border-radius:14px; box-shadow: var(--shadow);
+  padding:10px; width:min(920px, calc(100% - 24px));
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.dock small{ color:var(--muted); }
+
+/* 手機：避免被浮動列擋住（僅手機加大底部內距） */
+@media (max-width:480px){
+  .container{ padding-bottom: 170px; }
+  .dock-inner{
+    width: calc(100% - 12px);
+    padding: 8px;
+    border-radius: 12px;
+    flex-direction: column;     /* 直向堆疊：上標題、下按鈕列 */
+    align-items: stretch;
+    gap: 8px;
+  }
+  .dock-inner .toolbar{
+    flex-wrap: nowrap;          /* 三顆按鈕不換行 */
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+  #dock-status{
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+  }
+  #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
+  .btn{ padding:8px 12px; font-size:14px; }
+  .page-hero h1{ font-size:18px; }
+  .scale .opt{ flex:1; }
+  .nps-row .opt{ flex:0 0 calc(10% - 8px); }
 }
