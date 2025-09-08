@@ -72,3 +72,8 @@ fieldset.group{
   object-fit: contain;    /* 防止變形，保留原比例 */
   display: block;
 }
+.exp {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
