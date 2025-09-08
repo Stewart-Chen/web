@@ -2,326 +2,775 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <title>心聚1分鐘｜HeartHub Studio 心聚坊</title>
+  <title>心聚 1 分鐘｜HeartHub Studio 心聚坊</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="img/logo.png" sizes="16x16" type="image/png">
+
+  <!-- 站內樣式 / 字型（維持原有依賴） -->
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- SDK / 共用腳本：順序很重要！ -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="js/shared-layout.js"></script>
   <script defer src="js/shared-dialog.js"></script>
   <script defer src="js/app.js"></script>
+
+  <!-- 這頁的強化樣式（不依賴外部框架） -->
   <style>
-    .hidden { display:none !important; }
+    :root{
+      --brand:#0ea5e9;           /* 主色：天藍 */
+      --brand-ink:#075985;       /* 深藍文字 */
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --bg:#f8fafc;              /* 淺灰藍背景 */
+      --card:#ffffff;
+      --ring:rgba(14,165,233,.35);
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:14px;
+      --shadow:0 6px 24px rgba(15,23,42,.08);
+    }
+    html,body{ height:100%; }
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family: system-ui, -apple-system, "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height:1.6;
+    }
+    .container{
+      max-width:960px; margin-inline:auto; padding:24px 16px 120px;
+    }
+    .page-hero{
+      background:linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+      border:1px solid #e5f3ff; border-radius:18px; padding:18px 16px; margin-bottom:16px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .page-hero .emoji{ font-size:28px; }
+    .page-hero h1{ font-size:20px; margin:0; letter-spacing:.5px; }
+    .muted{ color:var(--muted); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    .card{
+      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:18px; border:1px solid #eef2f7;
+    }
+    .flow-sm > *+*{ margin-top:8px; }
+    .flow-md > *+*{ margin-top:12px; }
+    .flow-lg > *+*{ margin-top:18px; }
+
+    /* 時間點 segmented pills */
+    .pill-group{ display:flex; flex-wrap:wrap; gap:8px; }
+    .pill{
+      border-radius:999px; padding:8px 14px; border:1px solid #dbe7f3; background:#fff; cursor:pointer;
+      font-weight:600; letter-spacing:.5px;
+      transition:.2s background, .2s color, .2s border-color, .2s transform;
+      user-select:none;
+    }
+    .pill:hover{ transform:translateY(-1px); }
+    .pill[aria-pressed="true"]{ background:var(--brand); color:#fff; border-color:var(--brand); }
+
+    /* 控制台 grid */
+    .ctrl-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .field label{ font-weight:600; display:block; margin-bottom:6px; color:#0f172a; }
+    .input, textarea, select{
+      width:100%; border:1px solid #dbe7f3; border-radius:12px; padding:12px 12px;
+      outline:0; background:#fff; font-size:15px;
+    }
+    .input:focus, textarea:focus, select:focus{ box-shadow:0 0 0 4px var(--ring); border-color:var(--brand); }
+
+    /* 量表：大觸控圓角按鈕 */
+    .scale{ display:flex; gap:8px; flex-wrap:wrap; }
+    .scale input{ position:absolute; opacity:0; pointer-events:none; }
+    .scale .opt{
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:44px; height:44px; padding:0 14px;
+      border-radius:12px; border:1px solid #dbe7f3; background:#fff; cursor:pointer;
+      font-weight:700; transition:.2s background,.2s border-color,.2s transform;
+      user-select:none;
+    }
+    .scale .opt:hover{ transform:translateY(-1px); }
+    .scale input:checked + .opt{
+      background:#effaff; border-color:var(--brand); outline:2px solid var(--brand); outline-offset:-2px;
+    }
+    .legend{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .legend strong{ font-size:16px; }
+    .hint{ font-size:13px; color:var(--muted); }
+
+    /* NPS 可視分段 */
+    .nps-row{ display:flex; flex-wrap:wrap; gap:8px; }
+    .nps-row .opt{ min-width:40px; height:40px; }
+
+    /* 工具列 / 快速鍵提示 */
+    .toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .tag{ font-size:12px; padding:4px 8px; border-radius:999px; background:#eef6ff; color:var(--brand-ink); border:1px solid #dbe7f3; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      border-radius:12px; border:1px solid #dbe7f3; padding:10px 14px; background:#fff; cursor:pointer;
+      font-weight:700; transition:.2s transform,.2s background,.2s color,.2s border-color;
+    }
+    .btn:hover{ transform:translateY(-1px); }
+    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand); }
+    .btn.secondary{ background:#f3f7fb; }
+    .btn.ghost{ background:transparent; }
+    .btn.warn{ background:#fff7ed; border-color:#fde68a; }
+    .btn.ok{ background:#ecfdf5; border-color:#a7f3d0; }
+
+    /* 進度條 */
+    .progress{
+      height:10px; background:#eef2f7; border-radius:999px; overflow:hidden;
+    }
+    .progress > span{
+      display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--brand) 0%, #22d3ee 100%);
+      transition: width .25s ease;
+    }
+
+    /* 底部浮動送出列 */
+    .dock{
+      position:fixed; bottom:16px; left:0; right:0; z-index:20;
+      display:flex; justify-content:center; pointer-events:none;
+    }
+    .dock-inner{
+      pointer-events:auto;
+      background:#ffffffd9; backdrop-filter: blur(8px);
+      border:1px solid #e5effa; border-radius:14px; box-shadow:var(--shadow);
+      padding:10px; width:min(920px, calc(100% - 24px));
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .dock small{ color:var(--muted); }
+    .hidden{ display:none !important; }
+
+    /* 收合的「進階設定」 */
+    details.advanced{ background:#fff; border:1px dashed #dbe7f3; border-radius:12px; padding:10px 12px; }
+    details.advanced[open]{ border-style:solid; }
+
+    /* 表單卡片群組 */
+    fieldset.group{ border:0; padding:0; margin:0; }
+    fieldset.group + fieldset.group{ margin-top:16px; }
+    fieldset.group .card{ padding:16px; }
+
+    /* 字數計數器 */
+    .count{ font-size:12px; color:var(--muted); }
+
+    /* 成功/失敗訊息 */
+    .alert{ border-radius:12px; padding:12px; border:1px solid transparent; }
+    .alert.ok{ background:#ecfdf5; border-color:#a7f3d0; }
+    .alert.danger{ background:#fef2f2; border-color:#fecaca; }
+
+    @media (max-width:480px){
+      .page-hero h1{ font-size:18px; }
+      .scale .opt{ flex:1; }
+      .nps-row .opt{ flex:0 0 calc(10% - 8px); }
+    }
   </style>
 </head>
 <body>
   <main class="container flow-lg">
-    <section class="card">
-      <header class="flow-md">
-        <h2>心聚1分鐘（<span id="tp-label">課前</span>）</h2>
-        <p class="muted">只要 1 分鐘，記錄你的狀態；這些資料會轉成「心聚指標」報告。</p>
-      </header>
+    <!-- 頁首 -->
+    <section class="page-hero">
+      <div class="emoji">🌿</div>
+      <div>
+        <h1>心聚 1 分鐘</h1>
+        <div class="muted">只要 60 秒，記錄你的狀態，累積成「心聚指標」報告。</div>
+      </div>
+    </section>
 
-      <!-- 控制面板：表格切換 + 手動輸入 Course / Session ID -->
-      <div id="control-panel" class="card" style="margin-bottom:12px;">
-        <div class="grid2" style="align-items:end; gap:12px;">
-          <div>
-            <label style="display:block; font-weight:600; margin-bottom:6px;">表格切換</label>
-            <div class="actions" id="tp-switch" role="radiogroup" aria-label="表格切換">
-              <label style="margin-right:8px;"><input type="radio" name="tp_switch" value="pre" checked>課前</label>
-              <label style="margin-right:8px;"><input type="radio" name="tp_switch" value="post">課後</label>
-              <label><input type="radio" name="tp_switch" value="72h">72h</label>
-            </div>
-          </div>
-          <div>
-            <label style="display:block; font-weight:600; margin-bottom:6px;">手動輸入 Course / Session ID（可留空）</label>
-            <div class="grid2" style="gap:8px;">
-              <input id="inp-course-id" type="number" inputmode="numeric" placeholder="course id">
-              <input id="inp-session-id" type="number" inputmode="numeric" placeholder="session id">
-            </div>
-            <div class="actions" style="justify-content:flex-start; margin-top:8px;">
-              <button type="button" class="btn" id="btn-apply-ctrls">套用</button>
-              <span id="ctrls-status" class="muted" style="margin-left:8px;"></span>
-            </div>
-          </div>
+    <!-- A. 控制台（精簡 + 可收合進階設定） -->
+    <section class="card flow-md" aria-labelledby="ctrl-title">
+      <div class="legend">
+        <h2 id="ctrl-title" style="margin:0;font-size:18px;">快速切換</h2>
+        <div class="toolbar">
+          <span class="tag">快捷鍵：1~5 評分、0~10 NPS、S 送出、R 重填、B 返回</span>
         </div>
       </div>
 
+      <!-- 時間點 segmented -->
+      <div class="pill-group" role="group" aria-label="時間點">
+        <button class="pill" data-tp="pre"  aria-pressed="true">課前</button>
+        <button class="pill" data-tp="post" aria-pressed="false">課後</button>
+        <button class="pill" data-tp="72h"  aria-pressed="false">72 小時追蹤</button>
+      </div>
+
+      <!-- 進階設定：課程/場次/URL -->
+      <details class="advanced">
+        <summary><strong>進階設定</strong>（課程 ID、場次 ID、網址）</summary>
+        <div class="ctrl-grid" style="margin-top:10px;">
+          <label class="field">課程 ID（可留空）
+            <input id="ctrl-course" class="input" type="number" inputmode="numeric" placeholder="例如 55">
+          </label>
+          <label class="field">場次 ID（可留空）
+            <input id="ctrl-session" class="input" type="number" inputmode="numeric" placeholder="例如 101">
+          </label>
+          <div style="display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap;">
+            <button id="ctrl-apply" class="btn">套用到頁面</button>
+            <button id="ctrl-write-url" class="btn secondary">把設定寫到網址</button>
+            <span id="ctrl-url" class="muted mono" style="word-break:break-all;"></span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 進度條 -->
+    <section class="card flow-sm" aria-live="polite">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div><strong>完成度</strong> <span id="progress-text" class="muted">0 / 4</span></div>
+        <button id="btn-fill-3" class="btn ok" type="button" title="一鍵填 3 分（都還好）">一鍵填 3 分</button>
+      </div>
+      <div class="progress"><span id="progress-bar" style="width:0%"></span></div>
+    </section>
+
+    <!-- B. 表單本體 -->
+    <section class="card">
+      <header class="flow-sm">
+        <h2 style="margin:0;">心聚 1 分鐘（<span id="tp-label">課前</span>）</h2>
+        <p class="muted" style="margin:0;">分數越高代表狀態越理想。請直覺選擇。</p>
+      </header>
+
       <form id="one-minute-form" class="flow-md">
-        <!-- 隱藏欄位 -->
+        <!-- 隱藏欄位（由控制台維護） -->
         <input type="hidden" name="timepoint" id="timepoint" value="pre">
         <input type="hidden" name="session_id" id="session_id">
-        <input type="hidden" name="course_id" id="course_id">
+        <input type="hidden" name="course_id"  id="course_id">
 
         <!-- A. 四指標（1~5） -->
-        <fieldset class="card">
-          <legend><strong>1）穩定度</strong>（1 不穩 → 5 很穩）</legend>
-          <div class="actions" role="radiogroup" aria-label="穩定度">
-            <label><input type="radio" name="stability" value="1" required>1</label>
-            <label><input type="radio" name="stability" value="2">2</label>
-            <label><input type="radio" name="stability" value="3">3</label>
-            <label><input type="radio" name="stability" value="4">4</label>
-            <label><input type="radio" name="stability" value="5">5</label>
+        <fieldset class="group">
+          <div class="card">
+            <div class="legend">
+              <strong>1）穩定度</strong>
+              <span class="hint">1 不穩 → 5 很穩</span>
+            </div>
+            <div class="scale" role="radiogroup" aria-label="穩定度">
+              <label>
+                <input type="radio" name="stability" value="1" required>
+                <span class="opt">1</span>
+              </label>
+              <label>
+                <input type="radio" name="stability" value="2">
+                <span class="opt">2</span>
+              </label>
+              <label>
+                <input type="radio" name="stability" value="3">
+                <span class="opt">3</span>
+              </label>
+              <label>
+                <input type="radio" name="stability" value="4">
+                <span class="opt">4</span>
+              </label>
+              <label>
+                <input type="radio" name="stability" value="5">
+                <span class="opt">5</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="legend">
+              <strong>2）壓力復原</strong>
+              <span class="hint">1 幾乎無法復原 → 5 很快能復原</span>
+            </div>
+            <div class="scale" role="radiogroup" aria-label="壓力復原">
+              <label><input type="radio" name="recovery" value="1" required><span class="opt">1</span></label>
+              <label><input type="radio" name="recovery" value="2"><span class="opt">2</span></label>
+              <label><input type="radio" name="recovery" value="3"><span class="opt">3</span></label>
+              <label><input type="radio" name="recovery" value="4"><span class="opt">4</span></label>
+              <label><input type="radio" name="recovery" value="5"><span class="opt">5</span></label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="legend">
+              <strong>3）社會連結</strong>
+              <span class="hint">1 很疏離 → 5 很連結</span>
+            </div>
+            <div class="scale" role="radiogroup" aria-label="社會連結">
+              <label><input type="radio" name="connectedness" value="1" required><span class="opt">1</span></label>
+              <label><input type="radio" name="connectedness" value="2"><span class="opt">2</span></label>
+              <label><input type="radio" name="connectedness" value="3"><span class="opt">3</span></label>
+              <label><input type="radio" name="connectedness" value="4"><span class="opt">4</span></label>
+              <label><input type="radio" name="connectedness" value="5"><span class="opt">5</span></label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="legend">
+              <strong>4）專注力</strong>
+              <span class="hint">1 很難專心 → 5 很能專心</span>
+            </div>
+            <div class="scale" role="radiogroup" aria-label="專注力">
+              <label><input type="radio" name="focus" value="1" required><span class="opt">1</span></label>
+              <label><input type="radio" name="focus" value="2"><span class="opt">2</span></label>
+              <label><input type="radio" name="focus" value="3"><span class="opt">3</span></label>
+              <label><input type="radio" name="focus" value="4"><span class="opt">4</span></label>
+              <label><input type="radio" name="focus" value="5"><span class="opt">5</span></label>
+            </div>
           </div>
         </fieldset>
 
-        <fieldset class="card">
-          <legend><strong>2）壓力復原</strong>（1 幾乎無法復原 → 5 很快能復原）</legend>
-          <div class="actions" role="radiogroup" aria-label="壓力復原">
-            <label><input type="radio" name="recovery" value="1" required>1</label>
-            <label><input type="radio" name="recovery" value="2">2</label>
-            <label><input type="radio" name="recovery" value="3">3</label>
-            <label><input type="radio" name="recovery" value="4">4</label>
-            <label><input type="radio" name="recovery" value="5">5</label>
+        <!-- B. NPS（72h 可選填） -->
+        <fieldset class="group">
+          <div class="card">
+            <div class="legend">
+              <strong>5）你願意推薦這堂課嗎？</strong>
+              <span id="nps-hint" class="hint">0（完全不會）– 10（一定會）</span>
+            </div>
+            <div class="nps-row" role="radiogroup" aria-label="NPS">
+              <!-- 設定第一顆 required，JS 會在 72h 移除 -->
+              <label><input type="radio" name="nps" value="0" required><span class="opt">0</span></label>
+              <label><input type="radio" name="nps" value="1"><span class="opt">1</span></label>
+              <label><input type="radio" name="nps" value="2"><span class="opt">2</span></label>
+              <label><input type="radio" name="nps" value="3"><span class="opt">3</span></label>
+              <label><input type="radio" name="nps" value="4"><span class="opt">4</span></label>
+              <label><input type="radio" name="nps" value="5"><span class="opt">5</span></label>
+              <label><input type="radio" name="nps" value="6"><span class="opt">6</span></label>
+              <label><input type="radio" name="nps" value="7"><span class="opt">7</span></label>
+              <label><input type="radio" name="nps" value="8"><span class="opt">8</span></label>
+              <label><input type="radio" name="nps" value="9"><span class="opt">9</span></label>
+              <label><input type="radio" name="nps" value="10"><span class="opt">10</span></label>
+            </div>
           </div>
         </fieldset>
 
-        <fieldset class="card">
-          <legend><strong>3）社會連結</strong>（1 很疏離 → 5 很連結）</legend>
-          <div class="actions" role="radiogroup" aria-label="社會連結">
-            <label><input type="radio" name="connectedness" value="1" required>1</label>
-            <label><input type="radio" name="connectedness" value="2">2</label>
-            <label><input type="radio" name="connectedness" value="3">3</label>
-            <label><input type="radio" name="connectedness" value="4">4</label>
-            <label><input type="radio" name="connectedness" value="5">5</label>
+        <!-- C. 一句話收穫（選填，統一 60 字） -->
+        <fieldset class="group">
+          <div class="card">
+            <div class="legend">
+              <strong>6）今天最大的收穫</strong>
+              <span class="hint">60 字以內</span>
+            </div>
+            <textarea name="one_line" rows="2" maxlength="60" class="input" placeholder="例：我學會用 3 分鐘呼吸讓自己安定"></textarea>
+            <div class="count"><span id="one-line-count">0</span> / 60</div>
           </div>
-        </fieldset>
-
-        <fieldset class="card">
-          <legend><strong>4）專注力</strong>（1 很難專心 → 5 很能專心）</legend>
-          <div class="actions" role="radiogroup" aria-label="專注力">
-            <label><input type="radio" name="focus" value="1" required>1</label>
-            <label><input type="radio" name="focus" value="2">2</label>
-            <label><input type="radio" name="focus" value="3">3</label>
-            <label><input type="radio" name="focus" value="4">4</label>
-            <label><input type="radio" name="focus" value="5">5</label>
-          </div>
-        </fieldset>
-
-        <!-- B. NPS（所有時間點可留著；72h 可選填） -->
-        <fieldset class="card">
-          <legend><strong>5）你願意推薦這堂課嗎？</strong>（0–10）</legend>
-          <div class="actions" role="radiogroup" aria-label="NPS">
-            <label><input type="radio" name="nps" value="0" required>0</label>
-            <label><input type="radio" name="nps" value="1">1</label>
-            <label><input type="radio" name="nps" value="2">2</label>
-            <label><input type="radio" name="nps" value="3">3</label>
-            <label><input type="radio" name="nps" value="4">4</label>
-            <label><input type="radio" name="nps" value="5">5</label>
-            <label><input type="radio" name="nps" value="6">6</label>
-            <label><input type="radio" name="nps" value="7">7</label>
-            <label><input type="radio" name="nps" value="8">8</label>
-            <label><input type="radio" name="nps" value="9">9</label>
-            <label><input type="radio" name="nps" value="10">10</label>
-          </div>
-        </fieldset>
-
-        <!-- C. 一句話收穫（選填） -->
-        <fieldset class="card">
-          <legend><strong>6）今天最大的收穫</strong>（60字以內）</legend>
-          <textarea name="one_line" rows="2" maxlength="120" placeholder="例：我學會用3分鐘呼吸讓自己安定"></textarea>
         </fieldset>
 
         <!-- D. 課後限定：行動意向 + 關係圈 -->
-        <fieldset id="post-only-actions" class="card">
-          <legend><strong>7）接下來72小時你會做：</strong>（可複選）</legend>
-          <label><input type="checkbox" name="next_actions" value="breathing_3m">3分鐘呼吸</label>
-          <label><input type="checkbox" name="next_actions" value="horticulture_5m">5分鐘園藝照護</label>
-          <label><input type="checkbox" name="next_actions" value="art_10m">10分鐘藝術塗鴉</label>
-          <label><input type="checkbox" name="next_actions" value="gratitude_colleague">和同事/家人互相感謝</label>
-          <label>其他：<input type="text" name="next_actions_other" maxlength="40"></label>
+        <fieldset id="post-only-actions" class="group">
+          <div class="card">
+            <div class="legend">
+              <strong>7）接下來 72 小時你會做：</strong>
+              <span class="hint">可複選</span>
+            </div>
+            <div class="toolbar">
+              <label><input type="checkbox" name="next_actions" value="breathing_3m"> 3 分鐘呼吸</label>
+              <label><input type="checkbox" name="next_actions" value="horticulture_5m"> 5 分鐘園藝照護</label>
+              <label><input type="checkbox" name="next_actions" value="art_10m"> 10 分鐘藝術塗鴉</label>
+              <label><input type="checkbox" name="next_actions" value="gratitude_colleague"> 和同事/家人互相感謝</label>
+              <label>其他：<input type="text" name="next_actions_other" maxlength="40" class="input" style="width:220px;"></label>
+            </div>
+          </div>
         </fieldset>
 
-        <fieldset id="post-only-scope" class="card">
-          <legend><strong>8）你會把練習帶到：</strong>（可複選）</legend>
-          <label><input type="checkbox" name="adoption_scope" value="self">個人</label>
-          <label><input type="checkbox" name="adoption_scope" value="family">家人</label>
-          <label><input type="checkbox" name="adoption_scope" value="coworkers">同事/同學</label>
-          <label><input type="checkbox" name="adoption_scope" value="community">社團/社群</label>
+        <fieldset id="post-only-scope" class="group">
+          <div class="card">
+            <div class="legend">
+              <strong>8）你會把練習帶到：</strong>
+              <span class="hint">可複選</span>
+            </div>
+            <div class="toolbar">
+              <label><input type="checkbox" name="adoption_scope" value="self"> 個人</label>
+              <label><input type="checkbox" name="adoption_scope" value="family"> 家人</label>
+              <label><input type="checkbox" name="adoption_scope" value="coworkers"> 同事/同學</label>
+              <label><input type="checkbox" name="adoption_scope" value="community"> 社團/社群</label>
+            </div>
+          </div>
         </fieldset>
 
         <!-- 72h 限定：行動完成回報 -->
-        <fieldset id="h72-only" class="card">
-          <legend><strong>7）這72小時你完成了哪些行動？</strong>（可複選）</legend>
-          <label><input type="checkbox" name="actions_done" value="breathing_3m">3分鐘呼吸</label>
-          <label><input type="checkbox" name="actions_done" value="horticulture_5m">5分鐘園藝照護</label>
-          <label><input type="checkbox" name="actions_done" value="art_10m">10分鐘藝術塗鴉</label>
-          <label><input type="checkbox" name="actions_done" value="gratitude_colleague">和同事/家人互相感謝</label>
-          <label>其他：<input type="text" name="actions_done_other" maxlength="40"></label>
+        <fieldset id="h72-only" class="group">
+          <div class="card">
+            <div class="legend">
+              <strong>7）這 72 小時你完成了哪些行動？</strong>
+              <span class="hint">可複選</span>
+            </div>
+            <div class="toolbar">
+              <label><input type="checkbox" name="actions_done" value="breathing_3m"> 3 分鐘呼吸</label>
+              <label><input type="checkbox" name="actions_done" value="horticulture_5m"> 5 分鐘園藝照護</label>
+              <label><input type="checkbox" name="actions_done" value="art_10m"> 10 分鐘藝術塗鴉</label>
+              <label><input type="checkbox" name="actions_done" value="gratitude_colleague"> 和同事/家人互相感謝</label>
+              <label>其他：<input type="text" name="actions_done_other" maxlength="40" class="input" style="width:220px;"></label>
+            </div>
+          </div>
         </fieldset>
 
+        <!-- 表單訊息 -->
+        <div id="form-msg" class="alert hidden" role="status" aria-live="polite"></div>
+
         <!-- 按鈕列 -->
-        <div class="actions" style="justify-content:flex-end;">
-          <button type="button" class="btn" id="btn-cancel">取消</button>
-          <button type="reset" class="btn secondary">重填</button>
+        <div class="toolbar" style="justify-content:flex-end;">
+          <button type="button" class="btn" id="btn-cancel">返回</button>
+          <button type="reset" class="btn secondary" id="btn-reset">重填</button>
           <button type="submit" class="btn primary">送出</button>
         </div>
       </form>
     </section>
   </main>
 
+  <!-- 底部浮動送出列（捲動時特別好用） -->
+  <div class="dock">
+    <div class="dock-inner">
+      <div>
+        <strong>心聚 1 分鐘｜<span id="dock-tp">課前</span></strong>
+        <div class="muted" id="dock-meta">課程：—　場次：—</div>
+      </div>
+      <div class="toolbar">
+        <small id="dock-status">尚未填寫</small>
+        <button id="dock-submit" class="btn primary">送出</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('one-minute-form');
-      const btnCancel = document.getElementById('btn-cancel');
-      const tpLabel = document.getElementById('tp-label');
+      // ===== 快速取得元素 =====
+      const $ = (sel, ctx=document) => ctx.querySelector(sel);
+      const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 
-      // 解析 URL 參數（若無參數，預設為課前、ID 皆空）
-      const params    = new URLSearchParams(location.search);
-      let tp          = (params.get('tp') || 'pre').toLowerCase(); // 'pre' | 'post' | '72h'
-      let sessionId   = params.get('session') ? Number(params.get('session')) : null;
-      let courseId    = params.get('course')  ? Number(params.get('course'))  : null;
+      // 控制台
+      const pills = $$('.pill[data-tp]');
+      const tpLabel = $('#tp-label');
+      const inputCourse  = $('#ctrl-course');
+      const inputSession = $('#ctrl-session');
+      const btnApply     = $('#ctrl-apply');
+      const btnWriteUrl  = $('#ctrl-write-url');
+      const urlBox       = $('#ctrl-url');
 
-      // 設定隱藏欄位（預設：tp='pre'、id 皆空；若網址有值則帶入）
-      document.getElementById('timepoint').value = tp || 'pre';
-      document.getElementById('session_id').value = sessionId ?? '';
-      document.getElementById('course_id').value  = courseId  ?? '';
+      // 表單/區塊
+      const form = $('#one-minute-form');
+      const btnCancel = $('#btn-cancel');
+      const btnReset  = $('#btn-reset');
 
-      // ---- 新增控制面板事件：tp 切換與手動輸入 id ----
-      const tpSwitch       = document.getElementById('tp-switch');
-      const inpCourse      = document.getElementById('inp-course-id');
-      const inpSession     = document.getElementById('inp-session-id');
-      const btnApplyCtrls  = document.getElementById('btn-apply-ctrls');
-      const ctrlsStatus    = document.getElementById('ctrls-status');
+      const hTimepoint = $('#timepoint');
+      const hCourseId  = $('#course_id');
+      const hSessionId = $('#session_id');
 
-      // 初始化控制面板（若 URL 有值就顯示，否則維持預設：課前、ID 空）
-      document.querySelectorAll('#tp-switch input[name="tp_switch"]').forEach(r => {
-        r.checked = (r.value === (tp || 'pre'));
-      });
-      inpCourse.value  = courseId ?? '';
-      inpSession.value = sessionId ?? '';
+      const elPostActions = $('#post-only-actions');
+      const elPostScope   = $('#post-only-scope');
+      const el72h         = $('#h72-only');
 
-      function applyTp(tpValue){
-        const elPostActions = document.getElementById('post-only-actions');
-        const elPostScope   = document.getElementById('post-only-scope');
-        const el72h         = document.getElementById('h72-only');
+      const npsInputs = $$('input[name="nps"]');
+      const npsHint   = $('#nps-hint');
 
-        document.getElementById('timepoint').value = tpValue;
+      const progressText = $('#progress-text');
+      const progressBar  = $('#progress-bar');
+      const btnFill3     = $('#btn-fill-3');
 
-        if (tpValue === 'pre') {
-          tpLabel.textContent = '課前';
+      const oneLine      = $('textarea[name="one_line"]');
+      const oneLineCount = $('#one-line-count');
+
+      const formMsg      = $('#form-msg');
+
+      // Dock
+      const dockTp       = $('#dock-tp');
+      const dockMeta     = $('#dock-meta');
+      const dockStatus   = $('#dock-status');
+      const dockSubmit   = $('#dock-submit');
+
+      // ===== 狀態 =====
+      let currentTp = 'pre';
+      let currentCourse = null;
+      let currentSession = null;
+
+      // 嘗試從網址帶初值（若無就用預設）
+      const params = new URLSearchParams(location.search);
+      if (['pre','post','72h'].includes((params.get('tp')||'').toLowerCase())) {
+        currentTp = params.get('tp').toLowerCase();
+      }
+      currentCourse  = params.get('course')  ? Number(params.get('course'))  : null;
+      currentSession = params.get('session') ? Number(params.get('session')) : null;
+
+      // ===== 工具：UI 同步 =====
+      function syncPills(){
+        pills.forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.tp === currentTp)));
+      }
+      function setNpsRequired(required){
+        // HTML 規範：radio group 只要其中一顆含 required 即為必填
+        npsInputs.forEach((el,i)=> {
+          if (required && i===0) el.setAttribute('required','');
+          else el.removeAttribute('required');
+        });
+        npsHint.textContent = required ? '0（完全不會）– 10（一定會）' : '0–10（本段在 72 小時追蹤為選填）';
+      }
+      function applyStateToForm(){
+        // 隱藏欄位
+        hTimepoint.value = currentTp;
+        hCourseId.value  = currentCourse  ?? '';
+        hSessionId.value = currentSession ?? '';
+
+        // 標籤
+        const label = (currentTp === 'pre') ? '課前' : (currentTp === 'post' ? '課後' : '72 小時追蹤');
+        tpLabel.textContent = label;
+        dockTp.textContent  = label;
+
+        // 區塊顯示/隱藏
+        if (currentTp === 'pre'){
           elPostActions.classList.add('hidden');
           elPostScope.classList.add('hidden');
           el72h.classList.add('hidden');
-        } else if (tpValue === 'post') {
-          tpLabel.textContent = '課後';
+          setNpsRequired(true);
+        } else if (currentTp === 'post'){
           elPostActions.classList.remove('hidden');
           elPostScope.classList.remove('hidden');
           el72h.classList.add('hidden');
+          setNpsRequired(true);
         } else { // 72h
-          tpLabel.textContent = '72 小時追蹤';
           elPostActions.classList.add('hidden');
           elPostScope.classList.add('hidden');
           el72h.classList.remove('hidden');
+          setNpsRequired(false);
         }
+
+        // 控制台輸入框
+        inputCourse.value  = currentCourse  ?? '';
+        inputSession.value = currentSession ?? '';
+
+        // 預覽連結
+        const base = location.origin + location.pathname;
+        const qs = new URLSearchParams();
+        qs.set('tp', currentTp);
+        if (currentCourse  != null && currentCourse  !== '') qs.set('course',  String(currentCourse));
+        if (currentSession != null && currentSession !== '') qs.set('session', String(currentSession));
+        const nextUrl = base + '?' + qs.toString();
+        urlBox.textContent = nextUrl;
+
+        // Dock meta
+        dockMeta.textContent = `課程：${currentCourse ?? '—'}　場次：${currentSession ?? '—'}`;
+
+        // 讀取草稿
+        restoreDraft();
+        updateProgress();
       }
 
-      // 依目前（URL 或預設）初始化一次畫面
-      applyTp(tp || 'pre');
-
-      // 切換表格（課前/課後/72h）
-      tpSwitch?.addEventListener('change', () => {
-        const current = document.querySelector('#tp-switch input[name="tp_switch"]:checked')?.value || 'pre';
-        tp = current; // 更新目前時間點
-        applyTp(current);
-        ctrlsStatus.textContent = `當前：${current.toUpperCase()} 表單`;
+      // ===== 變更監聽 =====
+      pills.forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentTp = btn.dataset.tp;
+          syncPills();
+          applyStateToForm();
+        });
       });
 
-      // 套用手動輸入的 Course/Session ID（可為空）
-      btnApplyCtrls?.addEventListener('click', () => {
-        courseId  = inpCourse.value.trim()  ? Number(inpCourse.value.trim())  : null;
-        sessionId = inpSession.value.trim() ? Number(inpSession.value.trim()) : null;
-
-        document.getElementById('course_id').value  = courseId ?? '';
-        document.getElementById('session_id').value = sessionId ?? '';
-
-        ctrlsStatus.textContent = `已套用 Course=${(courseId ?? '∅')} / Session=${(sessionId ?? '∅')}`;
+      btnApply.addEventListener('click', () => {
+        const c = inputCourse.value.trim();
+        const s = inputSession.value.trim();
+        currentCourse  = c === '' ? null : Number(c);
+        currentSession = s === '' ? null : Number(s);
+        syncPills();
+        applyStateToForm();
       });
 
-      // 原本顯示/隱藏判斷（保留，確保首次載入也正確）
-      const elPostActions = document.getElementById('post-only-actions');
-      const elPostScope   = document.getElementById('post-only-scope');
-      const el72h         = document.getElementById('h72-only');
+      btnWriteUrl.addEventListener('click', () => {
+        const base = location.origin + location.pathname;
+        const qs = new URLSearchParams();
+        qs.set('tp', currentTp);
+        if (currentCourse  != null && currentCourse  !== '') qs.set('course',  String(currentCourse));
+        if (currentSession != null && currentSession !== '') qs.set('session', String(currentSession));
+        const next = base + '?' + qs.toString();
+        history.pushState(null, '', next);
+        urlBox.textContent = next;
+      });
 
-      if (tp === 'pre') {
-        tpLabel.textContent = '課前';
-        elPostActions.classList.add('hidden');
-        elPostScope.classList.add('hidden');
-        el72h.classList.add('hidden');
-      } else if (tp === 'post') {
-        tpLabel.textContent = '課後';
-        elPostActions.classList.remove('hidden');
-        elPostScope.classList.remove('hidden');
-        el72h.classList.add('hidden');
-      } else { // 72h
-        tpLabel.textContent = '72 小時追蹤';
-        elPostActions.classList.add('hidden');
-        elPostScope.classList.add('hidden');
-        el72h.classList.remove('hidden');
+      window.addEventListener('popstate', () => {
+        const p = new URLSearchParams(location.search);
+        currentTp = (p.get('tp')||'pre').toLowerCase();
+        currentCourse  = p.get('course')  ? Number(p.get('course'))  : null;
+        currentSession = p.get('session') ? Number(p.get('session')) : null;
+        syncPills(); applyStateToForm();
+      });
+
+      // ===== 便捷功能 =====
+      function setGroupValue(name, val){
+        const radios = $$(`input[name="${name}"]`);
+        const target = radios.find(r => r.value === String(val));
+        if (target){ target.checked = true; target.dispatchEvent(new Event('change', {bubbles:true})); }
       }
+      btnFill3.addEventListener('click', () => {
+        ['stability','recovery','connectedness','focus'].forEach(k => setGroupValue(k, 3));
+        showToast('已套用「3 分」到四個指標，可再微調。');
+      });
 
+      // 鍵盤快速鍵（輸入框/文字區不觸發）
+      document.addEventListener('keydown', (e) => {
+        const tag = (e.target.tagName||'').toLowerCase();
+        if (tag === 'input' || tag === 'textarea') return;
+        if (/^[1-5]$/.test(e.key)){
+          const num = Number(e.key);
+          ['stability','recovery','connectedness','focus'].forEach((name, i) => {
+            // 依序選填第一個未填的欄位；若都已填，改為最後一個欄位可切換
+            const radios = $$(`input[name="${name}"]`);
+            const checked = radios.some(r=>r.checked);
+            if (!checked){ setGroupValue(name, num); e.preventDefault(); throw 'filled-one'; }
+            if (i===3){ setGroupValue(name, num); e.preventDefault(); }
+          });
+        } else if (/^\d$/.test(e.key)){ // 0~9 -> NPS；Shift+0 -> 10
+          const val = e.key === '0' && e.shiftKey ? 10 : Number(e.key);
+          const target = $$('input[name="nps"]').find(r=>Number(r.value)===val);
+          if (target){ target.checked = true; target.dispatchEvent(new Event('change', {bubbles:true})); }
+        } else if (e.key.toLowerCase()==='s'){ e.preventDefault(); form.requestSubmit(); }
+        else if (e.key.toLowerCase()==='r'){ e.preventDefault(); form.reset(); updateProgress(); }
+        else if (e.key.toLowerCase()==='b'){ e.preventDefault(); if (document.referrer) history.back(); else location.href='index.html'; }
+      });
+
+      // 字數計數器
+      oneLine.addEventListener('input', () => { oneLineCount.textContent = oneLine.value.length; saveDraftSoon(); });
+
+      // 進度條：四項核心指標
+      function countCoreFilled(){
+        const names = ['stability','recovery','connectedness','focus'];
+        return names.reduce((acc,n)=> acc + ($$(`input[name="${n}"]`).some(r=>r.checked) ? 1 : 0), 0);
+      }
+      function updateProgress(){
+        const filled = countCoreFilled();
+        progressText.textContent = `${filled} / 4`;
+        progressBar.style.width = `${(filled/4)*100}%`;
+        dockStatus.textContent = filled<4 ? `尚缺 ${4-filled} 題核心指標` : '核心指標已完成';
+      }
+      form.addEventListener('change', (e) => { if (['radio','checkbox'].includes(e.target.type)) updateProgress(); saveDraftSoon(); });
+
+      // 取消/重置
       btnCancel?.addEventListener('click', () => {
         if (document.referrer) history.back();
         else location.href = 'index.html';
       });
+      btnReset?.addEventListener('click', () => { showToast('已重置表單'); clearDraft(); updateProgress(); });
 
+      // Dock 送出
+      dockSubmit.addEventListener('click', () => form.requestSubmit());
+
+      // ===== 草稿儲存（localStorage） =====
+      const draftKey = () => `oneMinuteDraft:${currentTp}:${currentCourse ?? ''}:${currentSession ?? ''}`;
+      let draftTimer = null;
+      function saveDraftSoon(){
+        clearTimeout(draftTimer);
+        draftTimer = setTimeout(saveDraft, 400);
+      }
+      function saveDraft(){
+        const fd = new FormData(form);
+        const obj = {};
+        for (const [k,v] of fd.entries()){ obj[k] = v; }
+        // radio/checkbox 多值處理
+        ['stability','recovery','connectedness','focus','nps'].forEach(k=>{
+          const r = $$(`input[name="${k}"]:checked`)[0];
+          if (r) obj[k] = r.value;
+        });
+        obj._ts = Date.now();
+        localStorage.setItem(draftKey(), JSON.stringify(obj));
+      }
+      function restoreDraft(){
+        try{
+          const raw = localStorage.getItem(draftKey());
+          if (!raw) return;
+          const obj = JSON.parse(raw);
+          Object.entries(obj).forEach(([k,v])=>{
+            if (k.startsWith('_')) return;
+            const el = form.elements[k];
+            if (!el) return;
+            if (el instanceof RadioNodeList){
+              const r = $$(`input[name="${k}"]`).find(x=>x.value===String(v));
+              if (r) r.checked = true;
+            } else {
+              el.value = v;
+            }
+          });
+        }catch(e){ /* ignore */ }
+      }
+      function clearDraft(){ try{ localStorage.removeItem(draftKey()); }catch(e){} }
+
+      // ===== Toast / 訊息 =====
+      function showToast(msg, type='ok'){
+        formMsg.textContent = msg;
+        formMsg.className = `alert ${type}`;
+        formMsg.classList.remove('hidden');
+        setTimeout(()=> formMsg.classList.add('hidden'), 2500);
+      }
+
+      // ===== 初始化 =====
+      syncPills();
+      applyStateToForm();
+
+      // ===== 送出（含穩健化 + display_name 帶入） =====
       form?.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // 需要登入（共用：若未登入會開啟登入/註冊 dialog）
         if (typeof requireAuthOrOpenModal === 'function'){
           if (!requireAuthOrOpenModal(e)) return;
         }
 
+        const user = window.currentUser || null;
+        if (!user) { showToast('請先登入再送出表單','danger'); return; }
+
+        const displayName =
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.user_metadata?.nickname || null;
+
         const fd = new FormData(form);
+        const getChecked = (name) => $$(`input[name="${name}"]:checked`).map(cb => cb.value);
 
-        // 取多選值
-        const getChecked = (name) => {
-          return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
-        };
-
-        // post 的「其他」補上
+        // post 的其他
         const nextActions = getChecked('next_actions');
         const naOther = (fd.get('next_actions_other')||'').trim();
         if (naOther) nextActions.push(naOther);
 
-        // 72h 的「其他」補上
+        // 72h 的其他
         const doneActions = getChecked('actions_done');
         const daOther = (fd.get('actions_done_other')||'').trim();
         if (daOther) doneActions.push(daOther);
 
-        // 送出時以「目前控制面板/隱藏欄位」為準
-        const currentTp       = document.getElementById('timepoint').value || 'pre';
-        const currentCourseId = document.getElementById('course_id').value ? Number(document.getElementById('course_id').value) : null;
-        const currentSessionId= document.getElementById('session_id').value ? Number(document.getElementById('session_id').value) : null;
+        const toNum = (v) => (v===null || v==='') ? null : Number(v);
+        const stability     = toNum(fd.get('stability'));
+        const recovery      = toNum(fd.get('recovery'));
+        const connectedness = toNum(fd.get('connectedness'));
+        const focus         = toNum(fd.get('focus'));
+        const nps           = toNum(fd.get('nps')); // 72h 可為 null
+
+        // 基本檢核
+        if (![stability,recovery,connectedness,focus].every(n => typeof n === 'number' && n>=1 && n<=5)){
+          showToast('四個核心指標需要 1~5 的分數','danger'); return;
+        }
+        if (!(currentTp === 'pre' || currentTp === 'post' || currentTp === '72h')) {
+          showToast('timepoint 錯誤','danger'); return;
+        }
+        if (!(nps === null || (nps>=0 && nps<=10))) {
+          showToast('NPS 需為 0–10','danger'); return;
+        }
+
+        const supabase = window.sb;
+        if (!supabase) { showToast('Supabase 尚未初始化','danger'); return; }
 
         const payload = {
-          user_id: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : null,
-          course_id: currentCourseId,
-          session_id: currentSessionId,
+          user_id: user.id,
+          course_id: currentCourse ?? null,
+          session_id: currentSession ?? null,
           timepoint: currentTp,
-          stability: Number(fd.get('stability')),
-          recovery: Number(fd.get('recovery')),
-          connectedness: Number(fd.get('connectedness')),
-          focus: Number(fd.get('focus')),
-          nps: fd.get('nps') !== null ? Number(fd.get('nps')) : null,
+          stability,
+          recovery,
+          connectedness,
+          focus,
+          nps,
           one_line: String(fd.get('one_line') || ''),
           next_actions: (currentTp === 'post') ? nextActions : [],
           actions_done: (currentTp === '72h') ? doneActions : [],
           adoption_scope: (currentTp === 'post') ? getChecked('adoption_scope') : [],
+          display_name: displayName || null,
           submitted_at: new Date().toISOString()
         };
 
         try {
-          const { error } = await sb.from('one_minute').insert(payload);
-          if (error) throw error;
-          alert('已送出，謝謝你的回饋 🌿');
-
-          // 導回
-          if (currentCourseId) location.href = `course.html?id=${currentCourseId}`;
-          else location.href = 'index.html';
+          const { error } = await supabase.from('one_minute').insert(payload);
+          if (error) {
+            console.error('[one_minute insert error]', error);
+            showToast(`送出失敗：${error.message || '不明錯誤'}`,'danger');
+            return;
+          }
+          clearDraft();
+          showToast('已送出，謝謝你的回饋 🌿','ok');
+          setTimeout(() => {
+            if (currentCourse) location.href = `course.html?id=${currentCourse}`;
+            else location.href = 'index.html';
+          }, 600);
         } catch (err) {
           console.error(err);
-          alert('送出失敗，請稍後再試或聯絡我們。');
+          showToast('送出失敗（例外），請稍後再試或聯絡我們。','danger');
         }
       });
     });
