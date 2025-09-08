@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const hCourseId  = $('#course_id');
   const hSessionId = $('#session_id');
 
+  const elPostShare = $('#post-only-share');
+  const elPostContent = $('#post-only-content');
   const elPostActions = $('#post-only-actions');
   const elPostScope   = $('#post-only-scope');
   const el72h         = $('#h72-only');
@@ -88,16 +90,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 區塊顯示
     if (currentTp === 'pre'){
+      elPostShare.classList.add('hidden');
+      elPostContent.classList.add('hidden');
       elPostActions.classList.add('hidden');
       elPostScope.classList.add('hidden');
       el72h.classList.add('hidden');
       setNpsRequired(true);
     } else if (currentTp === 'post'){
+      elPostShare.classList.remove('hidden');
+      elPostContent.classList.remove('hidden');
       elPostActions.classList.remove('hidden');
       elPostScope.classList.remove('hidden');
       el72h.classList.add('hidden');
       setNpsRequired(true);
     } else { // 72h
+      elPostShare.classList.add('hidden');
+      elPostContent.classList.add('hidden');
       elPostActions.classList.add('hidden');
       elPostScope.classList.add('hidden');
       el72h.classList.remove('hidden');
