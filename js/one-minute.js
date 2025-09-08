@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
       elPostActions.classList.add('hidden');
       elPostScope.classList.add('hidden');
       el72h.classList.add('hidden');
-      setNpsRequired(true);
+      setNpsRequired(false);
     } else if (currentTp === 'post'){
       elPostShare.classList.remove('hidden');
       elPostContent.classList.remove('hidden');
