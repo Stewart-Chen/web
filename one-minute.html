@@ -90,7 +90,6 @@
 
     /* 工具列 */
     .toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .tag{ font-size:12px; padding:4px 8px; border-radius:999px; background:#eef6ff; color:var(--brand-ink); border:1px solid #dbe7f3; }
     .btn{
       display:inline-flex; align-items:center; justify-content:center; gap:8px;
       border-radius:12px; border:1px solid #dbe7f3; padding:10px 14px; background:#fff; cursor:pointer;
@@ -142,13 +141,10 @@
       </div>
     </section>
 
-    <!-- A. 控制台（即時套用；不改網址；無任何按鈕） -->
+    <!-- A. 控制台（即時套用；不改網址；無任何快捷鍵提示） -->
     <section class="card flow-md" aria-labelledby="ctrl-title">
       <div class="legend">
         <h2 id="ctrl-title" style="margin:0;font-size:18px;">快速切換</h2>
-        <div class="toolbar">
-          <span class="tag">快捷鍵：1~5 評分、0~10 NPS、S 送出、R 重填、B 返回</span>
-        </div>
       </div>
 
       <!-- 時間點 -->
