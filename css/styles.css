@@ -568,7 +568,7 @@ fieldset.card .actions label{
 /* Site title with logo */
 .site-title { margin: 0; }
 .site-title .brand{ display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
-.site-title .logo{ width: 60px; height: 60px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.1)); }
+.site-title .logo{ width: 55px; height: 55px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.1)); }
 
 /* === Header 視覺（淡玻璃） === */
 .site-header .header-bar{
