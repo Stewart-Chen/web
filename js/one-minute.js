@@ -213,29 +213,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function buildStateName(s,r,c,f){ return `${NAME_STAB[s-1]}${NAME_RECV[r-1]}${NAME_CONN[c-1]}${NAME_FOCUS[f-1]}`; }
 
-  // 5×5 表情矩陣（行=復原+連結；列=穩定+專注），從低→高
-  const EMOJI_GRID = [
-    ['😵','😰','😨','😟','😞'],
-    ['😣','😖','😕','😔','🙁'],
-    ['😐','🙃','🙂','😌','😊'],
-    ['😎','🤗','😄','😁','🤩'],
-    ['🤠','😺','😇','🧘','🥳']
-  ];
+  // 以檔名規則回傳 25 張圖其中之一：img/emogi/mood-<row>-<col>.png
   function clamp5(n){ return Math.min(5, Math.max(1, n)); }
   function levelFromAvg(a,b){ return clamp5(Math.round((a+b)/2)); } // 1..5
-  function stateEmoji(s,r,c,f){
-    const row = levelFromAvg(r, c); // 情緒溫度（社會/復原）
-    const col = levelFromAvg(s, f); // 穩定/專注
-    return EMOJI_GRID[row-1][col-1];
+  
+  function stateIconSrc(s, r, c, f) {
+    const row = levelFromAvg(r, c); // 復原 x 連結
+    const col = levelFromAvg(s, f); // 穩定 x 專注
+    return `img/emogi/mood-${row}-${col}.png`;
   }
 
   function showStateResult(s,r,c,f){
-    const name  = buildStateName(s,r,c,f);
-    const emoji = stateEmoji(s,r,c,f);
+    const name    = buildStateName(s,r,c,f);
+    const iconSrc = stateIconSrc(s,r,c,f);
+  
     formMsg.className = 'alert ok';
     formMsg.innerHTML =
       `<div class="state-result">
-         <span class="big">${emoji}</span>
+         <img src="${iconSrc}" alt="狀態圖示" class="state-icon" width="40" height="40" loading="lazy" decoding="async">
          <div><strong>你的即時狀態：${name}</strong><div class="muted">已成功記錄</div></div>
        </div>`;
     formMsg.classList.remove('hidden');
