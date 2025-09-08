@@ -58,3 +58,11 @@ body:has(.dock)::after{
   #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
   .btn{ padding:8px 12px; font-size:14px; }
 }
+/* 若你的欄位是 <fieldset class="card"> 或 .group */
+fieldset.card,
+fieldset.group{
+  border: 0 !important;
+  padding: 0;
+}
+/* 只影響有進度條那張卡片 */
+.card.flow-sm > .progress { margin-top: 16px; }
