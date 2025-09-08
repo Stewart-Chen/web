@@ -5,7 +5,7 @@
   <title>心聚 1 分鐘｜HeartHub Studio 心聚坊</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 站內樣式 / 字型（維持原有依賴） -->
+  <!-- 站內樣式 / 字型 -->
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
 
@@ -17,103 +17,57 @@
   <!-- 本頁獨立腳本 -->
   <script defer src="js/one-minute.js"></script>
 
-  <!-- 這頁的輕量樣式（即時套用版） -->
+  <!-- 本頁樣式（精簡） -->
   <style>
-    :root{
-      --brand:#0ea5e9; --brand-ink:#075985; --ink:#1f2937; --muted:#6b7280;
-      --bg:#f8fafc; --card:#ffffff; --ring:rgba(14,165,233,.35);
-      --radius:14px; --shadow:0 6px 24px rgba(15,23,42,.08);
-    }
+    :root{ --brand:#0ea5e9; --brand-ink:#075985; --ink:#1f2937; --muted:#6b7280;
+           --bg:#f8fafc; --card:#ffffff; --ring:rgba(14,165,233,.35);
+           --radius:14px; --shadow:0 6px 24px rgba(15,23,42,.08); }
     html,body{ height:100%; }
-    body{
-      margin:0; background:var(--bg); color:var(--ink);
-      font-family: system-ui, -apple-system, "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      line-height:1.6;
-    }
+    body{ margin:0; background:var(--bg); color:var(--ink);
+          font-family: system-ui,-apple-system,"Noto Serif TC","PingFang TC","Microsoft JhengHei",Segoe UI,Roboto,Helvetica,Arial,sans-serif; line-height:1.6; }
     .container{ max-width:960px; margin-inline:auto; padding:24px 16px 120px; }
-    .page-hero{
-      background:linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-      border:1px solid #e5f3ff; border-radius:18px; padding:18px 16px; margin-bottom:16px;
-      display:flex; align-items:center; gap:12px;
-    }
-    .page-hero .emoji{ font-size:28px; }
-    .page-hero h1{ font-size:20px; margin:0; letter-spacing:.5px; }
-    .muted{ color:var(--muted); }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
-    .card{
-      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
-      padding:18px; border:1px solid #eef2f7;
-    }
-    .flow-sm > *+*{ margin-top:8px; }
-    .flow-md > *+*{ margin-top:12px; }
-    .flow-lg > *+*{ margin-top:18px; }
+    .page-hero{ background:linear-gradient(135deg,#e0f2fe 0%,#f0f9ff 100%);
+                border:1px solid #e5f3ff; border-radius:18px; padding:18px 16px; margin-bottom:16px;
+                display:flex; align-items:center; gap:12px; }
+    .page-hero .emoji{ font-size:28px; } .page-hero h1{ font-size:20px; margin:0; letter-spacing:.5px; }
+    .muted{ color:var(--muted); } .mono{ font-family: ui-monospace,Menlo,Consolas,monospace; }
+    .card{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; border:1px solid #eef2f7; }
+    .flow-sm>*+*{ margin-top:8px; } .flow-md>*+*{ margin-top:12px; } .flow-lg>*+*{ margin-top:18px; }
 
-    /* segmented pills */
     .pill-group{ display:flex; flex-wrap:wrap; gap:8px; }
-    .pill{
-      border-radius:999px; padding:8px 14px; border:1px solid #dbe7f3; background:#fff; cursor:pointer;
-      font-weight:600; letter-spacing:.5px; transition:.2s background,.2s color,.2s border-color,.2s transform;
-      user-select:none;
-    }
-    .pill:hover{ transform:translateY(-1px); }
-    .pill[aria-pressed="true"]{ background:var(--brand); color:#fff; border-color:var(--brand); }
+    .pill{ border-radius:999px; padding:8px 14px; border:1px solid #dbe7f3; background:#fff; cursor:pointer; font-weight:600; letter-spacing:.5px; transition:.2s; user-select:none; }
+    .pill:hover{ transform:translateY(-1px); } .pill[aria-pressed="true"]{ background:var(--brand); color:#fff; border-color:var(--brand); }
 
-    /* 控制台 grid */
     .ctrl-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
     .field label{ font-weight:600; display:block; margin-bottom:6px; color:#0f172a; }
-    .input, textarea, select{
-      width:100%; border:1px solid #dbe7f3; border-radius:12px; padding:12px 12px;
-      outline:0; background:#fff; font-size:15px;
-    }
+    .input, textarea, select{ width:100%; border:1px solid #dbe7f3; border-radius:12px; padding:12px; outline:0; background:#fff; font-size:15px; }
     .input:focus, textarea:focus, select:focus{ box-shadow:0 0 0 4px var(--ring); border-color:var(--brand); }
 
-    /* 量表 */
     .scale{ display:flex; gap:8px; flex-wrap:wrap; }
     .scale input{ position:absolute; opacity:0; pointer-events:none; }
-    .scale .opt{
-      display:inline-flex; align-items:center; justify-content:center;
-      min-width:44px; height:44px; padding:0 14px;
-      border-radius:12px; border:1px solid #dbe7f3; background:#fff; cursor:pointer;
-      font-weight:700; transition:.2s background,.2s border-color,.2s transform; user-select:none;
-    }
+    .scale .opt{ display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 14px; border-radius:12px; border:1px solid #dbe7f3; background:#fff; cursor:pointer; font-weight:700; transition:.2s; user-select:none; }
     .scale .opt:hover{ transform:translateY(-1px); }
-    .scale input:checked + .opt{
-      background:#effaff; border-color:var(--brand); outline:2px solid var(--brand); outline-offset:-2px;
-    }
-    .legend{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-    .legend strong{ font-size:16px; }
-    .hint{ font-size:13px; color:var(--muted); }
+    .scale input:checked + .opt{ background:#effaff; border-color:var(--brand); outline:2px solid var(--brand); outline-offset:-2px; }
 
-    /* NPS */
+    .legend{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .legend strong{ font-size:16px; } .hint{ font-size:13px; color:var(--muted); }
+
     .nps-row{ display:flex; flex-wrap:wrap; gap:8px; }
     .nps-row .opt{ min-width:40px; height:40px; }
 
-    /* 工具列 */
     .toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      border-radius:12px; border:1px solid #dbe7f3; padding:10px 14px; background:#fff; cursor:pointer;
-      font-weight:700; transition:.2s transform,.2s background,.2s color,.2s border-color;
-    }
-    .btn:hover{ transform:translateY(-1px); }
-    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand); }
-    .btn.secondary{ background:#f3f7fb; }
-    .btn.ok{ background:#ecfdf5; border-color:#a7f3d0; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:12px; border:1px solid #dbe7f3; padding:10px 14px; background:#fff; cursor:pointer; font-weight:700; transition:.2s; }
+    .btn:hover{ transform:translateY(-1px); } .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand); }
+    .btn.secondary{ background:#f3f7fb; } .btn.ok{ background:#ecfdf5; border-color:#a7f3d0; }
 
-    /* 進度條 + 底部浮動列 */
     .progress{ height:10px; background:#eef2f7; border-radius:999px; overflow:hidden; }
-    .progress > span{ display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--brand) 0%, #22d3ee 100%); transition: width .25s ease; }
+    .progress>span{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--brand) 0%,#22d3ee 100%); transition:width .25s ease; }
 
     .dock{ position:fixed; bottom:16px; left:0; right:0; z-index:20; display:flex; justify-content:center; pointer-events:none; }
-    .dock-inner{
-      pointer-events:auto; background:#ffffffd9; backdrop-filter: blur(8px);
-      border:1px solid #e5effa; border-radius:14px; box-shadow:var(--shadow);
-      padding:10px; width:min(920px, calc(100% - 24px)); display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
+    .dock-inner{ pointer-events:auto; background:#ffffffd9; backdrop-filter: blur(8px); border:1px solid #e5effa; border-radius:14px; box-shadow:var(--shadow); padding:10px; width:min(920px,calc(100% - 24px)); display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .dock small{ color:var(--muted); }
     .hidden{ display:none !important; }
 
-    /* 表單卡片群組 */
     fieldset.group{ border:0; padding:0; margin:0; }
     fieldset.group + fieldset.group{ margin-top:16px; }
     fieldset.group .card{ padding:16px; }
@@ -134,7 +88,6 @@
 </head>
 <body>
   <main class="container flow-lg">
-    <!-- 頁首 -->
     <section class="page-hero">
       <div class="emoji">🌿</div>
       <div>
@@ -143,20 +96,14 @@
       </div>
     </section>
 
-    <!-- A. 控制台（即時套用；不改網址） -->
+    <!-- A. 控制台 -->
     <section class="card flow-md" aria-labelledby="ctrl-title">
-      <div class="legend">
-        <h2 id="ctrl-title" style="margin:0;font-size:18px;">快速切換</h2>
-      </div>
-
-      <!-- 時間點 -->
+      <div class="legend"><h2 id="ctrl-title" style="margin:0;font-size:18px;">快速切換</h2></div>
       <div class="pill-group" role="group" aria-label="時間點">
         <button class="pill" data-tp="pre"  aria-pressed="true">課前</button>
         <button class="pill" data-tp="post" aria-pressed="false">課後</button>
         <button class="pill" data-tp="72h"  aria-pressed="false">72 小時追蹤</button>
       </div>
-
-      <!-- 兩個輸入框；輸入即時套用 -->
       <div class="ctrl-grid" style="margin-top:10px;">
         <label class="field">課程 ID（可留空）
           <input id="ctrl-course" class="input" type="number" inputmode="numeric" placeholder="例如 55">
@@ -184,18 +131,13 @@
       </header>
 
       <form id="one-minute-form" class="flow-md">
-        <!-- 隱藏欄位（由控制台維護） -->
         <input type="hidden" name="timepoint" id="timepoint" value="pre">
         <input type="hidden" name="session_id" id="session_id">
         <input type="hidden" name="course_id"  id="course_id">
 
-        <!-- A. 四指標（1~5） -->
         <fieldset class="group">
           <div class="card">
-            <div class="legend">
-              <strong>1）穩定度</strong>
-              <span class="hint">1 不穩 → 5 很穩</span>
-            </div>
+            <div class="legend"><strong>1）穩定度</strong><span class="hint">1 不穩 → 5 很穩</span></div>
             <div class="scale" role="radiogroup" aria-label="穩定度">
               <label><input type="radio" name="stability" value="1" required><span class="opt">1</span></label>
               <label><input type="radio" name="stability" value="2"><span class="opt">2</span></label>
@@ -206,10 +148,7 @@
           </div>
 
           <div class="card">
-            <div class="legend">
-              <strong>2）壓力復原</strong>
-              <span class="hint">1 幾乎無法復原 → 5 很快能復原</span>
-            </div>
+            <div class="legend"><strong>2）壓力復原</strong><span class="hint">1 幾乎無法復原 → 5 很快能復原</span></div>
             <div class="scale" role="radiogroup" aria-label="壓力復原">
               <label><input type="radio" name="recovery" value="1" required><span class="opt">1</span></label>
               <label><input type="radio" name="recovery" value="2"><span class="opt">2</span></label>
@@ -220,10 +159,7 @@
           </div>
 
           <div class="card">
-            <div class="legend">
-              <strong>3）社會連結</strong>
-              <span class="hint">1 很疏離 → 5 很連結</span>
-            </div>
+            <div class="legend"><strong>3）社會連結</strong><span class="hint">1 很疏離 → 5 很連結</span></div>
             <div class="scale" role="radiogroup" aria-label="社會連結">
               <label><input type="radio" name="connectedness" value="1" required><span class="opt">1</span></label>
               <label><input type="radio" name="connectedness" value="2"><span class="opt">2</span></label>
@@ -234,10 +170,7 @@
           </div>
 
           <div class="card">
-            <div class="legend">
-              <strong>4）專注力</strong>
-              <span class="hint">1 很難專心 → 5 很能專心</span>
-            </div>
+            <div class="legend"><strong>4）專注力</strong><span class="hint">1 很難專心 → 5 很能專心</span></div>
             <div class="scale" role="radiogroup" aria-label="專注力">
               <label><input type="radio" name="focus" value="1" required><span class="opt">1</span></label>
               <label><input type="radio" name="focus" value="2"><span class="opt">2</span></label>
@@ -248,15 +181,10 @@
           </div>
         </fieldset>
 
-        <!-- B. NPS（72h 可選填） -->
         <fieldset class="group">
           <div class="card">
-            <div class="legend">
-              <strong>5）你願意推薦這堂課嗎？</strong>
-              <span id="nps-hint" class="hint">0（完全不會）– 10（一定會）</span>
-            </div>
+            <div class="legend"><strong>5）你願意推薦這堂課嗎？</strong><span id="nps-hint" class="hint">0（完全不會）– 10（一定會）</span></div>
             <div class="nps-row" role="radiogroup" aria-label="NPS">
-              <!-- JS 會在 72h 移除必填 -->
               <label><input type="radio" name="nps" value="0" required><span class="opt">0</span></label>
               <label><input type="radio" name="nps" value="1"><span class="opt">1</span></label>
               <label><input type="radio" name="nps" value="2"><span class="opt">2</span></label>
@@ -272,25 +200,17 @@
           </div>
         </fieldset>
 
-        <!-- C. 一句話收穫（選填，60 字） -->
         <fieldset class="group">
           <div class="card">
-            <div class="legend">
-              <strong>6）今天最大的收穫</strong>
-              <span class="hint">60 字以內</span>
-            </div>
+            <div class="legend"><strong>6）今天最大的收穫</strong><span class="hint">60 字以內</span></div>
             <textarea name="one_line" rows="2" maxlength="60" class="input" placeholder="例：我學會用 3 分鐘呼吸讓自己安定"></textarea>
             <div class="count"><span id="one-line-count">0</span> / 60</div>
           </div>
         </fieldset>
 
-        <!-- D. 課後限定 -->
         <fieldset id="post-only-actions" class="group">
           <div class="card">
-            <div class="legend">
-              <strong>7）接下來 72 小時你會做：</strong>
-              <span class="hint">可複選</span>
-            </div>
+            <div class="legend"><strong>7）接下來 72 小時你會做：</strong><span class="hint">可複選</span></div>
             <div class="toolbar">
               <label><input type="checkbox" name="next_actions" value="breathing_3m"> 3 分鐘呼吸</label>
               <label><input type="checkbox" name="next_actions" value="horticulture_5m"> 5 分鐘園藝照護</label>
@@ -303,10 +223,7 @@
 
         <fieldset id="post-only-scope" class="group">
           <div class="card">
-            <div class="legend">
-              <strong>8）你會把練習帶到：</strong>
-              <span class="hint">可複選</span>
-            </div>
+            <div class="legend"><strong>8）你會把練習帶到：</strong><span class="hint">可複選</span></div>
             <div class="toolbar">
               <label><input type="checkbox" name="adoption_scope" value="self"> 個人</label>
               <label><input type="checkbox" name="adoption_scope" value="family"> 家人</label>
@@ -316,13 +233,9 @@
           </div>
         </fieldset>
 
-        <!-- 72h 限定 -->
         <fieldset id="h72-only" class="group">
           <div class="card">
-            <div class="legend">
-              <strong>7）這 72 小時你完成了哪些行動？</strong>
-              <span class="hint">可複選</span>
-            </div>
+            <div class="legend"><strong>7）這 72 小時你完成了哪些行動？</strong><span class="hint">可複選</span></div>
             <div class="toolbar">
               <label><input type="checkbox" name="actions_done" value="breathing_3m"> 3 分鐘呼吸</label>
               <label><input type="checkbox" name="actions_done" value="horticulture_5m"> 5 分鐘園藝照護</label>
@@ -333,7 +246,7 @@
           </div>
         </fieldset>
 
-        <!-- 表單訊息（成功後也在這裡顯示狀態代號與圖案） -->
+        <!-- 表單訊息 / 成果顯示 -->
         <div id="form-msg" class="alert hidden" role="status" aria-live="polite"></div>
       </form>
     </section>
