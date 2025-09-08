@@ -37,11 +37,14 @@
         <button class="pill" data-tp="post" aria-pressed="false">課後</button>
         <button class="pill" data-tp="72h"  aria-pressed="false">72 小時追蹤</button>
       </div>
-      <div class="ctrl-grid" style="margin-top:10px;">
-        <label class="field">課程 ID（可留空）
+      
+      <button id="toggle-ids" style="margin-top:10px;">顯示ID</button>
+      
+      <div id="id-section" class="ctrl-grid" style="margin-top:10px; display:none;">
+        <label class="field">課程ID
           <input id="ctrl-course" class="input" type="number" inputmode="numeric" placeholder="例如 55">
         </label>
-        <label class="field">場次 ID（可留空）
+        <label class="field">場次ID
           <input id="ctrl-session" class="input" type="number" inputmode="numeric" placeholder="例如 101">
         </label>
       </div>
