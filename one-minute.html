@@ -122,6 +122,8 @@
     .alert{ border-radius:12px; padding:12px; border:1px solid transparent; }
     .alert.ok{ background:#ecfdf5; border-color:#a7f3d0; }
     .alert.danger{ background:#fef2f2; border-color:#fecaca; }
+    .state-result{ display:flex; align-items:center; gap:10px; font-size:18px; }
+    .state-result .big{ font-size:26px; }
 
     @media (max-width:480px){
       .page-hero h1{ font-size:18px; }
@@ -141,7 +143,7 @@
       </div>
     </section>
 
-    <!-- A. 控制台（即時套用；不改網址；無任何快捷鍵提示） -->
+    <!-- A. 控制台（即時套用；不改網址） -->
     <section class="card flow-md" aria-labelledby="ctrl-title">
       <div class="legend">
         <h2 id="ctrl-title" style="margin:0;font-size:18px;">快速切換</h2>
@@ -331,20 +333,13 @@
           </div>
         </fieldset>
 
-        <!-- 表單訊息 -->
+        <!-- 表單訊息（成功後也在這裡顯示狀態代號與圖案） -->
         <div id="form-msg" class="alert hidden" role="status" aria-live="polite"></div>
-
-        <!-- 按鈕列 -->
-        <div class="toolbar" style="justify-content:flex-end;">
-          <button type="button" class="btn" id="btn-cancel">返回</button>
-          <button type="reset" class="btn secondary" id="btn-reset">重填</button>
-          <button type="submit" class="btn primary">送出</button>
-        </div>
       </form>
     </section>
   </main>
 
-  <!-- 底部浮動送出列 -->
+  <!-- 底部浮動送出列（整合 返回 / 重填 / 送出） -->
   <div class="dock">
     <div class="dock-inner">
       <div>
@@ -353,6 +348,8 @@
       </div>
       <div class="toolbar">
         <small id="dock-status">尚未填寫</small>
+        <button id="dock-back"  class="btn">返回</button>
+        <button id="dock-reset" class="btn secondary">重填</button>
         <button id="dock-submit" class="btn primary">送出</button>
       </div>
     </div>
