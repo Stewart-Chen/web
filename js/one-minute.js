@@ -1,5 +1,5 @@
-// one-minute.js（即時套用、不改網址；無 displayName；無快捷鍵）
-// 修正：選完核心指標即時更新完成度 / Dock 狀態
+// one-minute.js（即時套用、不改網址；無 displayName/快捷鍵）
+// 更新：按鈕整合到底部浮動列；成功送出後顯示「狀態代號 + 圖案」，不跳轉。
 document.addEventListener('DOMContentLoaded', () => {
   const $  = (sel, ctx=document) => ctx.querySelector(sel);
   const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
@@ -12,9 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 表單/區塊
   const form = $('#one-minute-form');
-  const btnCancel = $('#btn-cancel');
-  const btnReset  = $('#btn-reset');
-
   const hTimepoint = $('#timepoint');
   const hCourseId  = $('#course_id');
   const hSessionId = $('#session_id');
@@ -40,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const dockMeta     = $('#dock-meta');
   const dockStatus   = $('#dock-status');
   const dockSubmit   = $('#dock-submit');
+  const dockBack     = $('#dock-back');
+  const dockReset    = $('#dock-reset');
 
   // ===== 狀態 =====
   let currentTp = 'pre';
@@ -135,11 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('已套用「3 分」到四個指標，可再微調。');
   });
 
-  // 取消/重置
-  btnCancel?.addEventListener('click', () => { if (document.referrer) history.back(); else location.href = 'index.html'; });
-  btnReset?.addEventListener('click', () => { showToast('已重置表單'); clearDraft(); updateProgress(); });
-
-  // Dock 送出
+  // Dock 行為（整合返回/重填/送出）
+  dockBack?.addEventListener('click', () => { if (document.referrer) history.back(); else location.href = 'index.html'; });
+  dockReset?.addEventListener('click', () => { form.reset(); clearDraft(); updateProgress(); showToast('已重置表單'); });
   dockSubmit.addEventListener('click', () => form.requestSubmit());
 
   // 即時套用：pills / inputs
@@ -157,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyStateToForm();
   });
 
-  // ★ 修正重點：任何 radio/checkbox 變更都即時更新完成度 + 儲存草稿
+  // ★ 任何 radio/checkbox 變更都即時更新完成度 + 儲存草稿
   form.addEventListener('change', (e) => {
     if (e.target && (e.target.type === 'radio' || e.target.type === 'checkbox')) {
       updateProgress();
@@ -200,19 +197,49 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function clearDraft(){ try{ localStorage.removeItem(draftKey()); }catch(e){} }
 
-  // ===== Toast / 訊息 =====
+  // ===== Toast / 訊息（一般提示用；不會遮擋 Dock） =====
   function showToast(msg, type='ok'){
-    formMsg.textContent = msg;
+    formMsg.innerHTML = msg;
     formMsg.className = `alert ${type}`;
     formMsg.classList.remove('hidden');
     setTimeout(()=> formMsg.classList.add('hidden'), 2000);
+  }
+
+  // ===== 狀態代號 + 圖案（625 組，演算法式命名） =====
+  const NAME_STAB = ['飄','安','穩','定','泰'];      // 穩定度 1..5
+  const NAME_RECV = ['脆','回','韌','強','堅'];      // 復原 1..5
+  const NAME_CONN = ['孤','疏','連','親','融'];      // 連結 1..5
+  const NAME_FOCUS= ['散','亂','專','聚','澄'];      // 專注 1..5
+
+  function buildStateName(s,r,c,f){
+    // 4 個字元組合 → 5^4 = 625 種唯一代號
+    return `${NAME_STAB[s-1]}${NAME_RECV[r-1]}${NAME_CONN[c-1]}${NAME_FOCUS[f-1]}`;
+  }
+  function stateEmoji(s,r,c,f){
+    const avg = (s+r+c+f)/4;
+    if (avg < 1.5) return '🌧️';
+    if (avg < 2.5) return '🌥️';
+    if (avg < 3.5) return '⛅';
+    if (avg < 4.5) return '☀️';
+    return '🌈';
+  }
+  function showStateResult(s,r,c,f){
+    const name  = buildStateName(s,r,c,f);
+    const emoji = stateEmoji(s,r,c,f);
+    formMsg.className = 'alert ok';
+    formMsg.innerHTML =
+      `<div class="state-result">
+         <span class="big">${emoji}</span>
+         <div><strong>你的即時狀態：${name}</strong><div class="muted">已成功記錄</div></div>
+       </div>`;
+    formMsg.classList.remove('hidden');
   }
 
   // ===== 初始化 =====
   syncPills();
   applyStateToForm();
 
-  // ===== 送出（無 displayName） =====
+  // ===== 送出（留在本頁；顯示狀態代號與圖案） =====
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -273,22 +300,25 @@ document.addEventListener('DOMContentLoaded', () => {
       submitted_at: new Date().toISOString()
     };
 
+    // 防重複：鎖定送出按鈕
+    dockSubmit.disabled = true;
+
     try {
       const { error } = await supabase.from('one_minute').insert(payload);
       if (error) {
         console.error('[one_minute insert error]', error);
         showToast(`送出失敗：${error.message || '不明錯誤'}`,'danger');
+        dockSubmit.disabled = false;
         return;
       }
+      // 成功：清草稿、顯示狀態結果、保持在本頁
       clearDraft();
-      showToast('已送出，謝謝你的回饋 🌿','ok');
-      setTimeout(() => {
-        if (currentCourse) location.href = `course.html?id=${currentCourse}`;
-        else location.href = 'index.html';
-      }, 600);
+      showStateResult(stability, recovery, connectedness, focus);
+      dockSubmit.disabled = false;
     } catch (err) {
       console.error(err);
       showToast('送出失敗（例外），請稍後再試或聯絡我們。','danger');
+      dockSubmit.disabled = false;
     }
   });
 });
