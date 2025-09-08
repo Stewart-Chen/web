@@ -1,7 +1,7 @@
-// one-minute.js（即時套用、不改網址；無 displayName）
+// one-minute.js（即時套用、不改網址；無 displayName；無快捷鍵）
+// 修正：選完核心指標即時更新完成度 / Dock 狀態
 document.addEventListener('DOMContentLoaded', () => {
-  // ===== 快取選取器 =====
-  const $ = (sel, ctx=document) => ctx.querySelector(sel);
+  const $  = (sel, ctx=document) => ctx.querySelector(sel);
   const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 
   // 控制台
@@ -54,12 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
   currentCourse  = params.get('course')  ? Number(params.get('course'))  : null;
   currentSession = params.get('session') ? Number(params.get('session')) : null;
 
-  // ===== 工具 =====
+  // ===== 小工具 =====
   function syncPills(){
     pills.forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.tp === currentTp)));
   }
   function setNpsRequired(required){
-    // radio group：任一顆含 required 即代表整組必填
     npsInputs.forEach((el,i)=> {
       if (required && i===0) el.setAttribute('required','');
       else el.removeAttribute('required');
@@ -106,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 讀取草稿與更新進度
     restoreDraft();
+    oneLineCount.textContent = oneLine.value.length || 0;
     updateProgress();
   }
 
@@ -135,27 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('已套用「3 分」到四個指標，可再微調。');
   });
 
-  // 鍵盤快速鍵（輸入框/文字區不觸發）
-  document.addEventListener('keydown', (e) => {
-    const tag = (e.target.tagName||'').toLowerCase();
-    if (tag === 'input' || tag === 'textarea') return;
-    if (/^[1-5]$/.test(e.key)){
-      const num = Number(e.key);
-      ['stability','recovery','connectedness','focus'].forEach((name, i) => {
-        const radios = $$(`input[name="${name}"]`);
-        const checked = radios.some(r=>r.checked);
-        if (!checked){ setGroupValue(name, num); e.preventDefault(); throw 'filled-one'; }
-        if (i===3){ setGroupValue(name, num); e.preventDefault(); }
-      });
-    } else if (/^\d$/.test(e.key)){ // 0~9 -> NPS；Shift+0 -> 10
-      const val = e.key === '0' && e.shiftKey ? 10 : Number(e.key);
-      const target = $$('input[name="nps"]').find(r=>Number(r.value)===val);
-      if (target){ target.checked = true; target.dispatchEvent(new Event('change', {bubbles:true})); }
-    } else if (e.key.toLowerCase()==='s'){ e.preventDefault(); form.requestSubmit(); }
-    else if (e.key.toLowerCase()==='r'){ e.preventDefault(); form.reset(); updateProgress(); }
-    else if (e.key.toLowerCase()==='b'){ e.preventDefault(); if (document.referrer) history.back(); else location.href='index.html'; }
-  });
-
   // 取消/重置
   btnCancel?.addEventListener('click', () => { if (document.referrer) history.back(); else location.href = 'index.html'; });
   btnReset?.addEventListener('click', () => { showToast('已重置表單'); clearDraft(); updateProgress(); });
@@ -178,10 +157,18 @@ document.addEventListener('DOMContentLoaded', () => {
     applyStateToForm();
   });
 
+  // ★ 修正重點：任何 radio/checkbox 變更都即時更新完成度 + 儲存草稿
+  form.addEventListener('change', (e) => {
+    if (e.target && (e.target.type === 'radio' || e.target.type === 'checkbox')) {
+      updateProgress();
+      saveDraftSoon();
+    }
+  });
+
   // ===== 草稿儲存（localStorage） =====
   const draftKey = () => `oneMinuteDraft:${currentTp}:${currentCourse ?? ''}:${currentSession ?? ''}`;
   let draftTimer = null;
-  function saveDraftSoon(){ clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft, 400); }
+  function saveDraftSoon(){ clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft, 300); }
   function saveDraft(){
     const fd = new FormData(form);
     const obj = {};
@@ -218,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formMsg.textContent = msg;
     formMsg.className = `alert ${type}`;
     formMsg.classList.remove('hidden');
-    setTimeout(()=> formMsg.classList.add('hidden'), 2500);
+    setTimeout(()=> formMsg.classList.add('hidden'), 2000);
   }
 
   // ===== 初始化 =====
@@ -226,10 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
   applyStateToForm();
 
   // ===== 送出（無 displayName） =====
-  form?.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // 要登入才可送出（共用函式會自動打開登入/註冊）
+    // 需登入（共用：未登入會開登入/註冊）
     if (typeof requireAuthOrOpenModal === 'function'){
       if (!requireAuthOrOpenModal(e)) return;
     }
@@ -305,4 +292,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
