@@ -677,8 +677,8 @@ body.menu-open{ overflow:hidden; }
   .site-title{
     order: 1 !important;
     flex: 1 1 auto;
-    font-size: 1.5rem;
-    line-height: 1.5;
+    font-size: 1.0rem;
+    line-height: 1.2;
     white-space: normal;
     margin: 0;
     text-align: left;
