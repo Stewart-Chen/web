@@ -629,7 +629,10 @@ body.menu-open{ overflow:hidden; }
   width:100%; border:1px solid #d7ead9; border-radius:12px; padding:12px 12px;
   outline:0; background:#fff; font-size:15px;
 }
-.input:focus, textarea:focus, select:focus{ box-shadow:0 0 0 4px rgba(46,125,50,.18); border-color:var(--brand); }
+.input:focus, textarea:focus, select:focus{
+  box-shadow: none;                /* 不要外圈光暈 */
+  border-color: var(--brand);      /* 保留輕微變色即可（可改成 #cbd5e1） */
+}
 
 /* 四指標量表 */
 .scale{ display:flex; gap:8px; flex-wrap:wrap; }
