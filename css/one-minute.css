@@ -1,12 +1,8 @@
-/* 一分鐘頁：浮動送出列（含手機 RWD 修正）
-   ※ 請在全站 style.css 後載入
-*/
-
-/* --- 浮動送出列：桌機 / 共用 --- */
+/* ---------- 浮動送出列 ---------- */
 .dock{
   position:fixed;
   left:0; right:0;
-  bottom:max(16px, env(safe-area-inset-bottom));   /* iOS 安全區 */
+  bottom:max(16px, env(safe-area-inset-bottom));         /* iOS 安全區 */
   padding-bottom:env(safe-area-inset-bottom);
   z-index:20;
   display:flex; justify-content:center;
@@ -14,40 +10,37 @@
 }
 .dock-inner{
   pointer-events:auto;
-  background:#ffffffd9;
-  backdrop-filter: blur(8px);
-  border:1px solid #e5efe7;         /* 綠系邊框，與全站一致 */
-  border-radius:14px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06);
-  padding:10px;
-  width:min(920px, calc(100% - 24px));
+  background:#ffffffd9; backdrop-filter: blur(8px);
+  border:1px solid #e5effa; border-radius:14px; box-shadow:var(--shadow);
+  padding:10px; width:min(920px, calc(100% - 24px));
   display:flex; align-items:center; justify-content:space-between; gap:10px;
 }
-.dock small{ color: var(--muted, #5f6f5f); }
+.dock small{ color:var(--muted); }
 
-/* --- 手機修正（≤480px） --- */
+/* ---------- 手機修正（≤480px） ---------- */
 @media (max-width:480px){
-  /* 讓內容不會被浮動列遮住 */
-  .container{ padding-bottom: 170px; }
+  /* ✅ 用不可見 spacer 撐出底部空間，避免 Dock 蓋住內容 */
+  body::after{
+    content:"";
+    display:block;
+    height: max(120px, calc(104px + env(safe-area-inset-bottom)));
+    /* 120~約 140px：依你的 Dock 高度可微調；104px 是 Dock 內部 + 外距的估值 */
+  }
 
-  /* 浮動列改為上下兩層：上標題/課程資訊，下狀態與三顆按鈕 */
+  /* 浮動列改為「上下兩層」：上層標題/課程資訊，下層狀態 + 三顆按鈕 */
   .dock-inner{
-    width: calc(100% - 12px);
+    width: calc(100% - 12px);      /* 更貼邊，預留 6px 內距 */
     padding: 8px;
-    border-radius: 12px;
-    flex-direction: column;
+    border-radius:12px;
+    flex-direction: column;        /* 直向堆疊 */
     align-items: stretch;
     gap: 8px;
   }
 
-  /* 標題區文字過長時以 … 截斷 */
-  #dock-meta{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  /* 標題區：避免文字換行造成擠壓 */
+  #dock-meta{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  /* 下層：左狀態、右三顆按鈕，不換行 */
+  /* 按鈕列：左右分佈，左邊狀態、右邊三顆按鈕；不換行 */
   .dock-inner .toolbar{
     flex-wrap: nowrap;
     justify-content: space-between;
@@ -56,7 +49,7 @@
     width: 100%;
   }
 
-  /* 狀態可縮放，維持單行 */
+  /* 狀態訊息占可伸縮寬度，過長以…截斷 */
   #dock-status{
     flex: 1 1 auto;
     min-width: 0;
@@ -66,9 +59,14 @@
     font-size: 12px;
   }
 
-  /* 三顆按鈕固定寬度，不被擠壓到換行 */
+  /* 三顆按鈕固定寬度，不被擠壓換行 */
   #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
 
-  /* 手機上稍微縮小按鈕尺寸（只影響載入本檔的頁面） */
-  .dock-inner .btn{ padding:8px 12px; font-size:14px; }
+  /* 手機上縮小一點按鈕 padding 與字級 */
+  .btn{ padding:8px 12px; font-size:14px; }
+  .page-hero h1{ font-size:18px; }
+
+  /* 其他行動友善設定 */
+  .scale .opt{ flex:1; }
+  .nps-row .opt{ flex:0 0 calc(10% - 8px); }
 }
