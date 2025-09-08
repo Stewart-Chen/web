@@ -66,3 +66,10 @@ fieldset.group{
 }
 /* 只影響有進度條那張卡片 */
 .card.flow-sm > .progress { margin-top: 16px; }
+.state-result .state-icon{
+  width: 40px;
+  height: 40px;
+  object-fit: contain;    /* 防止變形，保留原比例 */
+  display: block;
+  border-radius: 6px;     /* 需要圓角就留著，不要就移除 */
+}
