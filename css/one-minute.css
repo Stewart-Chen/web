@@ -70,3 +70,9 @@
   .scale .opt{ flex:1; }
   .nps-row .opt{ flex:0 0 calc(10% - 8px); }
 }
+/* 若你的欄位是 <fieldset class="card"> 或 .group */
+fieldset.card,
+fieldset.group{
+  border: 0 !important;
+  padding: 0;
+}
