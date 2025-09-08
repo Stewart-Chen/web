@@ -1,8 +1,16 @@
-/* ---------- 浮動送出列 ---------- */
+/* --- 讓有 .dock 的頁面都預留底部空間（桌機 & 手機通用） --- */
+.has-dock::after,
+body:has(.dock)::after{
+  content:"";
+  display:block;
+  height: 88px; /* 桌機預留高度：依你的 dock 實際高度可微調 72~96px */
+}
+
+/* ---------- 浮動送出列（原設定） ---------- */
 .dock{
   position:fixed;
   left:0; right:0;
-  bottom:max(16px, env(safe-area-inset-bottom));         /* iOS 安全區 */
+  bottom:max(16px, env(safe-area-inset-bottom));
   padding-bottom:env(safe-area-inset-bottom);
   z-index:20;
   display:flex; justify-content:center;
@@ -19,28 +27,22 @@
 
 /* ---------- 手機修正（≤480px） ---------- */
 @media (max-width:480px){
-  /* ✅ 用不可見 spacer 撐出底部空間，避免 Dock 蓋住內容 */
-  body::after{
-    content:"";
-    display:block;
+  /* 手機用更高的 spacer（含 safe area） */
+  .has-dock::after,
+  body:has(.dock)::after{
     height: max(120px, calc(104px + env(safe-area-inset-bottom)));
-    /* 120~約 140px：依你的 Dock 高度可微調；104px 是 Dock 內部 + 外距的估值 */
   }
 
-  /* 浮動列改為「上下兩層」：上層標題/課程資訊，下層狀態 + 三顆按鈕 */
   .dock-inner{
-    width: calc(100% - 12px);      /* 更貼邊，預留 6px 內距 */
+    width: calc(100% - 12px);
     padding: 8px;
     border-radius:12px;
-    flex-direction: column;        /* 直向堆疊 */
+    flex-direction: column;
     align-items: stretch;
     gap: 8px;
   }
-
-  /* 標題區：避免文字換行造成擠壓 */
   #dock-meta{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  /* 按鈕列：左右分佈，左邊狀態、右邊三顆按鈕；不換行 */
   .dock-inner .toolbar{
     flex-wrap: nowrap;
     justify-content: space-between;
@@ -48,31 +50,11 @@
     gap: 6px;
     width: 100%;
   }
-
-  /* 狀態訊息占可伸縮寬度，過長以…截斷 */
   #dock-status{
-    flex: 1 1 auto;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex: 1 1 auto; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     font-size: 12px;
   }
-
-  /* 三顆按鈕固定寬度，不被擠壓換行 */
   #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
-
-  /* 手機上縮小一點按鈕 padding 與字級 */
   .btn{ padding:8px 12px; font-size:14px; }
-  .page-hero h1{ font-size:18px; }
-
-  /* 其他行動友善設定 */
-  .scale .opt{ flex:1; }
-  .nps-row .opt{ flex:0 0 calc(10% - 8px); }
-}
-/* 若你的欄位是 <fieldset class="card"> 或 .group */
-fieldset.card,
-fieldset.group{
-  border: 0 !important;
-  padding: 0;
 }
