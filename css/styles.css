@@ -636,7 +636,7 @@ body.menu-open{ overflow:hidden; }
 .scale input{ position:absolute; opacity:0; pointer-events:none; }
 .scale .opt{
   display:inline-flex; align-items:center; justify-content:center;
-  min-width:44px; height:44px; padding:0 14px;
+  min-width:40px; height:44px; padding:0 14px;
   border-radius:12px; border:1px solid #d7ead9; background:#fff; cursor:pointer;
   font-weight:700; transition:.2s background,.2s border-color,.2s transform; user-select:none;
 }
