@@ -677,14 +677,15 @@ body.menu-open{ overflow:hidden; }
   .site-title{
     order: 1 !important;
     flex: 1 1 auto;
-    font-size: 1.2rem;
-    line-height: 1.2;
+    font-size: 1.3rem;
+    line-height: 1.3;
     white-space: normal;
     margin: 0;
     text-align: left;
     word-break: break-word;
     overflow-wrap: anywhere;
   }
+   .no-break{ white-space: nowrap; }  /* 讓三個字當成一塊 */
   .site-title .title-text{ display: block; max-width: 16ch; }
   .site-title .brand{ flex-wrap: wrap; }
   .hamburger{ order: 2 !important; margin-left: auto; display: grid; }
