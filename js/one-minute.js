@@ -1,6 +1,16 @@
 // one-minute.js（即時套用、不改網址；無 displayName/快捷鍵）
 // 送出後在本頁顯示「625 狀態名 + 25 種表情」
 document.addEventListener('DOMContentLoaded', () => {
+  const toggleBtn = document.getElementById('toggle-ids');
+  const idSection = document.getElementById('id-section');
+  let isShown = false;
+
+  toggleBtn.addEventListener('click', () => {
+    isShown = !isShown;
+    idSection.style.display = isShown ? 'block' : 'none';
+    toggleBtn.textContent = isShown ? '隱藏課程/場次 ID' : '顯示課程/場次 ID';
+  });
+  
   const $  = (sel, ctx=document) => ctx.querySelector(sel);
   const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 
