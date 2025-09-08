@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 控制台
   const pills = $$('.pill[data-tp]');
-  const tpLabel = $('#tp-label');
   const inputCourse  = $('#ctrl-course');
   const inputSession = $('#ctrl-session');
 
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // tp 標籤
     const label = (currentTp === 'pre') ? '課前' : (currentTp === 'post' ? '課後' : '72 小時追蹤');
-    tpLabel.textContent = label;
     dockTp.textContent  = label;
 
     // 區塊顯示
