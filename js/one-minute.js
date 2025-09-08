@@ -1,5 +1,5 @@
 // one-minute.js（即時套用、不改網址；無 displayName/快捷鍵）
-// 更新：按鈕整合到底部浮動列；成功送出後顯示「狀態代號 + 圖案」，不跳轉。
+// 送出後在本頁顯示「625 狀態名 + 25 種表情」
 document.addEventListener('DOMContentLoaded', () => {
   const $  = (sel, ctx=document) => ctx.querySelector(sel);
   const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyStateToForm();
   });
 
-  // ★ 任何 radio/checkbox 變更都即時更新完成度 + 儲存草稿
+  // 任何 radio/checkbox 變更都即時更新完成度 + 儲存草稿
   form.addEventListener('change', (e) => {
     if (e.target && (e.target.type === 'radio' || e.target.type === 'checkbox')) {
       updateProgress();
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function clearDraft(){ try{ localStorage.removeItem(draftKey()); }catch(e){} }
 
-  // ===== Toast / 訊息（一般提示用；不會遮擋 Dock） =====
+  // ===== Toast / 訊息 =====
   function showToast(msg, type='ok'){
     formMsg.innerHTML = msg;
     formMsg.className = `alert ${type}`;
@@ -205,24 +205,30 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=> formMsg.classList.add('hidden'), 2000);
   }
 
-  // ===== 狀態代號 + 圖案（625 組，演算法式命名） =====
+  // ===== 狀態代號（5^4） + 25 種表情（5×5 情緒格） =====
   const NAME_STAB = ['飄','安','穩','定','泰'];      // 穩定度 1..5
   const NAME_RECV = ['脆','回','韌','強','堅'];      // 復原 1..5
   const NAME_CONN = ['孤','疏','連','親','融'];      // 連結 1..5
   const NAME_FOCUS= ['散','亂','專','聚','澄'];      // 專注 1..5
 
-  function buildStateName(s,r,c,f){
-    // 4 個字元組合 → 5^4 = 625 種唯一代號
-    return `${NAME_STAB[s-1]}${NAME_RECV[r-1]}${NAME_CONN[c-1]}${NAME_FOCUS[f-1]}`;
-  }
+  function buildStateName(s,r,c,f){ return `${NAME_STAB[s-1]}${NAME_RECV[r-1]}${NAME_CONN[c-1]}${NAME_FOCUS[f-1]}`; }
+
+  // 5×5 表情矩陣（行=復原+連結；列=穩定+專注），從低→高
+  const EMOJI_GRID = [
+    ['😵','😰','😨','😟','😞'],
+    ['😣','😖','😕','😔','🙁'],
+    ['😐','🙃','🙂','😌','😊'],
+    ['😎','🤗','😄','😁','🤩'],
+    ['🤠','😺','😇','🧘','🥳']
+  ];
+  function clamp5(n){ return Math.min(5, Math.max(1, n)); }
+  function levelFromAvg(a,b){ return clamp5(Math.round((a+b)/2)); } // 1..5
   function stateEmoji(s,r,c,f){
-    const avg = (s+r+c+f)/4;
-    if (avg < 1.5) return '🌧️';
-    if (avg < 2.5) return '🌥️';
-    if (avg < 3.5) return '⛅';
-    if (avg < 4.5) return '☀️';
-    return '🌈';
+    const row = levelFromAvg(r, c); // 情緒溫度（社會/復原）
+    const col = levelFromAvg(s, f); // 穩定/專注
+    return EMOJI_GRID[row-1][col-1];
   }
+
   function showStateResult(s,r,c,f){
     const name  = buildStateName(s,r,c,f);
     const emoji = stateEmoji(s,r,c,f);
@@ -239,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
   syncPills();
   applyStateToForm();
 
-  // ===== 送出（留在本頁；顯示狀態代號與圖案） =====
+  // ===== 送出（留在本頁；顯示狀態代號 + 表情） =====
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -288,10 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
       course_id: currentCourse ?? null,
       session_id: currentSession ?? null,
       timepoint: currentTp,
-      stability,
-      recovery,
-      connectedness,
-      focus,
+      stability, recovery, connectedness, focus,
       nps,
       one_line: String(fd.get('one_line') || ''),
       next_actions: (currentTp === 'post') ? nextActions : [],
@@ -300,9 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
       submitted_at: new Date().toISOString()
     };
 
-    // 防重複：鎖定送出按鈕
     dockSubmit.disabled = true;
-
     try {
       const { error } = await supabase.from('one_minute').insert(payload);
       if (error) {
@@ -311,9 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
         dockSubmit.disabled = false;
         return;
       }
-      // 成功：清草稿、顯示狀態結果、保持在本頁
       clearDraft();
-      showStateResult(stability, recovery, connectedness, focus);
+      showStateResult(stability, recovery, connectedness, focus); // 留在本頁顯示結果
       dockSubmit.disabled = false;
     } catch (err) {
       console.error(err);
