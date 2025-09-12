@@ -1203,3 +1203,44 @@ body.menu-open .hamburger{
   background: rgba(167,220,215,.25);
   border-color: rgba(59,179,195,.35);
 }
+
+
+/* === Typography: h3 / h4 / p（品牌藍綠風） === */
+h3{
+  font-size: 1.125rem;            /* ≈18px，低於你的 h2: 1.25rem */
+  font-weight: 600;
+  color: #333;       /* 綠色主題做層級 */
+  letter-spacing: .4px;
+  line-height: 1.5;
+  margin: 1.1em 0 .55em;
+}
+
+h4{
+  font-size: 1rem;                 /* ≈16px */
+  font-weight: 600;
+  color: var(--accent-blue);       /* 次要標題走藍綠，與 h3 做色彩區隔 */
+  letter-spacing: .3px;
+  line-height: 1.45;
+  margin: 1em 0 .5em;
+}
+
+p{
+  margin: 0 0 12px 0;              /* 與你原本 .prose p 一致 */
+  color: var(--ink);
+  font-weight: 400;
+  line-height: 1.75;               /* 內文字更舒適 */
+  letter-spacing: .2px;
+}
+
+/* 標題後接段落時，首段更貼近一些 */
+h3 + p, h4 + p{ margin-top: .2em; }
+
+/* 內文次要訊息（延用你的 muted 色） */
+p.muted{ color: var(--muted); }
+
+/* RWD：小螢幕微調字級與行高 */
+@media (max-width: 640px){
+  h3{ font-size: 1.1rem;  letter-spacing: .3px; }
+  h4{ font-size: .95rem;  letter-spacing: .25px; }
+  p { line-height: 1.8; }
+}
