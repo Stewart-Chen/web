@@ -903,4 +903,20 @@ body.menu-open{ overflow:hidden; }
   background: #d9f2f0;
   color: var(--accent-blue);
 }
+/* === 手機端 Hero 標題字體柔和化 === */
+@media (max-width: 640px){
+  .hero h2{
+    font-size: 1.25rem;      /* 從 1.6rem → 調小 */
+    font-weight: 600;        /* 降低字重，避免太粗 */
+    line-height: 1.4;        /* 增加行高，閱讀更舒服 */
+  }
+  .hero p{
+    font-size: 0.95rem;      /* 內文也稍微縮小 */
+    color: #444;
+  }
+  .chips .chip{
+    font-size: 0.9rem;       /* 按鈕跟著微縮，比例一致 */
+    padding: 5px 10px;
+  }
+}
 
