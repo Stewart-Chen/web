@@ -334,11 +334,11 @@ async function renderTeacherPicksFromDb(teacherKey){
 
   const meta = TEACHER_META[teacherKey];
   if (!teacherKey || !meta){
-    titleEl.textContent = '📚 老師精選課程';
+    titleEl.textContent = '老師精選課程';
     wrap.innerHTML = `<p class="muted">點選上方「看某位老師的課程」或直接瀏覽下方課程列表。</p>`;
     return;
   }
-  titleEl.textContent = `📚 ${meta.name} 的精選課程`;
+  titleEl.textContent = `${meta.name} 的精選課程`;
 
   const { data, error } = await sb
     .from('courses')
