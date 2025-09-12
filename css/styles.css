@@ -582,7 +582,7 @@ fieldset.card .actions label{
 
 /* Site title with logo */
 .site-title { margin: 0; }
-.site-title .brand{display: flex;align-items: center;gap: 6px;text-decoration: none;color: inherit;}
+.site-title .brand{display: flex;align-items: center;gap: 3px;text-decoration: none;color: inherit;}
 .site-title .logo{width: 70px;height: 70px;filter: drop-shadow(0 4px 10px rgba(0,0,0,.1));}
 
 /* === Header 視覺（淡玻璃） === */
@@ -709,7 +709,7 @@ body.menu-open{ overflow:hidden; }
   .hamburger{ order: 3 !important; margin-left: auto; display: grid; }
   .header-bar > .main-nav{ order: 2 !important;  display: flex; justify-content: flex-end; }
   .nav-right{ margin-left: 0; width: 100%; display: flex; justify-content: flex-end; }
-  .btn.nav-cta{padding: 8px 5px;font-size: 8px;gap: 0px;}
+  .btn.nav-cta{padding: 8px 6px;font-size: 8px;gap: 0px;}
   .nav-left{ display: none !important; }
     .btn.nav-cta svg{
     width: 12px;
