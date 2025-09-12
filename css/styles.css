@@ -919,4 +919,16 @@ body.menu-open{ overflow:hidden; }
     padding: 5px 10px;
   }
 }
-
+/* === 調整 .chip 樣式（柔和、貼合 Logo 色調） === */
+.chip{
+  background: #ecfdf5;             /* 淡綠底 */
+  border: 1px solid #b7ebc0;       /* 淡綠邊框 */
+  color: #1b5e20;                  /* 深綠文字 */
+  font-weight: 600;
+  transition: all .2s ease;
+}
+.chip:hover{
+  background: #d1fae5;             /* hover 更明顯一點綠 */
+  border-color: #86efac;
+  transform: translateY(-1px);
+}
