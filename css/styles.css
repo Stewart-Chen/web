@@ -932,3 +932,11 @@ body.menu-open{ overflow:hidden; }
   border-color: #86efac;
   transform: translateY(-1px);
 }
+
+h2{
+  font-size: 1.25rem;          /* 中等大小 */
+  font-weight: 600;           /* 半粗，不要太重 */
+  color: var(--brand-green);  /* 用品牌綠，而不是純黑 */
+  letter-spacing: 0.5px;      /* 稍微拉開字距，增加呼吸感 */
+  margin: 1.2em 0 0.6em;      /* 與上下元素保持距離 */
+}
