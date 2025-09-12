@@ -9,7 +9,8 @@
     const style = document.createElement('style');
     style.id = 'shared-dialog-style';
     style.textContent = `
-dialog {
+/* === Dialog 基本 === */
+dialog{
   padding: 0; border: none; margin: 0;
   width: min(560px, 92vw);
   max-width: 92vw;
@@ -21,33 +22,125 @@ dialog {
   overflow: hidden;
   z-index: 1000;
 }
-dialog::backdrop { background: rgba(0,0,0,.35); }
+dialog::backdrop{ background: rgba(0,0,0,.35); }
 
-dialog .panel, dialog form.card {
+/* 內容容器 */
+dialog .panel, dialog form.card{
+  position: relative;
   padding: 16px 18px;
   overflow: auto;
   max-height: calc(90dvh - 32px);
+  background: #fff;
 }
 
-dialog form.card label { display:block; margin:10px 0; font-weight:600; }
-dialog form.card label input { width:100%; box-sizing:border-box; margin-top:6px; }
-dialog form.card .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+/* 頂部藍綠細緞帶（呼應主題，不需改 HTML） */
+dialog .panel::before{
+  content:"";
+  position:absolute;
+  left: 0; right: 0; top: 0;
+  height: 6px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(90deg, var(--accent-blue, #3bb3c3), #a7dcd7);
+  opacity:.75;
+}
 
-/* Auth tabs */
-.auth-tabs { display:flex; gap:8px; background:#f6f8fa; padding:8px; border-radius:10px; margin-bottom:8px; }
-.auth-tab { flex:1; text-align:center; padding:8px 10px; border-radius:8px; cursor:pointer; border:1px solid transparent; }
-.auth-tab[aria-selected="true"] { background:#fff; border-color:#e6e6e6; font-weight:600; }
-.auth-view { display:none; }
-.auth-view.active { display:block; }
+/* 表單元素 */
+dialog form.card label{ display:block; margin:12px 0 8px; font-weight:700; }
+dialog form.card label input{
+  width:100%;
+  box-sizing:border-box;
+  margin-top:6px;
+  padding:12px 12px;
+  border-radius:12px;
+  border:1px solid rgba(59,179,195,.25);
+  background:#fff;
+  transition: box-shadow .18s ease, border-color .18s ease;
+  font: inherit;
+}
+dialog form.card label input:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59,179,195,.22);
+  border-color: var(--accent-blue, #3bb3c3);
+}
+dialog form.card .actions{
+  display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
+}
 
-#admin-panel { width: min(980px, 95vw); max-width: 95vw; }
+/* === Auth Tabs（登入／註冊）=== */
+.auth-tabs{
+  display:flex; gap:8px;
+  padding:8px;
+  border-radius:12px;
+  margin: 2px 0 12px;
+  background: linear-gradient(180deg, rgba(59,179,195,.06), rgba(167,220,215,.06));
+  border:1px solid rgba(59,179,195,.18);
+}
+.auth-tab{
+  flex:1; text-align:center;
+  padding:10px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  border:1px solid transparent;
+  background: rgba(255,255,255,.8);
+  color: var(--accent-blue, #3bb3c3);
+  font-weight:700;
+  transition: background .18s ease, box-shadow .18s ease, color .18s ease, transform .12s ease;
+}
+@media (hover:hover) and (pointer:fine){
+  .auth-tab:hover{
+    background: linear-gradient(135deg, rgba(59,179,195,.10), rgba(167,220,215,.16));
+    color:#0c4030;
+    box-shadow: 0 2px 10px rgba(59,179,195,.12);
+    transform: translateY(-1px);
+  }
+}
+.auth-tab[aria-selected="true"]{
+  background: linear-gradient(135deg, var(--accent-blue, #3bb3c3), #a7dcd7);
+  color:#0c4030;
+  border-color: rgba(59,179,195,.28);
+  box-shadow: 0 2px 12px rgba(59,179,195,.18);
+}
 
+/* 分頁內容切換動畫 */
+.auth-view{ display:none; }
+.auth-view.active{
+  display:block;
+  animation: authFade .2s ease;
+}
+@keyframes authFade{
+  from{ opacity:0; transform: translateY(4px); }
+  to  { opacity:1; transform: none; }
+}
+
+/* === 對話框內的按鈕主題（沿用你的藍綠 CTA） === */
+dialog .actions .btn.primary{
+  border: none;
+  background: linear-gradient(135deg, var(--accent-blue, #3bb3c3), #a7dcd7);
+  color: #0c4030;
+}
+dialog .actions .btn.primary:hover{
+  background: linear-gradient(135deg, #a7dcd7, var(--accent-blue, #3bb3c3));
+}
+dialog .actions .btn.secondary{
+  background:#fff;
+  color: var(--accent-blue, #3bb3c3);
+  border:1px solid rgba(59,179,195,.28);
+}
+dialog .actions .btn.secondary:hover{
+  background: rgba(167,220,215,.16);
+}
+
+/* Admin 視窗寬度 */
+#admin-panel{ width: min(980px, 95vw); max-width: 95vw; }
+
+/* 行動端全螢幕化 */
 @media (max-width: 420px){
-  dialog { width: 100dvw; height: 100dvh; max-width: none; max-height: none; inset: 0; transform: none; border-radius: 0; }
-  dialog .panel, dialog form.card { height: 100%; max-height: none; padding: 16px; }
+  dialog{ width: 100dvw; height: 100dvh; max-width: none; max-height: none; inset: 0; transform: none; border-radius: 0; }
+  dialog .panel, dialog form.card{ height: 100%; max-height: none; padding: 16px; }
 }
 
-body.modal-open { overflow: hidden; }
+/* 防捲動 */
+body.modal-open{ overflow: hidden; }
     `.trim();
     document.head.appendChild(style);
   }
@@ -106,7 +199,7 @@ body.modal-open { overflow: hidden; }
           </label>
           <div class="actions">
             <button id="btn-do-login" class="btn primary">登入</button>
-            <button type="button" class="btn" onclick="document.getElementById('auth-modal').close()">取消</button>
+            <button type="button" class="btn secondary" onclick="document.getElementById('auth-modal').close()">取消</button>
           </div>
         </form>
 
@@ -122,8 +215,8 @@ body.modal-open { overflow: hidden; }
             <input type="text" id="signup-nickname" required placeholder="例如：小芳、David" autocomplete="nickname" />
           </label>
           <div class="actions">
-            <button id="btn-do-signup" class="btn secondary">註冊</button>
-            <button type="button" class="btn" onclick="document.getElementById('auth-modal').close()">取消</button>
+            <button id="btn-do-signup" class="btn primary" type="submit">註冊</button>
+            <button type="button" class="btn secondary" onclick="document.getElementById('auth-modal').close()">取消</button>
           </div>
           <p class="muted" style="margin:6px 0 0;">
             若顯示「Email not confirmed」，請到信箱點驗證連結或再試註冊以重寄驗證信。
@@ -151,7 +244,7 @@ body.modal-open { overflow: hidden; }
           </label>
         </div>
         <div class="actions">
-          <button class="btn" type="button" onclick="document.getElementById('enroll-dialog').close()">取消</button>
+          <button class="btn secondary" type="button" onclick="document.getElementById('enroll-dialog').close()">取消</button>
           <button class="btn primary" type="submit">送出報名</button>
         </div>
       </form>
