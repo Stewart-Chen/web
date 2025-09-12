@@ -152,6 +152,7 @@ nav .dropdown:focus-within .dropbtn{
   align-items: center;
   max-width: 1000px;
   margin: 0 auto;
+  padding: 30px;
 }
 .hero h2{font-size: 1.6rem;margin: 0 0 8px;color: #1b5e20;font-weight: 700;}
 .hero p{ color: #444; font-size: 1rem; }
@@ -370,15 +371,6 @@ body::before{
   -webkit-text-fill-color: transparent;
   text-shadow: 1px 2px 6px rgba(0,0,0,.18);
   margin: 30px 0 40px;
-}
-
-/* ---- Hero 卡片補充 ---- */
-.hero-card{
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  padding: 30px;
-  margin-top: 20px;
 }
 
 /* ---- 表單控制元件細節 ---- */
