@@ -1053,10 +1053,12 @@ body.menu-open{ overflow: hidden; }
 /* 前導圓點（取代傳統項目符號） */
 .nav-mobile a::before{
   content: "";
-  width: 8px; height: 8px; flex: 0 0 8px;
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent-blue), #a7dcd7);
-  box-shadow: 0 0 0 2px rgba(59,179,195,.15);
+  /* box-shadow: 0 0 0 2px rgba(59,179,195,.15); */
 }
 
 /* Hover：柔和藍綠漸層 + 微浮起 */
@@ -1080,8 +1082,10 @@ body.menu-open{ overflow: hidden; }
   font-weight: 600;
 }
 .nav-mobile a.sub::before{
-  width: 6px; height: 6px; flex-basis: 6px;
-  box-shadow: 0 0 0 2px rgba(59,179,195,.12);
+  width: 4px;
+  height: 4px;
+  flex-basis: 4px;
+  /* box-shadow: 0 0 0 2px rgba(59,179,195,.12); */
 }
 
 /* 背景遮罩更柔和 */
