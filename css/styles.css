@@ -979,7 +979,7 @@ body.menu-open{ overflow: hidden; }
 /* === 手機端 Hero 標題字體柔和化 === */
 @media (max-width: 640px){
   .hero h2{
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     /* font-weight: 600; */
     line-height: 1.4;
   }
