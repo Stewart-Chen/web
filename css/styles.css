@@ -618,6 +618,7 @@ fieldset.card .actions label{
 
 /* Header 視覺（淡玻璃） */
 .site-header .header-bar{
+  gap: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -626,9 +627,13 @@ fieldset.card .actions label{
   backdrop-filter: saturate(150%) blur(6px);
 }
 .site-header .brand .title-text{
-  color: var(--brand-green);
   font-weight: 600;
   letter-spacing: .5px;
+    background: #333;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 2px 20px rgba(0,0,0,.20);
+  font-size: 1.6rem;
 }
 
 /* 漢堡鍵 */
@@ -776,7 +781,7 @@ body.menu-open{ overflow: hidden; }
     word-break: break-word;
     overflow-wrap: anywhere;
   }
-  .no-break{ white-space: nowrap; }
+  .no-break{white-space: nowrap;font-size: 1.5rem;}
   .site-title .title-text{ display: block; max-width: 16ch; }
   .site-title .brand{ flex-wrap: wrap; }
   .hamburger{ order: 3 !important; margin-left: auto; display: grid; }
