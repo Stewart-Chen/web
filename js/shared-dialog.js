@@ -38,7 +38,7 @@ dialog .panel::before{
   content:"";
   position:absolute;
   left: 0; right: 0; top: 0;
-  height: 6px;
+  height: 3px;
   border-radius: 0 0 8px 8px;
   background: linear-gradient(90deg, var(--accent-blue, #3bb3c3), #a7dcd7);
   opacity:.75;
