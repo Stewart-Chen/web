@@ -348,7 +348,7 @@ body::before{
   padding: 30px;
   margin-top: 20px;
 }
-.hero h2 { font-size: 2rem; margin-bottom: 15px; color: #333; }
+.hero h2 {font-size: 1.6rem;margin-bottom: 15px;color: #333;}
 .hero p  { font-size: 1.1rem; color: #555; line-height: 1.6; }
 
 /* 修正 checkbox / radio 不要被撐滿 */
@@ -495,12 +495,20 @@ body.menu-open .nav-left .dropbtn{
 /* 右側登入/登出 */
 .nav-right{ margin-left: auto; display: flex; gap: 10px; align-items: center; }
 .btn.nav-cta{
-  border: none; background: linear-gradient(135deg, var(--brand-2), #a5d6a7);
-  color: #0d4220; border-radius: 999px; padding: 8px 14px; box-shadow: var(--shadow-sm);
-  font-weight: 700; display:inline-flex; align-items:center; gap: 8px; text-decoration:none;
+  border: none;
+  background: linear-gradient(135deg, var(--brand-2), #a5d6a7);
+  color: #0d4220;
+  border-radius: 999px;
+  padding: 8px 12px;
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  text-decoration:none;
 }
 .btn.nav-cta:hover{ background: linear-gradient(135deg, #a5d6a7, var(--brand-2)); }
-.btn.nav-cta.secondary{ background:#fff; color: var(--brand); border: 1px solid rgba(0,0,0,.12); }
+.btn.nav-cta.secondary{background:#fff;color: var(--brand);border: 1px solid rgba(0,0,0,.12);}
 .btn.nav-cta.secondary:hover{ background:#f4f9f4; }
 .btn.nav-cta svg{ display:block; }
 
@@ -517,10 +525,17 @@ body.menu-open .nav-left .dropbtn{
 
 /* 標題樣式 */
 .site-title{
-  font-family: "Noto Sans TC", serif; margin: 0; letter-spacing:.2px; font-size: 1.2rem;
-  font-weight: 900; color: var(--brand); background: #27C4F4;
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  text-shadow: 1px 2px 20px rgba(0,0,0,.20); white-space: nowrap;
+  font-family: "Noto Sans TC", serif;
+  margin: 0;
+  letter-spacing:.2px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--brand);
+  background: #333;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 2px 20px rgba(0,0,0,.20);
+  white-space: nowrap;
 }
 .site-title a{ color: inherit; text-decoration: none; }
 
@@ -567,17 +582,20 @@ fieldset.card .actions label{
 
 /* Site title with logo */
 .site-title { margin: 0; }
-.site-title .brand{ display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
-.site-title .logo{ width: 55px; height: 55px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.1)); }
+.site-title .brand{display: flex;align-items: center;gap: 6px;text-decoration: none;color: inherit;}
+.site-title .logo{width: 70px;height: 70px;filter: drop-shadow(0 4px 10px rgba(0,0,0,.1));}
 
 /* === Header 視覺（淡玻璃） === */
 .site-header .header-bar{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 30px;
   min-height: 64px;
   background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.6));
   backdrop-filter: saturate(150%) blur(6px);
 }
-.site-header .brand .title-text{ color: var(--brand-green); font-weight: 700; letter-spacing:.5px; }
+.site-header .brand .title-text{color: var(--brand-green);font-weight: 600;letter-spacing:.5px;}
 
 /* ====== 漢堡鍵美化（覆蓋舊樣式） ====== */
 .hamburger{
@@ -672,7 +690,7 @@ body.menu-open{ overflow:hidden; }
 
 /* === 超小螢幕：max-width: 360px === */
 @media (max-width: 360px){
-   .site-header .header-bar{ gap: 3px; }
+   .site-header .header-bar{gap: 10px;}
   /* 第一行：標題在左，可分兩行；漢堡在右 */
   .site-title{
     order: 1 !important;
@@ -688,11 +706,15 @@ body.menu-open{ overflow:hidden; }
    .no-break{ white-space: nowrap; }  /* 讓三個字當成一塊 */
   .site-title .title-text{ display: block; max-width: 16ch; }
   .site-title .brand{ flex-wrap: wrap; }
-  .hamburger{ order: 2 !important; margin-left: auto; display: grid; }
-  .header-bar > .main-nav{ order: 3 !important; flex: 1 1 100%; display: flex; justify-content: flex-end; }
+  .hamburger{ order: 3 !important; margin-left: auto; display: grid; }
+  .header-bar > .main-nav{ order: 2 !important;  display: flex; justify-content: flex-end; }
   .nav-right{ margin-left: 0; width: 100%; display: flex; justify-content: flex-end; }
-  .btn.nav-cta{ padding: 5px 10px; font-size: 12px; gap: 2px; }
+  .btn.nav-cta{padding: 8px 5px;font-size: 8px;gap: 0px;}
   .nav-left{ display: none !important; }
+    .btn.nav-cta svg{
+    width: 12px;
+    height: 12px;
+  }
 }
 
 /* =========================================================
