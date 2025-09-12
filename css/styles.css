@@ -1093,3 +1093,90 @@ body.menu-open{ overflow: hidden; }
   background: rgba(0,0,0,.25);
   backdrop-filter: blur(2px);
 }
+
+/* 桌面左側選單：膠囊化、藍綠主色 */
+.nav-left{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-left a,
+.nav-left .dropbtn{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: .2px;
+  color: var(--accent-blue);          /* 文字主色改為藍綠 */
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .12s ease;
+}
+
+/* Hover：柔和藍綠漸層 + 微浮起 */
+@media (hover:hover) and (pointer:fine){
+  .nav-left a:hover,
+  .nav-left .dropbtn:hover{
+    background: linear-gradient(90deg, rgba(59,179,195,.10), rgba(167,220,215,.16));
+    box-shadow: 0 2px 10px rgba(59,179,195,.10);
+    color: #0c4030;
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+}
+
+/* Active / 當前頁：更明顯但不刺眼 */
+.nav-left a[aria-current="page"],
+.nav-left .dropbtn[aria-expanded="true"],
+body.menu-open .nav-left .dropbtn{
+  background: linear-gradient(90deg, rgba(167,220,215,.28), rgba(59,179,195,.22));
+  color: #0c4030;
+  box-shadow: inset 0 0 0 1px rgba(59,179,195,.28), 0 2px 8px rgba(59,179,195,.10);
+}
+
+/* Focus 無障礙 */
+.nav-left a:focus-visible,
+.nav-left .dropbtn:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,179,195,.28);
+}
+
+/* 移除舊的底線指示條 */
+.nav-left a::after,
+.nav-left .dropbtn::after{ content: none !important; }
+
+/* Dropdown 面板：玻璃感 + 主題邊線 */
+.nav-left .dropdown{ position: relative; }
+.nav-left .dropdown-content{
+  display: none;
+  position: absolute;
+  left: 0; top: calc(100% + 8px);
+  min-width: 220px;
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(59,179,195,.18);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.08);
+  backdrop-filter: blur(6px) saturate(140%);
+  padding: 8px;
+  z-index: 99;
+}
+.nav-left .dropdown:hover .dropdown-content,
+.nav-left .dropdown:focus-within .dropdown-content{ display: block; }
+.nav-left .dropdown-content a{
+  display:block;
+  padding: 10px 12px;
+  margin: 2px 2px;
+  border-radius: 10px;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.nav-left .dropdown-content a:hover,
+.nav-left .dropdown-content a:focus-visible{
+  background: linear-gradient(90deg, rgba(59,179,195,.10), rgba(167,220,215,.16));
+  color: #0c4030;
+  outline: none;
+}
+
