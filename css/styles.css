@@ -15,7 +15,7 @@
 
   /* 品牌色（以 Healing 版本為主） */
   --brand: #1b5e20;
-  --brand-2: #81c784;
+  --brand-2: #388e3c;
   --accent-blue: #3bb3c3;
   --accent-purple: #a18cd1;
 
@@ -325,7 +325,7 @@ button.primary, .btn.primary{
   border: none;
 }
 button.primary:hover, .btn.primary:hover{
-  background: linear-gradient(135deg, #81c784, #388e3c);
+  background: linear-gradient(135deg, var(--brand-2), #3b9968);
 }
 button.secondary, .btn.secondary{
   background: #fff;
