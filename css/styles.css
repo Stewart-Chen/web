@@ -1,11 +1,3 @@
-/* =========================================
-   園藝與藝術治療課程平台：精簡整合（緊湊版 + 一分鐘頁面 / 浮動送出列 RWD）
-   - 延續原綠色品牌 + Healing 藍綠強化
-   - 導入一分鐘頁面樣式（pill、scale、page-hero、progress）
-   - 浮動送出列 .dock 行動版修正（≤480px 直向堆疊、安全區）
-   ========================================= */
-
-/* ---- 基礎設計變數（後者為主，整合一次） ---- */
 :root{
   --container: 1100px;
   --radius: 16px;
@@ -622,7 +614,7 @@ fieldset.card .actions label{
 
 /* Header 視覺（淡玻璃） */
 .site-header .header-bar{
-  gap: 10px;
+  gap: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
