@@ -35,7 +35,7 @@
 * { box-sizing: border-box; }
 html, body { scroll-behavior: smooth; }
 body{
-  font-family: 'Noto Serif TC', serif;
+  font-family: 'Noto Sans TC', serif;
   color: var(--ink);
   margin: 0;
   line-height: 1.6;
@@ -528,17 +528,10 @@ body.menu-open .nav-left .dropbtn{
 
 /* 標題樣式 */
 .site-title{
-  font-family: "Noto Sans TC", serif;
-  margin: 0;
-  letter-spacing:.2px;
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: var(--brand);
   background: #333;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 1px 2px 20px rgba(0,0,0,.20);
-  white-space: nowrap;
 }
 .site-title a{ color: inherit; text-decoration: none; }
 
@@ -585,7 +578,7 @@ fieldset.card .actions label{
 
 /* Site title with logo */
 .site-title { margin: 0; }
-.site-title .brand{display: flex;align-items: center;gap: 8px;text-decoration: none;color: inherit;}
+.site-title .brand{display: flex;align-items: center;gap: 3px;text-decoration: none;color: inherit;}
 .site-title .logo{width: 70px;height: 70px;filter: drop-shadow(0 4px 10px rgba(0,0,0,.1));}
 
 /* === Header 視覺（淡玻璃） === */
