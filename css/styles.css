@@ -1180,3 +1180,30 @@ body.menu-open .nav-left .dropbtn{
   outline: none;
 }
 
+.hamburger .bar,
+.hamburger .bar::before,
+.hamburger .bar::after{
+  background: var(--accent-blue);
+}
+
+/* === Hamburger 顏色同步藍綠主題 === */
+.hamburger{
+  /* 原本是 rgba(46,125,50,…) 的深綠，改成主題藍綠 */
+  border: 1px solid rgba(59,179,195,.28); /* var(--accent-blue) ≈ rgb(59,179,195) */
+  background: rgba(167,220,215,.18);      /* #a7dcd7 的淡底 */
+  box-shadow: 0 2px 10px rgba(59,179,195,.10);
+}
+
+/* hover 更明顯一點，但仍柔和 */
+@media (hover:hover) and (pointer:fine){
+  .hamburger:hover{
+    background: rgba(167,220,215,.28);
+    border-color: rgba(59,179,195,.38);
+  }
+}
+
+/* 開啟抽屜時維持對比（搭配你前面 menu-open 的 X 樣式） */
+body.menu-open .hamburger{
+  background: rgba(167,220,215,.25);
+  border-color: rgba(59,179,195,.35);
+}
