@@ -940,3 +940,35 @@ h2{
   letter-spacing: 0.5px;      /* 稍微拉開字距，增加呼吸感 */
   margin: 1.2em 0 0.6em;      /* 與上下元素保持距離 */
 }
+/* === Nav 膠囊化，移除底線 === */
+.nav-left a,
+.nav-left .dropbtn{
+  font-weight: 500;
+  color: var(--brand-green);
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: background .2s ease, color .2s ease;
+  position: relative;
+}
+
+/* hover：淡綠底，文字更深綠 */
+.nav-left a:hover,
+.nav-left .dropbtn:hover{
+  background: rgba(46,125,50,.08);
+  color: #1b5e20;
+  text-decoration: none;
+}
+
+/* active / 當前頁：深一點的膠囊，無底線 */
+.nav-left a[aria-current="page"],
+.nav-left .dropbtn[aria-expanded="true"]{
+  background: #e8f5e9;
+  color: #1b5e20;
+  box-shadow: 0 2px 6px rgba(46,125,50,.12);
+}
+
+/* 移除原本的底線指示條 */
+.nav-left a::after,
+.nav-left .dropbtn::after{
+  content: none !important;
+}
