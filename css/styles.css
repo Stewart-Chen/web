@@ -618,7 +618,7 @@ fieldset.card .actions label{
 
 /* Header 視覺（淡玻璃） */
 .site-header .header-bar{
-  gap: 20px;
+  gap: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -998,4 +998,94 @@ body.menu-open{ overflow: hidden; }
     font-size: .9rem;
     padding: 5px 10px;
   }
+}
+/* === Mobile Nav：藍綠療癒風強化 === */
+.nav-mobile{
+  background: rgba(255,255,255,.95);
+  border: 1px solid rgba(59,179,195,.18);
+  border-radius: 16px;
+  box-shadow:
+    0 24px 60px rgba(27,94,32,.18),
+    0 6px 20px rgba(0,0,0,.06);
+  padding: 10px;
+  backdrop-filter: saturate(140%) blur(6px);
+}
+
+/* 頂部彩帶（不改 HTML，用偽元素做細節） */
+.nav-mobile::before{
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px; top: 10px;
+  height: 3px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-blue), #a7dcd7);
+  opacity: .55;
+}
+
+/* 分組標題：小膠囊＋淡漸層底 */
+.nav-mobile .group{
+  padding-top: 10px; margin-top: 8px;
+  border-top: 1px dashed rgba(59,179,195,.28);
+}
+.nav-mobile .group-title{
+  margin: 8px 6px 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: .4px;
+  color: var(--muted);
+  background: linear-gradient(90deg, rgba(59,179,195,.14), rgba(167,220,215,.10));
+}
+
+/* 選單項目：強化可點性、前導圓點、滑過漸層 */
+.nav-mobile a{
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--ink);
+  transition: background .18s ease, color .18s ease, transform .12s ease, box-shadow .18s ease;
+}
+
+/* 前導圓點（取代傳統項目符號） */
+.nav-mobile a::before{
+  content: "";
+  width: 8px; height: 8px; flex: 0 0 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-blue), #a7dcd7);
+  box-shadow: 0 0 0 2px rgba(59,179,195,.15);
+}
+
+/* Hover：柔和藍綠漸層 + 微浮起 */
+.nav-mobile a:hover{
+  background: linear-gradient(90deg, rgba(59,179,195,.10), rgba(167,220,215,.16));
+  box-shadow: 0 2px 10px rgba(59,179,195,.10);
+  transform: translateY(-1px);
+}
+
+/* Active/目前頁：更明顯的高亮（也支援 .active） */
+.nav-mobile a[aria-current="page"],
+.nav-mobile a.active{
+  background: linear-gradient(90deg, rgba(167,220,215,.22), rgba(59,179,195,.18));
+  color: #0c4030;
+  box-shadow: inset 0 0 0 1px rgba(59,179,195,.35), 0 2px 10px rgba(59,179,195,.10);
+}
+
+/* 子項目：縮排 + 細字重 */
+.nav-mobile a.sub{
+  padding-left: 28px;
+  font-weight: 600;
+}
+.nav-mobile a.sub::before{
+  width: 6px; height: 6px; flex-basis: 6px;
+  box-shadow: 0 0 0 2px rgba(59,179,195,.12);
+}
+
+/* 背景遮罩更柔和 */
+.backdrop{
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(2px);
 }
