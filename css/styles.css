@@ -708,8 +708,8 @@ body.menu-open{ overflow:hidden; }
   .btn.nav-cta{padding: 8px 8px;font-size: 12px;gap: 2px;}
   .nav-left{ display: none !important; }
     .btn.nav-cta svg{
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -836,3 +836,71 @@ body.menu-open{ overflow:hidden; }
   .scale .opt{ flex:1; }
   .nps-row .opt{ flex:0 0 calc(10% - 8px); }
 }
+
+/* === Healing Theme 強化：更貼近 Logo 藍綠漸層 === */
+
+/* 1) 色彩調和（主綠 + 輔助藍綠 + 薄紫） */
+:root{
+  --brand: #2e7d32;        /* 主綠 */
+  --brand-2: #81c784;      /* 淺綠 */
+  --accent-blue: #3bb3c3;  /* Logo 藍綠 */
+  --accent-purple: #a18cd1;/* Logo 淡紫 */
+  --ink: #2d352d;
+  --muted: #647064;
+  --mint-bg: #f6fbf8;
+}
+
+/* 2) Header / Nav 配色：增加藍綠感 */
+.site-header, .site-footer{
+  background: linear-gradient(180deg, #f8fffb, #ffffff);
+}
+.nav-left a, .nav-left .dropbtn{
+  color: var(--brand);
+  transition: color .2s ease, background .2s ease;
+}
+.nav-left a:hover, .nav-left .dropbtn:hover{
+  background: rgba(59,179,195,.1);
+  color: var(--accent-blue);
+}
+.nav-left a[aria-current="page"]{
+  background: rgba(59,179,195,.12);
+  color: var(--accent-blue);
+  box-shadow: 0 2px 6px rgba(59,179,195,.12);
+}
+.nav-left a::after, .nav-left .dropbtn::after{
+  background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+}
+
+/* 3) 按鈕樣式：藍綠漸層呼應 Logo */
+.btn.primary{
+  background: linear-gradient(135deg, var(--accent-blue), var(--brand-2));
+  border: none; color: #fff;
+}
+.btn.primary:hover{
+  background: linear-gradient(135deg, var(--brand-2), var(--accent-blue));
+}
+.btn.nav-cta{
+  background: linear-gradient(135deg, var(--accent-blue), #b2ebd1);
+  color: #0c4030;
+}
+.btn.nav-cta:hover{
+  background: linear-gradient(135deg, #b2ebd1, var(--accent-blue));
+}
+
+/* 4) Hero 區域：更柔和漸層 */
+.hero{
+  background: linear-gradient(135deg, #e9f9f4, #ffffff);
+}
+.hero h2{ font-size: 1.6rem; color: var(--accent-blue); font-weight: 700; }
+.hero p{ font-size: 1rem; color: #444; }
+
+/* 5) 卡片與 Feature：icon 背景加點藍綠 */
+.feature .icon{
+  background: #e8f8f9;
+  border: 1px solid rgba(59,179,195,.12);
+}
+.teacher-card .badge{
+  background: #d9f2f0;
+  color: var(--accent-blue);
+}
+
