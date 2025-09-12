@@ -532,11 +532,15 @@ body.menu-open .nav-left .dropbtn{
   background: linear-gradient(135deg, #a7dcd7, var(--accent-blue));
 }
 .btn.nav-cta.secondary{
-  background: #fff;
-  color: var(--brand);
-  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(167,220,215,.18);
+  color: #0c4030;
+  border: 1px solid rgba(59,179,195,.28);
+  box-shadow: 0 2px 10px rgba(59,179,195,.10);
 }
-.btn.nav-cta.secondary:hover{ background: #f4f9f4; }
+.btn.nav-cta.secondary:hover{
+  background: rgba(167,220,215,.28);
+  border-color: rgba(59,179,195,.38);
+}
 .btn.nav-cta svg{ display: block; }
 
 /* ---- 標題元素 ---- */
