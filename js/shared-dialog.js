@@ -445,6 +445,7 @@ body.modal-open{ overflow: hidden; }
     // 送出表單 → 在對話框內渲染推薦
     form?.addEventListener('submit', (e)=>{
       e.preventDefault();
+      e.stopPropagation();
       runRecommendFromForm();
     });
   
