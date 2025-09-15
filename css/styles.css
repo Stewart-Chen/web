@@ -207,7 +207,7 @@ nav .dropdown:focus-within .dropbtn{
 }
 .teacher-card{
   display: grid;
-  grid-template-columns: 88px 1fr;
+  grid-template-columns: 73px 1fr;
   gap: 18px;
   align-items: start;
   border-radius: var(--radius);
