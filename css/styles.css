@@ -1136,6 +1136,15 @@ p.muted{ color: var(--muted); }
     z-index: 1100; /* 要比內容、底部選單更高 */
   }
 
+  .hamburger .bar,
+  .hamburger .bar::before,
+  .hamburger .bar::after {
+    width: 16px;   /* 原本 20px → 縮短 */
+    height: 2px;   /* 可以保持 2px 或改 1.5px 更細 */
+  }
+  .hamburger .bar::before { transform: translateY(-5px); } /* 原本 -6px → -5px */
+  .hamburger .bar::after  { transform: translateY(5px); }  /* 原本 6px → 5px */
+
   .header-bar{
     display: flex;
     flex-wrap: wrap;
