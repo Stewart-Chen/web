@@ -1156,7 +1156,7 @@ p.muted{ color: var(--muted); }
     height: 45px;
   }
   .site-header .brand .title-text{
-    font-size: 1.0rem;
+    font-size: 1.2rem;
   }
   .site-title .brand{
     gap: 1px;
