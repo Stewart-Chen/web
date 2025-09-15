@@ -1163,9 +1163,6 @@ p.muted{ color: var(--muted); }
   /* 移除桌機左側選單（手機用抽屜） */
   .nav-left{ display: none !important; }
 
-  /* 登入按鈕微縮 */
-  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
-
   /* Footer QRCode 縮小 */
   #qrcode canvas, #qrcode img{
     width: 120px !important;
