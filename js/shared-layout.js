@@ -53,7 +53,17 @@
               </div>
             </div>
           </div>
+          
           <div class="nav-right">
+            <!-- 個人化課程推薦：放大鏡 icon-only 按鈕 -->
+            <a href="/web/recommend.html" id="recommend-link" class="btn nav-cta secondary icon-only"
+               aria-label="個人化課程推薦">
+              <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="M21 21l-4.3-4.3"></path>
+              </svg>
+            </a>
+          
             <a href="#" id="login-link" class="btn nav-cta">
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" focusable="false">
                 <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z" fill="currentColor"/>
@@ -62,6 +72,7 @@
             </a>
             <a href="#" id="logout-link" class="btn nav-cta secondary hidden">登出</a>
           </div>
+
         </nav>
       </div>
 
