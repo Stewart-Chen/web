@@ -210,25 +210,48 @@ body.modal-open{ overflow: hidden; }
   `);
 
 
-  // --- Search dialog（個人化推薦入口） ---
+  // --- Search dialog（改為：個人化課程推薦） ---
   const searchDlg = ensureDialog('search-modal', `
     <dialog id="search-modal">
-      <form method="dialog" class="card panel">
-        <h3 style="margin-top:0;">找課程</h3>
-        <div class="search-head" style="margin-top:8px;">
-          <input id="search-input" type="search" placeholder="想學什麼？關鍵字：園藝、藝術、壓力、睡眠…" />
-          <button id="search-go" class="btn primary" type="submit">搜尋</button>
+      <form id="rec-form" method="dialog" class="card panel" novalidate>
+        <h3 style="margin-top:0;">個人化課程推薦</h3>
+  
+        <div class="form-grid" style="margin-top:10px;">
+          <label>年齡
+            <input type="number" id="age" min="5" max="120" placeholder="例如 28" required />
+          </label>
+          <label>性別
+            <select id="gender" required>
+              <option value="">— 選擇 —</option>
+              <option value="female">女性</option>
+              <option value="male">男性</option>
+              <option value="nonbinary">非二元/不透露</option>
+            </select>
+          </label>
+          <label>興趣（可多選，以逗號分隔）
+            <input type="text" id="interests" placeholder="室內植物, 多肉, 正念, 手作, 園藝入門" />
+          </label>
+          <label>職業
+            <select id="profession">
+              <option value="">— 選擇 —</option>
+              <option value="student">學生</option>
+              <option value="teacher">教師/輔導</option>
+              <option value="healthcare">醫護/照護</option>
+              <option value="office">上班族</option>
+              <option value="retired">退休</option>
+              <option value="other">其他</option>
+            </select>
+          </label>
         </div>
-        <div id="search-suggest">
-          <button type="button" class="chip" data-q="園藝治療">園藝治療</button>
-          <button type="button" class="chip" data-q="藝術治療">藝術治療</button>
-          <button type="button" class="chip" data-q="放鬆">放鬆</button>
-          <button type="button" class="chip" data-q="睡眠">睡眠</button>
-          <button type="button" class="chip" data-q="壓力">壓力</button>
-        </div>
-        <div class="actions" style="margin-top:12px;">
+  
+        <div class="actions" style="margin-top:10px;">
+          <button type="submit" class="btn primary">產生推薦</button>
+          <button type="reset" class="btn secondary">清除</button>
           <button type="button" class="btn secondary" onclick="document.getElementById('search-modal').close()">關閉</button>
         </div>
+  
+        <!-- 推薦結果 -->
+        <div id="rec-results" class="search-results" style="margin-top:12px;"></div>
       </form>
     </dialog>
   `);
@@ -337,53 +360,122 @@ body.modal-open{ overflow: hidden; }
   }
   wireTabs();
 
-
-  // === wire search modal ===
+  // === wire search modal（個人化推薦內嵌版） ===
   (function wireSearch(){
-    const link   = document.getElementById('recommend-link');
-    const dlg    = document.getElementById('search-modal');
-    const input  = document.getElementById('search-input');
-    const goBtn  = document.getElementById('search-go');
-    const chips  = document.getElementById('search-suggest');
+    const dlg   = document.getElementById('search-modal');
+    const form  = document.getElementById('rec-form');
+    const box   = document.getElementById('rec-results');
   
     function openSearch(e){
       if (e) e.preventDefault();
       dlg.showModal();
-      setTimeout(()=> input?.focus(), 0);
-    }
-    function doSearch(){
-      const q = (input?.value || '').trim();
-      // 導向你的個人化推薦頁（可改為實際路徑）
-      const url = q ? `/web/recommend.html?q=${encodeURIComponent(q)}` : '/web/recommend.html';
-      window.location.href = url;
+      // 每次開啟清空結果
+      if (box) box.innerHTML = '';
+      // 把焦點放到第一個欄位
+      setTimeout(()=> document.getElementById('age')?.focus(), 0);
     }
   
-    // 點放大鏡 → 開啟搜尋
-    if (link && !link.dataset.bound) {
-      link.addEventListener('click', openSearch, { passive:false });
-      link.dataset.bound = '1';
+    // 後備工具：normalize / interests / score / render（若頁面沒提供就用這些）
+    const normalizeTitle = window.normalizeTitle || (t => (t||'').toString().toLowerCase().replace(/\s+/g,'-'));
+    const parseInterests = window.parseInterests || (s => (s||'')
+        .split(/[，,]/).map(x=>x.trim()).filter(Boolean).map(x=>x.toLowerCase()));
+    const fallbackScore  = (course, ctx) => {
+      // 非常簡化：興趣關鍵字匹配 title/summary/description
+      const hay = ((course.title||'')+' '+(course.summary||'')+' '+(course.description||'')).toLowerCase();
+      let score = 0, tags=[];
+      (ctx.interests||[]).forEach(k=>{
+        if (hay.includes(k)) { score += 2; tags.push(k); }
+      });
+      // 年齡/職業簡單加權（可按需擴充）
+      if (ctx.profession && /teacher|health|office|student|retired/.test(ctx.profession)) score += 1;
+      return { score, tags, level: course.level || '一般' };
+    };
+    const scoreDbCourse = window.scoreDbCourse || fallbackScore;
+  
+    const renderRecommendationsFromDb = window.renderRecommendationsFromDb || function(list){
+      if (!box) return;
+      if (!list.length){
+        box.innerHTML = `<p class="muted">沒有找到合適的推薦，試試不同的興趣關鍵字（如：室內植物、正念、多肉、親子）。</p>`;
+        return;
+      }
+      box.innerHTML = list.map(c => `
+        <article class="course-card">
+          <img src="${c.cover_url || `https://picsum.photos/seed/${normalizeTitle(c.title)}/640/360`}" alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
+          <h3>${c.title}</h3>
+          <div class="course-meta">
+            <span class="badge">${c._level || '一般'}</span>
+            ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
+          </div>
+          <div class="cta">
+            <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
+          </div>
+        </article>
+      `).join('');
+    };
+  
+    async function runRecommendFromForm(){
+      const age = parseInt(document.getElementById('age')?.value || '0', 10);
+      const gender = document.getElementById('gender')?.value || 'nonbinary';
+      const interests = parseInterests(document.getElementById('interests')?.value);
+      const profession = document.getElementById('profession')?.value || 'other';
+  
+      // 顯示 loading
+      if (box) box.innerHTML = `<div class="search-empty">產生推薦中…</div>`;
+  
+      try{
+        const { data: courses, error } = await (window.sb || {}).from('courses')
+          .select('id,title,summary,description,cover_url,teacher,level,published,deleted_at')
+          .eq('published', true)
+          .is('deleted_at', null);
+  
+        if (error) throw error;
+  
+        const scored = (courses||[]).map(c => {
+          const r = scoreDbCourse(c, {age, gender, interests, profession});
+          return { ...c, _score: r.score, _tags: r.tags, _level: r.level };
+        });
+        const top = scored.filter(c=>c._score>0).sort((a,b)=>b._score-a._score).slice(0,6);
+        renderRecommendationsFromDb(top);
+      } catch(err){
+        console.error('[recommend] load/score error:', err);
+        if (box) box.innerHTML = `<div class="search-empty">載入推薦時發生錯誤，請稍後再試。</div>`;
+      }
     }
   
-    // 按「搜尋」或 Enter 送出
-    goBtn?.addEventListener('click', (e)=>{ e.preventDefault(); doSearch(); });
-    input?.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); doSearch(); } });
-  
-    // 點熱門關鍵字
-    chips?.addEventListener('click', (e)=>{
-      const b = e.target.closest('[data-q]');
-      if(!b) return;
-      input.value = b.dataset.q;
-      doSearch();
+    // 送出表單 → 在對話框內渲染推薦
+    form?.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      runRecommendFromForm();
     });
   
-    // 快捷鍵：按下 "/" 開啟搜尋（不在任何 dialog 開啟時）
+    // Reset 清空結果
+    form?.addEventListener('reset', ()=>{
+      if (box) box.innerHTML = '';
+    });
+  
+    // 快捷鍵 "/" 開啟（避免其他 dialog 開啟時觸發）
     window.addEventListener('keydown', (e)=>{
       if (e.key === '/' && !document.querySelector('dialog[open]')) {
         e.preventDefault(); openSearch();
       }
     });
+  
+    // 綁定右上角放大鏡（shared-layout 可能延後插入）
+    function tryBind(times=12){
+      const link = document.getElementById('recommend-link');
+      if (link && !link.dataset.bound) {
+        link.addEventListener('click', openSearch, { passive:false });
+        link.dataset.bound = '1';
+        return;
+      }
+      if (times > 0) setTimeout(()=>tryBind(times-1), 150);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', ()=>tryBind());
+    } else {
+      tryBind();
+    }
   })();
-
 
   // 通知其他腳本可以綁定事件
   document.dispatchEvent(new Event('dialogs:mounted'));
