@@ -56,11 +56,11 @@
           
           <div class="nav-right">
             <!-- 個人化課程推薦：放大鏡 icon-only 按鈕 -->
-            <a href="/web/recommend.html" id="recommend-link" class="btn nav-cta secondary icon-only"
-               aria-label="個人化課程推薦">
+            <a href="/web/recommend.html" id="recommend-link" 
+               class="btn icon-only" aria-label="個人化課程推薦">
               <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                 <circle cx="11" cy="11" r="7"></circle>
-                <path d="M21 21l-4.3-4.3"></path>
+                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
               </svg>
             </a>
           
