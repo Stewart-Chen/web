@@ -1136,7 +1136,7 @@ p.muted{ color: var(--muted); }
     top: 0;
     z-index: 1100; /* 要比內容、底部選單更高 */
   }
-
+  .nav-right{gap: 5px;}
   .hamburger .bar,
   .hamburger .bar::before,
   .hamburger .bar::after {
@@ -1319,4 +1319,37 @@ p.muted{ color: var(--muted); }
     color: #0c4030;
     box-shadow: inset 0 0 0 1px rgba(59,179,195,.26);
   }
+}
+
+/* 乾淨的 icon-only 按鈕 */
+.btn.icon-only {
+  background: none;            /* 移除漸層背景 */
+  border: none;                /* 移除外框 */
+  padding: 6px;                /* 縮小內距 */
+  border-radius: 50%;          /* 圓形外觀 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink);           /* 主文字顏色 */
+  transition: background .2s ease;
+}
+
+/* hover/active 狀態 */
+.btn.icon-only:hover {
+  background: rgba(59,179,195,.1);
+}
+.btn.icon-only:active {
+  background: rgba(59,179,195,.2);
+}
+
+/* 放大鏡圖示 */
+.btn.icon-only svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--accent-blue);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
