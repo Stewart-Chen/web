@@ -25,14 +25,18 @@ body:has(.dock)::after{
 }
 .dock small{ color:var(--muted); }
 
-/* ---------- 手機修正（≤480px） ---------- */
-@media (max-width:480px){
+/* ---------- 手機修正（≤720px） ---------- */
+@media (max-width:720px){
   /* 手機用更高的 spacer（含 safe area） */
   .has-dock::after,
   body:has(.dock)::after{
     height: max(120px, calc(104px + env(safe-area-inset-bottom)));
   }
-
+  .dock{
+    z-index: 1200;           /* 比 .bottom-nav 高 */
+    bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+    /* 上面這行：底部距離 = 底部選單高度 + 一點間距 + iOS 安全區 */
+  }
   .dock-inner{
     width: calc(100% - 12px);
     padding: 8px;
