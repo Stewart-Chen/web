@@ -16,15 +16,14 @@
   <script defer src="js/app.js"></script>
 
   <style>
-/* ==== Mobile Bottom Nav (≤720px) — Healing 藍綠風（精簡、貼底、無圓角） ==== */
+/* ==== Mobile Bottom Nav (≤720px) — Healing 藍綠風（緊湊版） ==== */
 
-/* 預設隱藏，手機才顯示 */
 .bottom-nav{ display: none; }
 
 @media (max-width: 720px){
-  /* 讓內容不被固定導覽擋住（高度更精簡） */
+  /* 內容下方留白，避免被導覽擋住 */
   body{
-    padding-bottom: calc(58px + env(safe-area-inset-bottom));
+    padding-bottom: calc(52px + env(safe-area-inset-bottom));
   }
 
   .bottom-nav{
@@ -36,79 +35,65 @@
 
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 0;
 
-    /* 取消圓角、貼齊底部 */
-    border-radius: 0;
-
-    /* 背景：藍綠療癒漸層 + 細紋，避免單調 */
+    border-radius: 0; /* 無圓角 */
     background:
-      /* 細微斜向紋理（極淡） */
       repeating-linear-gradient(135deg,
-        rgba(59,179,195,.06) 0px,
-        rgba(59,179,195,.06) 2px,
-        rgba(167,220,215,.06) 2px,
-        rgba(167,220,215,.06) 4px
+        rgba(59,179,195,.05) 0px,
+        rgba(59,179,195,.05) 2px,
+        rgba(167,220,215,.05) 2px,
+        rgba(167,220,215,.05) 4px
       ),
       linear-gradient(180deg,
         rgba(255,255,255,.92) 0%,
         rgba(246,251,248,.96) 70%,
         rgba(240,248,244,.98) 100%
       );
-
-    /* 上緣髮絲線讓層次更清楚 */
     border-top: 1px solid rgba(59,179,195,.22);
-
-    /* 提升對比但維持柔和 */
     box-shadow:
-      0 -8px 22px rgba(0,0,0,.06),
+      0 -6px 18px rgba(0,0,0,.06),
       0 -1px 0 rgba(255,255,255,.6) inset;
 
-    /* safe area */
-    padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+    padding: 4px 0 calc(4px + env(safe-area-inset-bottom));
   }
 
   .bottom-nav .nav-item{
-    --pad: 6px;                  /* 更緊湊 */
+    --pad: 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
 
-    min-height: 50px;            /* 原 56 → 50 更省空間 */
+    min-height: 46px;      /* 更矮 */
     padding: var(--pad) 0;
 
     text-decoration: none;
     font-weight: 700;
-    font-size: 11px;             /* 原 12 → 11 */
-    letter-spacing: .25px;
+    font-size: 10px;       /* 更小字 */
+    letter-spacing: .2px;
     color: var(--ink);
-    border-radius: 0;            /* 明確移除圓角 */
+    border-radius: 0;
 
-    transition:
-      background .18s ease,
-      color .18s ease,
-      transform .12s ease,
-      box-shadow .18s ease;
+    transition: background .18s ease,
+                color .18s ease,
+                transform .12s ease,
+                box-shadow .18s ease;
   }
 
-  /* icon 尺寸更小一點 */
   .bottom-nav .icon{ display: inline-flex; }
   .bottom-nav .icon svg{
-    width: 20px;
-    height: 20px;
+    width: 18px; height: 18px;   /* 更小 icon */
     fill: currentColor;
     opacity: .92;
   }
 
-  /* Hover：柔和藍綠漸層 + 微浮起 */
+  /* Hover */
   .bottom-nav .nav-item:hover{
     background: linear-gradient(90deg, rgba(59,179,195,.10), rgba(167,220,215,.14));
     box-shadow: inset 0 0 0 1px rgba(59,179,195,.16);
     color: #0c4030;
     transform: translateY(-1px);
-    text-decoration: none;
   }
 
   /* Active / 當前頁 */
@@ -118,71 +103,8 @@
     color: #0c4030;
     box-shadow: inset 0 0 0 1px rgba(59,179,195,.26);
   }
-
-  /* ============================
-     量表分頁：文案與圖示純 CSS 替換
-     ============================ */
-
-  /* 1) 將「心聚一分鐘」覆寫成「量表」 */
-  .bottom-nav .nav-item[data-name="minute"] .label{
-    position: relative;
-    color: #0c4030; /* 輕度強調 */
-  }
-  .bottom-nav .nav-item[data-name="minute"] .label::before{
-    content: "量表";
-  }
-  /* 若你的 HTML 原本有文字，為了避免重疊可做隱藏處理 */
-  .bottom-nav .nav-item[data-name="minute"] .label{
-    font-weight: 800;
-  }
-
-  /* 2) 改「量表」圖示：隱藏原 SVG，用 mask 畫出滑桿圖示 */
-  .bottom-nav .nav-item[data-name="minute"] .icon svg{
-    display: none !important;
-  }
-  .bottom-nav .nav-item[data-name="minute"] .icon{
-    position: relative;
-    width: 20px; height: 20px;
-  }
-  .bottom-nav .nav-item[data-name="minute"] .icon::before{
-    content: "";
-    display: block;
-    width: 20px; height: 20px;
-    background-color: currentColor;
-
-    /* 三條水平量表 + 滑塊（SVG path 以 mask 呈現） */
-    -webkit-mask: url("data:image/svg+xml;utf8,\
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
-        <g fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>\
-          <line x1='3' y1='6' x2='21' y2='6'/>\
-          <circle cx='9' cy='6' r='2' fill='%23000'/>\
-          <line x1='3' y1='12' x2='21' y2='12'/>\
-          <circle cx='15' cy='12' r='2' fill='%23000'/>\
-          <line x1='3' y1='18' x2='21' y2='18'/>\
-          <circle cx='7' cy='18' r='2' fill='%23000'/>\
-        </g>\
-      </svg>") no-repeat center / contain;
-            mask: url("data:image/svg+xml;utf8,\
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
-        <g fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>\
-          <line x1='3' y1='6' x2='21' y2='6'/>\
-          <circle cx='9' cy='6' r='2' fill='%23000'/>\
-          <line x1='3' y1='12' x2='21' y2='12'/>\
-          <circle cx='15' cy='12' r='2' fill='%23000'/>\
-          <line x1='3' y1='18' x2='21' y2='18'/>\
-          <circle cx='7' cy='18' r='2' fill='%23000'/>\
-        </g>\
-      </svg>") no-repeat center / contain;
-  }
-
-  /* 量表分頁在 hover / active 狀態下的顏色稍微更亮一點 */
-  .bottom-nav .nav-item[data-name="minute"]:hover{
-    color: var(--brand-green);
-  }
-  .bottom-nav .nav-item[data-name="minute"][aria-current="page"]{
-    color: var(--brand-green);
-  }
 }
+
 
 </style>
 
