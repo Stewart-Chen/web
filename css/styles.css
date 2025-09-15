@@ -1153,8 +1153,8 @@ p.muted{ color: var(--muted); }
     gap: 2px;
   }
   .btn.nav-cta svg{
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
   }
   .hamburger{
     width: 30px;
