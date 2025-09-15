@@ -580,37 +580,7 @@ fieldset.card .actions label{
   background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.6));
   backdrop-filter: saturate(150%) blur(6px);
 }
-@media (max-width: 720px){
-  .container{ padding: 0 12px; }
-  .site-header{ padding: 8px 0 10px; margin-bottom: 12px; }
 
-  .header-bar{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* 移除桌機左側選單（手機用抽屜） */
-  .nav-left{ display: none !important; }
-
-  /* 登入按鈕微縮 */
-  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
-
-  /* Footer QRCode 縮小 */
-  #qrcode canvas, #qrcode img{
-    width: 120px !important;
-    height: 120px !important;
-  }
-  fieldset.card{ padding: 12px; }
-  fieldset.card .actions{
-    gap: 6px;
-    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
-  }
-  .site-header .header-bar{
-    gap: 10px;
-  }
-}
 .site-header .brand .title-text{
   font-weight: 600;
   letter-spacing: .5px;
@@ -911,54 +881,6 @@ body.menu-open{ overflow: hidden; }
 }
 .dock small{ color: var(--muted); }
 
-/* 手機：避免被浮動列擋住（僅手機加大底部內距） */
-@media (max-width: 480px){
-  .dock-inner{
-    width: calc(100% - 12px);
-    padding: 8px;
-    border-radius: 12px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-  .dock-inner .toolbar{
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-  }
-  #dock-status{
-    flex: 1 1 auto;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-  }
-  #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
-  .btn{ padding: 8px 12px; font-size: 14px; }
-  .page-hero h1{ font-size: 18px; }
-  .scale .opt{ flex: 1; }
-  .nps-row .opt{ flex: 0 0 calc(10% - 8px); }
-}
-
-/* === 手機端 Hero 標題字體柔和化 === */
-@media (max-width: 640px){
-  .hero h2{
-    font-size: 1.2rem;
-    /* font-weight: 600; */
-    line-height: 1.4;
-  }
-  .hero p{
-    font-size: .95rem;
-    color: #444;
-  }
-  .chips .chip{
-    font-size: .9rem;
-    padding: 5px 10px;
-  }
-}
 /* === Mobile Nav：藍綠療癒風強化 === */
 .nav-mobile{
   background: rgba(255,255,255,.95);
@@ -1202,18 +1124,84 @@ h3 + p, h4 + p{ margin-top: .2em; }
 /* 內文次要訊息（延用你的 muted 色） */
 p.muted{ color: var(--muted); }
 
-/* RWD：小螢幕微調字級與行高 */
-@media (max-width: 640px){
-  h3{ font-size: 1.1rem;  letter-spacing: .3px; }
-  h4{ font-size: .95rem;  letter-spacing: .25px; }
-  p { line-height: 1.8; }
-}
-
-/* ==== Mobile Bottom Nav (≤720px) — Stroke icon 版（緊湊、貼底、無圓角） ==== */
-
 .bottom-nav{ display: none; }
 
 @media (max-width: 720px){
+  .container{ padding: 0 12px; }
+  .site-header{ padding: 8px 0 10px; margin-bottom: 12px; }
+
+  .header-bar{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* 移除桌機左側選單（手機用抽屜） */
+  .nav-left{ display: none !important; }
+
+  /* 登入按鈕微縮 */
+  .btn.nav-cta{ padding: 8px 12px; font-size: 14px; }
+
+  /* Footer QRCode 縮小 */
+  #qrcode canvas, #qrcode img{
+    width: 120px !important;
+    height: 120px !important;
+  }
+  fieldset.card{ padding: 12px; }
+  fieldset.card .actions{
+    gap: 6px;
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  }
+  .site-header .header-bar{
+    gap: 10px;
+  }
+  .dock-inner{
+    width: calc(100% - 12px);
+    padding: 8px;
+    border-radius: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .dock-inner .toolbar{
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+  #dock-status{
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+  }
+  #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
+  .btn{ padding: 8px 12px; font-size: 14px; }
+  .page-hero h1{ font-size: 18px; }
+  .scale .opt{ flex: 1; }
+  .nps-row .opt{ flex: 0 0 calc(10% - 8px); }
+  
+  .hero h2{
+    font-size: 1.2rem;
+    /* font-weight: 600; */
+    line-height: 1.4;
+  }
+  .hero p{
+    font-size: .95rem;
+    color: #444;
+  }
+  .chips .chip{
+    font-size: .9rem;
+    padding: 5px 10px;
+  }
+  h3{ font-size: 1.1rem;  letter-spacing: .3px; }
+  h4{ font-size: .95rem;  letter-spacing: .25px; }
+  p { line-height: 1.8; }
+
   /* 內容下方留白，避免被導覽擋住 */
   body{
     padding-bottom: calc(52px + env(safe-area-inset-bottom));
