@@ -93,6 +93,119 @@
     </footer>
   `.trim();
 
+
+  // 功能：在所有頁面自動插入「底部選單」並高亮目前頁籤
+  (function insertBottomNav() {
+    // 避免重複插入
+    if (document.querySelector('.bottom-nav')) return;
+  
+    // --- 1) 底部選單 HTML（你的原始內容） ---
+    var navHTML = `
+  <nav class="bottom-nav" role="navigation" aria-label="主要選單">
+    <a class="nav-item" href="/web/index.html" data-name="home">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 12l9-9 9 9"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+      </span>
+      <span class="label">首頁</span>
+    </a>
+  
+    <a class="nav-item" href="/web/courses.html" data-name="courses">
+      <span class="icon" aria-hidden="true">
+        <!-- Book Open icon (stroke 版，現代扁線風) -->
+        <svg viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 6c-3-1.8-6-1.8-9 0v11c3-1.8 6-1.8 9 0V6z"/>
+          <path d="M12 6c3-1.8 6-1.8 9 0v11c-3-1.8-6-1.8-9 0V6z"/>
+          <path d="M12 6v11"/>
+        </svg>
+      </span>
+      <span class="label">課程</span>
+    </a>
+  
+    <a class="nav-item" href="/web/teachers.html" data-name="teachers">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </span>
+      <span class="label">老師</span>
+    </a>
+  
+    <a class="nav-item" href="/web/teachers.html" data-name="shop">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.68 16h9.72a2 2 0 0 0 1.97-1.61L23 6H6"/>
+        </svg>
+      </span>
+      <span class="label">商城</span>
+    </a>
+  
+    <a class="nav-item" href="/web/one-minute.html" data-name="minute">
+      <span class="icon" aria-hidden="true">
+        <!-- Gauge/Clock hybrid (stroke 版，現代扁線風) -->
+        <svg viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M8 12a7.5 7.5 0 0 1 8 0"/>
+          <path d="M12 7v5l3 3"/>
+          <path d="M12 3v2M4.6 7l1.4 1M18 8l1.4-1"/>
+        </svg>
+      </span>
+      <span class="label">心聚一分鐘</span>
+    </a>
+  </nav>`.trim();
+  
+    // --- 2) 等 DOM 就緒後插入到 <body> 最後 ---
+    function insertNav() {
+      // 建立容器用來解析字串
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = navHTML;
+      var nav = wrapper.firstElementChild;
+      if (!nav) return;
+      document.body.appendChild(nav);
+  
+      // 3) 自動高亮目前頁籤（aria-current="page"）
+      var path = (location.pathname || '/').toLowerCase();
+  
+      function isHome() {
+        // 你的首頁是 /web/index.html
+        return /\/web\/(index\.html)?$/.test(path);
+      }
+  
+      function match(name) {
+        if (name === 'home')     return isHome();
+        if (name === 'courses')  return /\/web\/courses\.html$/.test(path);
+        if (name === 'teachers') return /\/web\/teachers\.html$/.test(path);
+        if (name === 'shop')     return /\/web\/shop\.html$/.test(path) || /\/web\/teachers\.html$/.test(path); // 目前你暫時指到 teachers
+        if (name === 'minute')   return /\/web\/one-minute\.html$/.test(path);
+        return false;
+      }
+  
+      nav.querySelectorAll('.nav-item').forEach(function(a){
+        var name = a.getAttribute('data-name');
+        if (match(name)) a.setAttribute('aria-current','page');
+      });
+    }
+  
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', insertNav);
+    } else {
+      insertNav();
+    }
+  })();
+
+
+  
   const frag = tpl.content.cloneNode(true);
   if (!document.querySelector("header.site-header")) document.body.prepend(frag.querySelector("header"));
   if (!document.querySelector("footer.site-footer")) document.body.appendChild(frag.querySelector("footer"));
