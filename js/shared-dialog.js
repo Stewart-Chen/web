@@ -360,39 +360,58 @@ body.modal-open{ overflow: hidden; }
   }
   wireTabs();
 
-  // === wire search modal（個人化推薦內嵌版） ===
+  // === wire search modal（個人化推薦內嵌 + 穩健等候版） ===
   (function wireSearch(){
     const dlg   = document.getElementById('search-modal');
-    const form  = document.getElementById('rec-form');
-    const box   = document.getElementById('rec-results');
+  
+    // 工具：等條件成立（元素/函式載入），避免搶在 DOM 前面跑
+    function waitFor(predicate, { interval=120, timeout=6000 } = {}){
+      return new Promise((resolve, reject)=>{
+        const start = Date.now();
+        (function tick(){
+          try{
+            const val = predicate();
+            if (val) return resolve(val);
+          }catch{}
+          if (Date.now() - start >= timeout) return reject(new Error('waitFor: timeout'));
+          setTimeout(tick, interval);
+        })();
+      });
+    }
+  
+    // 每次開啟時拿一次（確保抓到最新的節點）
+    function getFormBits(){
+      return {
+        form: document.getElementById('rec-form'),
+        box : document.getElementById('rec-results'),
+        age : document.getElementById('age'),
+        gender: document.getElementById('gender'),
+        interests: document.getElementById('interests'),
+        profession: document.getElementById('profession'),
+      };
+    }
   
     function openSearch(e){
       if (e) e.preventDefault();
       dlg.showModal();
-      // 每次開啟清空結果
+      const { box, age } = getFormBits();
       if (box) box.innerHTML = '';
-      // 把焦點放到第一個欄位
-      setTimeout(()=> document.getElementById('age')?.focus(), 0);
+      setTimeout(()=> age?.focus(), 0);
     }
   
-    // 後備工具：normalize / interests / score / render（若頁面沒提供就用這些）
+    // 後備工具（如果首頁沒載好，就用這些簡化版）
     const normalizeTitle = window.normalizeTitle || (t => (t||'').toString().toLowerCase().replace(/\s+/g,'-'));
-    const parseInterests = window.parseInterests || (s => (s||'')
-        .split(/[，,]/).map(x=>x.trim()).filter(Boolean).map(x=>x.toLowerCase()));
+    const parseInterests = window.parseInterests || (s => (s||'').split(/[，,]/).map(x=>x.trim()).filter(Boolean).map(x=>x.toLowerCase()));
     const fallbackScore  = (course, ctx) => {
-      // 非常簡化：興趣關鍵字匹配 title/summary/description
       const hay = ((course.title||'')+' '+(course.summary||'')+' '+(course.description||'')).toLowerCase();
-      let score = 0, tags=[];
-      (ctx.interests||[]).forEach(k=>{
-        if (hay.includes(k)) { score += 2; tags.push(k); }
-      });
-      // 年齡/職業簡單加權（可按需擴充）
+      let score = 0, tags = [];
+      (ctx.interests||[]).forEach(k => { if (hay.includes(k)) { score += 2; tags.push(k); } });
       if (ctx.profession && /teacher|health|office|student|retired/.test(ctx.profession)) score += 1;
       return { score, tags, level: course.level || '一般' };
     };
     const scoreDbCourse = window.scoreDbCourse || fallbackScore;
   
-    const renderRecommendationsFromDb = window.renderRecommendationsFromDb || function(list){
+    function renderFallback(list, box){
       if (!box) return;
       if (!list.length){
         box.innerHTML = `<p class="muted">沒有找到合適的推薦，試試不同的興趣關鍵字（如：室內植物、正念、多肉、親子）。</p>`;
@@ -411,72 +430,96 @@ body.modal-open{ overflow: hidden; }
           </div>
         </article>
       `).join('');
-    };
+    }
   
     async function runRecommendFromForm(){
-      const age = parseInt(document.getElementById('age')?.value || '0', 10);
-      const gender = document.getElementById('gender')?.value || 'nonbinary';
-      const interests = parseInterests(document.getElementById('interests')?.value);
-      const profession = document.getElementById('profession')?.value || 'other';
+      const { box, age, gender, interests, profession } = getFormBits();
+      if (!box) return;
   
-      // 顯示 loading
-      if (box) box.innerHTML = `<div class="search-empty">產生推薦中…</div>`;
+      // 等待 Supabase client（shared-layout 會初始化 window.sb）
+      await waitFor(()=> window.sb && typeof window.sb.from === 'function').catch(()=>{});
+      const sb = window.sb;
+  
+      const ctx = {
+        age: parseInt(age?.value || '0', 10),
+        gender: (gender?.value || 'nonbinary'),
+        interests: parseInterests(interests?.value),
+        profession: (profession?.value || 'other'),
+      };
+  
+      box.innerHTML = `<div class="search-empty">產生推薦中…</div>`;
   
       try{
-        const { data: courses, error } = await (window.sb || {}).from('courses')
+        if (!sb) throw new Error('Supabase 尚未初始化');
+        const { data: courses, error } = await sb
+          .from('courses')
           .select('id,title,summary,description,cover_url,teacher,level,published,deleted_at')
           .eq('published', true)
           .is('deleted_at', null);
-  
         if (error) throw error;
   
         const scored = (courses||[]).map(c => {
-          const r = scoreDbCourse(c, {age, gender, interests, profession});
+          const r = scoreDbCourse(c, ctx);
           return { ...c, _score: r.score, _tags: r.tags, _level: r.level };
         });
         const top = scored.filter(c=>c._score>0).sort((a,b)=>b._score-a._score).slice(0,6);
-        renderRecommendationsFromDb(top);
+  
+        // 若首頁的 render 已載入，就用它；否則用後備 render
+        if (typeof window.renderRecommendationsFromDb === 'function') {
+          window.renderRecommendationsFromDb(top);
+        } else {
+          renderFallback(top, box);
+        }
       } catch(err){
-        console.error('[recommend] load/score error:', err);
-        if (box) box.innerHTML = `<div class="search-empty">載入推薦時發生錯誤，請稍後再試。</div>`;
+        console.warn('[recommend] error:', err);
+        box.innerHTML = `<div class="search-empty">載入推薦時發生錯誤，請稍後再試。</div>`;
       }
     }
   
-    // 送出表單 → 在對話框內渲染推薦
-    form?.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
-      runRecommendFromForm();
-    });
+    // 綁表單（等到對話框的表單節點真的存在）
+    function bindForm(){
+      const { form, box } = getFormBits();
+      if (!form || form.dataset.bound) return;
+      form.addEventListener('submit', (e)=>{ e.preventDefault(); e.stopPropagation(); runRecommendFromForm(); });
+      form.addEventListener('reset', ()=>{ if (box) box.innerHTML = ''; });
+      form.dataset.bound = '1';
+    }
   
-    // Reset 清空結果
-    form?.addEventListener('reset', ()=>{
-      if (box) box.innerHTML = '';
-    });
-  
-    // 快捷鍵 "/" 開啟（避免其他 dialog 開啟時觸發）
-    window.addEventListener('keydown', (e)=>{
-      if (e.key === '/' && !document.querySelector('dialog[open]')) {
-        e.preventDefault(); openSearch();
-      }
-    });
-  
-    // 綁定右上角放大鏡（shared-layout 可能延後插入）
-    function tryBind(times=12){
+    // 等放大鏡出現再綁（shared-layout 可能晚載入）
+    function bindMagnifier(){
       const link = document.getElementById('recommend-link');
-      if (link && !link.dataset.bound) {
-        link.addEventListener('click', openSearch, { passive:false });
-        link.dataset.bound = '1';
-        return;
+      if (!link || link.dataset.bound) return;
+      link.addEventListener('click', openSearch, { passive:false });
+      link.dataset.bound = '1';
+    }
+  
+    // 初始化：等三件事 → 對話框節點（已由 ensureDialog 建好）、表單節點、放大鏡節點
+    (async function init(){
+      try {
+        // 1) 等 DOM 就緒
+        if (document.readyState === 'loading') {
+          await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
+        }
+        // 2) 等放大鏡被 shared-layout 插入
+        await waitFor(()=> document.getElementById('recommend-link'));
+        bindMagnifier();
+  
+        // 3) 表單在我們自己的 dialog 裡，理論上已存在；保險再等一下
+        await waitFor(()=> document.getElementById('rec-form'));
+        bindForm();
+  
+        // 萬一之後被動態更換（極少見），用 MutationObserver 保險
+        const mo = new MutationObserver(()=> bindForm());
+        mo.observe(document.body, { childList: true, subtree: true });
+  
+        // 若別的檔案（首頁 app.js）晚載入，render/score 仍可在第一次 submit 前載好；
+        // 我們在 runRecommendFromForm 內也會等待 sb 準備好。
+      } catch(err){
+        console.warn('[wireSearch init] ', err);
       }
-      if (times > 0) setTimeout(()=>tryBind(times-1), 150);
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', ()=>tryBind());
-    } else {
-      tryBind();
-    }
+    })();
   })();
+
 
   // 通知其他腳本可以綁定事件
   document.dispatchEvent(new Event('dialogs:mounted'));
