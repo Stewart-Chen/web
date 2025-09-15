@@ -141,6 +141,35 @@ dialog .actions .btn.secondary:hover{
 
 /* 防捲動 */
 body.modal-open{ overflow: hidden; }
+
+/* === Search dialog === */
+.search-head{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+#search-input{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(59,179,195,.25);
+  background: #fff;
+  font: inherit;
+  transition: box-shadow .18s ease, border-color .18s ease;
+}
+#search-input:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59,179,195,.22);
+  border-color: var(--accent-blue, #3bb3c3);
+}
+#search-suggest{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+#search-suggest .chip{
+  padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid #d7ead9; background: #fff; font-weight: 700;
+}
+#search-suggest .chip:hover{ background: #ecfdf5; border-color:#b7ebc0; }
+
     `.trim();
     document.head.appendChild(style);
   }
@@ -179,6 +208,31 @@ body.modal-open{ overflow: hidden; }
       </form>
     </dialog>
   `);
+
+
+  // --- Search dialog（個人化推薦入口） ---
+  const searchDlg = ensureDialog('search-modal', `
+    <dialog id="search-modal">
+      <form method="dialog" class="card panel">
+        <h3 style="margin-top:0;">找課程</h3>
+        <div class="search-head" style="margin-top:8px;">
+          <input id="search-input" type="search" placeholder="想學什麼？關鍵字：園藝、藝術、壓力、睡眠…" />
+          <button id="search-go" class="btn primary" type="submit">搜尋</button>
+        </div>
+        <div id="search-suggest">
+          <button type="button" class="chip" data-q="園藝治療">園藝治療</button>
+          <button type="button" class="chip" data-q="藝術治療">藝術治療</button>
+          <button type="button" class="chip" data-q="放鬆">放鬆</button>
+          <button type="button" class="chip" data-q="睡眠">睡眠</button>
+          <button type="button" class="chip" data-q="壓力">壓力</button>
+        </div>
+        <div class="actions" style="margin-top:12px;">
+          <button type="button" class="btn secondary" onclick="document.getElementById('search-modal').close()">關閉</button>
+        </div>
+      </form>
+    </dialog>
+  `);
+  bindModalLock(searchDlg);
 
   // --- Auth dialog（分頁：登入 / 註冊） ---
   const authDlg = document.getElementById('auth-modal') || ensureDialog('auth-modal', `
@@ -282,6 +336,54 @@ body.modal-open{ overflow: hidden; }
     activate('login');
   }
   wireTabs();
+
+
+  // === wire search modal ===
+  (function wireSearch(){
+    const link   = document.getElementById('recommend-link');
+    const dlg    = document.getElementById('search-modal');
+    const input  = document.getElementById('search-input');
+    const goBtn  = document.getElementById('search-go');
+    const chips  = document.getElementById('search-suggest');
+  
+    function openSearch(e){
+      if (e) e.preventDefault();
+      dlg.showModal();
+      setTimeout(()=> input?.focus(), 0);
+    }
+    function doSearch(){
+      const q = (input?.value || '').trim();
+      // 導向你的個人化推薦頁（可改為實際路徑）
+      const url = q ? `/web/recommend.html?q=${encodeURIComponent(q)}` : '/web/recommend.html';
+      window.location.href = url;
+    }
+  
+    // 點放大鏡 → 開啟搜尋
+    if (link && !link.dataset.bound) {
+      link.addEventListener('click', openSearch, { passive:false });
+      link.dataset.bound = '1';
+    }
+  
+    // 按「搜尋」或 Enter 送出
+    goBtn?.addEventListener('click', (e)=>{ e.preventDefault(); doSearch(); });
+    input?.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); doSearch(); } });
+  
+    // 點熱門關鍵字
+    chips?.addEventListener('click', (e)=>{
+      const b = e.target.closest('[data-q]');
+      if(!b) return;
+      input.value = b.dataset.q;
+      doSearch();
+    });
+  
+    // 快捷鍵：按下 "/" 開啟搜尋（不在任何 dialog 開啟時）
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === '/' && !document.querySelector('dialog[open]')) {
+        e.preventDefault(); openSearch();
+      }
+    });
+  })();
+
 
   // 通知其他腳本可以綁定事件
   document.dispatchEvent(new Event('dialogs:mounted'));
