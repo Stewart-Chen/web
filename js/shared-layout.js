@@ -56,7 +56,7 @@
           
           <div class="nav-right">
             <!-- 個人化課程推薦：放大鏡 icon-only 按鈕 -->
-            <a href="/web/recommend.html" id="recommend-link" 
+            <a href="#" id="recommend-link" 
                class="btn icon-only" aria-label="個人化課程推薦">
               <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                 <circle cx="11" cy="11" r="7"></circle>
