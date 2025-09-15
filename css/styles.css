@@ -645,6 +645,7 @@ body.menu-open .hamburger .bar::after{ transform: rotate(-45deg); }
   .nav-desktop .nav-left{ display: none; }
   .site-header .nav-right{ margin-left: auto; }
   .hamburger{ display: grid; order: 2; }
+  .site-header .header-bar{ gap: 10px; }
 }
 @media (min-width: 900px){
   .hamburger{ display: none; }
