@@ -213,7 +213,7 @@ body.modal-open{ overflow: hidden; }
   // --- Search dialog（改為：個人化課程推薦） ---
   const searchDlg = ensureDialog('search-modal', `
     <dialog id="search-modal">
-      <form id="rec-form" method="dialog" class="card panel" novalidate>
+      <form id="rec-form" class="card panel" novalidate>
         <h3 style="margin-top:0;">個人化課程推薦</h3>
   
         <div class="form-grid" style="margin-top:10px;">
