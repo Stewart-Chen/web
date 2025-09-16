@@ -1520,4 +1520,7 @@ h3 + p, h4 + p{ margin-top: .2em; }
     font-weight: 600;
     padding: 3px 0;
   }
+  .link-more{
+    font-size: .9rem;
+  }
 }
