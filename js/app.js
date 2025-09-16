@@ -472,8 +472,8 @@ document.addEventListener('click', (e)=>{
       }
     });
   }, {
-    rootMargin: `-${headerH + 20}px 0px -60% 0px`, // 讓區塊進入視窗上方時就高亮
-    threshold: 0.1
+    rootMargin: `-${headerH + 10}px 0px -30% 0px`, // 上方多留 10px，下方只排除 30%
+    threshold: 0                               // 只要進來一點點就算
   });
 
   map.forEach((_, sec)=> io.observe(sec));
