@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     isShown = !isShown;
     idSection.style.display = isShown ? 'block' : 'none';
     toggleBtn.textContent = isShown ? '隱藏ID' : '顯示ID';
-    toggleBtn.classList.toggle('primary', isShown);
+    toggleBtn.classList.toggle('primary', !isShown);
   });
   
   const $  = (sel, ctx=document) => ctx.querySelector(sel);
