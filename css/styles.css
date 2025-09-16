@@ -1271,7 +1271,7 @@ h3 + p, h4 + p{ margin-top: .2em; }
     line-height: 1.4;
   }
   .hero p{
-    font-size: .95rem;
+    font-size: .85rem;
   }
   .chips .chip{
     font-size: .8rem;
