@@ -86,9 +86,6 @@ nav .dropbtn{
   text-decoration: none;
   border-radius: 6px;
 }
-nav a:hover,
-nav .dropbtn:hover{ text-decoration: underline; }
-nav a[aria-current="page"]{ text-decoration: underline; }
 
 /* dropdown 容器 */
 nav .dropdown{ position: relative; display: inline-block; }
@@ -159,23 +156,7 @@ nav .dropdown:focus-within .dropbtn{
 }
 .hero h2{/* font-size: 1.6rem; */margin: 0 0 8px;/* color: #1b5e20; *//* font-weight: 700; */}
 .hero p{ color: #444; font-size: 1rem; }
-.chips{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.chip{
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #ecfdf5;
-  border: 1px solid #b7ebc0;
-  color: #1b5e20;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all .2s ease;
-}
-.chip:hover{
-  background: #d1fae5;
-  border-color: #86efac;
-  transform: translateY(-1px);
-}
+.chips{display: flex;gap: 8px;flex-wrap: wrap;margin-top: 10px;}
 
 /* ---- Feature（服務領域） ---- */
 .feature-grid{
@@ -1293,8 +1274,8 @@ h3 + p, h4 + p{ margin-top: .2em; }
     font-size: .95rem;
   }
   .chips .chip{
-    font-size: .9rem;
-    padding: 5px 10px;
+    font-size: .8rem;
+    padding: 3px 8px;
   }
   h3{ font-size: 1.1rem;  letter-spacing: .3px; }
   h4{ font-size: .95rem;  letter-spacing: .25px; }
@@ -1478,3 +1459,67 @@ h3 + p, h4 + p{ margin-top: .2em; }
   overflow-wrap: anywhere;
 }
 
+/* ===== sticky chips bar ===== */
+.sticky-chips{
+  position: sticky;
+  top: var(--header-height, 68px); /* 視你的 header 高度調整 */
+  z-index: 50;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  margin: 12px 0 16px;
+  /* border-radius: 14px; */
+  /* background: rgba(255,255,255,.8); */
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  /* border: 1px solid rgba(0,0,0,.06); */
+  box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  overflow-x: auto;                /* 手機可左右滑 */
+  scrollbar-width: none;           /* 火狐隱藏捲軸 */
+}
+.sticky-chips::-webkit-scrollbar{ display:none; } /* WebKit 隱藏捲軸 */
+
+/* 基本 chip */
+.chip{
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  /* border-radius: 999px; */
+  border: 1px solid rgba(59,179,195,.28);
+  background: #fff;
+  color: #0c4030;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
+  white-space: nowrap;
+}
+@media (hover:hover){
+  .chip:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(59,179,195,.18);
+    background: linear-gradient(135deg, rgba(59,179,195,.08), rgba(167,220,215,.12));
+  }
+}
+
+/* 作用中（所在區段） */
+.chip.active{
+  border-color: rgba(59,179,195,.45);
+  background: linear-gradient(135deg, var(--accent-blue, #3bb3c3), #a7dcd7);
+  color: #0c4030;
+  box-shadow: 0 6px 16px rgba(59,179,195,.22);
+}
+
+/* 小螢幕留點空間 */
+@media (max-width: 720px){
+  .sticky-chips{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 15px;               /* ← chip 之間的間距 */
+    padding: 8px 15px;
+  }
+  .sticky-chips .chip{
+    text-align: center;      /* 文字置中 */
+    font-weight: 600;
+    padding: 3px 0;
+  }
+}
