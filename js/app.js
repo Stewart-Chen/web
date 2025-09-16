@@ -306,3 +306,70 @@ document.addEventListener('DOMContentLoaded', () => {
   const teacherKey = params.get('teacher'); // fanfan / xd
   renderTeacherPicksFromDb(teacherKey);
 });
+// ====== 首頁課程一覽（最多 4 筆 + 查看更多） ======
+(function renderHomeCourses(){
+  async function run(){
+    // 等 Supabase client（shared-layout 會初始化 window.sb）
+    if (document.readyState === 'loading') {
+      await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
+    }
+    const sb = window.sb;
+    const listEl  = document.getElementById('courses-list');
+    const emptyEl = document.getElementById('courses-empty');
+    const moreBtn = document.getElementById('btn-more-courses');
+    if (!sb || !listEl) return;
+
+    const LIMIT = 4;
+
+    // 撈資料：只顯示 4 筆，但同時取回總數（count）判斷是否顯示「查看更多」
+    const { data, error, count } = await sb
+      .from('courses')
+      .select('id,title,summary,description,cover_url,category,created_at', { count: 'exact' })
+      .eq('published', true)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+      .range(0, LIMIT - 1); // 只取前 4 筆
+
+    if (error){
+      console.warn('[home courses] load error:', error);
+      listEl.innerHTML = '';
+      emptyEl?.classList.remove('hidden');
+      moreBtn?.classList.add('hidden');
+      return;
+    }
+
+    const items = data || [];
+    if (!items.length){
+      listEl.innerHTML = '';
+      emptyEl?.classList.remove('hidden');
+      moreBtn?.classList.add('hidden');
+      return;
+    }
+
+    // 有資料 → 渲染卡片
+    emptyEl?.classList.add('hidden');
+    listEl.innerHTML = items.map(c => `
+      <article class="course-card card">
+        <img src="${c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')}"
+             alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px">
+        <div class="course-body">
+          <h3>${c.title}</h3>
+          ${c.category ? `<div class="badge">${c.category}</div>` : ''}
+          <p class="muted">${(c.summary || '').slice(0, 80)}</p>
+          <div class="cta">
+            <a class="btn primary" href="course.html?id=${c.id}">查看課程</a>
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    // 是否顯示「查看更多課程」
+    if (typeof count === 'number' && count > LIMIT) {
+      moreBtn?.classList.remove('hidden');
+    } else {
+      moreBtn?.classList.add('hidden');
+    }
+  }
+
+  run().catch(err => console.error('[home courses] unexpected:', err));
+})();
