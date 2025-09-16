@@ -111,3 +111,9 @@ fieldset.group{
   /* 避免頁尾被切開 */
   .group, .card { page-break-inside: avoid; }
 }
+.legend.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px; /* 標題與按鈕之間距 */
+}
