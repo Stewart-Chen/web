@@ -33,14 +33,16 @@
 
     <!-- A. 控制台 -->
     <section class="flow-md" aria-labelledby="ctrl-title">
-      <div class="legend"><h2 id="ctrl-title" style="margin:0;font-size:18px;">控制面板</h2></div>
+      <div class="legend flex-between">
+        <h2 id="ctrl-title">控制面板</h2>
+        <button id="btn-print" class="btn secondary" type="button" title="列印或存成 PDF">列印 / PDF</button>
+      </div>
       <div class="card pill-group" role="group" aria-label="時間點">
         <button class="pill" data-tp="pre"  aria-pressed="true">課前</button>
         <button class="pill" data-tp="post" aria-pressed="false">課後</button>
         <button class="pill" data-tp="72h"  aria-pressed="false">72小時</button>
         <button id="toggle-ids" class="btn" style="margin-top:10px;">顯示ID</button>
       </div>
-      <button id="btn-print" class="btn secondary" type="button" title="列印或存成 PDF">列印 / PDF</button>
       <div id="id-section" class="ctrl-grid" style="margin-top:10px; display:none;">
         <label class="field">課程ID
           <input id="ctrl-course" class="input" type="number" inputmode="numeric" placeholder="例如 55">
