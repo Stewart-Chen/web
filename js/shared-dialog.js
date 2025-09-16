@@ -391,23 +391,23 @@ body.modal-open{ overflow: hidden; }
       `).join('');
     }
 
-    // ——— 在檔案頂端或 runRecommend 之前放一個上限常數（可調）———
+    // === 可調常數 ===
     const MAX_RECOMMEND = 6;
     
-    // === 直接替換原本的 runRecommend ===
+    // === 升級版 runRecommend（含年齡 + 性別 + fallback） ===
     async function runRecommend(){
-      const dlg = document.getElementById('search-modal');
+      const dlg  = document.getElementById('search-modal');
       if (!dlg) return;
     
-      const $   = (sel) => dlg.querySelector(sel);
+      const $    = (sel) => dlg.querySelector(sel);
       const form = $('#rec-form');
       const box  = $('#rec-results');
       if (!form || !box) return;
     
-      // 清空舊結果，避免誤判「空白也有結果」
+      // 清空舊結果
       box.innerHTML = '';
     
-      // 原生驗證不通過就直接結束
+      // 原生驗證
       if (!form.checkValidity()){
         form.reportValidity();
         return;
@@ -419,10 +419,9 @@ body.modal-open{ overflow: hidden; }
       const interests0 = ($('#interests')?.value || '')
                           .split(/[，,]/).map(s=>s.trim()).filter(Boolean)
                           .map(s=>s.toLowerCase());
-      const interests  = Array.from(new Set(interests0));   // ⬅ 去重
+      const interests  = Array.from(new Set(interests0)); // 去重
       const profession = $('#profession')?.value || '';
     
-      // 至少填「興趣」或選「職業」其一
       if (!interests.length && !profession){
         box.innerHTML = `<p class="muted">請至少填一個「興趣」或選擇一個「職業」再產生推薦。</p>`;
         return;
@@ -436,7 +435,7 @@ body.modal-open{ overflow: hidden; }
         return;
       }
     
-      // 2) 撈資料（欄位白名單）
+      // 2) 撈資料
       const { data, error } = await sb
         .from('courses')
         .select('id,title,summary,description,cover_url,teacher,published,created_at,deleted_at,category')
@@ -450,7 +449,7 @@ body.modal-open{ overflow: hidden; }
       }
     
       // 3) 權重設定
-      // 職業關鍵詞（命中任一 +1 分）
+      // 職業關鍵詞
       const profHints = {
         student:   ['入門','基礎','新手','學習'],
         teacher:   ['教學','教材','課綱','帶班','親子'],
@@ -461,7 +460,7 @@ body.modal-open{ overflow: hidden; }
       };
       const profWords = (profHints[profession || 'other'] || []).map(s=>s.toLowerCase());
     
-      // 年齡加權：命中任一 +1 分（可自行調整詞庫）
+      // 年齡加權
       const ageHints = [];
       if (age && age < 18) {
         ageHints.push('入門','基礎','新手','青少年','學習');
@@ -469,6 +468,14 @@ body.modal-open{ overflow: hidden; }
         ageHints.push('慢活','樂齡','花草','園藝','舒緩');
       }
       const ageWords = ageHints.map(s=>s.toLowerCase());
+    
+      // 性別加權
+      const genderHints = {
+        female:    ['瑜伽','芳療','手作','插花','料理'],
+        male:      ['健身','木工','攝影','程式','設計'],
+        nonbinary: []
+      };
+      const genderWords = (genderHints[gender] || []).map(s=>s.toLowerCase());
     
       const textOf = c => (`${c.title||''} ${c.summary||''} ${c.description||''} ${c.category||''}`).toLowerCase();
     
@@ -486,19 +493,22 @@ body.modal-open{ overflow: hidden; }
         // 年齡：命中任一 +1
         if (ageWords.length && ageWords.some(w => h.includes(w))) score += 1;
     
+        // 性別：命中任一 +1
+        if (genderWords.length && genderWords.some(w => h.includes(w))) score += 1;
+    
         return { ...c, _score: score, _tags: tagHits };
       });
     
-      // 5) 主要排序：分數高→低；同分用 created_at 新→舊
+      // 5) 排序：分數高→低，同分比 created_at 新→舊
       scored.sort((a,b) =>
         (b._score - a._score) ||
         (new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       );
     
-      // 6) 只取正命中的前 N
+      // 6) 選課
       let picked = scored.filter(c => c._score > 0).slice(0, MAX_RECOMMEND);
     
-      // 7) 熱門 fallback：若完全沒命中，就用「最新上架」前 N 筆
+      // 7) fallback：沒命中 → 用最新上架
       if (picked.length === 0) {
         picked = (data || [])
           .sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
@@ -523,6 +533,7 @@ body.modal-open{ overflow: hidden; }
         </article>
       `).join('');
     }
+
 
     // 綁定 submit / reset
     if (form && !form.dataset.bound) {
