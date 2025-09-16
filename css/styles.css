@@ -741,7 +741,7 @@ body.menu-open{ overflow: hidden; }
 .page-hero h1{ font-size: 20px; margin: 0; letter-spacing: .5px; }
 
 /* segmented pills */
-.pill-group{ display: flex; flex-wrap: wrap; gap: 8px; }
+.pill-group{ flex-wrap: wrap; gap: 8px; }
 .pill{
   border-radius: 999px;
   padding: 8px 14px;
