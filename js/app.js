@@ -385,18 +385,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     emptyEl?.classList.add('hidden');
-    listEl.innerHTML = items.map(c => `
-      <article class="course-card card">
-        <img src="${c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')}"
-             alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px">
-        <div class="course-body">
-          <h3>${c.title}</h3>
-          ${c.category ? `<div class="badge">${c.category}</div>` : ''}
-          <p class="muted">${(c.summary || '').slice(0, 80)}</p>
-          <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>
-        </div>
-      </article>
-    `).join('');
+
+    const CATEGORY_LABELS = {
+      horti: '園藝',   // horticulture
+      art:   '藝術',
+      mind:  '正念',
+      life:  '生活',
+    };
+
+    listEl.innerHTML = items.map(c => {
+      const cat = c.category ? (CATEGORY_LABELS[c.category] || c.category) : '';
+      return `
+        <article class="course-card card">
+          <img src="${c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')}"
+               alt="${c.title}">
+          <div class="course-body">
+            <h3>${c.title}</h3>
+            ${cat ? `<div class="badge">${cat}</div>` : ''}
+            <p class="muted">${(c.summary || '').slice(0, 80)}</p>
+            <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>
+          </div>
+        </article>
+      `;
+    }).join('');
 
     // 4) 是否顯示「查看更多」
     if (typeof count === 'number' ? count > LIMIT : items.length >= LIMIT) {
