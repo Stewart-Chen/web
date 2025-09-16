@@ -1469,11 +1469,7 @@ h3 + p, h4 + p{ margin-top: .2em; }
   align-items: center;
   padding: 10px 12px;
   margin: 12px 0 16px;
-  /* border-radius: 14px; */
-  /* background: rgba(255,255,255,.8); */
-  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  /* border: 1px solid rgba(0,0,0,.06); */
   box-shadow: 0 8px 24px rgba(0,0,0,.06);
   overflow-x: auto;                /* 手機可左右滑 */
   scrollbar-width: none;           /* 火狐隱藏捲軸 */
@@ -1516,6 +1512,7 @@ h3 + p, h4 + p{ margin-top: .2em; }
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: 15px;               /* ← chip 之間的間距 */
     padding: 8px 15px;
+    top: var(--header-height, 65px);
   }
   .sticky-chips .chip{
     text-align: center;      /* 文字置中 */
