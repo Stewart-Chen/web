@@ -115,5 +115,9 @@ fieldset.group{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px; /* 標題與按鈕之間距 */
+}
+.legend .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 按鈕間距 */
 }
