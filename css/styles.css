@@ -244,7 +244,6 @@ nav .dropdown:focus-within .dropbtn{
   flex-wrap: wrap;
 }
 .course-card h4{ margin: 0 0 4px 0; }
-.course-card p.muted{ margin: 0; }
 .badge{
   display: inline-block;
   padding: 2px 8px;
@@ -1387,10 +1386,6 @@ h3 + p, h4 + p{ margin-top: .2em; }
   border:1px solid #e0f2e9; border-radius: 999px; font-size:.85rem;
   background:#fff; color:#0c4030;
 }
-.course-card p.muted{
-  margin:0 0 10px; color:#6b7280;
-  display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow:hidden;
-}
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
 .course-card img{ aspect-ratio: 16 / 9; object-fit: cover; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
@@ -1431,9 +1426,7 @@ h3 + p, h4 + p{ margin-top: .2em; }
 
 /* 摘要：固定兩行，多的裁掉 */
 .course-card p.muted{
-  margin: 0 0 12px;
   color: #6b7280;
-  line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
