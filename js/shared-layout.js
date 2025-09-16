@@ -21,10 +21,10 @@
     <header class="site-header">
       <div class="container header-bar">
         <h1 class="site-title">
-          <div class="plain brand">
+          <a href="/web/index.html" class="plain brand">
             <img src="/web/img/logo-cute2.png" alt="HeartHub Studio Logo" class="logo" width="42" height="42">
             <span class="title-text"><span class="no-break">心聚坊</span></span>
-          </div>
+          </a>
         </h1>
 
         <button class="hamburger" id="navToggle" aria-label="主選單" aria-expanded="false" aria-controls="mobileMenu">
