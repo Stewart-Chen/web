@@ -58,7 +58,7 @@ body{
   border-bottom: 1px solid #e0e0e0;
 }
 .site-header{
-  padding: 10px 0 12px;
+  padding: 5px 0 7px;
   box-shadow: 0 2px 6px rgba(0,0,0,.05);
   border-bottom: 1px solid #e7efe7;
   margin-bottom: 14px;
@@ -505,12 +505,13 @@ body.menu-open .nav-left .dropbtn{
   background: linear-gradient(135deg, var(--accent-blue), #a7dcd7);
   color: #0c4030;
   border-radius: 999px;
-  padding: 8px 12px;
+  padding: 6px 8px;
   box-shadow: var(--shadow-sm);
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   text-decoration: none;
 }
 .btn.nav-cta:hover{
@@ -601,8 +602,8 @@ fieldset.card .actions label{
 
 /* 漢堡鍵 */
 .hamburger{
-  width: 38px;
-  height: 38px;
+  width: 35px;
+  height: 35px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(46,125,50,.18);
@@ -1002,7 +1003,7 @@ body.menu-open{ overflow: hidden; }
   text-decoration: none;
   font-weight: 600;
   letter-spacing: .2px;
-  color: var(--accent-blue);          /* 文字主色改為藍綠 */
+  color: #333;          /* 文字主色改為藍綠 */
   transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .12s ease;
 }
 
@@ -1173,10 +1174,15 @@ p.muted{ color: var(--muted); }
 #btn-more-courses{ white-space: nowrap; }
 .hidden{ display: none !important; }
 
+  #qrcode canvas, #qrcode img{
+    width: 150px !important;
+    height: 150px !important;
+  }
+
 @media (max-width: 720px){
   .container{ padding: 0 12px; }
   .site-header{
-    padding: 0px 0 0px;
+    padding: 0px 0 2px;
     margin-bottom: 12px;
     position: sticky;
     top: 0;
@@ -1214,7 +1220,6 @@ p.muted{ color: var(--muted); }
   .btn.nav-cta{
     padding: 8px 6px;
     font-size: 11px;
-    font-weight: 600;
     gap: 1px;
     line-height: 1;
   }
