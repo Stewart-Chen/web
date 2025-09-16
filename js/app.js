@@ -7,39 +7,43 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
-// ====== 首頁：載入課程 ======
+// ====== 探索課程頁：完整課程清單 ======
 async function loadCourses(){
-  const list  = document.getElementById('courses-list') || document.getElementById('courses');
+  const list  = document.getElementById('courses');
   const empty = document.getElementById('courses-empty');
   if (!list) return;
 
   const { data, error } = await sb
     .from('courses')
-    .select('id,title,summary,cover_url,created_at,teacher,category')
+    .select('id,title,summary,description,cover_url,teacher,category,created_at')
     .eq('published', true)
     .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
-  if (error) { console.error(error); return; }
+  if (error){ console.error('[all courses] load error:', error); return; }
 
   if (!data || data.length === 0){
     list.innerHTML = '';
     empty?.classList.remove('hidden');
     return;
   }
-  empty?.classList.add('hidden');
 
+  empty?.classList.add('hidden');
   list.innerHTML = data.map(c => `
-    <article class="card course-card"
-             data-category="${c.category || ''}"
-             data-teacher="${c.teacher || ''}">
-      <img src="${c.cover_url || 'https://picsum.photos/seed/'+c.id+'/640/360'}" 
-           alt="封面" 
-           style="width:100%; height:160px; object-fit:cover; border-radius:8px" />
-      <h4>${c.title}</h4>
-      <p class="muted">${c.summary ?? ''}</p>
-      <a class="btn" href="course.html?id=${c.id}">查看課程</a>
-    </article>
+    <li>
+      <article class="course-card card"
+               data-category="${c.category || ''}"
+               data-teacher="${c.teacher || ''}">
+        <img src="${c.cover_url || 'https://picsum.photos/seed/'+c.id+'/640/360'}"
+             alt="${c.title}" style="width:100%;height:160px;object-fit:cover;border-radius:8px" />
+        <div class="course-body">
+          <h3>${c.title}</h3>
+          ${c.category ? `<div class="badge">${c.category === 'horti' ? '園藝' : '藝術'}</div>` : ''}
+          <p class="muted">${c.summary ?? ''}</p>
+          <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>
+        </div>
+      </article>
+    </li>
   `).join('');
 }
 
