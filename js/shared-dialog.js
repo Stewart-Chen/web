@@ -358,13 +358,12 @@ body.modal-open{ overflow: hidden; }
   }
   wireTabs();
 
-  // === wire search modal（A) 極簡可讀版） ===
+  // === wire search modal（A) 極簡可讀版 + 欄位白名單） ===
   (function wireSearchMinimal(){
     const dlg = document.getElementById('search-modal');
     if (!dlg) return;
 
     const $ = (sel) => dlg.querySelector(sel);
-
     const form = $('#rec-form');
     const box  = $('#rec-results');
 
@@ -395,7 +394,7 @@ body.modal-open{ overflow: hidden; }
     async function runRecommend(){
       if (!form || !box) return;
 
-      // 先跑原生驗證（required/min/max）
+      // 先跑原生驗證（required / min / max）
       if (!form.checkValidity()){
         form.reportValidity();
         return;
@@ -421,10 +420,10 @@ body.modal-open{ overflow: hidden; }
         return;
       }
 
-      // 先用 * 取欄位，避免欄位名不符造成 400；之後再收斂
+      // 依你表中的實際欄位做白名單 select（避免 400）
       const { data, error } = await sb
         .from('courses')
-        .select('*')
+        .select('id,title,summary,description,cover_url,teacher,published,created_at,deleted_at,category')
         .eq('published', true)
         .is('deleted_at', null);
 
@@ -434,19 +433,37 @@ body.modal-open{ overflow: hidden; }
         return;
       }
 
-      // 超簡單打分：只比對興趣關鍵字
-      const hay = (c) => `${c.title||''} ${c.summary||''} ${c.description||''}`.toLowerCase();
+      // 打分：興趣關鍵字 + 職業類別小加權（可再調）
+      const hay = (c) => `${c.title||''} ${c.summary||''} ${c.description||''} ${c.category||''}`.toLowerCase();
+
+      const profHints = {
+        student:  ['入門','基礎','新手','學習'],
+        teacher:  ['教學','教材','課綱','帶班','親子'],
+        healthcare:['紓壓','正念','舒緩','照護'],
+        office:   ['舒壓','居家','質感','快速'],
+        retired:  ['慢活','樂齡','花草','園藝'],
+        other:    []
+      };
+
+      const profWords = profHints[(profession||'other')] || [];
+
       const scored = (data||[]).map(c=>{
-        const tags = interests.filter(k => hay(c).includes(k));
-        return { ...c, _score: tags.length, _tags: tags };
-      }).filter(c => c._score > 0)
-        .sort((a,b) => b._score - a._score)
-        .slice(0, 6);
+        const h = hay(c);
+        const tagHits = interests.filter(k => h.includes(k));
+        let score = tagHits.length * 2;
+        if (profWords.some(w => h.includes(w.toLowerCase()))) score += 1;
+        // 年齡 & 性別目前不加權（可依需求擴充）
+
+        return { ...c, _score: score, _tags: tagHits };
+      })
+      .filter(c => c._score > 0)                 // 沒命中就不顯示
+      .sort((a,b) => b._score - a._score)
+      .slice(0, 6);
 
       render(scored);
     }
 
-    // 綁定 submit/ reset
+    // 綁定 submit / reset
     form?.addEventListener('submit', (e)=>{
       e.preventDefault();
       e.stopPropagation();
@@ -456,7 +473,7 @@ body.modal-open{ overflow: hidden; }
       if (box) box.innerHTML = '';
     });
 
-    // 若頁面上有放大鏡入口 #recommend-link，點了就開 dialog（沒有也不影響）
+    // 若頁面上有入口 #recommend-link，點了就開 dialog（沒有也不影響）
     const link = document.getElementById('recommend-link');
     if (link && !link.dataset.bound){
       link.addEventListener('click', (e)=>{ e.preventDefault(); searchDlg?.showModal(); $('#age')?.focus(); }, { passive:false });
