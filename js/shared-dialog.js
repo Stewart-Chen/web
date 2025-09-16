@@ -391,78 +391,137 @@ body.modal-open{ overflow: hidden; }
       `).join('');
     }
 
+    // ——— 在檔案頂端或 runRecommend 之前放一個上限常數（可調）———
+    const MAX_RECOMMEND = 6;
+    
+    // === 直接替換原本的 runRecommend ===
     async function runRecommend(){
+      const dlg = document.getElementById('search-modal');
+      if (!dlg) return;
+    
+      const $   = (sel) => dlg.querySelector(sel);
+      const form = $('#rec-form');
+      const box  = $('#rec-results');
       if (!form || !box) return;
-
+    
+      // 清空舊結果，避免誤判「空白也有結果」
       box.innerHTML = '';
-
-      // 先跑原生驗證（required / min / max）
+    
+      // 原生驗證不通過就直接結束
       if (!form.checkValidity()){
         form.reportValidity();
         return;
       }
-
-      // 讀取表單
+    
+      // 1) 讀表單 & 去重
       const age        = parseInt($('#age')?.value || '0', 10);
       const gender     = $('#gender')?.value || 'nonbinary';
-      const interests  = parseInterests($('#interests')?.value);
+      const interests0 = ($('#interests')?.value || '')
+                          .split(/[，,]/).map(s=>s.trim()).filter(Boolean)
+                          .map(s=>s.toLowerCase());
+      const interests  = Array.from(new Set(interests0));   // ⬅ 去重
       const profession = $('#profession')?.value || '';
-
+    
       // 至少填「興趣」或選「職業」其一
       if (!interests.length && !profession){
         box.innerHTML = `<p class="muted">請至少填一個「興趣」或選擇一個「職業」再產生推薦。</p>`;
         return;
       }
-
+    
       box.innerHTML = `<div class="search-empty">產生推薦中…</div>`;
-
+    
       const sb = window.sb;
       if (!sb){
         box.innerHTML = `<p class="muted">系統尚未初始化，請稍後再試。</p>`;
         return;
       }
-
-      // 依你表中的實際欄位做白名單 select（避免 400）
+    
+      // 2) 撈資料（欄位白名單）
       const { data, error } = await sb
         .from('courses')
         .select('id,title,summary,description,cover_url,teacher,published,created_at,deleted_at,category')
         .eq('published', true)
         .is('deleted_at', null);
-
+    
       if (error){
         console.warn('[recommend] error:', error);
         box.innerHTML = `<p class="muted">讀取課程失敗：${error.message}</p>`;
         return;
       }
-
-      // 打分：興趣關鍵字 + 職業類別小加權（可再調）
-      const hay = (c) => `${c.title||''} ${c.summary||''} ${c.description||''} ${c.category||''}`.toLowerCase();
-
+    
+      // 3) 權重設定
+      // 職業關鍵詞（命中任一 +1 分）
       const profHints = {
-        student:  ['入門','基礎','新手','學習'],
-        teacher:  ['教學','教材','課綱','帶班','親子'],
+        student:   ['入門','基礎','新手','學習'],
+        teacher:   ['教學','教材','課綱','帶班','親子'],
         healthcare:['紓壓','正念','舒緩','照護'],
-        office:   ['舒壓','居家','質感','快速'],
-        retired:  ['慢活','樂齡','花草','園藝'],
-        other:    []
+        office:    ['舒壓','居家','質感','快速'],
+        retired:   ['慢活','樂齡','花草','園藝'],
+        other:     []
       };
-
-      const profWords = profHints[(profession||'other')] || [];
-
-      const scored = (data||[]).map(c=>{
-        const h = hay(c);
-        const tagHits = interests.filter(k => h.includes(k));
+      const profWords = (profHints[profession || 'other'] || []).map(s=>s.toLowerCase());
+    
+      // 年齡加權：命中任一 +1 分（可自行調整詞庫）
+      const ageHints = [];
+      if (age && age < 18) {
+        ageHints.push('入門','基礎','新手','青少年','學習');
+      } else if (age && age >= 60) {
+        ageHints.push('慢活','樂齡','花草','園藝','舒緩');
+      }
+      const ageWords = ageHints.map(s=>s.toLowerCase());
+    
+      const textOf = c => (`${c.title||''} ${c.summary||''} ${c.description||''} ${c.category||''}`).toLowerCase();
+    
+      // 4) 計分
+      let scored = (data || []).map(c=>{
+        const h = textOf(c);
+    
+        // 興趣：每命中 1 個 +2
+        const tagHits = interests.filter(k => k && h.includes(k));
         let score = tagHits.length * 2;
-        if (profWords.some(w => h.includes(w.toLowerCase()))) score += 1;
-        // 年齡 & 性別目前不加權（可依需求擴充）
-
+    
+        // 職業：命中任一 +1
+        if (profWords.length && profWords.some(w => h.includes(w))) score += 1;
+    
+        // 年齡：命中任一 +1
+        if (ageWords.length && ageWords.some(w => h.includes(w))) score += 1;
+    
         return { ...c, _score: score, _tags: tagHits };
-      })
-      .filter(c => c._score > 0)                 // 沒命中就不顯示
-      .sort((a,b) => b._score - a._score)
-      .slice(0, 6);
-
-      render(scored);
+      });
+    
+      // 5) 主要排序：分數高→低；同分用 created_at 新→舊
+      scored.sort((a,b) =>
+        (b._score - a._score) ||
+        (new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      );
+    
+      // 6) 只取正命中的前 N
+      let picked = scored.filter(c => c._score > 0).slice(0, MAX_RECOMMEND);
+    
+      // 7) 熱門 fallback：若完全沒命中，就用「最新上架」前 N 筆
+      if (picked.length === 0) {
+        picked = (data || [])
+          .sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .slice(0, MAX_RECOMMEND);
+      }
+    
+      // 8) 輸出
+      if (!picked.length){
+        box.innerHTML = `<p class="muted">目前沒有可推薦的課程，請稍後再試。</p>`;
+        return;
+      }
+    
+      box.innerHTML = picked.map(c => `
+        <article class="course-card">
+          <img src="${c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')}"
+               alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
+          <h3>${c.title}</h3>
+          <div class="course-meta">
+            ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
+          </div>
+          <div class="cta"><a href="course.html?id=${c.id}" class="btn primary">查看課程</a></div>
+        </article>
+      `).join('');
     }
 
     // 綁定 submit / reset
