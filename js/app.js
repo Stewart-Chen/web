@@ -220,7 +220,14 @@ async function loadCourse(){
 
 // ====== 頁面初始化 ======
 function initPage(){
-  if (document.getElementById('courses') || document.getElementById('courses-list')) loadCourses();
+  const listEl = document.getElementById('courses-list');
+  const isHome = !!document.getElementById('btn-more-courses'); // 有這顆按鈕就是首頁精簡版
+
+  // 首頁交給 renderHomeCourses() 處理，其他頁才用 loadCourses()
+  if (listEl && !isHome) {
+    loadCourses();
+  }
+
   if (document.getElementById('course-info')) loadCourse();
 }
 document.addEventListener('DOMContentLoaded', initPage);
