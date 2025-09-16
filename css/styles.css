@@ -533,17 +533,26 @@ h2{
   font-size: 1.25rem;
   color: #333;
   margin: 1.2em 0 .6em;
-  position:relative;
   margin:0;
   font-weight:800;
   letter-spacing:.02em;
 }
 
-h2::after{
-  content:""; position:absolute; left:0; bottom:-6px;
-  width:28px; height:3px; border-radius:2px;
-  background: var(--accent-blue, #3bb3c3); /* 依你主色 */
+.flow-md h2 {
+  position:relative;
 }
+
+.flow-md h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent-blue, #3bb3c3);
+}
+
 
 /* 讓每個題目的選項用 grid 排版，自動換行 */
 fieldset.card .actions{
