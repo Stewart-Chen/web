@@ -1462,7 +1462,7 @@ h3 + p, h4 + p{ margin-top: .2em; }
 /* ===== sticky chips bar ===== */
 .sticky-chips{
   position: sticky;
-  top: var(--header-height, 68px); /* 視你的 header 高度調整 */
+  top: var(--header-height, 75px); /* 視你的 header 高度調整 */
   z-index: 50;
   display: flex;
   gap: 10px;
@@ -1479,15 +1479,16 @@ h3 + p, h4 + p{ margin-top: .2em; }
 /* 基本 chip */
 .chip{
   flex: 0 0 auto;
-  padding: 10px 14px;
+  padding: 5px 15px;
   /* border-radius: 999px; */
   border: 1px solid rgba(59,179,195,.28);
   background: #fff;
   color: #0c4030;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
+  font-size: .9rem;
 }
 @media (hover:hover){
   .chip:hover{
