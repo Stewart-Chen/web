@@ -528,13 +528,20 @@ body.menu-open .nav-left .dropbtn{
 }
 .btn.nav-cta svg{ display: block; }
 
-/* ---- 標題元素 ---- */
 h2{
   font-size: 1.25rem;
-  font-weight: 600;
   color: #333;
-  letter-spacing: .5px;
   margin: 1.2em 0 .6em;
+  position:relative;
+  margin:0;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+
+h2::after{
+  content:""; position:absolute; left:0; bottom:-6px;
+  width:28px; height:3px; border-radius:2px;
+  background: var(--accent-blue, #3bb3c3); /* 依你主色 */
 }
 
 /* 讓每個題目的選項用 grid 排版，自動換行 */
@@ -1367,15 +1374,6 @@ p.muted{ color: var(--muted); }
   display:flex; align-items:center; justify-content:space-between; gap:12px;
   margin-bottom: 10px;
 }
-.section-head h2{
-  position:relative; margin:0; font-weight:800;
-  letter-spacing:.02em;
-}
-.section-head h2::after{
-  content:""; position:absolute; left:0; bottom:-6px;
-  width:28px; height:3px; border-radius:2px;
-  background: var(--accent-blue, #3bb3c3); /* 依你主色 */
-}
 
 /* 右上角「查看更多課程」→ 文字連結風格 */
 .link-more{
@@ -1405,3 +1403,66 @@ p.muted{ color: var(--muted); }
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
 .course-card img{ aspect-ratio: 16 / 9; object-fit: cover; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
+
+/* 讓 grid 子項可縮，不會把內容撐爆欄寬 */
+#courses-list > * { min-width: 0; }
+
+/* 卡片本身保險：所有盒子使用 border-box */
+.course-card, .course-card * { box-sizing: border-box; }
+
+/* 圖片不要多出邊界 */
+.course-card img{
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* 內文區可裁切 */
+.course-card .course-body{ 
+  padding: 12px 16px 16px; 
+  overflow: hidden; 
+}
+
+/* 標題：允許斷行 + 最多兩行 */
+.course-card h3{
+  margin: 6px 0 6px;
+  line-height: 1.35;
+  word-break: break-word;         /* 長字/英文可斷 */
+  overflow-wrap: anywhere;        /* 任何地方都可換行（中英通吃） */
+  display: -webkit-box;           /* 多行省略號 */
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 類別膠囊：太長時截斷 */
+.course-card .badge{
+  display: inline-block;
+  max-width: 100%;
+  margin: 4px 0 8px;
+  padding: 2px 10px;
+  border: 1px solid #e0f2e9;
+  border-radius: 999px;
+  font-size: .85rem;
+  background: #fff;
+  color: #0c4030;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 摘要：固定兩行，多的裁掉 */
+.course-card p.muted{
+  margin: 0 0 12px;
+  color: #6b7280;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
