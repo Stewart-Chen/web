@@ -500,20 +500,20 @@ body.modal-open{ overflow: hidden; }
         if (document.readyState === 'loading') {
           await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
         }
-        // 2) 等放大鏡被 shared-layout 插入
-        await waitFor(()=> document.getElementById('recommend-link'));
-        bindMagnifier();
-  
-        // 3) 表單在我們自己的 dialog 裡，理論上已存在；保險再等一下
+        
+        // 2) 先確保表單綁定（不要被放大鏡阻斷）
         await waitFor(()=> document.getElementById('rec-form'));
         bindForm();
-  
+        
+        // 3) 放大鏡連結若出現就綁，但找不到也不影響表單
+        waitFor(()=> document.getElementById('recommend-link'))
+          .then(()=> bindMagnifier())
+          .catch(()=> {/* ignore: 某些頁面沒有放大鏡 */});
+        
         // 萬一之後被動態更換（極少見），用 MutationObserver 保險
         const mo = new MutationObserver(()=> bindForm());
         mo.observe(document.body, { childList: true, subtree: true });
-  
-        // 若別的檔案（首頁 app.js）晚載入，render/score 仍可在第一次 submit 前載好；
-        // 我們在 runRecommendFromForm 內也會等待 sb 準備好。
+
       } catch(err){
         console.warn('[wireSearch init] ', err);
       }
