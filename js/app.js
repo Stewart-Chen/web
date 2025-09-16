@@ -225,6 +225,34 @@ function initPage(){
 }
 document.addEventListener('DOMContentLoaded', initPage);
 
+function normalizeTitle(s){
+  if (!s) return '';
+  return s.replace(/（.*?）/g,'').replace(/^[^：:]*[：:]\s*/,'').replace(/\s+/g,'').toLowerCase();
+}
+function deriveMetaFromText(course){
+  const text = `${course.title ?? ''} ${course.summary ?? ''} ${course.description ?? ''}`;
+  const has = (kw)=>text.includes(kw);
+  const tags = [
+    ...(has('室內植物')?['室內植物']:[]),
+    ...(has('多肉')?['多肉']:[]),
+    ...(has('正念')||has('冥想')?['正念']:[]),
+    ...(has('親子')||has('兒童')?['親子']:[]),
+    ...(has('設計')?['設計']:[]),
+    ...(has('長照')||has('照護')?['長照']:[]),
+    ...(has('水彩')?['水彩']:[]),
+    ...(has('油畫')?['油畫']:[]),
+    ...(has('色彩')?['色彩']:[]),
+    ...(has('藝術')?['藝術']:[]),
+    ...(has('園藝')?['園藝']:[]),
+  ];
+  let level='一般';
+  if (has('入門')||has('初階')) level='初階';
+  else if (has('中階')) level='中階';
+  else if (has('進階')) level='進階';
+  else if (has('親子')) level='親子';
+  return { tags, level };
+}
+
 // ====== 老師精選（從資料庫） ======
 const TEACHER_META = {
   fanfan: { name: '汎汎', role: '園藝治療老師' },
