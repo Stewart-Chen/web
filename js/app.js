@@ -432,3 +432,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // 若你的專案有任何「初始化完成」事件，可在這裡再跑一次保險
   // 例如：document.addEventListener('sb:ready', run);
 })();
+
+// 平滑滾動到錨點
+document.addEventListener('click', (e)=>{
+  const a = e.target.closest('.sticky-chips .chip[href^="#"]');
+  if (!a) return;
+  const id = a.getAttribute('href');
+  const target = document.querySelector(id);
+  if (!target) return;
+
+  e.preventDefault();
+  const headerH = parseInt(getComputedStyle(document.documentElement)
+                    .getPropertyValue('--header-height')) || 68;
+  const y = target.getBoundingClientRect().top + window.scrollY - (headerH + 12);
+  window.scrollTo({ top: y, behavior: 'smooth' });
+});
+
+// 觀察當前區塊，切換 .active
+(function observeSections(){
+  const chips = document.querySelectorAll('.sticky-chips .chip[href^="#"]');
+  if (!chips.length) return;
+
+  const map = new Map(); // section -> chip
+  chips.forEach(ch => {
+    const sec = document.querySelector(ch.getAttribute('href'));
+    if (sec) map.set(sec, ch);
+  });
+
+  const headerH = parseInt(getComputedStyle(document.documentElement)
+                    .getPropertyValue('--header-height')) || 68;
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(ent=>{
+      const chip = map.get(ent.target);
+      if (!chip) return;
+      if (ent.isIntersecting){
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      }
+    });
+  }, {
+    rootMargin: `-${headerH + 20}px 0px -60% 0px`, // 讓區塊進入視窗上方時就高亮
+    threshold: 0.1
+  });
+
+  map.forEach((_, sec)=> io.observe(sec));
+})();
