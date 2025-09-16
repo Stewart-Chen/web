@@ -210,7 +210,7 @@ nav .dropdown:focus-within .dropbtn{
 }
 .teacher-card .info{ display: grid; gap: 10px; }
 .teacher-card .subtitle{ color: #1b5e20; margin: 0; font-weight: 600; }
-.teacher-card .bio{ color: #555; margin: 0; }
+.teacher-card .bio{/* color: #555; *//* margin: 0; */}
 .teacher-card .badges{ display: flex; gap: 8px; flex-wrap: wrap; }
 .teacher-card .badge{
   background: #d9f2f0;
@@ -1119,7 +1119,7 @@ p{
 }
 
 /* 標題後接段落時，首段更貼近一些 */
-h3 + p, h4 + p{ margin-top: .2em; }
+h3 + p, h4 + p{margin-top: .2em;}
 
 .bottom-nav{ display: none; }
 
@@ -1368,10 +1368,14 @@ h3 + p, h4 + p{ margin-top: .2em; }
 
 /* 右上角「查看更多課程」→ 文字連結風格 */
 .link-more{
-  display:inline-flex; align-items:center; gap:6px;
-  font-weight:700; text-decoration:none;
-  color: #0c4030; /* 或 #1f2937 視主題調整 */
-  padding: 6px 8px; border-radius: 8px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-weight:700;
+  text-decoration:none;
+  /* color: #0c4030; */ /* 或 #1f2937 視主題調整 */
+  padding: 6px 8px;
+  border-radius: 8px;
 }
 .link-more .chev{ transform: translateY(-1px); }
 @media (hover:hover){
