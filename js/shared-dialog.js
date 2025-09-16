@@ -211,7 +211,7 @@ body.modal-open{ overflow: hidden; }
   // --- Search dialog（個人化課程推薦） ---
   const searchDlg = ensureDialog('search-modal', `
     <dialog id="search-modal">
-      <form id="rec-form" class="card panel" novalidate>
+      <form id="rec-form" class="card panel">
         <h3 style="margin-top:0;">個人化課程推薦</h3>
 
         <div class="form-grid" style="margin-top:10px;">
@@ -394,6 +394,8 @@ body.modal-open{ overflow: hidden; }
     async function runRecommend(){
       if (!form || !box) return;
 
+      box.innerHTML = '';
+
       // 先跑原生驗證（required / min / max）
       if (!form.checkValidity()){
         form.reportValidity();
@@ -464,11 +466,30 @@ body.modal-open{ overflow: hidden; }
     }
 
     // 綁定 submit / reset
-    form?.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
-      runRecommend();
-    });
+    if (form && !form.dataset.bound) {
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+    
+        // ⬇ 清掉既有結果，避免上一輪結果殘留造成誤會
+        if (box) box.innerHTML = '';
+    
+        // ⬇ 先跑原生驗證，不過就直接結束，不呼叫推薦
+        if (!form.checkValidity()){
+          form.reportValidity();
+          return;
+        }
+    
+        runRecommend(); // 只有驗證通過才跑
+      });
+    
+      form.addEventListener('reset', ()=>{
+        if (box) box.innerHTML = '';
+      });
+    
+      form.dataset.bound = '1'; // 防止重複綁定，避免有兩個 handler 同時跑
+    }
+
     form?.addEventListener('reset', ()=>{
       if (box) box.innerHTML = '';
     });
