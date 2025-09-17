@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>教學團隊｜HeartHub Studio 心聚坊</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 樣式與字型（全站一致） -->
+  <link rel="icon" href="img/logo.png" sizes="16x16" type="image/png">
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&family=Noto+Serif+TC:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- JS：外部/共用/應用 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/shared-layout.js"></script>
+  <script defer src="js/shared-dialog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <!-- shared-layout.js 會自動插入 header/footer -->
+
+  <main class="container flow-lg">
+    <!-- Hero -->
+    <section class="hero card hero-card">
+      <div class="hero-content">
+        <h2>教學團隊</h2>
+        <p class="muted">認識我們的園藝與藝術治療師與講師們，了解他們的專長與課程風格。</p>
+      </div>
+    </section>
+
+    <!-- 搜尋 / 標籤過濾（可選） -->
+    <section class="card">
+      <form id="teacher-filters" class="form-grid">
+        <label>
+          搜尋老師
+          <input type="search" id="q" placeholder="輸入姓名、專長、關鍵字…" />
+        </label>
+        <div class="actions" style="justify-content:flex-end; align-self:end;">
+          <button type="button" id="btn-clear" class="btn">清除</button>
+          <button type="submit" class="btn primary">搜尋</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 師資清單 -->
+    <section class="teachers flow-md">
+      <h3 class="muted" id="count">載入中…</h3>
+      <div id="teacher-grid" class="teacher-grid" aria-live="polite" aria-busy="true"></div>
+      <p id="empty" class="muted hidden">目前沒有可顯示的師資。</p>
+    </section>
+  </main>
+
+  <!-- 頁面專用腳本：載入與渲染 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const grid  = document.getElementById('teacher-grid');
+      const empty = document.getElementById('empty');
+      const count = document.getElementById('count');
+      const q     = document.getElementById('q');
+      const btnClear = document.getElementById('btn-clear');
+      const form  = document.getElementById('teacher-filters');
+
+      // 取得師資資料
+      async function fetchTeachers() {
+        try {
+          const { data, error } = await sb
+            .from('teachers')
+            .select('code, name, title, bio, avatar_url, tags')
+            .order('name', { ascending: true });
+          if (error) throw error;
+          return data || [];
+        } catch (err) {
+          console.error(err);
+          return [];
+        }
+      }
+
+      // 產生卡片
+      function renderCard(t) {
+        const div = document.createElement('div');
+        div.className = 'teacher-card';
+
+        // Avatar：有圖片就用圖片，否則用首字
+        let avatarHTML = '';
+        if (t.avatar_url) {
+          avatarHTML = `<div class="avatar" style="overflow:hidden;">
+              <img src="${t.avatar_url}" alt="${t.name} 的照片" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+            </div>`;
+        } else {
+          const initial = (t.name || '?').trim().charAt(0);
+          avatarHTML = `<div class="avatar" aria-hidden="true">${initial}</div>`;
+        }
+
+        // 標籤
+        const tags = Array.isArray(t.tags) ? t.tags : [];
+        const badges = tags.map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('');
+
+        div.innerHTML = `
+          ${avatarHTML}
+          <div class="info">
+            <h4 class="subtitle">${escapeHtml(t.name || '')}</h4>
+            <p class="bio muted">${escapeHtml(t.title || '')}</p>
+            <p class="bio">${escapeHtml(t.bio || '')}</p>
+            <div class="badges">${badges}</div>
+            <div class="cta">
+              <a class="btn secondary" href="courses.html#courses">看看相關課程</a>
+            </div>
+          </div>
+        `;
+        return div;
+      }
+
+      function escapeHtml(s){
+        return String(s || '').replace(/[&<>"']/g, m => ({
+          '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        })[m]);
+      }
+
+      // 渲染整個列表
+      function renderList(list){
+        grid.innerHTML = '';
+        if (!list.length) {
+          empty.classList.remove('hidden');
+          count.textContent = '0 位師資';
+          grid.setAttribute('aria-busy', 'false');
+          return;
+        }
+        empty.classList.add('hidden');
+        list.forEach(t => grid.appendChild(renderCard(t)));
+        count.textContent = `${list.length} 位師資`;
+        grid.setAttribute('aria-busy', 'false');
+      }
+
+      // 初次載入
+      const ALL = await fetchTeachers();
+      renderList(ALL);
+
+      // 關鍵字過濾（姓名 / title / bio / tags）
+      function filterNow(){
+        const keyword = (q.value || '').trim().toLowerCase();
+        if (!keyword) return renderList(ALL);
+        const filtered = ALL.filter(t => {
+          const hay = [
+            t.name, t.title, t.bio,
+            ...(Array.isArray(t.tags) ? t.tags : [])
+          ].join(' ').toLowerCase();
+          return hay.includes(keyword);
+        });
+        renderList(filtered);
+      }
+
+      form?.addEventListener('submit', e => { e.preventDefault(); filterNow(); });
+      btnClear?.addEventListener('click', () => { q.value=''; filterNow(); });
+    });
+  </script>
+</body>
+</html>
+
