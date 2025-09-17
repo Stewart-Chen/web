@@ -36,7 +36,7 @@
             <a href="/web/index.html">首頁</a>
             <a href="/web/courses.html">探索課程</a>
             <a href="/web/teachers.html">教學團隊</a>
-            <a href="/web/teachers.html">療癒商城</a>
+            <a href="/web/store.html">療癒商城</a>
             <div class="dropdown">
               <a href="#" class="dropbtn">線上服務</a>
               <div class="dropdown-content">
@@ -80,7 +80,7 @@
         <a href="/web/index.html">首頁</a>
         <a href="/web/courses.html">探索課程</a>
         <a href="/web/teachers.html">教學團隊</a>
-        <a href="/web/teachers.html">療癒商城</a>
+        <a href="/web/store.html">療癒商城</a>
         <div class="group">
           <span class="group-title">線上服務</span>
           <a href="/web/one-minute.html" class="sub">心聚1分鐘</a>
@@ -149,7 +149,7 @@
       <span class="label">老師</span>
     </a>
   
-    <a class="nav-item" href="/web/teachers.html" data-name="shop">
+    <a class="nav-item" href="/web/store.html" data-name="shop">
       <span class="icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="9" cy="21" r="1"/>
