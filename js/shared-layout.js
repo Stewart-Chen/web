@@ -197,7 +197,7 @@
         if (name === 'home')     return isHome();
         if (name === 'courses')  return /\/web\/courses\.html$/.test(path);
         if (name === 'teachers') return /\/web\/teachers\.html$/.test(path);
-        if (name === 'shop')     return /\/web\/shop\.html$/.test(path) || /\/web\/teachers\.html$/.test(path); // 目前你暫時指到 teachers
+        if (name === 'shop')     return /\/web\/store\.html$/.test(path);
         if (name === 'minute')   return /\/web\/one-minute\.html$/.test(path);
         return false;
       }
