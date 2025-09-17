@@ -87,30 +87,6 @@ fieldset.group{
   margin: 16mm;
 }
 
-/* 只在列印時生效 */
-@media print {
-  /* 隱藏不必要的 UI */
-  .pill-group,
-  #toggle-ids,
-  #id-section,
-  .dock,
-  #btn-fill-3,
-  #btn-print,
-  .progress { display: none !important; }
-
-  /* 卡片陰影去掉，顏色更乾淨 */
-  .card {
-    box-shadow: none !important;
-    border: 1px solid #ddd !important;
-  }
-
-  /* 讓字再清楚一點 */
-  body { color: #000; }
-  .muted { color: #333; }
-
-  /* 避免頁尾被切開 */
-  .group, .card { page-break-inside: avoid; }
-}
 .legend.flex-between {
   display: flex;
   align-items: center;
@@ -120,4 +96,53 @@ fieldset.group{
   display: flex;
   align-items: center;
   gap: 10px; /* 按鈕間距 */
+}
+/* 只列印 one-minute 表單 + 放大 textarea */
+@media print {
+  /* 1) 把不是題目的區塊拿掉（不佔位） */
+  header, nav, .site-header, .hero, .breadcrumbs,
+  .actions, .control-panel, .bottom-nav, footer {
+    display: none !important;
+  }
+
+  /* 2) 讓主要容器回到全寬、移除陰影邊框，避免擠版 */
+  main, .container, .page, .card {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  /* 3) 保留並正常排版表單（可多頁） */
+  #one-minute-form {
+    position: static !important;   /* 不要 fixed，才能跨頁 */
+    margin: 0 !important;
+    padding: 0 !important;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  /* 4) 避免每一題被切半（你的題目卡片/區塊 class 自行替換） */
+  .question, .question-card, .form-group {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 12px;
+  }
+  #ctrl-title,
+  .dock,
+  .card.flow-sm {
+    display: none !important;
+  }
+
+  /* 5) 列印時把 textarea 放大，方便手寫/填寫 */
+  textarea {
+    min-height: 35mm !important;   /* 你可以改成 70–90mm */
+    height: 35mm !important;
+    line-height: 1.4;
+  }
+
+  /* 6) A4 版面 */
+  @page { size: A4; margin: 14mm; }
 }
