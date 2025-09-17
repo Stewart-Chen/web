@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleBtn.addEventListener('click', () => {
     isShown = !isShown;
     idSection.style.display = isShown ? 'block' : 'none';
-    toggleBtn.textContent = isShown ? '隱藏ID' : '顯示ID';
+    toggleBtn.textContent = isShown ? '隱藏 ID' : '顯示 ID';
     toggleBtn.classList.toggle('primary', !isShown);
   });
   
