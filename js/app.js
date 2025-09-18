@@ -604,3 +604,52 @@ async function bindCourseGalleryUploader(course){
     }
   });
 }
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('#btn-add-photo');
+  if (!btn) return;
+
+  if (typeof window.requireAuthOrOpenModal === 'function') {
+    if (!window.requireAuthOrOpenModal()) return;
+  } else if (!getUser()) {
+    alert('請先登入才能上傳課程照片'); return;
+  }
+
+  const id = Number(new URLSearchParams(location.search).get('id'));
+  if (!id) { alert('找不到課程 ID'); return; }
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.multiple = true;
+
+  input.onchange = async () => {
+    const files = Array.from(input.files || []);
+    if (!files.length) return;
+
+    try{
+      btn.disabled = true;
+      btn.textContent = '上傳中…';
+
+      const { data: course, error } = await sb.from('courses').select('gallery').eq('id', id).maybeSingle();
+      if (error) throw error;
+
+      const newPaths = await uploadImagesToBucket(files, { courseId: id });
+      const old = Array.isArray(course?.gallery) ? course.gallery : [];
+      const next = [...old, ...newPaths];
+
+      const { error: upErr } = await sb.from('courses').update({ gallery: next }).eq('id', id);
+      if (upErr) throw upErr;
+
+      alert('已新增圖片！');
+      location.reload();
+    } catch(err){
+      console.error('[gallery] add failed:', err);
+      alert('上傳失敗：' + (err?.message || '未知錯誤'));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '新增課程照片';
+    }
+  };
+
+  input.click();
+});
