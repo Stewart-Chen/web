@@ -76,6 +76,9 @@ async function loadCourse(){
 
   if (error) { console.error(error); return; }
   if (!course) { if (titleEl) titleEl.textContent = '找不到課程或尚未發佈'; return; }
+
+  bindCourseGalleryUploader(course);
+  
   if (titleEl) titleEl.textContent = course.title;
   if (descEl)  descEl.textContent  = course.description ?? course.summary ?? '';
 
@@ -515,5 +518,90 @@ async function toSignedUrls(bucket, paths = [], expires = 60 * 60) { // 1hr
     sb.storage.from(bucket).createSignedUrl(p, expires)
   ));
   return results.map(r => r.data?.signedUrl).filter(Boolean);
+}
+
+// 產生乾淨、穩定的檔名（避免中文/空白）
+function slugifyName(name){
+  return (name || 'image')
+    .toLowerCase()
+    .replace(/\s+/g,'-')
+    .replace(/[^a-z0-9._-]/g,'');
+}
+
+// 上傳到 Storage 並回傳「路徑」（供 gallery 存）
+async function uploadImagesToBucket(files = [], { courseId }){
+  if (!files.length) return [];
+
+  const folder = `courses/${courseId}`;
+  const uploadedPaths = [];
+
+  for (const f of files){
+    if (!f.type.startsWith('image/')) continue;           // 只收圖片
+    if (f.size > 10 * 1024 * 1024) {                      // 10MB 範例
+      console.warn('skip large file:', f.name);
+      continue;
+    }
+    const ext = f.name.split('.').pop() || 'png';
+    const base = slugifyName(f.name.replace(/\.[^.]+$/, '')) || 'image';
+    const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-${base}.${ext}`;
+
+    const { error } = await sb.storage
+      .from('course-gallery')
+      .upload(path, f, { cacheControl: '3600', upsert: false });
+
+    if (error){
+      console.error('[upload] failed:', f.name, error);
+      throw error;
+    }
+    uploadedPaths.push(path);
+  }
+  return uploadedPaths;
+}
+
+// 觸發 UI：選檔 → 上傳 → 回寫 courses.gallery
+async function bindCourseGalleryUploader(course){
+  const btn  = document.getElementById('btn-add-photo');
+  const input = document.getElementById('file-input');
+  if (!btn || !input) return;
+
+  btn.addEventListener('click', ()=>{
+    if (!window.requireAuthOrOpenModal?.()) return; // 沒登入就跳登入
+    input.click();
+  });
+
+  input.addEventListener('change', async ()=>{
+    const files = Array.from(input.files || []);
+    if (!files.length) return;
+
+    try{
+      btn.disabled = true;
+      btn.textContent = '上傳中…';
+
+      // 1) 上傳到 Storage
+      const newPaths = await uploadImagesToBucket(files, { courseId: course.id });
+
+      // 2) 回寫 courses.gallery（把舊的 + 新的合併）
+      const oldGallery = Array.isArray(course.gallery) ? course.gallery : [];
+      const nextGallery = [...oldGallery, ...newPaths];
+
+      const { error: upErr } = await sb
+        .from('courses')
+        .update({ gallery: nextGallery })
+        .eq('id', course.id);
+
+      if (upErr) throw upErr;
+
+      // 3) UI：刷新當前頁面或只刷新輪播圖片
+      alert('已新增圖片！');
+      location.reload(); // 簡單粗暴；要無刷新也可以把 DOM 的輪播改成 nextGallery
+    }catch(err){
+      console.error('[gallery] add failed:', err);
+      alert('上傳失敗：' + (err?.message || '未知錯誤'));
+    }finally{
+      btn.disabled = false;
+      btn.textContent = '新增課程照片';
+      input.value = '';
+    }
+  });
 }
 
