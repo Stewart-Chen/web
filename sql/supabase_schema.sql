@@ -216,6 +216,22 @@ set category = case
 end
 where category is null;
 
+-- 3-4) 補上 gallery 欄位（可重複執行）
+do $$
+begin
+  if not exists (
+    select 1
+    from information_schema.columns
+    where table_schema='public'
+      and table_name='courses'
+      and column_name='gallery'
+  ) then
+    alter table public.courses
+      add column gallery jsonb default '[]'::jsonb;
+  end if;
+end
+$$;
+
 -- ---------- 4) 先回填/種子 teachers，再建立 FK ----------
 -- 4-1) 種子師資（避免 FK 失敗；與 courses 取用一致）
 insert into public.teachers (code, name, title)
