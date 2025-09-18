@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3) 撈資料（同時取 count 判斷是否顯示“查看更多”）
     const { data, error, count } = await sb
       .from('courses')
-      .select('id,title,summary,description,cover_url,category,created_at', { count: 'exact' })
+      .select('id,title,summary,description,cover_url,gallery,category,created_at', { count: 'exact' })
       .eq('published', true)
       .is('deleted_at', null)
       .order('created_at', { ascending: false })
@@ -397,12 +397,37 @@ document.addEventListener('DOMContentLoaded', () => {
       life:  '生活',
     };
 
+    // 取資料後、render 前：
+    for (const c of data) {
+      const paths = Array.isArray(c.gallery) ? c.gallery : [];
+      c._galleryUrls = paths.length
+        ? await toSignedUrls('course-gallery', paths, 60 * 60) // 1hr
+        : [];
+    }
+
     listEl.innerHTML = items.map(c => {
       const cat = c.category ? (CATEGORY_LABELS[c.category] || c.category) : '';
+      const imgs = (c._galleryUrls && c._galleryUrls.length)
+        ? c._galleryUrls
+        : [c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')];
+      
       return `
         <article class="course-card card">
-          <img src="${c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')}"
-               alt="${c.title}">
+          <div class="carousel" data-total="${imgs.length}">
+            <div class="track">
+              ${imgs.map((url, i) => `
+                <div class="slide">
+                  <img src="${url}" alt="${c.title} ${i+1}">
+                </div>
+              `).join('')}
+            </div>
+            ${imgs.length > 1 ? `
+              <button class="nav prev" aria-label="上一張">&#10094;</button>
+              <button class="nav next" aria-label="下一張">&#10095;</button>
+              <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
+            ` : ''}
+          </div>
+      
           <div class="course-body">
             <h3>${c.title}</h3>
             ${cat ? `<div class="badge">${cat}</div>` : ''}
@@ -411,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </article>
       `;
+
     }).join('');
 
     // 4) 是否顯示「查看更多」
@@ -482,3 +508,12 @@ document.addEventListener('click', (e)=>{
 
   map.forEach((_, sec)=> io.observe(sec));
 })();
+
+async function toSignedUrls(bucket, paths = [], expires = 60 * 60) { // 1hr
+  if (!paths.length) return [];
+  const results = await Promise.all(paths.map(p =>
+    sb.storage.from(bucket).createSignedUrl(p, expires)
+  ));
+  return results.map(r => r.data?.signedUrl).filter(Boolean);
+}
+
