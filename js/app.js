@@ -560,12 +560,19 @@ async function uploadImagesToBucket(files = [], { courseId }){
 
 // 觸發 UI：選檔 → 上傳 → 回寫 courses.gallery
 async function bindCourseGalleryUploader(course){
-  const btn  = document.getElementById('btn-add-photo');
-  const input = document.getElementById('file-input');
-  if (!btn || !input) return;
+  // 等到兩個元素都可取得
+  const btn = await waitFor(() => document.getElementById('btn-add-photo'));
+  const input = await waitFor(() => document.getElementById('file-input'));
+
+  if (btn.dataset.bound) return; // 避免重複綁定
+  btn.dataset.bound = '1';
 
   btn.addEventListener('click', ()=>{
-    if (!window.requireAuthOrOpenModal?.()) return; // 沒登入就跳登入
+    if (typeof window.requireAuthOrOpenModal === 'function') {
+      if (!window.requireAuthOrOpenModal()) return;
+    } else if (!getUser()) {
+      alert('請先登入才能上傳課程照片'); return;
+    }
     input.click();
   });
 
@@ -577,23 +584,16 @@ async function bindCourseGalleryUploader(course){
       btn.disabled = true;
       btn.textContent = '上傳中…';
 
-      // 1) 上傳到 Storage
       const newPaths = await uploadImagesToBucket(files, { courseId: course.id });
-
-      // 2) 回寫 courses.gallery（把舊的 + 新的合併）
       const oldGallery = Array.isArray(course.gallery) ? course.gallery : [];
       const nextGallery = [...oldGallery, ...newPaths];
 
       const { error: upErr } = await sb
-        .from('courses')
-        .update({ gallery: nextGallery })
-        .eq('id', course.id);
-
+        .from('courses').update({ gallery: nextGallery }).eq('id', course.id);
       if (upErr) throw upErr;
 
-      // 3) UI：刷新當前頁面或只刷新輪播圖片
       alert('已新增圖片！');
-      location.reload(); // 簡單粗暴；要無刷新也可以把 DOM 的輪播改成 nextGallery
+      location.reload();
     }catch(err){
       console.error('[gallery] add failed:', err);
       alert('上傳失敗：' + (err?.message || '未知錯誤'));
@@ -604,4 +604,3 @@ async function bindCourseGalleryUploader(course){
     }
   });
 }
-
