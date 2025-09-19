@@ -571,7 +571,7 @@ body.modal-open{ overflow: hidden; }
       
       // 啟用輪播
       ensureCarousels(box);
-
+    }
 
     // 綁定 submit / reset
     if (form && !form.dataset.bound) {
