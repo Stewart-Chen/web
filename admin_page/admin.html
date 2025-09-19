@@ -44,7 +44,24 @@
             <label>標題 <input id="ac-title" required /></label>
             <label>摘要 <input id="ac-summary" /></label>
             <label>描述 <textarea id="ac-desc" rows="4"></textarea></label>
-            <label>封面網址 <input id="ac-cover" placeholder="https://..." /></label>
+            
+            <!-- 圖片上傳到 gallery（取代原 ac-cover 輸入） -->
+            <section class="card" style="margin-top:12px;">
+              <h4 style="margin:0 0 8px;">課程圖片（Gallery）</h4>
+              <p class="muted" style="margin:4px 0 10px;">
+                可一次選多張，上傳後會存到 Storage bucket：<code>course-gallery</code>（路徑：<code>courseId/檔名</code>）。
+              </p>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <input id="ac-gallery-files" type="file" accept="image/*" multiple />
+                <button id="ac-upload-btn" type="button" class="btn">上傳選取檔案</button>
+                <button id="ac-refresh-gallery" type="button" class="btn subtle">重新整理清單</button>
+              </div>
+            
+              <div id="ac-gallery" class="grid" style="margin-top:10px; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:10px;">
+                <!-- 這裡會由 admin.js 動態插入縮圖 -->
+              </div>
+            </section>
+
             <label>授課老師
               <select id="ac-teacher" required>
                 <option value="">— 選擇 —</option>
