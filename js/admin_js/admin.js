@@ -24,6 +24,96 @@
     return !!data && !error;
   }
 
+    // === GALLERY HELPERS ===
+  const GALLERY_BUCKET = 'course-gallery';
+
+  function safeName(name='img'){
+    const ext = (name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+    const base = name.replace(/\.[^/.]+$/, '').replace(/[^a-z0-9_-]+/gi,'-').slice(0,40) || 'img';
+    return `${base}-${Date.now()}.${ext}`;
+  }
+
+  async function uploadFilesToGallery(courseId, fileList){
+    if (!courseId) throw new Error('請先建立課程再上傳圖片');
+    const files = Array.from(fileList || []);
+    if (!files.length) return [];
+
+    const storage = sb.storage.from(GALLERY_BUCKET);
+    const results = [];
+
+    for (const f of files){
+      const path = `${courseId}/${safeName(f.name)}`;
+      const { error } = await storage.upload(path, f, { upsert: false, cacheControl: '3600' });
+      if (error) throw error;
+      results.push(path);
+    }
+    return results; // 回傳的是「storage 路徑陣列」
+  }
+
+  async function getPublicUrls(paths=[]){
+    if (!paths.length) return [];
+    const storage = sb.storage.from(GALLERY_BUCKET);
+    return paths.map(p => storage.getPublicUrl(p).data.publicUrl).filter(Boolean);
+  }
+
+  async function loadCourseGallery(courseId){
+    const { data, error } = await sb.from('courses').select('gallery').eq('id', courseId).maybeSingle();
+    if (error) throw error;
+    return Array.isArray(data?.gallery) ? data.gallery : [];
+  }
+
+  async function saveCourseGallery(courseId, paths){
+    // 覆寫 courses.gallery
+    const { error } = await sb.from('courses').update({ gallery: paths }).eq('id', courseId);
+    if (error) throw error;
+  }
+
+  async function removeOneFromGallery(courseId, path){
+    const list = await loadCourseGallery(courseId);
+    const next = list.filter(p => p !== path);
+    await saveCourseGallery(courseId, next);
+    // 同步刪 Storage 檔案（非必要，可視權限決定）
+    try {
+      await sb.storage.from(GALLERY_BUCKET).remove([path]);
+    } catch {}
+    return next;
+  }
+
+  async function renderGalleryPreview(courseId){
+    const box = document.getElementById('ac-gallery');
+    if (!box || !courseId) return;
+    const paths = await loadCourseGallery(courseId);
+    const urls  = await getPublicUrls(paths);
+
+    box.innerHTML = urls.map((url, i) => {
+      const path = paths[i];
+      return `
+        <figure class="card" style="position:relative; overflow:hidden;">
+          <img src="${url}" alt="gallery ${i+1}" style="display:block;width:100%;height:120px;object-fit:cover;">
+          <figcaption class="muted" style="font-size:12px; padding:6px;">${path.split('/').pop()}</figcaption>
+          <button type="button" class="btn subtle" data-del="${path}" style="position:absolute; top:6px; right:6px;">刪除</button>
+        </figure>
+      `;
+    }).join('');
+
+    // 綁刪除
+    box.querySelectorAll('[data-del]').forEach(btn=>{
+      btn.addEventListener('click', async (e)=>{
+        const path = e.currentTarget.getAttribute('data-del');
+        if (!confirm('刪除此圖片？')) return;
+        try{
+          const next = await removeOneFromGallery(courseId, path);
+          await renderGalleryPreview(courseId);
+          alert('已刪除');
+        }catch(err){
+          console.error(err);
+          alert('刪除失敗：' + (err?.message || err));
+        }
+      });
+    });
+  }
+
+  
   // ===== 課程清單 =====
   async function adminRefresh() {
     const wrap = document.getElementById('admin-courses');
@@ -59,9 +149,11 @@
         const id = Number(e.currentTarget.closest('.item').dataset.id);
         const { data: one } = await sb.from('courses').select('*').eq('id', id).maybeSingle();
         adminFillCourseForm(one);
+        adminRenderGallerySection(one);     // ← 新增：渲染 gallery 預覽
         await adminLoadLessons(one?.id);
       });
     });
+
   }
 
   // ===== 表單填入 =====
@@ -78,6 +170,16 @@
     const hd = document.getElementById('admin-hard-delete');
     if (sd) sd.disabled = !c?.id;
     if (hd) hd.disabled = !c?.id;
+  }
+
+  // 呼叫預覽（在 adminFillCourseForm 執行完後執行）
+  function adminRenderGallerySection(c){
+    const id = Number(c?.id || document.getElementById('ac-id')?.value || 0);
+    if (id) renderGalleryPreview(id);
+    else {
+      const box = document.getElementById('ac-gallery');
+      if (box) box.innerHTML = '<p class="muted">尚未建立課程，請先填資料按「儲存」建立後再上傳圖片。</p>';
+    }
   }
 
   // ===== 單元清單 =====
@@ -137,11 +239,18 @@
         if (error) throw error;
         alert('課程已更新');
       } else {
-        const { error } = await sb.from('courses').insert([payload]);
+        const { data, error } = await sb.from('courses').insert([payload]).select('id').maybeSingle();
         if (error) throw error;
+        // 取新 id 並放回表單
+        const newId = data?.id;
+        document.getElementById('ac-id').value = newId || '';
         alert('課程已建立');
       }
       await adminRefresh();
+      // 新增：更新右側 gallery 預覽
+      const cid = Number(document.getElementById('ac-id').value || 0);
+      if (cid) adminRenderGallerySection({ id: cid });
+      
     } catch (err) {
       console.error('saveCourse error:', err);
       alert('儲存失敗：' + (err?.message || err));
@@ -236,8 +345,44 @@
     adminFillCourseForm(null);
     const ls = document.getElementById('admin-lessons');
     if (ls) ls.innerHTML = '<p class="muted">尚無單元。</p>';
+    const box = document.getElementById('ac-gallery');
+    if (box) box.innerHTML = '<p class="muted">尚未建立課程，請先儲存後再上傳圖片。</p>';
   });
 
+
+  // === Gallery 上傳/刷新 ===
+  const uploadBtn = document.getElementById('ac-upload-btn');
+  const refreshBtn = document.getElementById('ac-refresh-gallery');
+  const fileInput = document.getElementById('ac-gallery-files');
+
+  uploadBtn?.addEventListener('click', async ()=>{
+    if (!await isAdmin()) return alert('只有管理者可以操作');
+    const courseId = Number(document.getElementById('ac-id').value || 0);
+    if (!courseId) return alert('請先「儲存」建立課程後再上傳圖片');
+    const files = fileInput?.files;
+    if (!files || !files.length) return alert('請先選擇要上傳的圖片');
+
+    try{
+      const paths = await uploadFilesToGallery(courseId, files);
+      const old   = await loadCourseGallery(courseId);
+      const next  = Array.from(new Set([ ...old, ...paths ])); // 合併去重
+      await saveCourseGallery(courseId, next);
+      await renderGalleryPreview(courseId);
+      fileInput.value = '';
+      alert('上傳完成');
+    }catch(err){
+      console.error(err);
+      alert('上傳失敗：' + (err?.message || err));
+    }
+  });
+
+  refreshBtn?.addEventListener('click', async ()=>{
+    const courseId = Number(document.getElementById('ac-id').value || 0);
+    if (!courseId) return;
+    await renderGalleryPreview(courseId);
+  });
+
+  
   // 進入頁面 → 先刷新一次列表
   window.addEventListener('DOMContentLoaded', adminRefresh);
 })();
