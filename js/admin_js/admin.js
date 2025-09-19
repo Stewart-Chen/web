@@ -123,7 +123,7 @@
   
     let dragEl = null;
   
-    // === 桌機版：原本的 drag & drop ===
+    // === 桌機版：原生 DnD ===
     box.querySelectorAll('figure.thumb').forEach(fig => {
       fig.setAttribute('draggable', 'true');
   
@@ -145,18 +145,19 @@
       });
     });
   
-    // === 手機版：用 touch 事件模擬 ===
-    let touchStartY = 0;
+    // === 手機版：Touch 模擬 ===
+    let startY = 0;
   
     box.querySelectorAll('figure.thumb').forEach(fig => {
       fig.addEventListener('touchstart', e => {
         dragEl = fig;
-        touchStartY = e.touches[0].clientY;
+        startY = e.touches[0].clientY;
         fig.classList.add('dragging');
       }, { passive:true });
   
       fig.addEventListener('touchmove', e => {
         if (!dragEl) return;
+        e.preventDefault(); // 🚫 禁止畫面滑動
         const y = e.touches[0].clientY;
         const target = document.elementFromPoint(e.touches[0].clientX, y)?.closest('figure.thumb');
         if (target && target !== dragEl && box.contains(target)) {
@@ -164,7 +165,7 @@
           const next = (y - rect.top) / rect.height > 0.5;
           box.insertBefore(dragEl, next ? target.nextSibling : target);
         }
-      }, { passive:true });
+      }, { passive:false });
   
       fig.addEventListener('touchend', () => {
         if (dragEl) dragEl.classList.remove('dragging');
@@ -172,7 +173,7 @@
       });
     });
   
-    // === 把更新 DB 的部分抽成函式 ===
+    // === 更新資料庫 ===
     function finishReorder(courseId, box){
       if (!dragEl) return;
       dragEl.classList.remove('dragging');
@@ -186,7 +187,6 @@
       });
     }
   }
-
 
   
   // ===== 課程清單 =====
