@@ -554,8 +554,8 @@ body.modal-open{ overflow: hidden; }
               `).join('')}
             </div>
             ${imgs.length > 1 ? `
-              <button class="nav prev" aria-label="上一張">&#10094;</button>
-              <button class="nav next" aria-label="下一張">&#10095;</button>
+              <button type="button" class="nav prev" aria-label="上一張">&#10094;</button>
+              <button type="button" class="nav next" aria-label="下一張">&#10095;</button>
               <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
             ` : ``}
           </div>
