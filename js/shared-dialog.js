@@ -311,8 +311,6 @@ body.modal-open{ overflow: hidden; }
   const authDlg = document.getElementById('auth-modal') || ensureDialog('auth-modal', `
     <dialog id="auth-modal">
       <div class="card panel">
-        <button type="button" class="close-btn" aria-label="關閉"
-                onclick="document.getElementById('auth-modal').close()">×</button>
         <div class="auth-tabs" role="tablist" aria-label="登入/註冊切換">
           <button id="tab-login"  class="auth-tab" role="tab" aria-selected="true"  aria-controls="view-login">登入</button>
           <button id="tab-signup" class="auth-tab" role="tab" aria-selected="false" aria-controls="view-signup">註冊</button>
@@ -359,8 +357,6 @@ body.modal-open{ overflow: hidden; }
   const enrollDlg = ensureDialog('enroll-dialog', `
     <dialog id="enroll-dialog">
       <form id="enroll-form" class="card panel" method="dialog">
-        <button type="button" class="close-btn" aria-label="關閉"
-                onclick="document.getElementById('enroll-dialog').close()">×</button>
         <h3 style="margin-top:0;">課程報名資訊</h3>
         <p class="muted" style="margin-top:-6px;">請填寫聯絡資訊以完成報名</p>
         <div class="form-grid" style="margin-top:10px;">
