@@ -1506,3 +1506,56 @@ h3 + p, h4 + p{margin-top: .2em;}
 #courses li {
   list-style: none;
 }
+/* === 課程卡片：IG 風格輪播 === */
+.course-card .carousel {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.course-card .carousel .track {
+  display: flex;
+  width: 100%;
+  transition: transform .3s ease;
+}
+
+.course-card .carousel .slide {
+  min-width: 100%;
+  user-select: none;
+}
+
+.course-card .carousel .slide img {
+  display: block;
+  width: 100%;
+  height: 200px;         /* 你可依頁面調整高度 */
+  object-fit: cover;
+}
+
+.course-card .carousel .nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(0,0,0,.35);
+  color: #fff;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.course-card .carousel .nav.prev { left: 8px; }
+.course-card .carousel .nav.next { right: 8px; }
+
+.course-card .carousel .indicator {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: rgba(0,0,0,.45);
+  color: #fff;
+}
