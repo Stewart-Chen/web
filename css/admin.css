@@ -77,7 +77,7 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
 #teacher-list { max-height: 360px; overflow: auto; }
 
 /* RWD：手機單欄 */
-@media (max-width: 900px) {
+@media (max-width: 760px) {
   .admin-wrap { grid-template-columns: 1fr; }
 }
 
