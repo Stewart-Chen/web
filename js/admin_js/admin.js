@@ -354,6 +354,20 @@
   const uploadBtn = document.getElementById('ac-upload-btn');
   const refreshBtn = document.getElementById('ac-refresh-gallery');
   const fileInput = document.getElementById('ac-gallery-files');
+  const selectBtn  = document.getElementById('ac-select-files');
+  const uploadBtn  = document.getElementById('ac-upload-btn');
+  
+  selectBtn?.addEventListener('click', () => {
+    // 這裡是使用者直接點擊事件，所以瀏覽器允許彈出選檔
+    fileInput.click();
+  });
+  
+  uploadBtn?.addEventListener('click', async () => {
+    const files = fileInput?.files;
+    if (!files || !files.length) return alert('請先選擇要上傳的圖片');
+    // 這裡接上原本的上傳流程
+  });
+
 
   uploadBtn?.addEventListener('click', async ()=>{
     if (!await isAdmin()) return alert('只有管理者可以操作');
