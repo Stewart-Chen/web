@@ -129,6 +129,21 @@ dialog .actions .btn.secondary{
 dialog .actions .btn.secondary:hover{
   background: rgba(167,220,215,.16);
 }
+/* Dialog 右上角關閉 X */
+dialog .close-btn{
+  position:absolute;
+  top:8px;
+  right:10px;
+  background:none;
+  border:none;
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  color:#666;
+}
+dialog .close-btn:hover{
+  color:#000;
+}
 
 /* Admin 視窗寬度 */
 #admin-panel{ width: min(980px, 95vw); max-width: 95vw; }
@@ -247,6 +262,8 @@ body.modal-open{ overflow: hidden; }
   const searchDlg = ensureDialog('search-modal', `
     <dialog id="search-modal">
       <form id="rec-form" class="card panel">
+        <button type="button" class="close-btn" aria-label="關閉"
+                onclick="document.getElementById('search-modal').close()">×</button>
         <h3 style="margin-top:0;">個人化課程推薦</h3>
 
         <div class="form-grid" style="margin-top:10px;">
@@ -294,6 +311,8 @@ body.modal-open{ overflow: hidden; }
   const authDlg = document.getElementById('auth-modal') || ensureDialog('auth-modal', `
     <dialog id="auth-modal">
       <div class="card panel">
+        <button type="button" class="close-btn" aria-label="關閉"
+                onclick="document.getElementById('auth-modal').close()">×</button>
         <div class="auth-tabs" role="tablist" aria-label="登入/註冊切換">
           <button id="tab-login"  class="auth-tab" role="tab" aria-selected="true"  aria-controls="view-login">登入</button>
           <button id="tab-signup" class="auth-tab" role="tab" aria-selected="false" aria-controls="view-signup">註冊</button>
@@ -340,6 +359,8 @@ body.modal-open{ overflow: hidden; }
   const enrollDlg = ensureDialog('enroll-dialog', `
     <dialog id="enroll-dialog">
       <form id="enroll-form" class="card panel" method="dialog">
+        <button type="button" class="close-btn" aria-label="關閉"
+                onclick="document.getElementById('enroll-dialog').close()">×</button>
         <h3 style="margin-top:0;">課程報名資訊</h3>
         <p class="muted" style="margin-top:-6px;">請填寫聯絡資訊以完成報名</p>
         <div class="form-grid" style="margin-top:10px;">
