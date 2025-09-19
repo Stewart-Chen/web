@@ -74,6 +74,7 @@ dialog form.card .actions{
   margin: 2px 0 12px;
   background: linear-gradient(180deg, rgba(59,179,195,.06), rgba(167,220,215,.06));
   border:1px solid rgba(59,179,195,.18);
+  margin-top: 28px;
 }
 .auth-tab{
   flex:1; text-align:center;
@@ -132,8 +133,8 @@ dialog .actions .btn.secondary:hover{
 /* Dialog 右上角關閉 X */
 dialog .close-btn{
   position:absolute;
-  top:8px;
-  right:10px;
+  top:6px;
+  right:8px;
   background:none;
   border:none;
   font-size:22px;
