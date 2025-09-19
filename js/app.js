@@ -256,12 +256,11 @@ async function loadCourse(){
 
 // ====== 頁面初始化 ======
 function initPage(){
-  const listEl = document.getElementById('courses-list');
-  const isHome = !!document.getElementById('btn-more-courses'); // 有這顆按鈕就是首頁精簡版
-
-  // 首頁交給 renderHomeCourses() 處理，其他頁才用 loadCourses()
-  if (listEl && !isHome) {
-    loadCourses();
+  const isHome = !!document.getElementById('btn-more-courses'); // 首頁才會有這顆
+  if (isHome) {
+    renderHomeCourses();   // ← 首頁用這個
+  } else if (document.getElementById('courses')) {
+    loadCourses();         // ← 其他頁才載入完整清單
   }
 
   if (document.getElementById('course-info')) loadCourse();
@@ -351,19 +350,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ====== 首頁課程一覽（最多 4 筆 + 查看更多） ======
-(function renderHomeCourses(){
-  const LIMIT = 4;
-  let rendered = false; // 防止重複渲染
+function renderHomeCourses(){
+  const LIMIT = 4;     // 首頁顯示幾張卡片
+  let rendered = false;
 
-  // 小工具：等條件成立
   function waitFor(pred, {interval = 80, timeout = 8000} = {}){
     return new Promise((resolve, reject)=>{
       const start = Date.now();
       (function tick(){
-        try{
-          const v = pred();
-          if (v) return resolve(v);
-        }catch{}
+        try{ const v = pred(); if (v) return resolve(v); }catch{}
         if (Date.now() - start > timeout) return reject(new Error('waitFor timeout'));
         setTimeout(tick, interval);
       })();
@@ -372,6 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function run(){
     if (rendered) return;
+
     // 1) 等 DOM
     if (document.readyState === 'loading') {
       await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
@@ -382,28 +378,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const moreBtn = document.getElementById('btn-more-courses');
     if (!listEl) return;
 
-    // 2) 等 Supabase client 準備好（不要提早 return）
+    // 2) 等 Supabase
     await waitFor(() => window.sb && typeof window.sb.from === 'function').catch(()=>{});
     const sb = window.sb;
     if (!sb){
-      // 沒有 sb 也不要留下滿版卡片：至少把列表清空
       listEl.innerHTML = '';
       emptyEl?.classList.remove('hidden');
       moreBtn?.classList.add('hidden');
       return;
     }
 
-    // 先清空，避免先前其他腳本渲染了過多卡片
-    listEl.innerHTML = '';
-
-    // 3) 撈資料（同時取 count 判斷是否顯示“查看更多”）
+    // 3) 抓資料（含 gallery）
     const { data, error, count } = await sb
       .from('courses')
       .select('id,title,summary,description,cover_url,gallery,category,created_at', { count: 'exact' })
       .eq('published', true)
       .is('deleted_at', null)
       .order('created_at', { ascending: false })
-      .range(0, LIMIT - 1); // 只取前 4 筆
+      .range(0, LIMIT - 1); // 安全保險只抓 LIMIT 筆
 
     if (error){
       console.warn('[home courses] load error:', error);
@@ -412,78 +404,63 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const items = (data || []).slice(0, LIMIT); // 再切一次，保險
+    const items = (data || []).slice(0, LIMIT);
 
     if (!items.length){
+      listEl.innerHTML = '';
       emptyEl?.classList.remove('hidden');
       moreBtn?.classList.add('hidden');
       return;
     }
 
-    emptyEl?.classList.add('hidden');
-
-    const CATEGORY_LABELS = {
-      horti: '園藝',   // horticulture
-      art:   '藝術',
-      mind:  '正念',
-      life:  '生活',
-    };
-
-    // 取資料後、render 前：
-    for (const c of data) {
+    // 轉 URL：若有多圖用 Storage 取 public URL，否則退回 cover_url
+    for (const c of items){
       const paths = Array.isArray(c.gallery) ? c.gallery : [];
-      //c._galleryUrls = paths.length
-       // ? await toSignedUrls('course-gallery', paths, 60 * 60) // 1hr
-       // : [];
-
       c._galleryUrls = paths.length
         ? await toPublicUrls('course-gallery', paths)
-        : [];
-
+        : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
     }
 
+    // 輸出卡片（含輪播結構）
     listEl.innerHTML = items.map(c => {
-      const cat = c.category ? (CATEGORY_LABELS[c.category] || c.category) : '';
-      const imgs = (c._galleryUrls && c._galleryUrls.length)
-        ? c._galleryUrls
-        : [c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')];
-      
+      const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
+      const imgs = c._galleryUrls && c._galleryUrls.length ? c._galleryUrls : [];
       return `
         <article class="course-card card">
-          <div class="carousel" data-total="${imgs.length}">
+          <div class="carousel" data-total="${imgs.length}" data-index="0">
             <div class="track">
               ${imgs.map((url, i) => `
-                <div class="slide">
-                  <img src="${url}" alt="${c.title} ${i+1}">
-                </div>
+                <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
               `).join('')}
             </div>
             ${imgs.length > 1 ? `
               <button class="nav prev" aria-label="上一張">&#10094;</button>
               <button class="nav next" aria-label="下一張">&#10095;</button>
               <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
-            ` : ''}
+            ` : ``}
           </div>
-      
+
           <div class="course-body">
             <h3>${c.title}</h3>
-            ${cat ? `<div class="badge">${cat}</div>` : ''}
+            ${cat ? `<div class="badge">${cat}</div>` : ``}
             <p class="muted">${(c.summary || '').slice(0, 80)}</p>
             <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>
           </div>
         </article>
       `;
-
     }).join('');
 
-    // 4) 是否顯示「查看更多」
+    // 啟用輪播互動（很重要！）
+    enableCarousels(listEl);
+
+    // 4) 顯示「查看更多」
     if (typeof count === 'number' ? count > LIMIT : items.length >= LIMIT) {
       moreBtn?.classList.remove('hidden');
     } else {
       moreBtn?.classList.add('hidden');
     }
 
-    // 5) 最後再加一道“裁切 DOM”的保險（若其它腳本又塞了卡片）
+    // 5) 再保險裁切 DOM（若其它腳本有多塞卡片）
     const cards = listEl.querySelectorAll('.course-card');
     if (cards.length > LIMIT) {
       [...cards].slice(LIMIT).forEach(el => el.remove());
@@ -493,12 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
     rendered = true;
   }
 
-  // 立即跑一次
   run().catch(err => console.error('[home courses] unexpected:', err));
+}
 
-  // 若你的專案有任何「初始化完成」事件，可在這裡再跑一次保險
-  // 例如：document.addEventListener('sb:ready', run);
-})();
 
 // 平滑滾動到錨點
 document.addEventListener('click', (e)=>{
