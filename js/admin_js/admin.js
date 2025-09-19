@@ -112,6 +112,48 @@
         }
       });
     });
+
+    enableGalleryDragSort(courseId);
+  }
+  
+  // 啟用拖曳排序
+  function enableGalleryDragSort(courseId){
+    const box = document.getElementById('ac-gallery');
+    if (!box) return;
+  
+    let dragEl = null;
+  
+    box.querySelectorAll('figure.thumb').forEach(fig => {
+      fig.setAttribute('draggable', 'true');
+  
+      fig.addEventListener('dragstart', e => {
+        dragEl = fig;
+        e.dataTransfer.effectAllowed = 'move';
+        fig.classList.add('dragging');
+      });
+  
+      fig.addEventListener('dragend', () => {
+        if (dragEl) dragEl.classList.remove('dragging');
+        dragEl = null;
+  
+        // 拖曳完成 → 更新順序存回 DB
+        const figs = [...box.querySelectorAll('figure.thumb')];
+        const newPaths = figs.map(f => f.querySelector('.btn-del').dataset.del);
+        saveCourseGallery(courseId, newPaths).catch(err=>{
+          console.error('更新圖片順序失敗:', err);
+          alert('更新圖片順序失敗：' + (err?.message || err));
+        });
+      });
+  
+      fig.addEventListener('dragover', e => {
+        e.preventDefault();
+        const target = e.currentTarget;
+        if (!dragEl || dragEl === target) return;
+        const rect = target.getBoundingClientRect();
+        const next = (e.clientY - rect.top) / rect.height > 0.5;
+        box.insertBefore(dragEl, next ? target.nextSibling : target);
+      });
+    });
   }
 
   
