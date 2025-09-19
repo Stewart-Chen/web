@@ -182,6 +182,41 @@ body.modal-open{ overflow: hidden; }
     }
     return document.getElementById(id);
   }
+
+  // 共享：把 Storage 路徑轉成公開網址（若 app.js 已定義 toPublicUrls 就沿用）
+  async function toPublicUrlsLocal(bucket, paths = []){
+    if (!paths.length || !window.sb) return [];
+    const storage = window.sb.storage.from(bucket);
+    return paths.map(p => storage.getPublicUrl(p).data.publicUrl).filter(Boolean);
+  }
+  const toPublic = (window.toPublicUrls || toPublicUrlsLocal);
+  
+  // 共享：啟用輪播（若 app.js 已定義 enableCarousels 就沿用）
+  function enableCarouselsLocal(root=document){
+    const carousels = root.querySelectorAll('.carousel');
+    carousels.forEach(c=>{
+      const track  = c.querySelector('.track');
+      const slides = c.querySelectorAll('.slide');
+      if (!track || !slides.length) return;
+      let index = 0, total = slides.length;
+      const cur = c.querySelector('.indicator .current');
+      const update = ()=>{ track.style.transform = `translateX(-${index*100}%)`; if (cur) cur.textContent = String(index+1); };
+      const go = d => { index = (index + d + total) % total; update(); };
+      c.querySelector('.nav.prev')?.addEventListener('click', ()=>go(-1));
+      c.querySelector('.nav.next')?.addEventListener('click', ()=>go(+1));
+      let startX=0, down=false;
+      const downFn = x=>{ down=true; startX=x; };
+      const upFn   = x=>{ if(!down) return; down=false; const dx=x-startX; if (Math.abs(dx)>40) go(dx<0?+1:-1); };
+      track.addEventListener('touchstart', e=>downFn(e.touches[0].clientX), {passive:true});
+      track.addEventListener('touchend',   e=>upFn(e.changedTouches[0].clientX));
+      track.addEventListener('mousedown',  e=>downFn(e.clientX));
+      window.addEventListener('mouseup',   e=>upFn(e.clientX));
+      update();
+    });
+  }
+  const ensureCarousels = (window.enableCarousels || enableCarouselsLocal);
+
+  
   function bindModalLock(dlg){
     if (!dlg) return;
     const off = () => document.body.classList.remove('modal-open');
@@ -376,19 +411,37 @@ body.modal-open{ overflow: hidden; }
         box.innerHTML = `<p class="muted">沒有找到合適的推薦，換幾個興趣關鍵字試試。</p>`;
         return;
       }
-      box.innerHTML = list.map(c => `
-        <article class="course-card">
-          <img src="${c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')}"
-               alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
-          <h3>${c.title}</h3>
-          <div class="course-meta">
-            ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
-          </div>
-          <div class="cta">
-            <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
-          </div>
-        </article>
-      `).join('');
+    
+      box.innerHTML = list.map(c => {
+        const imgs = (c._galleryUrls && c._galleryUrls.length) ? c._galleryUrls : [];
+        return `
+          <article class="course-card card">
+            <div class="carousel" data-total="${imgs.length}" data-index="0">
+              <div class="track">
+                ${imgs.map((url, i)=>`
+                  <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
+                `).join('')}
+              </div>
+              ${imgs.length > 1 ? `
+                <button class="nav prev" aria-label="上一張">&#10094;</button>
+                <button class="nav next" aria-label="下一張">&#10095;</button>
+                <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
+              ` : ``}
+            </div>
+    
+            <h3 style="margin-top:10px;">${c.title}</h3>
+            <div class="course-meta">
+              ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
+            </div>
+            <div class="cta">
+              <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
+            </div>
+          </article>
+        `;
+      }).join('');
+    
+      // 啟用輪播（若 app.js 已有就用它，否則用本檔的 Local 版）
+      ensureCarousels(box);
     }
 
     // === 可調常數 ===
@@ -435,19 +488,27 @@ body.modal-open{ overflow: hidden; }
         return;
       }
     
-      // 2) 撈資料
+      // 2) 撈資料（把 gallery 一起選回來）
       const { data, error } = await sb
         .from('courses')
-        .select('id,title,summary,description,cover_url,teacher,published,created_at,deleted_at,category')
+        .select('id,title,summary,description,cover_url,gallery,teacher,published,created_at,deleted_at,category')
         .eq('published', true)
         .is('deleted_at', null);
-    
+      
       if (error){
         console.warn('[recommend] error:', error);
         box.innerHTML = `<p class="muted">讀取課程失敗：${error.message}</p>`;
         return;
       }
-    
+      
+      // 2.5) 準備圖片清單（有 gallery 用多圖，沒有就退回 cover）
+      for (const c of (data || [])){
+        const paths = Array.isArray(c.gallery) ? c.gallery : [];
+        c._galleryUrls = paths.length
+          ? await toPublic('course-gallery', paths)
+          : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
+      }
+
       // 3) 權重設定
       // 職業關鍵詞
       const profHints = {
