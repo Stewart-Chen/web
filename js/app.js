@@ -7,15 +7,16 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
-// ====== 探索課程頁：完整課程清單 ======
+// ====== 探索課程頁：完整課程清單（支援多圖輪播） ======
 async function loadCourses(){
   const list  = document.getElementById('courses');
   const empty = document.getElementById('courses-empty');
   if (!list) return;
 
+  // 一次把 gallery 一起抓回來
   const { data, error } = await sb
     .from('courses')
-    .select('id,title,summary,description,cover_url,teacher,category,created_at')
+    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at')
     .eq('published', true)
     .is('deleted_at', null)
     .order('created_at', { ascending: false });
@@ -29,22 +30,50 @@ async function loadCourses(){
   }
 
   empty?.classList.add('hidden');
-  list.innerHTML = data.map(c => `
-    <li>
-      <article class="course-card card"
-               data-category="${c.category || ''}"
-               data-teacher="${c.teacher || ''}">
-        <img src="${c.cover_url || 'https://picsum.photos/seed/'+c.id+'/640/360'}"
-             alt="${c.title}" style="width:100%;height:160px;object-fit:cover;border-radius:8px" />
-        <div class="course-body">
-          <h3>${c.title}</h3>
-          ${c.category ? `<div class="badge">${c.category === 'horti' ? '園藝' : '藝術'}</div>` : ''}
-          <p class="muted">${c.summary ?? ''}</p>
-          <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>
-        </div>
-      </article>
-    </li>
-  `).join('');
+
+  // 轉成可用圖片 URL（如果沒有 gallery 就退回 cover_url）
+  for (const c of data){
+    const paths = Array.isArray(c.gallery) ? c.gallery : [];
+    c._galleryUrls = paths.length
+      ? await toPublicUrls('course-gallery', paths)   // 你專案已內建這個 helper
+      : [ c.cover_url || ('https://picsum.photos/seed/'+encodeURIComponent(c.id)+'/640/360') ];
+  }
+
+  // 輸出卡片（含輪播容器）
+  list.innerHTML = data.map(c => {
+    const imgs = (c._galleryUrls && c._galleryUrls.length) ? c._galleryUrls : [];
+    const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
+    return `
+      <li>
+        <article class="course-card card"
+                 data-category="${c.category || ''}"
+                 data-teacher="${c.teacher || ''}">
+          <div class="carousel" data-total="${imgs.length}" data-index="0">
+            <div class="track">
+              ${imgs.map((url, i) => `
+                <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
+              `).join('')}
+            </div>
+            ${imgs.length > 1 ? `
+              <button class="nav prev" aria-label="上一張">&#10094;</button>
+              <button class="nav next" aria-label="下一張">&#10095;</button>
+              <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
+            ` : ``}
+          </div>
+
+          <div class="course-body">
+            <h3>${c.title}</h3>
+            ${cat ? `<div class="badge">${cat}</div>` : ``}
+            <p class="muted">${(c.summary || '').slice(0, 80)}</p>
+            <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>
+          </div>
+        </article>
+      </li>
+    `;
+  }).join('');
+
+  // 啟用輪播互動（按鈕 + 觸控滑動）
+  enableCarousels(list);
 }
 
 // ====== 課程頁 ======
@@ -531,4 +560,52 @@ async function toPublicUrls(bucket, paths = []) {
   return paths
     .map(p => storage.getPublicUrl(p).data.publicUrl)
     .filter(Boolean);
+}
+
+// 簡易輪播控制：左右按鈕 + 觸控滑動
+function enableCarousels(root=document){
+  const carousels = root.querySelectorAll('.carousel');
+  carousels.forEach(setupCarousel);
+}
+
+function setupCarousel(carousel){
+  const track = carousel.querySelector('.track');
+  const slides = carousel.querySelectorAll('.slide');
+  if (!track || !slides.length) return;
+
+  let index = 0;
+  const total = slides.length;
+  const indicatorCur = carousel.querySelector('.indicator .current');
+
+  function update(){
+    track.style.transform = `translateX(-${index * 100}%)`;
+    if (indicatorCur) indicatorCur.textContent = String(index + 1);
+    carousel.dataset.index = String(index);
+  }
+
+  function go(delta){
+    index = (index + delta + total) % total;
+    update();
+  }
+
+  carousel.querySelector('.nav.prev')?.addEventListener('click', ()=>go(-1));
+  carousel.querySelector('.nav.next')?.addEventListener('click', ()=>go(+1));
+
+  // 觸控滑動
+  let startX = 0, isDown = false;
+  const onDown = (x)=>{ isDown = true; startX = x; };
+  const onUp   = (x)=>{
+    if (!isDown) return;
+    const dx = x - startX;
+    isDown = false;
+    if (Math.abs(dx) > 40){ go(dx < 0 ? +1 : -1); }
+  };
+
+  track.addEventListener('touchstart', e=>onDown(e.touches[0].clientX), {passive:true});
+  track.addEventListener('touchend',   e=>onUp(e.changedTouches[0].clientX));
+  track.addEventListener('mousedown',  e=>onDown(e.clientX));
+  window.addEventListener('mouseup',   e=>onUp(e.clientX));
+
+  // 初始
+  update();
 }
