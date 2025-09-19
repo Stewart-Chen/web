@@ -512,3 +512,54 @@ FROM numbered;
 -- ---------- 9) 小測試（可選） ----------
 -- select * from public.teachers order by code;
 -- select * from public.courses where published = true and deleted_at is null order by created_at desc;
+
+-- 建 bucket（存在就略過）
+insert into storage.buckets (id, name, public)
+values ('course-gallery', 'course-gallery', true)
+on conflict (id) do nothing;
+
+-- Admin 可上傳
+drop policy if exists "Admins can insert gallery" on storage.objects;
+create policy "Admins can insert gallery"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'course-gallery'
+  and exists (select 1 from public.admins a where a.user_id = auth.uid())
+);
+
+-- Admin 可更新（可選）
+drop policy if exists "Admins can update gallery" on storage.objects;
+create policy "Admins can update gallery"
+on storage.objects
+for update
+to authenticated
+using (
+  bucket_id = 'course-gallery'
+  and exists (select 1 from public.admins a where a.user_id = auth.uid())
+)
+with check (
+  bucket_id = 'course-gallery'
+  and exists (select 1 from public.admins a where a.user_id = auth.uid())
+);
+
+-- Admin 可刪除
+drop policy if exists "Admins can delete gallery" on storage.objects;
+create policy "Admins can delete gallery"
+on storage.objects
+for delete
+to authenticated
+using (
+  bucket_id = 'course-gallery'
+  and exists (select 1 from public.admins a where a.user_id = auth.uid())
+);
+
+-- （可選）任何人可讀取該 bucket 的 objects 中繼資料
+drop policy if exists "Anyone can read gallery metadata" on storage.objects;
+create policy "Anyone can read gallery metadata"
+on storage.objects
+for select
+to anon, authenticated
+using (bucket_id = 'course-gallery');
+
