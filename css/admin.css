@@ -81,3 +81,16 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
   .admin-wrap { grid-template-columns: 1fr; }
 }
 
+#ac-gallery figure.card{
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 8px;
+  overflow: hidden;
+}
+#ac-gallery figure.card img{ display:block; }
+#ac-gallery figure.card .btn.subtle{
+  background: rgba(255,255,255,.9);
+  border: 1px solid rgba(0,0,0,.08);
+}
+#ac-gallery figure.card .btn.subtle:hover{
+  background: #fff;
+}
