@@ -87,11 +87,12 @@
 
     box.innerHTML = urls.map((url, i) => {
       const path = paths[i];
+      const filename = path.split('/').pop();
       return `
-        <figure class="card" style="position:relative; overflow:hidden;">
-          <img src="${url}" alt="gallery ${i+1}" style="display:block;width:100%;height:120px;object-fit:cover;">
-          <figcaption class="muted" style="font-size:12px; padding:6px;">${path.split('/').pop()}</figcaption>
-          <button type="button" class="btn subtle" data-del="${path}" style="position:absolute; top:6px; right:6px;">刪除</button>
+        <figure class="thumb">
+          <img class="pic" src="${url}" alt="${filename}">
+          <figcaption title="${filename}">${filename}</figcaption>
+          <button type="button" class="btn-del" data-del="${path}">刪除</button>
         </figure>
       `;
     }).join('');
