@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ====== 首頁課程一覽（最多 4 筆 + 查看更多） ======
 function renderHomeCourses(){
-  const LIMIT = 4;     // 首頁顯示幾張卡片
+  const LIMIT = 6;     // 首頁顯示幾張卡片
   let rendered = false;
 
   function waitFor(pred, {interval = 80, timeout = 8000} = {}){
