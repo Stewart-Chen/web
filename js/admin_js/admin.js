@@ -163,7 +163,6 @@
     document.getElementById('ac-title').value     = c?.title ?? '';
     document.getElementById('ac-summary').value   = c?.summary ?? '';
     document.getElementById('ac-desc').value      = c?.description ?? '';
-    //document.getElementById('ac-cover').value     = c?.cover_url ?? '';
     document.getElementById('ac-teacher').value   = c?.teacher ?? '';
     document.getElementById('ac-published').checked = !!c?.published;
 
@@ -220,43 +219,68 @@
   // ===== 課程儲存 =====
   async function saveCourseFromForm() {
     if (!await isAdmin()) { alert('只有管理者可以操作'); return; }
-
+  
+    const $v = (id) => (document.getElementById(id)?.value ?? '').trim();
+    const $c = (id) => !!document.getElementById(id)?.checked;
+  
+    const id = Number($v('ac-id') || 0);
+  
+    // 先組 payload（不含 cover_url）
     const payload = {
-      title:       document.getElementById('ac-title').value.trim(),
-      summary:     document.getElementById('ac-summary').value.trim() || null,
-      description: document.getElementById('ac-desc').value.trim() || null,
-      cover_url:   document.getElementById('ac-cover').value.trim() || null,
-      teacher:     document.getElementById('ac-teacher').value,
-      published:   document.getElementById('ac-published').checked,
+      title:       $v('ac-title'),
+      summary:     $v('ac-summary')     || null,
+      description: $v('ac-desc')        || null,
+      teacher:     $v('ac-teacher'),
+      published:   $c('ac-published'),
+      // cover_url 由 gallery 推導，不從表單讀
     };
-    const id = Number(document.getElementById('ac-id').value || 0);
-
+  
     if (!payload.title)   { alert('請填寫標題'); return; }
     if (!payload.teacher) { alert('請選擇授課老師'); return; }
-
+  
     try {
       if (id) {
+        // 若已有課程，嘗試用 gallery 第一張當封面（可選）
+        try {
+          const list = await loadCourseGallery(id);               // e.g. ["123/abc.jpg", ...]
+          if (Array.isArray(list) && list.length) {
+            const pub = sb.storage.from('course-gallery').getPublicUrl(list[0]).data.publicUrl;
+            payload.cover_url = pub || null;
+          } else {
+            payload.cover_url = null;
+          }
+        } catch { /* 忽略封面推導失敗 */ }
+  
         const { error } = await sb.from('courses').update(payload).eq('id', id);
         if (error) throw error;
         alert('課程已更新');
       } else {
-        const { data, error } = await sb.from('courses').insert([payload]).select('id').maybeSingle();
+        // 新增課程：先插入，再把新 id 放回表單，之後你就可以上傳 gallery
+        const { data, error } = await sb
+          .from('courses')
+          .insert([payload])
+          .select('id')
+          .maybeSingle();
         if (error) throw error;
-        // 取新 id 並放回表單
+  
         const newId = data?.id;
-        document.getElementById('ac-id').value = newId || '';
+        if (newId) document.getElementById('ac-id').value = String(newId);
         alert('課程已建立');
       }
+  
       await adminRefresh();
-      // 新增：更新右側 gallery 預覽
-      const cid = Number(document.getElementById('ac-id').value || 0);
-      if (cid) adminRenderGallerySection({ id: cid });
-      
+  
+      // 建立/更新後，刷新右側的 gallery 預覽（若你有 adminRenderGallerySection）
+      const cid = Number(document.getElementById('ac-id')?.value || 0);
+      if (cid && typeof adminRenderGallerySection === 'function') {
+        adminRenderGallerySection({ id: cid });
+      }
     } catch (err) {
       console.error('saveCourse error:', err);
       alert('儲存失敗：' + (err?.message || err));
     }
   }
+
 
   // ===== 單元儲存 =====
   async function saveLessonFromForm() {
@@ -353,7 +377,6 @@
 
   // === Gallery 上傳/刷新 ===
   const uploadBtn = document.getElementById('ac-upload-btn');
-  const refreshBtn = document.getElementById('ac-refresh-gallery');
   const fileInput = document.getElementById('ac-gallery-files');
   const selectBtn  = document.getElementById('ac-select-files');
   
@@ -412,13 +435,6 @@
     }
   });
 
-  refreshBtn?.addEventListener('click', async ()=>{
-    const courseId = Number(document.getElementById('ac-id').value || 0);
-    if (!courseId) return;
-    await renderGalleryPreview(courseId);
-  });
-
-  
   // 進入頁面 → 先刷新一次列表
   window.addEventListener('DOMContentLoaded', adminRefresh);
 })();
