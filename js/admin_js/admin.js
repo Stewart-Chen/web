@@ -356,8 +356,30 @@
   const fileInput = document.getElementById('ac-gallery-files');
   const selectBtn  = document.getElementById('ac-select-files');
   
-  selectBtn?.addEventListener('click', () => {
-    // 這裡是使用者直接點擊事件，所以瀏覽器允許彈出選檔
+  selectBtn?.addEventListener('click', async () => {
+    // 先試 HTTPS 專用 API（需使用者手勢）
+    if (window.showOpenFilePicker) {
+      try {
+        const handles = await window.showOpenFilePicker({
+          multiple: true,
+          types: [{ description: 'Images', accept: { 'image/*': ['.png','.jpg','.jpeg','.webp','.gif'] } }]
+        });
+        // 轉成 FileList：用 DataTransfer 塞進 input（方便沿用你的上傳流程）
+        const dt = new DataTransfer();
+        for (const h of handles) {
+          const f = await h.getFile();
+          dt.items.add(f);
+        }
+        fileInput.files = dt.files;
+        // 這裡你可以順手觸發預覽或上傳按鈕的 enabled 狀態
+        return;
+      } catch (err) {
+        // 使用者取消或被策略擋，落回傳統 input
+        // console.debug('FS Access fallback:', err);
+      }
+    }
+  
+    // 退回傳統 input：確保在使用者手勢內直接呼叫
     fileInput.click();
   });
   
