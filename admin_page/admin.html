@@ -52,7 +52,10 @@
                 可一次選多張，上傳後會存到 Storage bucket：<code>course-gallery</code>（路徑：<code>courseId/檔名</code>）。
               </p>
               <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                <input id="ac-gallery-files" type="file" accept="image/*" multiple />
+                <input id="ac-gallery-files" type="file" accept="image/*" multiple style="display:none;" />
+                <button id="ac-select-files" type="button" class="btn">選擇圖片</button>
+                <button id="ac-upload-btn" type="button" class="btn">上傳</button>
+
                 <button id="ac-upload-btn" type="button" class="btn">上傳選取檔案</button>
                 <button id="ac-refresh-gallery" type="button" class="btn subtle">重新整理清單</button>
               </div>
