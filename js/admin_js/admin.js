@@ -449,13 +449,6 @@
     fileInput.click();
   });
   
-  uploadBtn?.addEventListener('click', async () => {
-    const files = fileInput?.files;
-    if (!files || !files.length) return alert('請先選擇要上傳的圖片');
-    // 這裡接上原本的上傳流程
-  });
-
-
   uploadBtn?.addEventListener('click', async ()=>{
     if (!await isAdmin()) return alert('只有管理者可以操作');
     const courseId = Number(document.getElementById('ac-id').value || 0);
