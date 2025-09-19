@@ -123,6 +123,7 @@
   
     let dragEl = null;
   
+    // === 桌機版：原本的 drag & drop ===
     box.querySelectorAll('figure.thumb').forEach(fig => {
       fig.setAttribute('draggable', 'true');
   
@@ -132,18 +133,7 @@
         fig.classList.add('dragging');
       });
   
-      fig.addEventListener('dragend', () => {
-        if (dragEl) dragEl.classList.remove('dragging');
-        dragEl = null;
-  
-        // 拖曳完成 → 更新順序存回 DB
-        const figs = [...box.querySelectorAll('figure.thumb')];
-        const newPaths = figs.map(f => f.querySelector('.btn-del').dataset.del);
-        saveCourseGallery(courseId, newPaths).catch(err=>{
-          console.error('更新圖片順序失敗:', err);
-          alert('更新圖片順序失敗：' + (err?.message || err));
-        });
-      });
+      fig.addEventListener('dragend', () => finishReorder(courseId, box));
   
       fig.addEventListener('dragover', e => {
         e.preventDefault();
@@ -154,7 +144,49 @@
         box.insertBefore(dragEl, next ? target.nextSibling : target);
       });
     });
+  
+    // === 手機版：用 touch 事件模擬 ===
+    let touchStartY = 0;
+  
+    box.querySelectorAll('figure.thumb').forEach(fig => {
+      fig.addEventListener('touchstart', e => {
+        dragEl = fig;
+        touchStartY = e.touches[0].clientY;
+        fig.classList.add('dragging');
+      }, { passive:true });
+  
+      fig.addEventListener('touchmove', e => {
+        if (!dragEl) return;
+        const y = e.touches[0].clientY;
+        const target = document.elementFromPoint(e.touches[0].clientX, y)?.closest('figure.thumb');
+        if (target && target !== dragEl && box.contains(target)) {
+          const rect = target.getBoundingClientRect();
+          const next = (y - rect.top) / rect.height > 0.5;
+          box.insertBefore(dragEl, next ? target.nextSibling : target);
+        }
+      }, { passive:true });
+  
+      fig.addEventListener('touchend', () => {
+        if (dragEl) dragEl.classList.remove('dragging');
+        finishReorder(courseId, box);
+      });
+    });
+  
+    // === 把更新 DB 的部分抽成函式 ===
+    function finishReorder(courseId, box){
+      if (!dragEl) return;
+      dragEl.classList.remove('dragging');
+      dragEl = null;
+  
+      const figs = [...box.querySelectorAll('figure.thumb')];
+      const newPaths = figs.map(f => f.querySelector('.btn-del').dataset.del);
+      saveCourseGallery(courseId, newPaths).catch(err=>{
+        console.error('更新圖片順序失敗:', err);
+        alert('更新圖片順序失敗：' + (err?.message || err));
+      });
+    }
   }
+
 
   
   // ===== 課程清單 =====
