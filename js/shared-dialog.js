@@ -402,48 +402,6 @@ body.modal-open{ overflow: hidden; }
     const form = $('#rec-form');
     const box  = $('#rec-results');
 
-    const parseInterests = (s) =>
-      (s||'').split(/[，,]/).map(x=>x.trim()).filter(Boolean).map(x=>x.toLowerCase());
-
-    function render(list){
-      if (!box) return;
-      if (!list.length){
-        box.innerHTML = `<p class="muted">沒有找到合適的推薦，換幾個興趣關鍵字試試。</p>`;
-        return;
-      }
-    
-      box.innerHTML = list.map(c => {
-        const imgs = (c._galleryUrls && c._galleryUrls.length) ? c._galleryUrls : [];
-        return `
-          <article class="course-card card">
-            <div class="carousel" data-total="${imgs.length}" data-index="0">
-              <div class="track">
-                ${imgs.map((url, i)=>`
-                  <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
-                `).join('')}
-              </div>
-              ${imgs.length > 1 ? `
-                <button class="nav prev" aria-label="上一張">&#10094;</button>
-                <button class="nav next" aria-label="下一張">&#10095;</button>
-                <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
-              ` : ``}
-            </div>
-    
-            <h3 style="margin-top:10px;">${c.title}</h3>
-            <div class="course-meta">
-              ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
-            </div>
-            <div class="cta">
-              <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
-            </div>
-          </article>
-        `;
-      }).join('');
-    
-      // 啟用輪播（若 app.js 已有就用它，否則用本檔的 Local 版）
-      ensureCarousels(box);
-    }
-
     // === 可調常數 ===
     const MAX_RECOMMEND = 6;
     
@@ -632,11 +590,7 @@ body.modal-open{ overflow: hidden; }
     
         runRecommend(); // 只有驗證通過才跑
       });
-    
-      form.addEventListener('reset', ()=>{
-        if (box) box.innerHTML = '';
-      });
-    
+     
       form.dataset.bound = '1'; // 防止重複綁定，避免有兩個 handler 同時跑
     }
 
