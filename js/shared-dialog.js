@@ -541,34 +541,38 @@ body.modal-open{ overflow: hidden; }
       }
       
       box.innerHTML = picked.map(c => {
-        const imgs = (c._galleryUrls && c._galleryUrls.length)
-          ? c._galleryUrls
-          : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
-      
-        return `
-          <article class="course-card card">
-            <div class="carousel" data-total="${imgs.length}" data-index="0">
-              <div class="track">
-                ${imgs.map((url, i) => `
-                  <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
-                `).join('')}
-              </div>
-              ${imgs.length > 1 ? `
-                <button class="nav prev" aria-label="上一張">&#10094;</button>
-                <button class="nav next" aria-label="下一張">&#10095;</button>
-                <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
-              ` : ``}
+      const imgs = (c._galleryUrls && c._galleryUrls.length)
+        ? c._galleryUrls
+        : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
+    
+      return `
+        <article class="course-card card">
+          <div class="carousel" data-total="${imgs.length}" data-index="0">
+            <div class="track">
+              ${imgs.map((url, i) => `
+                <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
+              `).join('')}
             </div>
-      
-            <h3 style="margin-top:10px;">${c.title}</h3>
+            ${imgs.length > 1 ? `
+              <button class="nav prev" aria-label="上一張">&#10094;</button>
+              <button class="nav next" aria-label="下一張">&#10095;</button>
+              <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
+            ` : ``}
+          </div>
+    
+          <div class="course-body">
+            <h3>${c.title}</h3>
             <div class="course-meta">
               ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
             </div>
-            <div class="cta"><a href="course.html?id=${c.id}" class="btn primary">查看課程</a></div>
-          </article>
-        `;
-      }).join('');
-      
+            <div class="cta">
+              <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
       // 啟用輪播
       ensureCarousels(box);
     }
