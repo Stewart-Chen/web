@@ -162,7 +162,7 @@
     document.getElementById('ac-title').value     = c?.title ?? '';
     document.getElementById('ac-summary').value   = c?.summary ?? '';
     document.getElementById('ac-desc').value      = c?.description ?? '';
-    document.getElementById('ac-cover').value     = c?.cover_url ?? '';
+    //document.getElementById('ac-cover').value     = c?.cover_url ?? '';
     document.getElementById('ac-teacher').value   = c?.teacher ?? '';
     document.getElementById('ac-published').checked = !!c?.published;
 
