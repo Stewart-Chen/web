@@ -576,24 +576,43 @@ body.modal-open{ overflow: hidden; }
           .slice(0, MAX_RECOMMEND);
       }
     
-      // 8) 輸出
+      // 8) 輸出（輪播版）
       if (!picked.length){
         box.innerHTML = `<p class="muted">目前沒有可推薦的課程，請稍後再試。</p>`;
         return;
       }
-    
-      box.innerHTML = picked.map(c => `
-        <article class="course-card">
-          <img src="${c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360')}"
-               alt="${c.title}" style="width:100%;height:140px;object-fit:cover;border-radius:8px" />
-          <h3>${c.title}</h3>
-          <div class="course-meta">
-            ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
-          </div>
-          <div class="cta"><a href="course.html?id=${c.id}" class="btn primary">查看課程</a></div>
-        </article>
-      `).join('');
-    }
+      
+      box.innerHTML = picked.map(c => {
+        const imgs = (c._galleryUrls && c._galleryUrls.length)
+          ? c._galleryUrls
+          : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
+      
+        return `
+          <article class="course-card card">
+            <div class="carousel" data-total="${imgs.length}" data-index="0">
+              <div class="track">
+                ${imgs.map((url, i) => `
+                  <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
+                `).join('')}
+              </div>
+              ${imgs.length > 1 ? `
+                <button class="nav prev" aria-label="上一張">&#10094;</button>
+                <button class="nav next" aria-label="下一張">&#10095;</button>
+                <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
+              ` : ``}
+            </div>
+      
+            <h3 style="margin-top:10px;">${c.title}</h3>
+            <div class="course-meta">
+              ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
+            </div>
+            <div class="cta"><a href="course.html?id=${c.id}" class="btn primary">查看課程</a></div>
+          </article>
+        `;
+      }).join('');
+      
+      // 啟用輪播
+      ensureCarousels(box);
 
 
     // 綁定 submit / reset
