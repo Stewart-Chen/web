@@ -355,7 +355,6 @@
   const refreshBtn = document.getElementById('ac-refresh-gallery');
   const fileInput = document.getElementById('ac-gallery-files');
   const selectBtn  = document.getElementById('ac-select-files');
-  const uploadBtn  = document.getElementById('ac-upload-btn');
   
   selectBtn?.addEventListener('click', () => {
     // 這裡是使用者直接點擊事件，所以瀏覽器允許彈出選檔
