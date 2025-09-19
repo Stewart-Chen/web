@@ -147,3 +147,85 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
 #admin-course-form .actions-row{
   display:flex; gap:10px; flex-wrap:wrap; align-items:center;
 }
+/* === Gallery 手機優化 === */
+#ac-gallery{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+/* 手機寬度：固定 2 欄，縮圖更大 */
+@media (max-width: 480px){
+  #ac-gallery{
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+}
+
+/* 每個縮圖卡片 */
+#ac-gallery figure.thumb{
+  position: relative;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  width: 100% !important;      /* 防被其他樣式限縮 */
+  max-width: none !important;
+}
+
+/* 縮圖：占滿卡片寬度，用比例控制高度（擇一） */
+/* 選一：方形縮圖 */
+#ac-gallery img.pic{
+  display:block;
+  width:100% !important;
+  height:auto !important;
+  aspect-ratio: 1 / 1;         /* 換成 4/3 就是長方形 */
+  object-fit: cover;
+  max-width:none !important;
+}
+/* 若你想 4:3：把上一段 aspect-ratio 改成 4 / 3 */
+
+/* 檔名＆刪除鈕大小在手機更易點 */
+#ac-gallery figcaption{
+  padding: 8px 10px;
+  font-size: 13px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#ac-gallery .btn-del{
+  position:absolute; top:6px; right:6px;
+  padding: 6px 10px; font-size: 12px;
+  border-radius:999px; background: rgba(255,255,255,.95);
+  border:1px solid rgba(0,0,0,.12);
+}
+
+/* 移除舊的固定高度/寬度影響（保險覆寫） */
+#ac-gallery img { height:auto !important; }
+#ac-gallery figure, #ac-gallery img { max-width:none !important; }
+
+/* 取消 figure 預設外距，避免被擠出容器 */
+#ac-gallery figure { margin: 0 !important; }
+
+/* （保留先前兩欄網格設定） */
+#ac-gallery{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  box-sizing: border-box;
+}
+#ac-gallery figure.thumb{
+  position: relative;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  width: 100%;
+}
+#ac-gallery img.pic{
+  display:block;
+  width:100%;
+  aspect-ratio: 1 / 1; /* 或 4 / 3 */
+  object-fit: cover;
+}
+
