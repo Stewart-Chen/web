@@ -105,9 +105,6 @@ async function loadCourse(){
 
   if (error) { console.error(error); return; }
   if (!course) { if (titleEl) titleEl.textContent = '找不到課程或尚未發佈'; return; }
-
-  bindCourseGalleryUploader(course);
-  
   if (titleEl) titleEl.textContent = course.title;
   if (descEl)  descEl.textContent  = course.description ?? course.summary ?? '';
 
