@@ -798,7 +798,7 @@ body.menu-open{ overflow: hidden; }
   min-width: 40px;
   height: 44px;
   padding: 0 14px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #d7ead9;
   background: #fff;
   cursor: pointer;
@@ -823,7 +823,7 @@ body.menu-open{ overflow: hidden; }
   flex-wrap: wrap;
 }
 .legend strong{ font-size: 16px; }
-.hint{ font-size: 13px; color: var(--muted); }
+.hint{font-size: 12px;color: var(--muted);}
 
 /* NPS */
 .nps-row{ display: flex; flex-wrap: wrap; gap: 8px; }
