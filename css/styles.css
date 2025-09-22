@@ -266,7 +266,7 @@ nav .dropdown:focus-within .dropbtn{
   margin-block: 8px 6px;
 }
 .form-grid label{display: grid;gap: 8px;font-weight: 600;font-size: 0.9rem;}
-label{display: block;font-size: 16px;padding: 3px 8px;}
+label{display: block;font-size: 16px;padding: 3px 5px;}
 input, select, textarea{
   width: 100%;
   border-radius: 10px;
@@ -280,7 +280,7 @@ input, select, textarea{
 /* ---- 按鈕 ---- */
 button, .btn{
   border-radius: 10px;
-  padding: 6px 10px;
+  padding: 8px 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background .3s ease, opacity .2s ease, transform .15s ease;
@@ -775,13 +775,14 @@ body.menu-open{ overflow: hidden; }
   color: #0f172a;
 }
 .input, textarea, select{
-  width: 100%;
+  width: 90%;
   border: 1px solid #d7ead9;
   border-radius: 10px;
   padding: 8px 8px;
   outline: 0;
   background: #fff;
   font-size: 12px;
+  /* margin-top: 10px; */
 }
 .input:focus, textarea:focus, select:focus{
   box-shadow: 0 0 0 4px rgba(46,125,50,.18);
