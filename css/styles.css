@@ -47,7 +47,7 @@ body{
 
 /* 間距工具 */
 .flow-md > * + *{ margin-top: 18px; }
-.flow-lg > * + *{ margin-top: 28px; }
+.flow-lg > * + *{margin-top: 20px;}
 
 /* ---- Header / Footer / Nav ---- */
 .site-header, .site-footer{
