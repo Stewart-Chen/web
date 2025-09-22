@@ -266,7 +266,7 @@ nav .dropdown:focus-within .dropbtn{
   margin-block: 8px 6px;
 }
 .form-grid label{display: grid;gap: 8px;font-weight: 600;font-size: 0.9rem;}
-label{ display: block; }
+label{display: block;font-size: 16px;padding: 3px 8px;}
 input, select, textarea{
   width: 100%;
   border-radius: 10px;
@@ -795,8 +795,8 @@ body.menu-open{ overflow: hidden; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
-  height: 44px;
+  min-width: 30px;
+  height: 34px;
   padding: 0 14px;
   border-radius: 10px;
   border: 1px solid #d7ead9;
@@ -826,11 +826,11 @@ body.menu-open{ overflow: hidden; }
 .hint{font-size: 12px;color: var(--muted);}
 
 /* NPS */
-.nps-row{ display: flex; flex-wrap: wrap; gap: 8px; }
+.nps-row{display: flex;flex-wrap: wrap;gap: 8px;margin-top: 10px;}
 .nps-row .opt{ min-width: 40px; height: 40px; }
 
 /* 工具列 */
-.toolbar{ display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.toolbar{display: flex;gap: 8px;flex-wrap: wrap;align-items: center;margin-top: 10px;}
 
 /* 進度條 */
 .progress{
