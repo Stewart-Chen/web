@@ -1277,7 +1277,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   }
   h3{letter-spacing: .3px;}
   h4{ font-size: .95rem;  letter-spacing: .25px; }
-  p {line-height: 1.6;}
+  p {line-height: 1.6; font-size: .85rem;}
 
   /* 內容下方留白，避免被導覽擋住 */
   body{
