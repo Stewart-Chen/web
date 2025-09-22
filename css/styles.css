@@ -208,7 +208,7 @@ nav .dropdown:focus-within .dropbtn{
   background: #e8f5e9;
   border: 1px solid rgba(0,0,0,.05);
 }
-.teacher-card .info{ display: grid; gap: 10px; }
+.teacher-card .info{display: grid;gap: 1px;}
 .teacher-card .subtitle{ color: #1b5e20; margin: 0; font-weight: 600; }
 .teacher-card .bio{/* color: #555; *//* margin: 0; */}
 .teacher-card .badges{ display: flex; gap: 8px; flex-wrap: wrap; }
@@ -226,7 +226,7 @@ nav .dropdown:focus-within .dropbtn{
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
 }
-.grid.cards{ margin-top: 14px; }
+.grid.cards{/* margin-top: 14px; */}
 .course-card{
   display: grid;
   /* gap: 6px; */
@@ -1388,13 +1388,13 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 /* 內文區可裁切 */
 .course-card .course-body{
-  padding: 5px 16px 16px;
+  padding: 5px 14px 14px;
   overflow: hidden;
 }
 
 /* 類別膠囊：太長時截斷 */
 .course-card .badge{
-  margin: 4px 0 8px;
+  /* margin: 4px 0 8px; */
   background: #d9f2f0;
   color: var(--accent-blue);
   border: none;
@@ -1440,7 +1440,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
-  font-size: .9rem;
+  font-size: .85rem;
 }
 @media (hover:hover){
   .chip:hover{
