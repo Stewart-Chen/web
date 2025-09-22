@@ -1,6 +1,6 @@
 :root{
   --container: 1100px;
-  --radius: 16px;
+  --radius: 10px;
   --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
   --shadow-md: 0 10px 30px rgba(0,0,0,.08);
   --shadow: 0 10px 24px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06);
@@ -84,7 +84,7 @@ nav .dropbtn{
   color: var(--brand);
   font-weight: 600;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 10px;
 }
 
 /* dropdown 容器 */
@@ -155,7 +155,7 @@ nav .dropdown:focus-within .dropbtn{
   padding: 30px;
 }
 .hero h2{/* font-size: 1.6rem; */margin: 0 0 8px;/* color: #1b5e20; *//* font-weight: 700; */}
-.hero p{ color: #444; font-size: 1rem; }
+.hero p{color: #444;font-size: 0.9rem;}
 .chips{display: flex;gap: 8px;flex-wrap: wrap;margin-top: 10px;}
 
 /* ---- Feature（服務領域） ---- */
@@ -231,7 +231,7 @@ nav .dropdown:focus-within .dropbtn{
   display: grid;
   gap: 6px;
   padding: 14px;
-  border-radius: 12px;
+  /* border-radius: 12px; */
   border: 1px solid rgba(0,0,0,.08);
   background: #fff;
   box-shadow: var(--shadow-sm);
@@ -279,9 +279,9 @@ input, select, textarea{
 
 /* ---- 按鈕 ---- */
 button, .btn{
-  border-radius: 999px;
+  border-radius: 10px;
   padding: 10px 18px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background .3s ease, opacity .2s ease, transform .15s ease;
   border: 1px solid rgba(0,0,0,.15);
@@ -1115,6 +1115,7 @@ p{
   color: var(--ink);
   font-weight: 400;
   line-height: 1.75;               /* 內文字更舒適 */
+  font-size: 0.9rem;
   letter-spacing: .2px;
 }
 
@@ -1258,7 +1259,7 @@ h3 + p, h4 + p{margin-top: .2em;}
     font-size: 12px;
   }
   #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
-  .btn{ padding: 8px 12px; font-size: 14px; }
+  .btn{padding: 8px 12px;font-size: 12px;}
   .page-hero h1{ font-size: 18px; }
   .scale .opt{ flex: 1; }
   .nps-row .opt{ flex: 0 0 calc(10% - 8px); }
@@ -1269,7 +1270,7 @@ h3 + p, h4 + p{margin-top: .2em;}
     line-height: 1.4;
   }
   .hero p{
-    font-size: .85rem;
+    font-size: .8rem;
   }
   .chips .chip{
     font-size: .8rem;
@@ -1277,7 +1278,10 @@ h3 + p, h4 + p{margin-top: .2em;}
   }
   h3{letter-spacing: .3px;}
   h4{ font-size: .95rem;  letter-spacing: .25px; }
-  p {line-height: 1.6; font-size: .85rem;}
+  p {
+    line-height: 1.6;
+    font-size: .8rem;
+    }
 
   /* 內容下方留白，避免被導覽擋住 */
   body{
@@ -1540,20 +1544,20 @@ h3 + p, h4 + p{margin-top: .2em;}
   border: none;
   background: rgba(0,0,0,.35);
   color: #fff;
-  font-size: 20px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  font-size: 10px;
+  width: 30px;
+  height: 25px;
+  /* border-radius: 50%; */
   cursor: pointer;
 }
 .course-card .carousel .nav.prev { left: 8px; }
-.course-card .carousel .nav.next { right: 8px; }
+.course-card .carousel .nav.next {right: 8px;}
 
 .course-card .carousel .indicator {
   position: absolute;
   bottom: 6px;
   right: 8px;
-  font-size: 12px;
+  font-size: 10px;
   padding: 2px 6px;
   border-radius: 10px;
   background: rgba(0,0,0,.45);
