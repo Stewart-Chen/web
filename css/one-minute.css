@@ -60,7 +60,6 @@ body:has(.dock)::after{
     font-size: 12px;
   }
   #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
-  .btn{ padding:8px 12px; font-size:14px; }
 }
 /* 若你的欄位是 <fieldset class="card"> 或 .group */
 fieldset.card,
@@ -75,11 +74,6 @@ fieldset.group{
   height: 100px;
   object-fit: contain;    /* 防止變形，保留原比例 */
   display: block;
-}
-.exp {
-  margin: 4px 0 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
 }
 /* 讓 A4 友善一點（可省略） */
 @page {
