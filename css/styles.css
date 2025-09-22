@@ -31,7 +31,7 @@
 }
 
 /* ---- Reset / Base ---- */
-*{box-sizing: border-box;}
+*{/* box-sizing: border-box; */}
 html, body{ scroll-behavior: smooth; }
 body{
   font-family: 'Noto Sans TC', serif;
@@ -229,7 +229,7 @@ nav .dropdown:focus-within .dropbtn{
 .grid.cards{ margin-top: 14px; }
 .course-card{
   display: grid;
-  gap: 6px;
+  /* gap: 6px; */
   padding: 14px;
   /* border-radius: 12px; */
   border: 1px solid rgba(0,0,0,.08);
@@ -280,8 +280,8 @@ input, select, textarea{
 /* ---- 按鈕 ---- */
 button, .btn{
   border-radius: 10px;
-  padding: 10px 18px;
-  font-weight: 600;
+  padding: 8px 12px;
+  font-weight: 500;
   cursor: pointer;
   transition: background .3s ease, opacity .2s ease, transform .15s ease;
   border: 1px solid rgba(0,0,0,.15);
@@ -292,6 +292,7 @@ button, .btn{
   align-items: center;
   justify-content: center;
   white-space: nowrap;
+  font-size: 13px;
 }
 button:hover, .btn:hover{ transform: translateY(-1px); }
 button.primary, .btn.primary{
@@ -485,7 +486,7 @@ body.menu-open .nav-left .dropbtn{
   border: none;
   background: linear-gradient(135deg, var(--accent-blue), #a7dcd7);
   color: #0c4030;
-  border-radius: 999px;
+  border-radius: 10px;
   padding: 6px 8px;
   box-shadow: var(--shadow-sm);
   font-size: 14px;
@@ -597,7 +598,7 @@ fieldset.card .actions label{
   display: grid;
   place-items: center;
   border: 1px solid rgba(46,125,50,.18);
-  border-radius: 12px;
+  /* border-radius: 12px; */
   background: rgba(46,125,50,.06);
   backdrop-filter: saturate(130%) blur(2px);
   box-shadow: 0 2px 10px rgba(46,125,50,.08);
@@ -1115,7 +1116,7 @@ p{
   color: var(--ink);
   font-weight: 400;
   line-height: 1.75;               /* 內文字更舒適 */
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   letter-spacing: .2px;
 }
 
@@ -1259,7 +1260,7 @@ h3 + p, h4 + p{margin-top: .2em;}
     font-size: 12px;
   }
   #dock-back, #dock-reset, #dock-submit{ flex: 0 0 auto; }
-  .btn{padding: 8px 12px;font-size: 12px;}
+  .btn{padding: 6px 10px;font-size: 12px;}
   .page-hero h1{ font-size: 18px; }
   .scale .opt{ flex: 1; }
   .nps-row .opt{ flex: 0 0 calc(10% - 8px); }
@@ -1389,11 +1390,6 @@ h3 + p, h4 + p{margin-top: .2em;}
 /* 首頁卡片微調：接近參考圖排版 */
 .course-card.card{ padding: 0; overflow:hidden; }
 .course-card .course-body{ padding: 12px 14px 14px; }
-.course-card .badge{
-  display:inline-block; margin: 4px 0 6px; padding: 2px 10px;
-  border:1px solid #e0f2e9; border-radius: 999px; font-size:.85rem;
-  background:#fff; color:#0c4030;
-}
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
 .course-card img{ aspect-ratio: 16 / 9; object-fit: cover; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
@@ -1411,25 +1407,18 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 /* 內文區可裁切 */
-.course-card .course-body{ 
-  padding: 12px 16px 16px; 
-  overflow: hidden; 
+.course-card .course-body{
+  padding: 5px 16px 16px;
+  overflow: hidden;
 }
 
 /* 類別膠囊：太長時截斷 */
 .course-card .badge{
-  display: inline-block;
-  max-width: 100%;
   margin: 4px 0 8px;
-  padding: 2px 10px;
-  border: 1px solid #e0f2e9;
-  border-radius: 999px;
-  font-size: .85rem;
-  background: #fff;
-  color: #0c4030;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background: #d9f2f0;
+  color: var(--accent-blue);
+  border: none;
+  font-weight: 600;
 }
 
 /* 摘要：固定兩行，多的裁掉 */
@@ -1501,7 +1490,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   .sticky-chips .chip{
     text-align: center;      /* 文字置中 */
     font-weight: 600;
-    padding: 8px 0;
+    padding: 6px 0;
   }
   .link-more{
     font-size: .9rem;
