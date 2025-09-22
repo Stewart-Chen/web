@@ -266,9 +266,9 @@ nav .dropdown:focus-within .dropbtn{
   margin-block: 8px 6px;
 }
 .form-grid label{display: grid;gap: 8px;font-weight: 600;font-size: 0.9rem;}
-label{display: block;font-size: 16px;padding: 3px 5px;}
+label{display: block;font-size: 12px;padding: 3px 5px;}
 input, select, textarea{
-  width: 100%;
+  width: 95%;
   border-radius: 10px;
   border: 1px solid rgba(0,0,0,.15);
   padding: 8px 10px;
@@ -489,7 +489,7 @@ body.menu-open .nav-left .dropbtn{
   border-radius: 10px;
   padding: 8px 6px;
   box-shadow: var(--shadow-sm);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
