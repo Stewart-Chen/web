@@ -1275,18 +1275,12 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 /* 首頁卡片微調：接近參考圖排版 */
 .course-card.card{padding: 0;overflow:hidden;}
-.course-card .course-body{ padding: 12px 14px 14px; }
+.course-card .course-body{padding: 5px 14px 14px;}
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
 
 /* 讓 grid 子項可縮，不會把內容撐爆欄寬 */
-#courses-list > * { min-width: 0; }
-
-/* 內文區可裁切 */
-.course-card .course-body{
-  padding: 5px 14px 14px;
-  overflow: hidden;
-}
+#courses-list > * {/* min-width: 0; */}
 
 /* 摘要：固定兩行，多的裁掉 */
 .course-card p.muted{
@@ -1368,13 +1362,6 @@ h3 + p, h4 + p{margin-top: .2em;}
   list-style: none;
 }
 
-.course-card .carousel .track {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  transition: transform .3s ease;
-}
-
 .course-card .carousel .nav {
   position: absolute;
   top: 50%;
@@ -1405,16 +1392,30 @@ h3 + p, h4 + p{margin-top: .2em;}
   margin-top: 10px;
 }
 
-/* 圖片容器固定比例，避免載入時高度抖動 */
+/* 卡片：外層同時負責圓角 + 裁切 */
+.course-card.card{
+  display: flex;              /* 用直向 flex 比 grid 更單純 */
+  flex-direction: column;
+}
+
+/* 圖片容器固定 4:3 */
 .course-card .carousel{
   position: relative;
   width: 100%;
-  aspect-ratio: 4/3;   /* 或 4/3，看你的版型需求 */
-  overflow: hidden;      /* 這層也裁切，雙保險 */
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
   background: #f5f5f5;
+  flex: 0 0 auto;             /* 不要被內容撐高 */
+  margin: 0;                  /* 保險：避免有預設外距 */
 }
 
-/* 圖片填滿容器比例 */
+/* 讓高度一路傳到底（關鍵） */
+.course-card .carousel .track{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform .3s ease;
+}
 .course-card .carousel .slide{
   min-width: 100%;
   height: 100%;
@@ -1423,6 +1424,17 @@ h3 + p, h4 + p{margin-top: .2em;}
 .course-card .carousel .slide img{
   display: block;
   width: 100%;
-  height: 100%;          /* 配合 aspect-ratio */
-  object-fit: cover;     /* 維持裁切效果 */
+  height: 100%;
+  object-fit: cover;          /* 填滿容器，不變形，超出裁掉 */
+}
+
+.course-card .course-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;               /* 讓 body 撐滿可用高度 */
+  align-items: flex-start;
+}
+
+.course-card .cta {
+  margin-top: auto;      /* 把按鈕推到底 */
 }
