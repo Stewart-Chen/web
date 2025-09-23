@@ -1019,7 +1019,7 @@ h3{
   color: #333;       /* 綠色主題做層級 */
   letter-spacing: .4px;
   line-height: 1.35;
-  margin: 6px 0 6px;
+  margin: 0;
 }
 
 h4{
@@ -1450,7 +1450,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .course-card .title-row h3 {
   /* margin: 0; */             /* 去掉預設 margin，避免把行高撐開 */
   /* font-size: 1rem; */       /* 依你設計調整 */
-  /* flex: 1; */               /* 讓標題自動撐開，badge 貼右 */
+  flex: 1;               /* 讓標題自動撐開，badge 貼右 */
 }
 
 .course-card .title-row .badge {
