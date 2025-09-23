@@ -31,7 +31,6 @@
 }
 
 /* ---- Reset / Base ---- */
-*{/* box-sizing: border-box; */}
 html, body{ scroll-behavior: smooth; }
 body{
   font-family: 'Noto Sans TC', serif;
@@ -165,7 +164,7 @@ nav .dropdown:focus-within .dropbtn{
   display: grid;
   place-items: center;
   margin-top: 10px;
-  filter: drop-shadow(0 4px 10px rgba(59, 179, 195, 0.6));
+  filter: drop-shadow(0 4px 10px rgba(59, 179, 195, 0.4));
 }
 
 /* ---- 老師區塊 ---- */
@@ -210,9 +209,7 @@ nav .dropdown:focus-within .dropbtn{
 .grid.cards{/* margin-top: 14px; */}
 .course-card{
   display: grid;
-  /* gap: 6px; */
   padding: 14px;
-  /* border-radius: 12px; */
   border: 1px solid rgba(0,0,0,.08);
   background: #fff;
   box-shadow: var(--shadow-sm);
@@ -1277,23 +1274,13 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 /* 首頁卡片微調：接近參考圖排版 */
-.course-card.card{ padding: 0; overflow:hidden; }
+.course-card.card{padding: 0;overflow:hidden;}
 .course-card .course-body{ padding: 12px 14px 14px; }
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
-.course-card img{ aspect-ratio: 16 / 9; object-fit: cover; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
 
 /* 讓 grid 子項可縮，不會把內容撐爆欄寬 */
 #courses-list > * { min-width: 0; }
-
-/* 圖片不要多出邊界 */
-.course-card img{
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
 
 /* 內文區可裁切 */
 .course-card .course-body{
@@ -1380,31 +1367,12 @@ h3 + p, h4 + p{margin-top: .2em;}
 #courses li {
   list-style: none;
 }
-/* === 課程卡片：IG 風格輪播 === */
-.course-card .carousel {
-  position: relative;
-  width: 100%;
-  /* border-radius: 8px; */
-  overflow: hidden;
-  background: #f5f5f5;
-}
 
 .course-card .carousel .track {
   display: flex;
   width: 100%;
+  height: 100%;
   transition: transform .3s ease;
-}
-
-.course-card .carousel .slide {
-  min-width: 100%;
-  user-select: none;
-}
-
-.course-card .carousel .slide img {
-  display: block;
-  width: 100%;
-  height: 200px;         /* 你可依頁面調整高度 */
-  object-fit: cover;
 }
 
 .course-card .carousel .nav {
@@ -1435,4 +1403,26 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 .divider {
   margin-top: 10px;
+}
+
+/* 圖片容器固定比例，避免載入時高度抖動 */
+.course-card .carousel{
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;   /* 或 4/3，看你的版型需求 */
+  overflow: hidden;      /* 這層也裁切，雙保險 */
+  background: #f5f5f5;
+}
+
+/* 圖片填滿容器比例 */
+.course-card .carousel .slide{
+  min-width: 100%;
+  height: 100%;
+  user-select: none;
+}
+.course-card .carousel .slide img{
+  display: block;
+  width: 100%;
+  height: 100%;          /* 配合 aspect-ratio */
+  object-fit: cover;     /* 維持裁切效果 */
 }
