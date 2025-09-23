@@ -76,17 +76,6 @@ nav{
   gap: var(--nav-gap);
 }
 
-/* nav 連結與 drop 按鈕（緊湊 padding） */
-nav a,
-nav .dropbtn{
-  display: inline-block;
-  padding: var(--nav-pad-y) var(--nav-pad-x);
-  color: var(--brand);
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 10px;
-}
-
 /* dropdown 容器 */
 nav .dropdown{ position: relative; display: inline-block; }
 
@@ -381,34 +370,12 @@ input[type="radio"], input[type="checkbox"]{
   gap: 16px;
   flex: 1;
 }
-.main-nav > a, .main-nav .dropbtn{
-  color: var(--brand);
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  padding: 4px 6px;
-}
 
 /* ===== Nav（膠囊化，移除底線；以後段規則為準） ===== */
 .nav-left{
   display: inline-flex;
   align-items: center;
   gap: 10px;
-}
-.nav-left a,
-.nav-left .dropbtn{
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 13px;
-  letter-spacing: .3px;
-  color: var(--brand-green);
-  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
 }
 .nav-left a:hover,
 .nav-left .dropbtn:hover{
@@ -460,24 +427,6 @@ body.menu-open .nav-left .dropbtn{
   box-shadow: var(--shadow-sm);
   padding: 6px;
   z-index: 99;
-}
-.nav-left .dropdown:hover .dropdown-content,
-.nav-left .dropdown:focus-within .dropdown-content{ display: block; }
-.nav-left .dropdown-content a{
-  display: block;
-  padding: 9px 12px;
-  margin: 2px 4px;
-  border-radius: 10px;
-  color: var(--text);
-  text-decoration: none;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.nav-left .dropdown-content a:hover,
-.nav-left .dropdown-content a:focus-visible{
-  background: #edf7ef;
-  color: var(--brand-green);
-  outline: none;
 }
 
 /* 右側登入/登出 CTA（以後面藍綠版本為主） */
@@ -577,7 +526,7 @@ fieldset.card .actions label{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 64px;
+  min-height: 55px;
   background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.6));
   backdrop-filter: saturate(150%) blur(6px);
 }
@@ -589,7 +538,7 @@ fieldset.card .actions label{
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 1px 2px 20px rgba(0,0,0,.20);
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 /* 漢堡鍵 */
@@ -992,11 +941,12 @@ body.menu-open{ overflow: hidden; }
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
-  border-radius: 999px;
+  border-radius: 10px;
   text-decoration: none;
   font-weight: 500;
   letter-spacing: .2px;
   color: #333;          /* 文字主色改為藍綠 */
+  font-size: 12px;
   transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .12s ease;
 }
 
@@ -1037,11 +987,12 @@ body.menu-open .nav-left .dropbtn{
 .nav-left .dropdown-content{
   display: none;
   position: absolute;
-  left: 0; top: calc(100% + 8px);
+  left: 0;
+  top: calc(100% + 8px);
   min-width: 220px;
   background: rgba(255,255,255,.96);
   border: 1px solid rgba(59,179,195,.18);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 18px 40px rgba(0,0,0,.08);
   backdrop-filter: blur(6px) saturate(140%);
   padding: 8px;
@@ -1055,8 +1006,9 @@ body.menu-open .nav-left .dropbtn{
   margin: 2px 2px;
   border-radius: 10px;
   color: var(--ink);
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
+  font-size: 12px;
 }
 .nav-left .dropdown-content a:hover,
 .nav-left .dropdown-content a:focus-visible{
