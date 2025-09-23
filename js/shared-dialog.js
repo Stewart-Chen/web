@@ -45,7 +45,7 @@ dialog .panel::before{
 }
 
 /* 表單元素 */
-dialog form.card label{ display:block; margin:12px 0 8px; font-weight:700; }
+dialog form.card label{ display:block;}
 dialog form.card label input, dialog form.card label select{
   width:100%;
   box-sizing:border-box;
@@ -295,7 +295,7 @@ body.modal-open{ overflow: hidden; }
           </label>
         </div>
 
-        <div class="actions" style="margin-top:10px;">
+        <div class="actions">
           <button type="submit" class="btn primary">產生推薦</button>
           <button type="reset" class="btn secondary">清除</button>
           <button type="button" class="btn secondary" onclick="document.getElementById('search-modal').close()">關閉</button>
