@@ -1430,10 +1430,10 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .course-card .course-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;               /* 讓 body 撐滿可用高度 */
-  align-items: flex-start;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* flex: 1; */               /* 讓 body 撐滿可用高度 */
+  /* align-items: flex-start; */
 }
 
 .course-card .cta {
@@ -1455,6 +1455,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 .course-card .title-row .badge {
   align-self: center;    /* 保證在同一行垂直置中 */
+  align-self: start;
 }
 
 .course-card .course-link {
