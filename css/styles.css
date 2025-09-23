@@ -61,7 +61,7 @@ body{
   padding: 0px 0 0px;
   box-shadow: 0 2px 6px rgba(0,0,0,.05);
   border-bottom: 1px solid #e7efe7;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   position: sticky;
   top: 0;
   z-index: 1100; /* 要比內容、底部選單更高 */
