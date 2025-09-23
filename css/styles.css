@@ -469,12 +469,13 @@ h2{
 
 .flow-md h2 {
   position:relative;
+  padding: 0px 8px;
 }
 
 .flow-md h2::after {
   content: "";
   position: absolute;
-  left: 0;
+  left: 8px;
   bottom: -6px;
   width: 28px;
   height: 3px;
