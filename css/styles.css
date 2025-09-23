@@ -1396,6 +1396,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .course-card.card{
   display: flex;              /* 用直向 flex 比 grid 更單純 */
   flex-direction: column;
+  height: 100%;
 }
 
 /* 圖片容器固定 4:3 */
