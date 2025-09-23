@@ -59,19 +59,16 @@ async function loadCourses(){
               <button class="nav next" aria-label="下一張">&#10095;</button>
               <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
             ` : ``}
-          </div>
-
-          <div class="course-body">
-
-            <a href="course.html?id=${c.id}" class="course-link">
+          </div> 
+          <a href="course.html?id=${c.id}" class="course-link">
+            <div class="course-body">
               <div class="title-row">
                 <h3>${c.title}</h3>
                 ${cat ? `<div class="badge">${cat}</div>` : ``}
               </div>
               <p class="muted">${(c.summary || '').slice(0, 80)}</p>
-            </a>
-
-          </div>
+            </div>
+          </a>
         </article>
       </li>
     `;
@@ -441,16 +438,15 @@ function renderHomeCourses(){
               <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
             ` : ``}
           </div>
-
-          <div class="course-body">            
-            <a href="course.html?id=${c.id}" class="course-link">
+          <a href="course.html?id=${c.id}" class="course-link">
+            <div class="course-body">            
               <div class="title-row">
                 <h3>${c.title}</h3>
                 ${cat ? `<div class="badge">${cat}</div>` : ``}
               </div>
               <p class="muted">${(c.summary || '').slice(0, 80)}</p>
-            </a>
-          </div>
+            </div>
+          </a>
         </article>
       `;
     }).join('');
