@@ -1456,3 +1456,13 @@ h3 + p, h4 + p{margin-top: .2em;}
 .course-card .title-row .badge {
   align-self: center;    /* 保證在同一行垂直置中 */
 }
+
+.course-card .course-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.course-card .course-link:hover h4 {
+  text-decoration: underline;
+}
