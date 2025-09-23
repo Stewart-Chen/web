@@ -62,12 +62,15 @@ async function loadCourses(){
           </div>
 
           <div class="course-body">
-            <div class="title-row">
-              <h3>${c.title}</h3>
-              ${cat ? `<div class="badge">${cat}</div>` : ``}
-            </div>
-            <p class="muted">${(c.summary || '').slice(0, 80)}</p>
-            <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>
+
+            <a href="course.html?id=${c.id}" class="course-link">
+              <div class="title-row">
+                <h3>${c.title}</h3>
+                ${cat ? `<div class="badge">${cat}</div>` : ``}
+              </div>
+              <p class="muted">${(c.summary || '').slice(0, 80)}</p>
+            </a>
+
           </div>
         </article>
       </li>
@@ -439,14 +442,7 @@ function renderHomeCourses(){
             ` : ``}
           </div>
 
-          <div class="course-body">
-            <!--<div class="title-row">
-              <h3>${c.title}</h3>
-              ${cat ? `<div class="badge">${cat}</div>` : ``}
-            </div>
-            <p class="muted">${(c.summary || '').slice(0, 80)}</p>
-            <div class="cta"><a class="btn primary" href="course.html?id=${c.id}">查看課程</a></div>-->
-            
+          <div class="course-body">            
             <a href="course.html?id=${c.id}" class="course-link">
               <div class="title-row">
                 <h3>${c.title}</h3>
@@ -454,7 +450,6 @@ function renderHomeCourses(){
               </div>
               <p class="muted">${(c.summary || '').slice(0, 80)}</p>
             </a>
-            
           </div>
         </article>
       `;
