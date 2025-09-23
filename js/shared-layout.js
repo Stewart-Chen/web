@@ -65,7 +65,7 @@
             </a>
           
             <a href="#" id="login-link" class="btn nav-cta">
-              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" focusable="false">
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 22 22" focusable="false">
                 <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z" fill="currentColor"/>
               </svg>
               <span>登入</span>
