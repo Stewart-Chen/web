@@ -543,8 +543,8 @@ fieldset.card .actions label{
 
 /* 漢堡鍵 */
 .hamburger{
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(46,125,50,.18);
@@ -565,7 +565,7 @@ fieldset.card .actions label{
 }
 .hamburger .bar{
   position: relative;
-  width: 20px;
+  width: 16px;
   height: 2px;
   background: #2e7d32;
   border-radius: 2px;
@@ -576,14 +576,14 @@ fieldset.card .actions label{
   content: "";
   position: absolute;
   left: 0;
-  width: 20px;
+  width: 16px;
   height: 2px;
   background: #2e7d32;
   border-radius: 2px;
   transition: transform .18s ease, opacity .18s ease;
 }
-.hamburger .bar::before{ transform: translateY(-6px); }
-.hamburger .bar::after{ transform: translateY(6px); }
+.hamburger .bar::before{ transform: translateY(-5px); }
+.hamburger .bar::after{ transform: translateY(5px); }
 body.menu-open .hamburger{ background: rgba(46,125,50,.10); }
 body.menu-open .hamburger .bar{ background: transparent; }
 body.menu-open .hamburger .bar::before{ transform: rotate(45deg); }
@@ -1106,14 +1106,6 @@ h3 + p, h4 + p{margin-top: .2em;}
     padding: 20px;
   }
   .nav-right{gap: 5px;}
-  .hamburger .bar,
-  .hamburger .bar::before,
-  .hamburger .bar::after {
-    width: 16px;   /* 原本 20px → 縮短 */
-    height: 2px;   /* 可以保持 2px 或改 1.5px 更細 */
-  }
-  .hamburger .bar::before { transform: translateY(-5px); } /* 原本 -6px → -5px */
-  .hamburger .bar::after  { transform: translateY(5px); }  /* 原本 6px → 5px */
   .header-bar{
     display: flex;
     flex-wrap: wrap;
@@ -1126,10 +1118,6 @@ h3 + p, h4 + p{margin-top: .2em;}
   .btn.nav-cta svg{
     width: 14px;
     height: 14px;
-  }
-  .hamburger{
-    width: 30px;
-    height: 30px;
   }
   /* 移除桌機左側選單（手機用抽屜） */
   .nav-left{ display: none !important; }
