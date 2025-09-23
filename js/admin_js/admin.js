@@ -196,7 +196,7 @@
 
     const { data, error } = await sb
       .from('courses')
-      .select('id,title,teacher,published,deleted_at,created_at')
+      .select('id,title,teacher,category,published,deleted_at,created_at')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -210,6 +210,7 @@
           <div class="title">${c.title}</div>
           <div class="meta">
             <span class="badge">老師：${c.teacher || '—'}</span>
+            <span class="badge">分類：${c.category === 'horti' ? '園藝' : (c.category === 'art' ? '藝術' : '—')}</span>
             <span class="badge">${c.published ? '已發佈' : '未發佈'}</span>
             ${c.deleted_at ? '<span class="badge">已刪除</span>' : ''}
             <span class="muted">${new Date(c.created_at).toLocaleString()}</span>
@@ -238,6 +239,7 @@
     document.getElementById('ac-summary').value   = c?.summary ?? '';
     document.getElementById('ac-desc').value      = c?.description ?? '';
     document.getElementById('ac-teacher').value   = c?.teacher ?? '';
+    document.getElementById('ac-category').value  = c?.category ?? '';
     document.getElementById('ac-published').checked = !!c?.published;
 
     const sd = document.getElementById('admin-soft-delete');
@@ -305,6 +307,7 @@
       summary:     $v('ac-summary')     || null,
       description: $v('ac-desc')        || null,
       teacher:     $v('ac-teacher'),
+      category:    $v('ac-category'),
       published:   $c('ac-published'),
       // cover_url 由 gallery 推導，不從表單讀
     };
