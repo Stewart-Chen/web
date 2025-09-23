@@ -165,7 +165,7 @@ nav .dropdown:focus-within .dropbtn{
   display: grid;
   place-items: center;
   margin-top: 10px;
-  filter: drop-shadow(0 4px 10px rgba(59, 179, 195,0.3));
+  filter: drop-shadow(0 4px 10px rgba(59, 179, 195, 0.6));
 }
 
 /* ---- 老師區塊 ---- */
