@@ -622,18 +622,6 @@ body.menu-open .hamburger .bar::after{ transform: rotate(-45deg); }
   transition: transform .18s ease, opacity .18s ease;
   z-index: 999;
 }
-.nav-mobile a{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: var(--text);
-  font-size: 16px;
-  line-height: 1.25;
-  margin: 0;
-}
 .nav-mobile a:hover{ background: var(--mint-bg); }
 .nav-mobile .group{
   padding-top: 6px;
@@ -877,22 +865,18 @@ body.menu-open{ overflow: hidden; }
   align-items: center;
   gap: 10px;
   padding: 12px 14px 12px 16px;
-  border-radius: 12px;
+  border-radius: 10px;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 12px;
   color: var(--ink);
+  line-height: 1.0;
   transition: background .18s ease, color .18s ease, transform .12s ease, box-shadow .18s ease;
 }
 
 /* 前導圓點（取代傳統項目符號） */
 .nav-mobile a::before{
   content: "";
-  width: 6px;
-  height: 6px;
-  flex: 0 0 6px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-blue), #a7dcd7);
-  /* box-shadow: 0 0 0 2px rgba(59,179,195,.15); */
 }
 
 /* Hover：柔和藍綠漸層 + 微浮起 */
@@ -914,12 +898,6 @@ body.menu-open{ overflow: hidden; }
 .nav-mobile a.sub{
   padding-left: 28px;
   font-weight: 600;
-}
-.nav-mobile a.sub::before{
-  width: 4px;
-  height: 4px;
-  flex-basis: 4px;
-  /* box-shadow: 0 0 0 2px rgba(59,179,195,.12); */
 }
 
 /* 背景遮罩更柔和 */
@@ -1366,7 +1344,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 /* ===== sticky chips bar ===== */
 .sticky-chips{
   position: sticky;
-  top: var(--header-height, 65px); /* 視你的 header 高度調整 */
+  top: var(--header-height, 55px); /* 視你的 header 高度調整 */
   z-index: 50;
   display: flex;
   gap: 10px;
@@ -1393,6 +1371,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
   font-size: .85rem;
+  border-radius: 10px;
 }
 @media (hover:hover){
   .chip:hover{
@@ -1417,7 +1396,7 @@ h3 + p, h4 + p{margin-top: .2em;}
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: 15px;               /* ← chip 之間的間距 */
     padding: 8px 15px;
-    top: var(--header-height, 65px);
+    top: var(--header-height, 55px);
   }
   .sticky-chips .chip{
     text-align: center;      /* 文字置中 */
