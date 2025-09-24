@@ -1312,10 +1312,8 @@ h3 + p, h4 + p{margin-top: .2em;}
   padding: 10px 12px;
   margin: 0px 0 5px;
   backdrop-filter: blur(10px);
-  /* box-shadow: 0 8px 24px rgba(0,0,0,.06); */
   overflow-x: auto;                /* 手機可左右滑 */
   scrollbar-width: none;           /* 火狐隱藏捲軸 */
-  /* width: 100%; */
 }
 .sticky-chips::-webkit-scrollbar{ display:none; } /* WebKit 隱藏捲軸 */
 
@@ -1323,15 +1321,15 @@ h3 + p, h4 + p{margin-top: .2em;}
 .chip{
   flex: 0 0 auto;
   padding: 5px 15px;
-  border: 1px solid var(--accent-blue);
-  background: #fff;
-  color: var(--ink);
   font-weight: 600;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
   font-size: .85rem;
   border-radius: 999px;
+  background: #d9f2f0;
+  color: var(--ink);
+  border: none;
 }
 @media (hover:hover){
   .chip:hover{
@@ -1343,7 +1341,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 /* 作用中（所在區段） */
 .chip.active{
-  background: #d9f2f0;
+  background: linear-gradient(135deg, var(--accent-blue), #a7dcd7);
   box-shadow: 0 6px 16px rgba(59,179,195,.22);
 }
 
