@@ -184,7 +184,7 @@ async function loadCourse(){
 
 // ========= 共用：課程卡片模板 =========
 function courseCardHTML(c){
-  const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
+  const cat  = c.category ? (c.category === 'horti' ? '園藝x汎汎' : '藝術x小D') : '';
   const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
   return `
     <article class="course-card card"
