@@ -727,6 +727,7 @@ body.menu-open{ overflow: hidden; }
   color: #0f172a;
 }
 .input, textarea, select{
+  box-sizing: border-box;
   width: 100%;
   border: none;
   border-radius: 10px;
