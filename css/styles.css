@@ -6,15 +6,18 @@
   --shadow: 0 10px 24px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06);
 
   /* 品牌色（以 Healing 版本為主） */
-  --brand: #1b5e20;
-  --brand-2: #388e3c;
+  --brand: #66bb6a;
+  --brand-2: #81c784;
+  --brand-3: #4caf50;
+  --mint-50: #e8f5e9;  /* 淺底綠，用於 secondary */
+  --mint-100:#c8e6c9;  /* hover 淺底綠 */
   --accent-blue: #3bb3c3;
   --accent-purple: #a18cd1;
 
   /* 文字與輔助色 */
   --ink: #2d352d;
   --muted: #6b7280;
-  --text-strong: #1f2d1f;
+  --text-strong: #1b5e20;
   --text: #2c3a2c;
   --divider: #e6efe8;
   --mint-bg: #f6fbf8;
@@ -28,6 +31,10 @@
   --nav-pad-y: 4px;
   --nav-pad-x: 6px;
   --bottom-nav-h: 56px;
+  --radius-pill: 999px;
+  --btn-h: 40px;
+  --btn-px: 16px;
+  --btn-gap: 8px;
 }
 
 /* ---- Reset / Base ---- */
@@ -265,11 +272,11 @@ input, select, textarea{
 /* ---- 按鈕 ---- */
 button, .btn{
   border-radius: 10px;
-  padding: 8px 14px;
+  padding: 10px 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background .3s ease, opacity .2s ease, transform .15s ease;
-  border: 1px solid rgba(0,0,0,.15);
+  border: 1px solid var(--brand-2);
   background: #fff;
   color: var(--ink);
   text-decoration: none;
@@ -279,22 +286,31 @@ button, .btn{
   white-space: nowrap;
   font-size: 12px;
 }
-button:hover, .btn:hover{ transform: translateY(-1px); }
+
+button:hover, .btn:hover{ transform: translateY(-1px);  }
 button.primary, .btn.primary{
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  background: var(--brand);
   color: #fff;
   border: none;
 }
 button.primary:hover, .btn.primary:hover{
-  background: linear-gradient(135deg, var(--brand-2), #3b9968);
+  background: var(--brand-2);
+}
+button.primary:active , .btn.primary:active {
+  background: var(--brand-3);
 }
 button.secondary, .btn.secondary{
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.15);
+  background: transparent;
+  border-color: var(--brand-2);
+  color: var(--ink);
 }
 .btn.danger{ background: #b00020; color: #fff; border: none; }
 /* 一分鐘頁的小綠按鈕 */
-.btn.ok{ background: #ecfdf5; border: 1px solid #b7ebc0; color: #1b5e20; }
+.btn.ok{
+  background: var(--mint-50);
+  border-color: var(--brand-2);
+  color: var(--ink);
+}
 
 /* ---- Prose ---- */
 .prose p{ margin: 0 0 12px 0; }
@@ -680,7 +696,7 @@ body.menu-open{ overflow: hidden; }
 .pill{
   border-radius: 999px;
   padding: 8px 14px;
-  border: 1px solid #d7ead9;
+  border: 1px solid var(--brand-2);
   background: #fff;
   cursor: pointer;
   font-weight: 600;
@@ -733,7 +749,7 @@ body.menu-open{ overflow: hidden; }
   height: 34px;
   padding: 0 14px;
   border-radius: 10px;
-  border: 1px solid #d7ead9;
+  border: 1px solid var(--brand-2);
   background: #fff;
   cursor: pointer;
   font-weight: 700;
@@ -742,7 +758,7 @@ body.menu-open{ overflow: hidden; }
 }
 .scale .opt:hover{ transform: translateY(-1px); }
 .scale input:checked + .opt{
-  background: #f1fbf3;
+  background: var(--mint-50);
   border-color: var(--brand);
   outline: 2px solid var(--brand);
   outline-offset: -2px;
