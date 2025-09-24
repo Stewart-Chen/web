@@ -275,7 +275,7 @@ textarea:focus {
   outline: none;                  /* 拿掉預設黑框 */
 }
 
-.actions{ display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+.actions{ display: flex; gap: 10px; align-items: center; margin-top: 18px; }
 
 /* ---- 按鈕 ---- */
 button, .btn{
