@@ -1325,10 +1325,9 @@ h3 + p, h4 + p{margin-top: .2em;}
 .chip{
   flex: 0 0 auto;
   padding: 5px 15px;
-  /* border-radius: 999px; */
-  border: 1px solid rgba(59,179,195,.28);
+  border: 1px solid var(--accent-blue);
   background: #fff;
-  color: #0c4030;
+  color: var(--ink);
   font-weight: 600;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
@@ -1346,9 +1345,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 /* 作用中（所在區段） */
 .chip.active{
-  border-color: rgba(59,179,195,.45);
-  background: linear-gradient(135deg, var(--accent-blue, #3bb3c3), #a7dcd7);
-  color: #0c4030;
+  background: #d9f2f0;
   box-shadow: 0 6px 16px rgba(59,179,195,.22);
 }
 
