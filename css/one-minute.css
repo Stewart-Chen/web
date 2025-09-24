@@ -132,8 +132,8 @@ fieldset.group{
 
   /* 5) 列印時把 textarea 放大，方便手寫/填寫 */
   textarea {
-    min-height: 35mm !important;   /* 你可以改成 70–90mm */
-    height: 35mm !important;
+    min-height: 25mm !important;   /* 你可以改成 70–90mm */
+    height: 25mm !important;
     line-height: 1.4;
   }
 
