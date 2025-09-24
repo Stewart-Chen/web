@@ -139,4 +139,10 @@ fieldset.group{
 
   /* 6) A4 版面 */
   @page { size: A4; margin: 14mm; }
+
+  .input, textarea, select {
+    border: 1px solid #000;  /* 列印時用黑邊框（或換顏色） */
+    background: #fff !important; /* 背景建議變白，避免浪費墨水 */
+    color: #000;             /* 確保字體顏色清楚 */
+  }
 }
