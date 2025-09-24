@@ -267,6 +267,7 @@ input, select, textarea{
   font-size: 12px;
   font-weight: 600;
   background: var(--mint-50);
+  color: #757575;
 }
 input:focus,
 select:focus,
@@ -732,7 +733,7 @@ body.menu-open{ overflow: hidden; }
   padding: 8px 8px;
   outline: 0;
   background: var(--mint-50);
-    font-size: 12px;
+  font-size: 12px;
   font-weight: 600;
 }
 .input:focus, textarea:focus, select:focus{
@@ -1481,3 +1482,4 @@ h3 + p, h4 + p{margin-top: .2em;}
   display: flex;
   gap: 8px 13px;
 }
+
