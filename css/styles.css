@@ -264,6 +264,7 @@ input, select, textarea{
   border: none;
   padding: 10px 10px;
   font-size: 12px;
+  font-weight: 600;
   background: var(--mint-50);
 }
 input:focus,
