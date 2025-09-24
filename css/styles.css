@@ -533,8 +533,8 @@ fieldset.card .actions label{
   color: inherit;
 }
 .site-title .logo{
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   filter: drop-shadow(0 4px 10px rgba(0,0,0,.1));
 }
 
@@ -556,7 +556,7 @@ fieldset.card .actions label{
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 1px 2px 20px rgba(0,0,0,.20);
-  font-size: 1rem;
+  font-size: 1.3rem;
 }
 
 /* 漢堡鍵 */
