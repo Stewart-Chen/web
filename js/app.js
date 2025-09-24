@@ -7,77 +7,6 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
-// ====== 探索課程頁：完整課程清單（支援多圖輪播） ======
-async function loadCourses(){
-  const list  = document.getElementById('courses');
-  const empty = document.getElementById('courses-empty');
-  if (!list) return;
-
-  // 一次把 gallery 一起抓回來
-  const { data, error } = await sb
-    .from('courses')
-    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at')
-    .eq('published', true)
-    .is('deleted_at', null)
-    .order('created_at', { ascending: false });
-
-  if (error){ console.error('[all courses] load error:', error); return; }
-
-  if (!data || data.length === 0){
-    list.innerHTML = '';
-    empty?.classList.remove('hidden');
-    return;
-  }
-
-  empty?.classList.add('hidden');
-
-  // 轉成可用圖片 URL（如果沒有 gallery 就退回 cover_url）
-  for (const c of data){
-    const paths = Array.isArray(c.gallery) ? c.gallery : [];
-    c._galleryUrls = paths.length
-      ? await toPublicUrls('course-gallery', paths)   // 你專案已內建這個 helper
-      : [ c.cover_url || ('https://picsum.photos/seed/'+encodeURIComponent(c.id)+'/640/360') ];
-  }
-
-  // 輸出卡片（含輪播容器）
-  list.innerHTML = data.map(c => {
-    const imgs = (c._galleryUrls && c._galleryUrls.length) ? c._galleryUrls : [];
-    const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
-    return `
-      <li>
-        <article class="course-card card"
-                 data-category="${c.category || ''}"
-                 data-teacher="${c.teacher || ''}">
-          <div class="carousel" data-total="${imgs.length}" data-index="0">
-            <div class="track">
-              ${imgs.map((url, i) => `
-                <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
-              `).join('')}
-            </div>
-            ${imgs.length > 1 ? `
-              <button class="nav prev" aria-label="上一張">&#10094;</button>
-              <button class="nav next" aria-label="下一張">&#10095;</button>
-              <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
-            ` : ``}
-          </div> 
-          <a href="course.html?id=${c.id}" class="course-link">
-            <div class="course-body">
-              <div class="title-row">
-                <h3>${c.title}</h3>
-                ${cat ? `<div class="badge">${cat}</div>` : ``}
-              </div>
-              <p class="muted">${(c.summary || '').slice(0, 80)}</p>
-            </div>
-          </a>
-        </article>
-      </li>
-    `;
-  }).join('');
-
-  // 啟用輪播互動（按鈕 + 觸控滑動）
-  enableCarousels(list);
-}
-
 // ====== 課程頁 ======
 async function loadCourse(){
   const idParam = getParam('id');
@@ -253,15 +182,111 @@ async function loadCourse(){
   loadProgress(lessons || []);
 }
 
-// ====== 頁面初始化 ======
-function initPage(){
-  const isHome = !!document.getElementById('btn-more-courses'); // 首頁才會有這顆
-  if (isHome) {
-    renderHomeCourses();   // ← 首頁用這個
-  } else if (document.getElementById('courses')) {
-    loadCourses();         // ← 其他頁才載入完整清單
+// ========= 共用：課程卡片模板 =========
+function courseCardHTML(c){
+  const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
+  const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
+  return `
+    <article class="course-card card"
+             data-category="${c.category || ''}"
+             data-teacher="${c.teacher || ''}">
+      <div class="carousel" data-total="${imgs.length}" data-index="0">
+        <div class="track">
+          ${imgs.map((url, i) => `
+            <div class="slide"><img src="${url}" alt="${c.title} ${i+1}" loading="lazy" width="640" height="360"></div>
+          `).join('')}
+        </div>
+        ${imgs.length > 1 ? `
+          <button class="nav prev" aria-label="上一張">&#10094;</button>
+          <button class="nav next" aria-label="下一張">&#10095;</button>
+          <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
+        ` : ``}
+      </div> 
+      <a href="course.html?id=${c.id}" class="course-link">
+        <div class="course-body">
+          <div class="title-row">
+            <h3>${c.title}</h3>
+            ${cat ? `<div class="badge">${cat}</div>` : ``}
+          </div>
+          <p class="muted">${(c.summary || '').slice(0, 80)}</p>
+        </div>
+      </a>
+    </article>
+  `;
+}
+
+// ========= 抓課程並渲染 =========
+async function renderCourses(){
+  const listEl  = document.getElementById('courses-list');
+  const emptyEl = document.getElementById('courses-empty');
+  const moreBtn = document.getElementById('btn-more-courses');
+  if (!listEl) return;
+
+  const isHome = !!moreBtn;
+  const LIMIT  = isHome ? 6 : null;
+
+  if (!window.sb || typeof window.sb.from !== 'function'){
+    listEl.innerHTML = '';
+    emptyEl?.classList.remove('hidden');
+    moreBtn?.classList.add('hidden');
+    return;
+  }
+  const sb = window.sb;
+
+  // 查詢
+  let query = sb
+    .from('courses')
+    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at', { count: LIMIT ? 'exact' : null })
+    .eq('published', true)
+    .is('deleted_at', null)
+    .order('created_at', { ascending: false });
+
+  if (LIMIT) query = query.range(0, LIMIT - 1);
+
+  const { data, error, count } = await query;
+  if (error){
+    console.warn('[courses] load error:', error);
+    emptyEl?.classList.remove('hidden');
+    moreBtn?.classList.add('hidden');
+    return;
   }
 
+  const items = (data || []);
+  if (!items.length){
+    listEl.innerHTML = '';
+    emptyEl?.classList.remove('hidden');
+    moreBtn?.classList.add('hidden');
+    return;
+  }
+  emptyEl?.classList.add('hidden');
+
+  // 圖片 URL
+  for (const c of items){
+    const paths = Array.isArray(c.gallery) ? c.gallery : [];
+    c._galleryUrls = paths.length
+      ? await toPublicUrls('course-gallery', paths)
+      : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
+  }
+
+  // 渲染
+  listEl.innerHTML = items.map(courseCardHTML).join('');
+
+  // 輪播
+  enableCarousels(listEl);
+
+  // 首頁的「查看更多」
+  if (isHome){
+    if (typeof count === 'number' ? count > items.length : items.length >= LIMIT) {
+      moreBtn.classList.remove('hidden');
+    } else {
+      moreBtn.classList.add('hidden');
+    }
+  }
+}
+
+// ====== 頁面初始化 ======
+function initPage(){
+  if (document.getElementById('courses-list')) renderCourses();
   if (document.getElementById('course-info')) loadCourse();
 }
 document.addEventListener('DOMContentLoaded', initPage);
@@ -347,133 +372,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const teacherKey = params.get('teacher'); // fanfan / xd
   renderTeacherPicksFromDb(teacherKey);
 });
-
-// ====== 首頁課程一覽（最多 4 筆 + 查看更多） ======
-function renderHomeCourses(){
-  const LIMIT = 6;     // 首頁顯示幾張卡片
-  let rendered = false;
-
-  function waitFor(pred, {interval = 80, timeout = 8000} = {}){
-    return new Promise((resolve, reject)=>{
-      const start = Date.now();
-      (function tick(){
-        try{ const v = pred(); if (v) return resolve(v); }catch{}
-        if (Date.now() - start > timeout) return reject(new Error('waitFor timeout'));
-        setTimeout(tick, interval);
-      })();
-    });
-  }
-
-  async function run(){
-    if (rendered) return;
-
-    // 1) 等 DOM
-    if (document.readyState === 'loading') {
-      await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
-    }
-
-    const listEl  = document.getElementById('courses-list');
-    const emptyEl = document.getElementById('courses-empty');
-    const moreBtn = document.getElementById('btn-more-courses');
-    if (!listEl) return;
-
-    // 2) 等 Supabase
-    await waitFor(() => window.sb && typeof window.sb.from === 'function').catch(()=>{});
-    const sb = window.sb;
-    if (!sb){
-      listEl.innerHTML = '';
-      emptyEl?.classList.remove('hidden');
-      moreBtn?.classList.add('hidden');
-      return;
-    }
-
-    // 3) 抓資料（含 gallery）
-    const { data, error, count } = await sb
-      .from('courses')
-      .select('id,title,summary,description,cover_url,gallery,category,created_at', { count: 'exact' })
-      .eq('published', true)
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false })
-      .range(0, LIMIT - 1); // 安全保險只抓 LIMIT 筆
-
-    if (error){
-      console.warn('[home courses] load error:', error);
-      emptyEl?.classList.remove('hidden');
-      moreBtn?.classList.add('hidden');
-      return;
-    }
-
-    const items = (data || []).slice(0, LIMIT);
-
-    if (!items.length){
-      listEl.innerHTML = '';
-      emptyEl?.classList.remove('hidden');
-      moreBtn?.classList.add('hidden');
-      return;
-    }
-
-    // 轉 URL：若有多圖用 Storage 取 public URL，否則退回 cover_url
-    for (const c of items){
-      const paths = Array.isArray(c.gallery) ? c.gallery : [];
-      c._galleryUrls = paths.length
-        ? await toPublicUrls('course-gallery', paths)
-        : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
-    }
-
-    // 輸出卡片（含輪播結構）
-    listEl.innerHTML = items.map(c => {
-      const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
-      const imgs = c._galleryUrls && c._galleryUrls.length ? c._galleryUrls : [];
-      return `
-        <article class="course-card card">
-          <div class="carousel" data-total="${imgs.length}" data-index="0">
-            <div class="track">
-              ${imgs.map((url, i) => `
-                <div class="slide"><img src="${url}" alt="${c.title} ${i+1}"></div>
-              `).join('')}
-            </div>
-            ${imgs.length > 1 ? `
-              <button class="nav prev" aria-label="上一張">&#10094;</button>
-              <button class="nav next" aria-label="下一張">&#10095;</button>
-              <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
-            ` : ``}
-          </div>
-          <a href="course.html?id=${c.id}" class="course-link">
-            <div class="course-body">            
-              <div class="title-row">
-                <h3>${c.title}</h3>
-                ${cat ? `<div class="badge">${cat}</div>` : ``}
-              </div>
-              <p class="muted">${(c.summary || '').slice(0, 80)}</p>
-            </div>
-          </a>
-        </article>
-      `;
-    }).join('');
-
-    // 啟用輪播互動（很重要！）
-    enableCarousels(listEl);
-
-    // 4) 顯示「查看更多」
-    if (typeof count === 'number' ? count > LIMIT : items.length >= LIMIT) {
-      moreBtn?.classList.remove('hidden');
-    } else {
-      moreBtn?.classList.add('hidden');
-    }
-
-    // 5) 再保險裁切 DOM（若其它腳本有多塞卡片）
-    const cards = listEl.querySelectorAll('.course-card');
-    if (cards.length > LIMIT) {
-      [...cards].slice(LIMIT).forEach(el => el.remove());
-      moreBtn?.classList.remove('hidden');
-    }
-
-    rendered = true;
-  }
-
-  run().catch(err => console.error('[home courses] unexpected:', err));
-}
-
 
 // 平滑滾動到錨點
 document.addEventListener('click', (e)=>{
