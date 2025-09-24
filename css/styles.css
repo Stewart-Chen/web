@@ -1294,7 +1294,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 /* 首頁卡片微調：接近參考圖排版 */
 .course-card.card{padding: 0;overflow:hidden;}
-.course-card .course-body{padding: 10px 14px 14px;}
+.course-card .course-body{padding: 8px 11px 8px;}
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
 
@@ -1454,8 +1454,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .course-card .title-row {
   display: flex;
   align-items: center;   /* 垂直置中 */
-  justify-content: space-between; /* 左右分散 */
-  gap: 14px;              /* 標題與 badge 保持一點距離 */
+  gap: 3px;              /* 標題與 badge 保持一點距離 */
 }
 
 .course-card .title-row h3 {
