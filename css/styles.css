@@ -1060,6 +1060,7 @@ p{
 
 /* 標題後接段落時，首段更貼近一些 */
 h3 + p, h4 + p{margin-top: .2em;}
+.service{margin-top: 0.8em;}
 
 .bottom-nav{ display: none; }
 
