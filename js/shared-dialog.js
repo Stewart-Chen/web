@@ -161,6 +161,31 @@ body.modal-open{ overflow: hidden; }
   border: 1px solid #d7ead9; background: #fff; font-weight: 700;
 }
 #search-suggest .chip:hover{ background: #ecfdf5; border-color:#b7ebc0; }
+#auth-modal .auth-view * {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#auth-modal .auth-view label {
+  display: flex;
+  flex-direction: column;   /* 垂直排列 */
+  gap: 6px;                 /* 標籤文字與輸入框間距 */
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;               /* 清掉你原本的 label padding，避免左右不齊 */
+  line-height: 1.3;
+}
+
+#auth-modal .auth-view label + label {
+  margin-top: 12px;
+}
+
+#auth-modal .auth-view .actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 `.trim();
     document.head.appendChild(style);
   }
