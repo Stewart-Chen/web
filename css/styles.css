@@ -276,7 +276,7 @@ button, .btn{
   font-weight: 600;
   cursor: pointer;
   transition: background .3s ease, opacity .2s ease, transform .15s ease;
-  border: 1px solid var(--brand-2);
+  border: none;
   background: #fff;
   color: var(--ink);
   text-decoration: none;
@@ -285,6 +285,7 @@ button, .btn{
   justify-content: center;
   white-space: nowrap;
   font-size: 12px;
+  background: var(--mint-50);
 }
 
 button:hover, .btn:hover{ transform: translateY(-1px);  }
@@ -299,17 +300,13 @@ button.primary:hover, .btn.primary:hover{
 button.primary:active , .btn.primary:active {
   background: var(--brand-3);
 }
-button.secondary, .btn.secondary{
-  background: transparent;
-  border-color: var(--brand-2);
-  color: var(--ink);
-}
+
 .btn.danger{ background: #b00020; color: #fff; border: none; }
 /* 一分鐘頁的小綠按鈕 */
 .btn.ok{
   background: var(--mint-50);
-  border-color: var(--brand-2);
   color: var(--ink);
+  border: 1px solid var(--brand-2);
 }
 
 /* ---- Prose ---- */
