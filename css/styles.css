@@ -260,13 +260,18 @@ nav .dropdown:focus-within .dropbtn{
 .form-grid label{display: grid;gap: 8px;font-weight: 600;font-size: 0.8rem;}
 label{display: block;font-size: 12px;padding: 3px 5px;}
 input, select, textarea{
-  width: 95%;
   border-radius: 10px;
-  border: 1px solid rgba(0,0,0,.15);
-  padding: 8px 10px;
-  box-shadow: var(--shadow-sm);
-  font-family: inherit;
+  border: none;
+  padding: 10px 10px;
+  font-size: 12px;
+  background: var(--mint-50);
 }
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;                  /* 拿掉預設黑框 */
+}
+
 .actions{ display: flex; gap: 10px; align-items: center; margin-top: 6px; }
 
 /* ---- 按鈕 ---- */
