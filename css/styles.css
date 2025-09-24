@@ -164,7 +164,7 @@ nav .dropdown:focus-within .dropbtn{
 .feature{
   display: grid;
   grid-template-columns: 56px 1fr;
-  gap: 12px;
+  gap: 18px;
   align-items: start;
 }
 .feature .icon{
@@ -1060,7 +1060,7 @@ p{
 
 /* 標題後接段落時，首段更貼近一些 */
 h3 + p, h4 + p{margin-top: .2em;}
-.service{margin-top: 0.8em;}
+.service{margin-top: 0.5em;}
 
 .bottom-nav{ display: none; }
 
