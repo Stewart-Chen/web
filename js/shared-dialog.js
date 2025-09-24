@@ -57,7 +57,7 @@ dialog form.card label input:focus-visible, dialog form.card label select:focus-
   box-shadow: 0 0 0 4px rgba(59,179,195,.22);
 }
 dialog form.card .actions{
-  display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
+  display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;
 }
 
 /* === Auth Tabs（登入／註冊）=== */
@@ -154,7 +154,6 @@ body.modal-open{ overflow: hidden; }
 #search-input:focus-visible{
   outline: none;
   box-shadow: 0 0 0 4px rgba(59,179,195,.22);
-  border-color: var(--accent-blue, #3bb3c3);
 }
 #search-suggest{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 #search-suggest .chip{
