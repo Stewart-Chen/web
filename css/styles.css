@@ -693,8 +693,7 @@ body.menu-open{ overflow: hidden; }
 .pill{
   border-radius: 999px;
   padding: 8px 14px;
-  border: 1px solid var(--brand-2);
-  background: #fff;
+  background: #d9f2f0;
   cursor: pointer;
   font-weight: 600;
   letter-spacing: .5px;
@@ -703,9 +702,8 @@ body.menu-open{ overflow: hidden; }
 }
 .pill:hover{ transform: translateY(-1px); }
 .pill[aria-pressed="true"]{
-  background: var(--brand);
-  color: #fff;
-  border-color: var(--brand);
+  background: linear-gradient(135deg, var(--accent-blue), #a7dcd7);
+  box-shadow: 0 6px 16px rgba(59,179,195,.22);
 }
 
 /* 控制台 grid / 輸入 */
