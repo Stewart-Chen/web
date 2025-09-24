@@ -128,7 +128,7 @@ dialog .close-btn:hover{
 /* 行動端全螢幕化 */
 @media (max-width: 420px){
   dialog{ width: 100dvw; height: 100dvh; max-width: none; max-height: none; inset: 0; transform: none; border-radius: 0; }
-  dialog .panel, dialog form.card{ height: 100%; max-height: none; padding: 16px; }
+  dialog .panel, dialog form.card{ height: 100%; max-height: calc(100dvh - 32px); padding: 16px; }
 }
 
 /* 防捲動 */
