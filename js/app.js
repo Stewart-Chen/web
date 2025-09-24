@@ -184,7 +184,8 @@ async function loadCourse(){
 
 // ========= 共用：課程卡片模板 =========
 function courseCardHTML(c){
-  const cat  = c.category ? (c.category === 'horti' ? '園藝x汎汎' : '藝術x小D') : '';
+  const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
+  const teacher  = c.teacher ? (c.teacher === 'fanfan' ? '汎汎' : '小D') : '';
   const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
   return `
     <article class="course-card card"
@@ -207,6 +208,7 @@ function courseCardHTML(c){
           <div class="title-row">
             <h3>${c.title}</h3>
             ${cat ? `<div class="badge">${cat}</div>` : ``}
+            ${teacher ? `<div class="badge">${teacher}</div>` : ``}
           </div>
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
         </div>
