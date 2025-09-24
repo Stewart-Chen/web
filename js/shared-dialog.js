@@ -563,7 +563,7 @@ body.modal-open{ overflow: hidden; }
       }
       
       box.innerHTML = picked.map(c => {
-      const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
+      const cat  = c.category ? (c.category === 'horti' ? '園藝x汎汎' : '藝術x小D') : '';
       const imgs = (c._galleryUrls && c._galleryUrls.length)
         ? c._galleryUrls
         : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
