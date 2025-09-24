@@ -51,16 +51,10 @@ dialog form.card label input, dialog form.card label select{
   box-sizing:border-box;
   margin-top:6px;
   padding:12px 12px;
-  border-radius:12px;
-  border:1px solid rgba(59,179,195,.25);
-  background:#fff;
-  transition: box-shadow .18s ease, border-color .18s ease;
-  font: inherit;
 }
 dialog form.card label input:focus-visible, dialog form.card label select:focus-visible{
   outline: none;
   box-shadow: 0 0 0 4px rgba(59,179,195,.22);
-  border-color: var(--accent-blue, #3bb3c3);
 }
 dialog form.card .actions{
   display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
@@ -113,23 +107,6 @@ dialog form.card .actions{
   to  { opacity:1; transform: none; }
 }
 
-/* === 對話框內的按鈕主題（沿用你的藍綠 CTA） === */
-dialog .actions .btn.primary{
-  border: none;
-  background: linear-gradient(135deg, var(--accent-blue, #3bb3c3), #a7dcd7);
-  color: #0c4030;
-}
-dialog .actions .btn.primary:hover{
-  background: linear-gradient(135deg, #a7dcd7, var(--accent-blue, #3bb3c3));
-}
-dialog .actions .btn.secondary{
-  background:#fff;
-  color: var(--accent-blue, #3bb3c3);
-  border:1px solid rgba(59,179,195,.28);
-}
-dialog .actions .btn.secondary:hover{
-  background: rgba(167,220,215,.16);
-}
 /* Dialog 右上角關閉 X */
 dialog .close-btn{
   position:absolute;
