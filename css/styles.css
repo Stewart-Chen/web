@@ -1308,7 +1308,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   /* box-shadow: 0 8px 24px rgba(0,0,0,.06); */
   overflow-x: auto;                /* 手機可左右滑 */
   scrollbar-width: none;           /* 火狐隱藏捲軸 */
-  width: 100%;
+  /* width: 100%; */
 }
 .sticky-chips::-webkit-scrollbar{ display:none; } /* WebKit 隱藏捲軸 */
 
