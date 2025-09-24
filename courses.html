@@ -62,14 +62,12 @@
     <!-- 課程清單 -->
     <section id="courses-section" class="flow-md">
       <div id="courses-empty" class="muted hidden">目前沒有可顯示的課程。</div>
-      <div id="courses" class="grid cards"></div>
+      <div id="courses-list" class="grid cards"></div>
     </section>
   </main>
 
    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      if (typeof loadCourses === 'function') loadCourses();
-    
+    document.addEventListener('DOMContentLoaded', () => {    
       const form  = document.getElementById('course-filters');
       const clear = document.getElementById('btn-clear');
       const kw    = document.getElementById('kw');
@@ -114,8 +112,6 @@
       setTimeout(filterCards, 1000);
     });
   </script>
-
-
 </body>
 </html>
 
