@@ -228,4 +228,4 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
   aspect-ratio: 1 / 1; /* 或 4 / 3 */
   object-fit: cover;
 }
-
+.form-grid label{display: block;}
