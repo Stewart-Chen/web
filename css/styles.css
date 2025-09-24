@@ -780,7 +780,7 @@ body.menu-open{ overflow: hidden; }
 .nps-row .opt{ min-width: 40px; height: 40px; }
 
 /* 工具列 */
-.toolbar{display: flex;gap: 8px;flex-wrap: wrap;align-items: center;margin-top: 10px;}
+.toolbar{display: flex;gap: 10px;flex-wrap: wrap;align-items: center;margin-top: 10px;}
 
 /* 進度條 */
 .progress{
@@ -1148,13 +1148,6 @@ h3 + p, h4 + p{margin-top: .2em;}
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
-  }
-  .dock-inner .toolbar{
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
   }
   #dock-status{
     flex: 1 1 auto;
