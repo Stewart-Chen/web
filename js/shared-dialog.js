@@ -634,4 +634,11 @@ body.modal-open{ overflow: hidden; }
 
   // 通知其他腳本可以綁定事件
   document.dispatchEvent(new Event('dialogs:mounted'));
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const dlg = document.getElementById('search-modal');
+    if (dlg?.open) dlg.close();
+    document.body.classList.remove('modal-open');
+  });
+
 })();
