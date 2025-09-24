@@ -563,6 +563,7 @@ body.modal-open{ overflow: hidden; }
       }
       
       box.innerHTML = picked.map(c => {
+      const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
       const imgs = (c._galleryUrls && c._galleryUrls.length)
         ? c._galleryUrls
         : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
@@ -582,15 +583,15 @@ body.modal-open{ overflow: hidden; }
             ` : ``}
           </div>
     
-          <div class="course-body">
-            <h3>${c.title}</h3>
-            <div class="course-meta">
-              ${(c._tags || []).slice(0,4).map(t=>`<span class="badge">${t}</span>`).join('')}
+          <a href="course.html?id=${c.id}" class="course-link">
+            <div class="course-body">
+              <div class="title-row">
+                <h3>${c.title}</h3>
+                ${cat ? `<div class="badge">${cat}</div>` : ``}
+              </div>
+              <p class="muted">${(c.summary || '').slice(0, 80)}</p>
             </div>
-            <div class="cta">
-              <a href="course.html?id=${c.id}" class="btn primary">查看課程</a>
-            </div>
-          </div>
+          </a>
         </article>
       `;
     }).join('');
