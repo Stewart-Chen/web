@@ -261,7 +261,7 @@ nav .dropdown:focus-within .dropbtn{
 label{display: block;font-size: 12px;padding: 3px 5px;}
 input, select, textarea{
   border-radius: 10px;
-  width: 90%;
+  width: 100%;
   border: none;
   padding: 10px 10px;
   font-size: 12px;
@@ -727,7 +727,7 @@ body.menu-open{ overflow: hidden; }
   color: #0f172a;
 }
 .input, textarea, select{
-  width: 90%;
+  width: 100%;
   border: none;
   border-radius: 10px;
   padding: 8px 8px;
