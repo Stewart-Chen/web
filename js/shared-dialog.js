@@ -54,7 +54,6 @@ dialog form.card label input, dialog form.card label select{
 }
 dialog form.card label input:focus-visible, dialog form.card label select:focus-visible{
   outline: none;
-  box-shadow: 0 0 0 4px rgba(59,179,195,.22);
 }
 dialog form.card .actions{
   display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;
