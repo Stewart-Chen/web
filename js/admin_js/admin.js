@@ -211,7 +211,6 @@
           <div class="title">${c.title}</div>
           <div class="meta">
             <span class="badge">${c.teacher === 'fanfan' ? '汎汎' : (c.teacher === 'xd' ? '小D' : '—')}</span>
-            <span class="badge">${c.category === 'horti' ? '園藝' : (c.category === 'art' ? '藝術' : '—')}</span>
             ${!c.published ? `<span class="badge">未發佈</span>` : ``}
             ${c.deleted_at ? '<span class="badge">已刪除</span>' : ''}
           </div>
