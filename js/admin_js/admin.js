@@ -210,11 +210,10 @@
         <div>
           <div class="title">${c.title}</div>
           <div class="meta">
-            <span class="badge">老師：${c.teacher || '—'}</span>
-            <span class="badge">分類：${c.category === 'horti' ? '園藝' : (c.category === 'art' ? '藝術' : '—')}</span>
-            <span class="badge">${c.published ? '已發佈' : '未發佈'}</span>
+            <span class="badge">${c.teacher === 'fanfan' ? '汎汎' : (c.teacher === 'xd' ? '小D' : '—')}</span>
+            <span class="badge">${c.category === 'horti' ? '園藝' : (c.category === 'art' ? '藝術' : '—')}</span>
+            ${!c.published ? `<span class="badge">未發佈</span>` : ``}
             ${c.deleted_at ? '<span class="badge">已刪除</span>' : ''}
-            <span class="muted">${new Date(c.created_at).toLocaleString()}</span>
           </div>
         </div>
         <div><button class="btn" data-act="edit">編輯</button></div>
