@@ -239,7 +239,7 @@ function courseCardHTML(c){
             <h3>${c.title}</h3>
 
             ${c.category
-              ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden.png' : '/web/img/art.png'}"
+              ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
                        alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
               : ``}
             
@@ -285,7 +285,7 @@ async function renderCourses(){
   // 查詢
   let query = sb
     .from('courses')
-    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,material_fee,plan_type', { count: LIMIT ? 'exact' : null })
+    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,material_fee,plan_type,course_fee', { count: LIMIT ? 'exact' : null })
     .eq('published', true)
     .is('deleted_at', null)
     .order('sort_priority', { ascending: false })   // 先比優先順序
