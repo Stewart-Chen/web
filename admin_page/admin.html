@@ -76,8 +76,7 @@
                 <option value="art">藝術</option>
               </select>
             </label>
-            <label><input type="checkbox" id="ac-published" /> 已發佈（公開可見）</label>
-
+            
             <label>課程人數（上限）
               <input id="ac-people" type="number" min="1" placeholder="例如 12" />
             </label>
@@ -87,11 +86,11 @@
             </label>
             
             <label>設備項目（以逗號分隔）
-              <input id="ac-equipments" type="text" placeholder="投影機, 白板, 水槽" />
+              <input id="ac-equipments" type="text" placeholder="例如：投影機, 白板, 水槽" />
             </label>
             
             <label>材料項目（以逗號分隔）
-              <input id="ac-materials" type="text" placeholder="彩鹽, 玻璃瓶, 漏斗" />
+              <input id="ac-materials" type="text" placeholder="例如：彩鹽, 玻璃瓶, 漏斗" />
             </label>
             
             <label>材料費（NTD）
@@ -111,10 +110,10 @@
             </label>
             
             <label>課程關鍵字（以逗號分隔）
-              <input id="ac-keywords" type="text" placeholder="正念, 初學者, 手作" />
+              <input id="ac-keywords" type="text" placeholder="例如：正念, 初學者, 手作" />
             </label>
 
-            
+            <label><input type="checkbox" id="ac-published" /> 已發佈（公開可見）</label>
             <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
               <button type="submit" class="btn primary">儲存</button>
               <button type="button" id="admin-soft-delete" class="btn secondary">移到回收（軟刪除）</button>
