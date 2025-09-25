@@ -501,10 +501,10 @@
         // 使用者取消或被策略擋，落回傳統 input
         // console.debug('FS Access fallback:', err);
       }
+    } else {
+      // 退回傳統 input：確保在使用者手勢內直接呼叫
+      fileInput.click();
     }
-  
-    // 退回傳統 input：確保在使用者手勢內直接呼叫
-    fileInput.click();
   });
   
   uploadBtn?.addEventListener('click', async ()=>{
