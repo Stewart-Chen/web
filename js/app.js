@@ -69,6 +69,10 @@ async function loadCourse(){
           <div><div class="label">材料項目</div><div class="value chips">${course.material_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
         ${Number.isFinite(course.material_fee) ? `<div><div class="label">材料費</div><div class="value">NT$ ${course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee}</div></div>` : ``}
         ${course.plan_type        ? `<div><div class="label">方案類型</div><div class="value"><span class="badge">${course.plan_type}</span></div></div>` : ``}
+        ${Number.isFinite(course.course_fee) ? `<div><div class="label">課程費用</div><div class="value">NT$ ${course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee}</div></div>` : ``}
+        ${Array.isArray(course.keywords) && course.keywords.length ? `
+          <div><div class="label">關鍵字</div><div class="value chips">${course.keywords.map(k=>`<span class="chip">${k}</span>`).join('')}</div></div>` : ``}
+
       </div>
     `;
     infoSec.appendChild(metaWrap);
@@ -244,6 +248,8 @@ function courseCardHTML(c){
           </div>
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
           
+          ${Number.isFinite(c.course_fee) ? `<div class="meta-row"><span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}</span></div>` : ``}
+
           ${(c.duration_hours || Number.isFinite(c.material_fee) || c.plan_type) ? `
               <div class="meta-row">
                 ${c.duration_hours ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M12 8v5l3 2"/></svg>${Number(c.duration_hours)}小時</span>` : ``}
