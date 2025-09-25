@@ -246,12 +246,6 @@ function courseCardHTML(c){
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
           
           ${(c.duration_hours || Number.isFinite(c.course_fee) || (Array.isArray(c.keywords) && c.keywords.length)) ? `
-            <div class="meta-row">
-              ${teacher ? `<span class="meta">${teacher}</span>` : ``}
-              ${c.duration_hours ? `<span class="meta">…時數…</span>` : ``}
-              ${Number.isFinite(c.course_fee) ? `<span class="meta">…費用…</span>` : ``}
-            </div>
-          
             ${Array.isArray(c.keywords) && c.keywords.length ? `
               <div class="meta-row keywords-row">
                 <span class="meta meta-kw">
@@ -267,6 +261,13 @@ function courseCardHTML(c){
                 </span>
               </div>
             ` : ``}
+            
+            <div class="meta-row">
+              ${teacher ? `<span class="meta">${teacher}</span>` : ``}
+              ${c.duration_hours ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${Number(c.duration_hours)}小時</span>` : ``}
+              ${Number.isFinite(c.course_fee) ? `<span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}</span>` : ``}
+            </div>
+          
           ` : ``}
 
         </div>
