@@ -599,9 +599,9 @@ body.modal-open{ overflow: hidden; }
     }).join('');
 
       // 啟用輪播
-      ensureCarousels(box);
+      ensureCarousels(box);*/
     }
-    */
+    
 
     // 綁定 submit / reset
     if (form && !form.dataset.bound) {
