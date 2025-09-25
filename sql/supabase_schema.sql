@@ -671,3 +671,17 @@ $$;
 -- 補索引（可重複執行）
 create index if not exists idx_courses_course_fee on public.courses(course_fee);
 create index if not exists idx_courses_keywords_gin on public.courses using gin (keywords);
+-- === courses 新增欄位（若不存在才新增） ===
+alter table public.courses
+  add column if not exists people_limit    integer,
+  add column if not exists duration_hours  numeric(5,2),
+  add column if not exists equipments      text[],
+  add column if not exists materials       text[],
+  add column if not exists material_fee    integer,
+  add column if not exists course_fee      integer,
+  add column if not exists sort_priority   integer not null default 0,
+  add column if not exists plan_type       text,
+  add column if not exists keywords        text[];
+
+-- 需要排序時用得到
+create index if not exists idx_courses_sort_priority on public.courses(sort_priority);
