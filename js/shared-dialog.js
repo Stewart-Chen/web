@@ -561,8 +561,10 @@ body.modal-open{ overflow: hidden; }
         box.innerHTML = `<p class="muted">目前沒有可推薦的課程，請稍後再試。</p>`;
         return;
       }
-      
-      box.innerHTML = picked.map(c => {
+      if (window.renderCourseCards){
+        window.renderCourseCards(box, picked);
+      }
+      /*box.innerHTML = picked.map(c => {
       const cat  = c.category ? (c.category === 'horti' ? '園藝x汎汎' : '藝術x小D') : '';
       const imgs = (c._galleryUrls && c._galleryUrls.length)
         ? c._galleryUrls
@@ -599,6 +601,7 @@ body.modal-open{ overflow: hidden; }
       // 啟用輪播
       ensureCarousels(box);
     }
+    */
 
     // 綁定 submit / reset
     if (form && !form.dataset.bound) {
