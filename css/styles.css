@@ -480,7 +480,7 @@ body.menu-open .nav-left .dropbtn{
 .btn.nav-cta svg{ display: block; }
 
 h2{
-  font-size: 1.25rem;
+  font-size: 1.0rem;
   color: #333;
   margin: 1.2em 0 .6em;
   margin:0;
@@ -1280,12 +1280,14 @@ h3 + p, h4 + p{margin-top: .2em;}
 .link-more{
   display:inline-flex;
   align-items:center;
-  gap:6px;
-  font-weight:700;
+  gap: 4px;
+  font-weight: 600;
   text-decoration:none;
-  /* color: #0c4030; */ /* 或 #1f2937 視主題調整 */
+  color: var(--ink); /* 或 #1f2937 視主題調整 */
   padding: 6px 8px;
   border-radius: 8px;
+  background: #d9f2f0;
+  font-size: 0.75rem;
 }
 .link-more .chev{ transform: translateY(-1px); }
 @media (hover:hover){
@@ -1363,10 +1365,6 @@ h3 + p, h4 + p{margin-top: .2em;}
     gap: 15px;               /* ← chip 之間的間距 */
     padding: 5px 14px;
     top: var(--header-height, 55px);
-  }
-
-  .link-more{
-    font-size: .9rem;
   }
 }
 #courses li {
