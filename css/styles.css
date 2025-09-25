@@ -1484,8 +1484,8 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .badgeImg {
-  width: 34px;          /* 你想要的大小 */
-  height: 34px;
+  width: 32px;          /* 你想要的大小 */
+  height: 32px;
   display: inline-block;
   vertical-align: middle; /* 和文字徽章垂直置中 */
   background: none;       /* 移除背景 */
@@ -1510,8 +1510,17 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .course-card .meta-row{
-  display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:8px;
-  font-size: 12px; color: var(--muted, #666);
+  display:flex;
+  flex-wrap:wrap;
+  gap: 8px 2px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted, #666);
 }
-.course-card .meta-row .meta{ display:inline-flex; align-items:center; gap:6px; }
+.course-card .meta-row .meta{display:inline-flex;align-items:center;gap: 3px;}
 .course-card .meta-row .i{ width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; }
+
+.meta-row .meta:not(:first-child)::before {
+  content: "·";
+  color: var(--muted, #999); /* 分隔符顏色，可以比文字淺 */
+}
