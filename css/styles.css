@@ -233,7 +233,7 @@ nav .dropdown:focus-within .dropbtn{
 .course-card h4{ margin: 0 0 4px 0; }
 .badge{
   display: inline-block;
-  padding: 1px 4px;
+  padding: 6px 4px;
   border-radius: 999px;
   border: 1px solid rgba(0,0,0,.1);
   font-size: .7rem;
@@ -1484,8 +1484,8 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .badgeImg {
-  width: 21px;          /* 你想要的大小 */
-  height: 21px;
+  width: 34px;          /* 你想要的大小 */
+  height: 34px;
   display: inline-block;
   vertical-align: middle; /* 和文字徽章垂直置中 */
   background: none;       /* 移除背景 */
