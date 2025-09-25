@@ -25,7 +25,15 @@
         <div class="admin-card">
           <header class="admin-header">
             <h3 style="margin:0;">課程管理</h3>
-            <div class="admin-tools">
+            <div class="admin-tools" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <label class="muted" for="admin-teacher-filter" style="display:flex; align-items:center; gap:6px;">
+                  老師
+                  <select id="admin-teacher-filter">
+                    <option value="">全部老師</option>
+                    <option value="fanfan">汎汎（園藝）</option>
+                    <option value="xd">小D（藝術）</option>
+                  </select>
+                </label>
               <button type="button" class="btn" id="admin-refresh">重新整理</button>
               <button type="button" class="btn primary" id="admin-new-course">＋ 新增課程</button>
             </div>
