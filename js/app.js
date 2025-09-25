@@ -207,7 +207,12 @@ function courseCardHTML(c){
         <div class="course-body">
           <div class="title-row">
             <h3>${c.title}</h3>
-            ${cat ? `<div class="badge">${cat}</div>` : ``}
+
+            ${c.category
+              ? `<img class="badge" src="${c.category === 'horti' ? 'garden.png' : 'art.png'}"
+                       alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
+              : ``}
+            
             ${teacher ? `<div class="badge">${teacher}</div>` : ``}
           </div>
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
