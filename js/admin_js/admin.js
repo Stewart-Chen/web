@@ -243,10 +243,10 @@
     document.getElementById('ac-category').value  = c?.category ?? '';
     document.getElementById('ac-published').checked = !!c?.published;
 
-    document.getElementById('ac-people').value        = c?.people_limit ?? '';
+    document.getElementById('ac-people').value        = c?.capacity ?? '';
     document.getElementById('ac-duration').value      = c?.duration_hours ?? '';
-    document.getElementById('ac-equipments').value    = Array.isArray(c?.equipments) ? c.equipments.join(', ') : (c?.equipments ?? '');
-    document.getElementById('ac-materials').value     = Array.isArray(c?.materials)  ? c.materials.join(', ')  : (c?.materials ?? '');
+    document.getElementById('ac-equipments').value    = Array.isArray(c?.equipment_items) ? c.equipment_items.join(', ') : (c?.equipment_items ?? '');
+    document.getElementById('ac-materials').value     = Array.isArray(c?.material_items)  ? c.material_items.join(', ')  : (c?.material_items ?? '');
     document.getElementById('ac-material-fee').value  = c?.material_fee ?? '';
     document.getElementById('ac-course-fee').value    = c?.course_fee ?? '';
     document.getElementById('ac-sort').value          = c?.sort_priority ?? '';
@@ -336,10 +336,10 @@
       published:     $c('ac-published'),
   
       // ↓↓↓ 新欄位 ↓↓↓（請確保 DB 欄位名稱一致）
-      people_limit:    toNum($v('ac-people')),        // int/nullable
+      capacity:    toNum($v('ac-people')),        // int/nullable
       duration_hours:  toNum($v('ac-duration')),      // numeric/nullable
-      equipments:      toList($v('ac-equipments')),   // text[]/nullable
-      materials:       toList($v('ac-materials')),    // text[]/nullable
+      equipment_items:      toList($v('ac-equipments')),   // text[]/nullable
+      material_items:       toList($v('ac-materials')),    // text[]/nullable
       material_fee:    toNum($v('ac-material-fee')),  // int/nullable
       course_fee:      toNum($v('ac-course-fee')),    // int/nullable
       sort_priority:   toNum($v('ac-sort')) ?? 0,     // int，預設 0
