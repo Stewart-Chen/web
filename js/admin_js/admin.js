@@ -196,8 +196,9 @@
 
     const { data, error } = await sb
       .from('courses')
-      .select('id,title,teacher,category,published,deleted_at,created_at')
-      .order('created_at', { ascending: false });
+      .select('id,title,teacher,category,published,deleted_at,created_at,sort_priority')
+      .order('sort_priority', { ascending: false })
+      .order('created_at',   { ascending: false });
 
     if (error) {
       wrap.innerHTML = `<p class="muted">載入失敗：${error?.message || error}</p>`;
@@ -242,6 +243,16 @@
     document.getElementById('ac-category').value  = c?.category ?? '';
     document.getElementById('ac-published').checked = !!c?.published;
 
+    document.getElementById('ac-people').value        = c?.people_limit ?? '';
+    document.getElementById('ac-duration').value      = c?.duration_hours ?? '';
+    document.getElementById('ac-equipments').value    = Array.isArray(c?.equipments) ? c.equipments.join(', ') : (c?.equipments ?? '');
+    document.getElementById('ac-materials').value     = Array.isArray(c?.materials)  ? c.materials.join(', ')  : (c?.materials ?? '');
+    document.getElementById('ac-material-fee').value  = c?.material_fee ?? '';
+    document.getElementById('ac-course-fee').value    = c?.course_fee ?? '';
+    document.getElementById('ac-sort').value          = c?.sort_priority ?? '';
+    document.getElementById('ac-plan-type').value     = c?.plan_type ?? '';
+    document.getElementById('ac-keywords').value      = Array.isArray(c?.keywords) ? c.keywords.join(', ') : (c?.keywords ?? '');
+    
     const sd = document.getElementById('admin-soft-delete');
     const hd = document.getElementById('admin-hard-delete');
     if (sd) sd.disabled = !c?.id;
@@ -301,15 +312,39 @@
   
     const id = Number($v('ac-id') || 0);
   
-    // 先組 payload（不含 cover_url）
+    // 將以逗號分隔的字串轉陣列（去頭尾、去空白、去重）
+    const toList = (s) => {
+      const arr = (s || '')
+        .split(/[，,]/)
+        .map(x => x.trim())
+        .filter(Boolean);
+      return arr.length ? Array.from(new Set(arr)) : null; // 空就回 null
+    };
+  
+    // 數字欄位轉數字，空字串 → null
+    const toNum = (s) => {
+      const n = Number(s);
+      return Number.isFinite(n) ? n : null;
+    };
+  
     const payload = {
-      title:       $v('ac-title'),
-      summary:     $v('ac-summary')     || null,
-      description: $v('ac-desc')        || null,
-      teacher:     $v('ac-teacher'),
-      category:    $v('ac-category'),
-      published:   $c('ac-published'),
-      // cover_url 由 gallery 推導，不從表單讀
+      title:         $v('ac-title'),
+      summary:       $v('ac-summary')   || null,
+      description:   $v('ac-desc')      || null,
+      teacher:       $v('ac-teacher'),
+      category:      $v('ac-category'),
+      published:     $c('ac-published'),
+  
+      // ↓↓↓ 新欄位 ↓↓↓（請確保 DB 欄位名稱一致）
+      people_limit:    toNum($v('ac-people')),        // int/nullable
+      duration_hours:  toNum($v('ac-duration')),      // numeric/nullable
+      equipments:      toList($v('ac-equipments')),   // text[]/nullable
+      materials:       toList($v('ac-materials')),    // text[]/nullable
+      material_fee:    toNum($v('ac-material-fee')),  // int/nullable
+      course_fee:      toNum($v('ac-course-fee')),    // int/nullable
+      sort_priority:   toNum($v('ac-sort')) ?? 0,     // int，預設 0
+      plan_type:       $v('ac-plan-type') || null,    // text/nullable
+      keywords:        toList($v('ac-keywords')),     // text[]/nullable
     };
   
     if (!payload.title)   { alert('請填寫標題'); return; }
@@ -317,37 +352,25 @@
   
     try {
       if (id) {
-        // 若已有課程，嘗試用 gallery 第一張當封面（可選）
+        // 可選：依 gallery 第一張推封面（你原本的邏輯）
         try {
-          const list = await loadCourseGallery(id);               // e.g. ["123/abc.jpg", ...]
-          if (Array.isArray(list) && list.length) {
-            const pub = sb.storage.from('course-gallery').getPublicUrl(list[0]).data.publicUrl;
-            payload.cover_url = pub || null;
-          } else {
-            payload.cover_url = null;
-          }
-        } catch { /* 忽略封面推導失敗 */ }
-  
+          const list = await loadCourseGallery(id);
+          payload.cover_url = (Array.isArray(list) && list.length)
+            ? sb.storage.from('course-gallery').getPublicUrl(list[0]).data.publicUrl
+            : null;
+        } catch {}
         const { error } = await sb.from('courses').update(payload).eq('id', id);
         if (error) throw error;
         alert('課程已更新');
       } else {
-        // 新增課程：先插入，再把新 id 放回表單，之後你就可以上傳 gallery
-        const { data, error } = await sb
-          .from('courses')
-          .insert([payload])
-          .select('id')
-          .maybeSingle();
+        const { data, error } = await sb.from('courses').insert([payload]).select('id').maybeSingle();
         if (error) throw error;
-  
         const newId = data?.id;
         if (newId) document.getElementById('ac-id').value = String(newId);
         alert('課程已建立');
       }
   
       await adminRefresh();
-  
-      // 建立/更新後，刷新右側的 gallery 預覽（若你有 adminRenderGallerySection）
       const cid = Number(document.getElementById('ac-id')?.value || 0);
       if (cid && typeof adminRenderGallerySection === 'function') {
         adminRenderGallerySection({ id: cid });
@@ -357,6 +380,7 @@
       alert('儲存失敗：' + (err?.message || err));
     }
   }
+
 
 
   // ===== 單元儲存 =====
