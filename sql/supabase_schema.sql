@@ -639,3 +639,35 @@ $$;
 create index if not exists idx_courses_sort_priority on public.courses(sort_priority);
 create index if not exists idx_courses_plan_type     on public.courses(plan_type);
 
+-- =========================================
+-- courses：新增「課程費用 / 課程關鍵字」欄位
+-- =========================================
+do $$
+begin
+  -- 課程費用（以元為單位；若要含小數可改 numeric(10,2)）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public'
+      and table_name='courses'
+      and column_name='course_fee'
+  ) then
+    alter table public.courses
+      add column course_fee integer check (course_fee >= 0);
+  end if;
+
+  -- 課程關鍵字（文字陣列，用於搜尋/分類）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public'
+      and table_name='courses'
+      and column_name='keywords'
+  ) then
+    alter table public.courses
+      add column keywords text[] not null default '{}'::text[];
+  end if;
+end
+$$;
+
+-- 補索引（可重複執行）
+create index if not exists idx_courses_course_fee on public.courses(course_fee);
+create index if not exists idx_courses_keywords_gin on public.courses using gin (keywords);
