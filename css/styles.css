@@ -1284,10 +1284,11 @@ h3 + p, h4 + p{margin-top: .2em;}
   font-weight: 600;
   text-decoration:none;
   color: var(--ink); /* 或 #1f2937 視主題調整 */
-  padding: 6px 8px;
+  padding: 5px 7px;
   border-radius: 8px;
   background: #d9f2f0;
   font-size: 0.75rem;
+  margin: 0 8px 0 0;
 }
 .link-more .chev{ transform: translateY(-1px); }
 @media (hover:hover){
