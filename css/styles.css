@@ -149,7 +149,7 @@ nav .dropdown:focus-within .dropbtn{
   align-items: center;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 30px;
+  padding: 20px;
 }
 .hero h2{/* font-size: 1.6rem; */margin: 0 0 8px;/* color: #1b5e20; *//* font-weight: 700; */}
 .hero p{color: #444;font-size: 0.9rem;}
@@ -255,7 +255,7 @@ nav .dropdown:focus-within .dropbtn{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
-  margin-block: 8px 6px;
+  margin-block: 4px 2px;
 }
 .form-grid label{display: grid;gap: 8px;font-weight: 600;font-size: 0.8rem;}
 label{display: block;font-size: 12px;padding: 3px 5px;}
@@ -276,7 +276,7 @@ textarea:focus {
   outline: none;                  /* 拿掉預設黑框 */
 }
 
-.actions{ display: flex; gap: 10px; align-items: center; margin-top: 18px; }
+.actions{display: flex;gap: 10px;align-items: center;margin-top: 8px;}
 
 /* ---- 按鈕 ---- */
 button, .btn{
@@ -1114,10 +1114,10 @@ h3 + p, h4 + p{margin-top: .2em;}
 @media (max-width: 720px){
   .container{padding: 0px 5px;}
   .hero{
-    padding: 20px;
+    padding: 18px;
   }
   .form-grid{
-    gap: 10px;
+    gap: 6px;
   }
   .nav-right{gap: 5px;}
   .header-bar{
@@ -1171,7 +1171,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   .nps-row .opt{ flex: 0 0 calc(10% - 8px); }
   
   .hero h2{
-    font-size: 1.2rem;
+    font-size: 1.0rem;
     /* font-weight: 600; */
     line-height: 1.4;
   }
