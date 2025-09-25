@@ -47,7 +47,7 @@
             
             <!-- 圖片上傳到 gallery（取代原 ac-cover 輸入） -->
             <section class="card" style="margin-top:12px;">
-              <h4 style="margin:0 0 8px;">課程圖片（Gallery）</h4>
+              <h4 style="margin:0 0 8px;">課程圖片</h4>
               <p class="muted" style="margin:4px 0 10px;">
                 可一次選多張。
               </p>
@@ -101,7 +101,7 @@
               <input id="ac-course-fee" type="number" step="1" min="0" placeholder="例如 2000" />
             </label>
             
-            <label>優先順序（越大越前）
+            <label style="display:none;">優先順序（越大越前）
               <input id="ac-sort" type="number" step="1" placeholder="預設 0" />
             </label>
             
@@ -113,16 +113,16 @@
               <input id="ac-keywords" type="text" placeholder="例如：正念, 初學者, 手作" />
             </label>
 
-            <label><input type="checkbox" id="ac-published" /> 已發佈（公開可見）</label>
+            <label><input type="checkbox" id="ac-published" /> 已發佈</label>
             <div class="actions" style="display:flex;gap:8px;">
               <button type="submit" class="btn primary">儲存</button>
-              <button type="button" id="admin-soft-delete" class="btn secondary">移到回收（軟刪除）</button>
+              <button type="button" id="admin-soft-delete" class="btn secondary" style="display:none;">移到回收（軟刪除）</button>
               <button type="button" id="admin-hard-delete" class="btn danger">永久刪除</button>
             </div>
           </form>
         </div>
         <div class="admin-card" style="margin-top:16px;">
-          <h3 style="margin:0;">單元（Lessons）</h3>
+          <h3 style="margin:0;">單元</h3>
           <div id="admin-lessons" style="margin-top:10px;">
             <!-- 由 admin.js 產生單元清單 -->
           </div>
