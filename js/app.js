@@ -248,13 +248,11 @@ function courseCardHTML(c){
           </div>
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
           
-          ${Number.isFinite(c.course_fee) ? `<div class="meta-row"><span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}</span></div>` : ``}
-
           ${(c.duration_hours || Number.isFinite(c.material_fee) || c.plan_type) ? `
               <div class="meta-row">
-                ${c.duration_hours ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M12 8v5l3 2"/></svg>${Number(c.duration_hours)}小時</span>` : ``}
-                ${Number.isFinite(c.material_fee) ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M3 12h18M3 6h18M3 18h18"/></svg>NT$ ${c.material_fee.toLocaleString?.('zh-TW') ?? c.material_fee}</span>` : ``}
-                ${c.plan_type ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="4"/></svg>${c.plan_type}</span>` : ``}
+                ${c.duration_hours ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${Number(c.duration_hours)}小時</span>` : ``}
+                ${Number.isFinite(c.course_fee) ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6v12m4-6a4 4 0 0 1-8 0 4 4 0 0 1 8 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}</span>` : ``}
+                ${c.plan_type ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M3 12V5a2 2 0 0 1 2-2h7l9 9-9 9H5a2 2 0 0 1-2-2v-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor"/></svg>${c.plan_type}</span>` : ``}
               </div>
             ` : ``}
             
