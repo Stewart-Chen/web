@@ -79,7 +79,7 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
 @media (max-width: 720px) {
   #admin-courses,
   #admin-lessons {
-    max-height: 300px;
+    max-height: 250px;
   }
   .admin-wrap { grid-template-columns: 1fr; }
 }
@@ -235,3 +235,17 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
 
 #admin-courses .item .title{font-size: 0.8rem;}
 .muted{color: var(--muted);font-size: 0.8rem;}
+
+.item .title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;              /* 標題與 badge 間距 */
+}
+
+.item .title {
+  flex: 1;               /* 撐滿剩餘空間 */
+  white-space: nowrap;   /* 不換行 */
+  overflow: hidden;      /* 超出隱藏 */
+  text-overflow: ellipsis; /* 超出顯示 ... */
+  max-width: 200px;
+}
