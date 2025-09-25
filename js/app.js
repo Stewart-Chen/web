@@ -209,7 +209,7 @@ function courseCardHTML(c){
             <h3>${c.title}</h3>
 
             ${c.category
-              ? `<img class="badge" src="${c.category === 'horti' ? '/web/img/garden.png' : '/web/img/art.png'}"
+              ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden.png' : '/web/img/art.png'}"
                        alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
               : ``}
             
