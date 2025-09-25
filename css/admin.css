@@ -59,6 +59,7 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
 }
 #admin-courses,
 #admin-lessons {
+  max-height: 900px;
   overflow: auto;
 }
 
