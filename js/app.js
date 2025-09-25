@@ -237,7 +237,7 @@ function courseCardHTML(c){
         <div class="course-body">
           <div class="title-row">
             <h3>${c.title}</h3>
-            ${teacher ? `<div class="badge">${teacher}</div>` : ``}
+            
             ${c.category
               ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
                        alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
@@ -245,11 +245,12 @@ function courseCardHTML(c){
           </div>
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
           
-          ${(c.duration_hours || Number.isFinite(c.material_fee) || c.plan_type) ? `
+          ${(c.duration_hours || Number.isFinite(c.course_fee) || c.keywords) ? `
               <div class="meta-row">
+                ${teacher ? `<span class="meta">${teacher}</span>` : ``}
                 ${c.duration_hours ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${Number(c.duration_hours)}小時</span>` : ``}
                 ${Number.isFinite(c.course_fee) ? `<span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}</span>` : ``}
-                ${c.plan_type ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M3 12V5a2 2 0 0 1 2-2h7l9 9-9 9H5a2 2 0 0 1-2-2v-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor"/></svg>${c.plan_type}</span>` : ``}
+                ${c.keywords ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M3 12V5a2 2 0 0 1 2-2h7l9 9-9 9H5a2 2 0 0 1-2-2v-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor"/></svg>${c.keywords}</span>` : ``}
               </div>
             ` : ``}
             
@@ -280,7 +281,7 @@ async function renderCourses(){
   // 查詢
   let query = sb
     .from('courses')
-    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,material_fee,plan_type,course_fee', { count: LIMIT ? 'exact' : null })
+    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords', { count: LIMIT ? 'exact' : null })
     .eq('published', true)
     .is('deleted_at', null)
     .order('sort_priority', { ascending: false })   // 先比優先順序
