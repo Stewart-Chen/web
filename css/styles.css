@@ -1555,3 +1555,10 @@ h3 + p, h4 + p{margin-top: .2em;}
   color: #46525a;
   line-height: 1.2;
 }
+
+input::placeholder,
+textarea::placeholder {
+  color: #aaa;         /* 比正常文字淡 */
+  font-weight: 400;    /* 正常粗細，不要太厚重 */
+  opacity: 0.8;        /* 再稍微透明一點 */
+}
