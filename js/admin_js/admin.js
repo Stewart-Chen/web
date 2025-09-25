@@ -207,7 +207,7 @@
 
     wrap.innerHTML = (data || []).map(c => `
       <div class="item" data-id="${c.id}">
-        <div>
+        <div class="title-row">
           <div class="title">${c.title}</div>
           <div class="meta">
             <span class="badge">${c.teacher === 'fanfan' ? '汎汎' : (c.teacher === 'xd' ? '小D' : '—')}</span>
