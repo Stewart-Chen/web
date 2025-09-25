@@ -247,5 +247,18 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
   white-space: nowrap;   /* 不換行 */
   overflow: hidden;      /* 超出隱藏 */
   text-overflow: ellipsis; /* 超出顯示 ... */
-  max-width: 200px;
+  max-width: 300px;
 }
+
+@media (max-width: 900px){
+  .item .title {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 760px){
+  .item .title {
+    max-width: 150px;
+  }
+}
+
