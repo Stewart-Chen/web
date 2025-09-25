@@ -4,6 +4,13 @@
   const sb = window.sb;
   let currentUser = null;
 
+  // ★ 新增：統一老師顯示字典（也順便修正左側清單的顯示）
+  const TEACHER_LABEL = {
+    fanfan: '汎汎',
+    xd: '小D'
+  };
+  const labelOfTeacher = (t) => TEACHER_LABEL[t] || '—';
+  
   // 取得目前使用者（部分動作要用）
   async function ensureUser() {
     if (currentUser) return currentUser;
@@ -194,11 +201,26 @@
     const wrap = document.getElementById('admin-courses');
     if (!wrap) return;
 
-    const { data, error } = await sb
+    // ★ 新增：讀取下拉選單的老師篩選值（含 localStorage 保留）
+    const teacherFilterSelect = document.getElementById('admin-teacher-filter');
+    const selectedTeacher = (teacherFilterSelect?.value || '').trim();
+    
+    // 基本查詢
+    let query = sb
       .from('courses')
-      .select('id,title,teacher,category,published,deleted_at,created_at,sort_priority')
+      .select('id,title,teacher,category,published,deleted_at,created_at,sort_priority');
+
+    // ★ 新增：如果有選老師就加 eq 條件
+    if (selectedTeacher) {
+      query = query.eq('teacher', selectedTeacher);
+    }
+
+    // 排序（照原本）
+    query = query
       .order('sort_priority', { ascending: false })
       .order('created_at',   { ascending: false });
+
+    const { data, error } = await query;
 
     if (error) {
       wrap.innerHTML = `<p class="muted">載入失敗：${error?.message || error}</p>`;
@@ -210,7 +232,7 @@
         <div class="title-row">
           <div class="title">${c.title}</div>
           <div class="meta">
-            <span class="badge">${c.teacher === 'fanfan' ? '汎汎' : (c.teacher === 'xd' ? '小D' : '—')}</span>
+            <span class="badge">${labelOfTeacher(c.teacher)}</span>
             ${!c.published ? `<span class="badge">未發佈</span>` : ``}
             ${c.deleted_at ? '<span class="badge">已刪除</span>' : ''}
           </div>
@@ -473,7 +495,23 @@
     if (box) box.innerHTML = '<p class="muted">尚未建立課程，請先儲存後再上傳圖片。</p>';
   });
 
+  // ★ 新增：監聽老師篩選，變更就重新載入 + 記住選擇
+  const teacherFilterSelect = document.getElementById('admin-teacher-filter');
+  if (teacherFilterSelect) {
+    // 從 localStorage 還原
+    const saved = localStorage.getItem('admin.filter.teacher') || '';
+    if (saved && teacherFilterSelect.querySelector(`option[value="${saved}"]`)) {
+      teacherFilterSelect.value = saved;
+    }
+    teacherFilterSelect.addEventListener('change', () => {
+      localStorage.setItem('admin.filter.teacher', teacherFilterSelect.value || '');
+      adminRefresh();
+    });
+  }
 
+  // 進入頁面 → 先刷新一次列表（會套用已還原的篩選）
+  window.addEventListener('DOMContentLoaded', adminRefresh);
+  
   // === Gallery 上傳/刷新 ===
   const uploadBtn = document.getElementById('ac-upload-btn');
   const fileInput = document.getElementById('ac-gallery-files');
