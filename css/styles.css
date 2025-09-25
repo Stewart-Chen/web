@@ -233,15 +233,16 @@ nav .dropdown:focus-within .dropbtn{
 .course-card h4{ margin: 0 0 4px 0; }
 .badge{
   display: inline-block;
-  padding: 6px 4px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,.1);
-  font-size: .7rem;
-  background: #d9f2f0;
-  color: var(--ink);
-  border: none;
-  font-weight: 600;
   text-decoration: none;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #eef6f6;
+  border: 1px solid rgba(0,0,0,.06);
+  font-size: 12px;
+  color: #46525a;
+  line-height: 1.2;
+  margin: 5px 0 0 0;
 }
 
 /* ---- 推薦表單 ---- */
@@ -1453,7 +1454,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .course-card .title-row {
   display: flex;
   align-items: center;   /* 垂直置中 */
-  gap: 2px;              /* 標題與 badge 保持一點距離 */
+  gap: 10px;              /* 標題與 badge 保持一點距離 */
 }
 
 .course-card .title-row h3 {
