@@ -1284,7 +1284,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   font-weight: 600;
   text-decoration:none;
   color: var(--ink); /* 或 #1f2937 視主題調整 */
-  padding: 5px 7px;
+  padding: 6px 14px;
   border-radius: 8px;
   background: #d9f2f0;
   font-size: 0.75rem;
@@ -1518,9 +1518,38 @@ h3 + p, h4 + p{margin-top: .2em;}
   color: var(--muted, #666);
 }
 .course-card .meta-row .meta{display:inline-flex;align-items:center;gap: 3px;}
-.course-card .meta-row .i{ width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; }
 
 .meta-row .meta:not(:first-child)::before {
   content: "·";
   color: var(--muted, #999); /* 分隔符顏色，可以比文字淺 */
+}
+
+/* icon 微調：小一點、線條細一點、和文字更齊 */
+.course-card .meta-row .i {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  vertical-align: middle;
+  flex: 0 0 auto;
+  opacity: .8;               /* 稍微淡一點 */
+}
+
+/* keywords chips */
+.meta-kw .kw-list {
+  display: inline-flex;
+  gap: 6px;                  /* chip 與 chip 間距 */
+  flex-wrap: wrap;
+}
+
+.meta-kw .kw {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef6f6;
+  border: 1px solid rgba(0,0,0,.06);
+  font-size: 12px;
+  color: #46525a;
+  line-height: 1.2;
 }
