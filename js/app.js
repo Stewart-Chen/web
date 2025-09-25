@@ -402,3 +402,17 @@ function setupCarousel(carousel){
   // 初始
   update();
 }
+
+// ========= 共用渲染：把課程陣列渲染到任一容器 =========
+function renderCourseCards(rootEl, courses){
+  if (!rootEl) return;
+  rootEl.innerHTML = (courses || []).map(courseCardHTML).join('');
+  enableCarousels(rootEl);
+}
+
+// 將常用工具掛到全域，讓其他檔案可直接呼叫
+window.courseCardHTML   = window.courseCardHTML   || courseCardHTML;
+window.enableCarousels  = window.enableCarousels  || enableCarousels;
+window.toPublicUrls     = window.toPublicUrls     || toPublicUrls;
+window.renderCourseCards= window.renderCourseCards|| renderCourseCards;
+window.renderCourses    = window.renderCourses    || renderCourses;
