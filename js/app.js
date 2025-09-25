@@ -49,6 +49,32 @@ async function loadCourse(){
     teacherBox.textContent = meta ? `${meta.name}｜${meta.role}` : (course.teacher || '—');
   }
 
+  
+  // (A) 課程資訊 之後、在 teacherBox 之後插入
+  const infoSec = document.getElementById('course-info');
+  if (infoSec) {
+    // 先移除舊的 meta（避免重覆載入）
+    infoSec.querySelector('#course-meta')?.remove();
+  
+    const metaWrap = document.createElement('section');
+    metaWrap.id = 'course-meta';
+    metaWrap.className = 'flow-sm';
+    metaWrap.innerHTML = `
+      <div class="meta-grid">
+        ${course.capacity         ? `<div><div class="label">課程人數</div><div class="value">${course.capacity}</div></div>` : ``}
+        ${course.duration_hours   ? `<div><div class="label">課程時數</div><div class="value">${Number(course.duration_hours)} 小時</div></div>` : ``}
+        ${Array.isArray(course.equipment_items) && course.equipment_items.length ? `
+          <div><div class="label">設備項目</div><div class="value chips">${course.equipment_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
+        ${Array.isArray(course.material_items) && course.material_items.length ? `
+          <div><div class="label">材料項目</div><div class="value chips">${course.material_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
+        ${Number.isFinite(course.material_fee) ? `<div><div class="label">材料費</div><div class="value">NT$ ${course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee}</div></div>` : ``}
+        ${course.plan_type        ? `<div><div class="label">方案類型</div><div class="value"><span class="badge">${course.plan_type}</span></div></div>` : ``}
+      </div>
+    `;
+    infoSec.appendChild(metaWrap);
+  }
+
+
   // (B) 單元列表
   const { data: lessons, error: lsErr } = await sb
     .from('lessons')
@@ -214,6 +240,16 @@ function courseCardHTML(c){
               : ``}
             
             ${teacher ? `<div class="badge">${teacher}</div>` : ``}
+
+            // 課程卡片模板內，<p class="muted">...</p> 之後加：
+            ${(c.duration_hours || Number.isFinite(c.material_fee) || c.plan_type) ? `
+              <div class="meta-row">
+                ${c.duration_hours ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M12 8v5l3 2"/></svg>${Number(c.duration_hours)}小時</span>` : ``}
+                ${Number.isFinite(c.material_fee) ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><path d="M3 12h18M3 6h18M3 18h18"/></svg>NT$ ${c.material_fee.toLocaleString?.('zh-TW') ?? c.material_fee}</span>` : ``}
+                ${c.plan_type ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="4"/></svg>${c.plan_type}</span>` : ``}
+              </div>
+            ` : ``}
+
           </div>
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
         </div>
@@ -243,10 +279,12 @@ async function renderCourses(){
   // 查詢
   let query = sb
     .from('courses')
-    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at', { count: LIMIT ? 'exact' : null })
+    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,material_fee,plan_type', { count: LIMIT ? 'exact' : null })
     .eq('published', true)
     .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+    .order('sort_priority', { ascending: false })   // 先比優先順序
+    .order('created_at', { ascending: false });     // 再比新舊
+
 
   if (LIMIT) query = query.range(0, LIMIT - 1);
 
