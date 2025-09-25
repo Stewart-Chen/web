@@ -563,3 +563,79 @@ for select
 to anon, authenticated
 using (bucket_id = 'course-gallery');
 
+-- =========================================
+-- courses：新增進階欄位（可重複執行）
+-- 課程人數 / 課程時數 / 設備項目 / 材料項目 / 材料費 / 優先順序 / 方案類型
+-- =========================================
+
+do $$
+begin
+  -- 課程人數（上限/建議招收人數）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='courses' and column_name='capacity'
+  ) then
+    alter table public.courses
+      add column capacity integer check (capacity > 0);
+  end if;
+
+  -- 課程時數（小時，可含小數，例 1.5 小時）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='courses' and column_name='duration_hours'
+  ) then
+    alter table public.courses
+      add column duration_hours numeric(4,1) check (duration_hours > 0);
+  end if;
+
+  -- 設備項目（文字陣列）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='courses' and column_name='equipment_items'
+  ) then
+    alter table public.courses
+      add column equipment_items text[] not null default '{}'::text[];
+  end if;
+
+  -- 材料項目（文字陣列）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='courses' and column_name='material_items'
+  ) then
+    alter table public.courses
+      add column material_items text[] not null default '{}'::text[];
+  end if;
+
+  -- 材料費（以元為單位；若要用小數，改 numeric(10,2)）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='courses' and column_name='material_fee'
+  ) then
+    alter table public.courses
+      add column material_fee integer check (material_fee >= 0);
+  end if;
+
+  -- 優先順序（排序用，數字越大越前；預設 0）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='courses' and column_name='sort_priority'
+  ) then
+    alter table public.courses
+      add column sort_priority integer not null default 0;
+  end if;
+
+  -- 方案類型（以代碼儲存；先用自由文字，未來可改 enum/lookup）
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='courses' and column_name='plan_type'
+  ) then
+    alter table public.courses
+      add column plan_type text;
+  end if;
+end
+$$;
+
+-- 索引（可重複建立）
+create index if not exists idx_courses_sort_priority on public.courses(sort_priority);
+create index if not exists idx_courses_plan_type     on public.courses(plan_type);
+
