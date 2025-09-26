@@ -121,7 +121,14 @@
       teacher?.addEventListener('change', filterCards);
     
       /* 初次載入先跑一次 */
-      filterCards();
+      //filterCards();
+      if (list) {
+        const observer = new MutationObserver(() => {
+          filterCards();
+        });
+        observer.observe(list, { childList: true });
+      }
+
     });
 
   </script>
