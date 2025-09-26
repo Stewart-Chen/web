@@ -1574,10 +1574,24 @@ textarea::placeholder {
   display: grid;
   grid-template-columns: 1fr auto; /* 左邊撐滿，右邊自動寬度 */
   gap: 12px;
-  align-items: center; /* 讓 input 跟按鈕底部對齊 */
+  align-items: end; /* 讓 input 跟按鈕底部對齊 */
 }
 
 #teacher-filters {
   max-width: 800px;  /* 限制整體寬度 */
   margin: 0 auto;    /* 置中 */
 }
+
+#course-filters {
+  max-width: 800px;  /* 限制整體寬度 */
+  margin: 0 auto;    /* 置中 */
+}
+
+#course-filters.form-grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto; /* 搜尋框撐滿，中間/右邊自動 */
+  gap: 3px;
+  align-items: center;
+}
+
+
