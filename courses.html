@@ -97,15 +97,17 @@
     
         empty?.classList.toggle('hidden', visibleCount !== 0);
         
-        //更新課程數量
+        // 更新課程數量
         const countBox = document.getElementById('courses-count');
         if (countBox) {
-          if (visibleCount > 0) {
-            countBox.textContent = `共有 ${visibleCount} 堂課程`;
+          const totalCount = cards.length; // 總數量（全部課程數）
+          if (totalCount > 0) {
+            countBox.textContent = `符合 ${visibleCount} 堂課程，共 ${totalCount} 堂`;
           } else {
-            countBox.textContent = ''; // 沒有課就不顯示
+            countBox.textContent = '目前沒有課程';
           }
         }
+
       }
     
       /* 關鍵字：按下搜尋（submit）或按 Enter 才執行 */
