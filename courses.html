@@ -19,7 +19,6 @@
   <script defer src="js/app.js"></script>
 </head>
 <body>
-  <!-- shared-layout.js 會自動插入 header/footer -->
 
   <main class="container flow-lg">
     <section class="hero card hero-card">
@@ -67,49 +66,61 @@
 
    <script>
     document.addEventListener('DOMContentLoaded', () => {    
-      const form  = document.getElementById('course-filters');
-      const clear = document.getElementById('btn-clear');
-      const kw    = document.getElementById('kw');
-      const cat   = document.getElementById('cat');
-      const list  = document.getElementById('courses-list');
-      const empty = document.getElementById('courses-empty');
+      const form    = document.getElementById('course-filters');
+      const kw      = document.getElementById('kw');
+      const cat     = document.getElementById('cat');
       const teacher = document.getElementById('teacher');
+      const list    = document.getElementById('courses-list');
+      const empty   = document.getElementById('courses-empty');
+      const clear   = document.getElementById('btn-clear');
     
       function filterCards() {
         const keyword  = (kw.value || '').trim().toLowerCase();
         const category = (cat.value || '').trim();
-        const teacherVal = (teacher.value || '').trim();
+        const tch      = (teacher.value || '').trim();
+    
         const cards = list ? Array.from(list.children) : [];
-      
         let visibleCount = 0;
+    
         cards.forEach(card => {
-          const text    = (card.innerText || '').toLowerCase();
+          const text   = (card.innerText || '').toLowerCase();
           const cardCat = card.dataset.category || '';
-          const cardTeacher = card.dataset.teacher || '';   // ✅ 這裡讀 data-teacher
-      
+          const cardTch = card.dataset.teacher || '';
+    
           const hitKw  = !keyword || text.includes(keyword);
           const hitCat = !category || cardCat === category;
-          const hitTch = !teacherVal || cardTeacher === teacherVal;
-      
+          const hitTch = !tch || cardTch === tch;
+    
           const show = hitKw && hitCat && hitTch;
           card.style.display = show ? '' : 'none';
           if (show) visibleCount++;
         });
-      
+    
         empty?.classList.toggle('hidden', visibleCount !== 0);
       }
     
+      /* 關鍵字：按下搜尋（submit）或按 Enter 才執行 */
       form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
+      kw?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); filterCards(); }
+      });
+    
+      /* 類型 / 老師：一變更就立即過濾 */
+      cat?.addEventListener('change', filterCards);
+      teacher?.addEventListener('change', filterCards);
+    
+      /* 可選：清除鍵 */
       clear?.addEventListener('click', () => {
         kw.value = '';
         cat.value = '';
-        teacher.value = '';      // ← 加這行
+        teacher.value = '';
         filterCards();
       });
-
-      // 載入課程後先跑一次過濾
-      setTimeout(filterCards, 1000);
+    
+      /* 初次載入先跑一次 */
+      filterCards();
     });
+
   </script>
 </body>
 </html>
