@@ -1573,3 +1573,15 @@ textarea::placeholder {
   min-height: 0;      /* 防止子元素撐爆 */
   align-items: flex-start; /* 不要把子項拉滿寬 */
 }
+
+#teacher-filters.form-grid {
+  display: grid;
+  grid-template-columns: 1fr auto; /* 左邊撐滿，右邊自動寬度 */
+  gap: 12px;
+  align-items: end; /* 讓 input 跟按鈕底部對齊 */
+}
+
+#teacher-filters {
+  max-width: 800px;  /* 限制整體寬度 */
+  margin: 0 auto;    /* 置中 */
+}
