@@ -32,7 +32,7 @@
     <section class="card">
       <form id="course-filters" class="form-grid">
         <label>
-          <input type="search" id="kw" placeholder="輸入課程名稱或簡述…" />
+          <input type="search" id="q" placeholder="輸入課程名稱或簡述…" />
         </label>
         <div>
           <button type="submit" class="btn primary" style="display:none;">搜尋</button>
@@ -64,7 +64,7 @@
    <script>
     document.addEventListener('DOMContentLoaded', () => {    
       const form    = document.getElementById('course-filters');
-      const kw      = document.getElementById('kw');
+      const kw      = document.getElementById('q');
       const cat     = document.getElementById('cat');
       const teacher = document.getElementById('teacher');
       const list    = document.getElementById('courses-list');
