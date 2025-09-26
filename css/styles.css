@@ -1478,8 +1478,8 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .badgeImg {
-  width: 32px;          /* 你想要的大小 */
-  height: 32px;
+  width: 25px;          /* 你想要的大小 */
+  height: 25px;
   display: inline-block;
   vertical-align: middle; /* 和文字徽章垂直置中 */
   background: none;       /* 移除背景 */
@@ -1559,7 +1559,7 @@ textarea::placeholder {
 /* 讓卡片內容有可推擠的空間 */
 .course-card { display: flex; flex-direction: column; }
 .course-card .course-link { display: flex; flex-direction: column; flex: 1; }
-.course-card .course-body {display: flex;flex-direction: column;flex: 1;min-height: 0;gap: 3px;}
+.course-card .course-body {display: flex;flex-direction: column;flex: 1;min-height: 0;gap: 5px;}
 
 .course-card .course-body .meta-row.keywords-row {
   margin-top: auto;
