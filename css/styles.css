@@ -1596,7 +1596,7 @@ textarea::placeholder {
 
 #q {
   padding-left: 28px; /* 預留空間給圖示 */
-  background-image: url('/web/img/search.jpg'); /* 只設定圖片 */
+  background-image: url('/web/img/search.png'); /* 只設定圖片 */
   background-repeat: no-repeat;
   background-position: 8px center;
   background-size: 16px 16px;
