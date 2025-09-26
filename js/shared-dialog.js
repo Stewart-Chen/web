@@ -61,9 +61,9 @@ dialog form.card .actions{
 
 /* === Auth Tabs（登入／註冊）=== */
 .auth-tabs{
-  display:flex; gap:8px;
-  padding:8px;
-  border-radius:12px;
+  display:flex; gap:5px;
+  padding:5px;
+  border-radius:10px;
   margin: 2px 0 12px;
   background: linear-gradient(180deg, rgba(59,179,195,.06), rgba(167,220,215,.06));
   border:1px solid rgba(59,179,195,.18);
@@ -72,7 +72,7 @@ dialog form.card .actions{
 .auth-tab{
   flex:1; text-align:center;
   padding:10px 12px;
-  border-radius:999px;
+  border-radius:10px;
   cursor:pointer;
   border:1px solid transparent;
   background: rgba(255,255,255,.8);
