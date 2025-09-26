@@ -59,6 +59,7 @@
     <!-- 課程清單 -->
     <section id="courses-section" class="flow-md">
       <div id="courses-empty" class="muted hidden">目前沒有可顯示的課程。</div>
+      <div id="courses-count" class="muted"></div>
       <div id="courses-list" class="grid cards"></div>
     </section>
   </main>
@@ -95,6 +96,16 @@
         });
     
         empty?.classList.toggle('hidden', visibleCount !== 0);
+        
+        //更新課程數量
+        const countBox = document.getElementById('courses-count');
+        if (countBox) {
+          if (visibleCount > 0) {
+            countBox.textContent = `共有 ${visibleCount} 堂課程`;
+          } else {
+            countBox.textContent = ''; // 沒有課就不顯示
+          }
+        }
       }
     
       /* 關鍵字：按下搜尋（submit）或按 Enter 才執行 */
