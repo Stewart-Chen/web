@@ -72,7 +72,6 @@
       const teacher = document.getElementById('teacher');
       const list    = document.getElementById('courses-list');
       const empty   = document.getElementById('courses-empty');
-      const clear   = document.getElementById('btn-clear');
     
       function filterCards() {
         const keyword  = (kw.value || '').trim().toLowerCase();
@@ -108,14 +107,6 @@
       /* 類型 / 老師：一變更就立即過濾 */
       cat?.addEventListener('change', filterCards);
       teacher?.addEventListener('change', filterCards);
-    
-      /* 可選：清除鍵 */
-      clear?.addEventListener('click', () => {
-        kw.value = '';
-        cat.value = '';
-        teacher.value = '';
-        filterCards();
-      });
     
       /* 初次載入先跑一次 */
       filterCards();
