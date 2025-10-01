@@ -60,7 +60,7 @@ body{
 .plain{ color: inherit; text-decoration: none; }
 
 /* 間距工具 */
-.flow-md > * + *{margin-top: 5px;}
+.flow-md > * + *{margin-top: 18px;}
 .flow-lg > * + *{margin-top: 20px;}
 
 /* ---- Header / Footer / Nav ---- */
