@@ -300,3 +300,8 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
 /* 切換按鈕文案的小樣式 */
 .is-collapsible:not(.is-collapsed) .collapse-btn::after { content: '（收合）'; }
 .is-collapsible.is-collapsed .collapse-btn::after { content: '（展開）'; }
+
+/* 收合時直接隱藏整個 body */
+.collapsible-body.is-collapsed {
+  display: none;
+}
