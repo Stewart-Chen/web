@@ -297,4 +297,7 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
   transform: rotate(180deg); /* 朝上 */
 }
 
+#courses-body .admin-tools {
+  justify-content: flex-end; /* 靠右對齊 */
+}
 
