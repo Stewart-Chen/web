@@ -609,3 +609,37 @@
 })();
 
 
+(function () {
+  const wrapper = document.getElementById('gallery-card');
+  if (!wrapper) return;
+
+  const trigger = wrapper.querySelector('.collapsible-trigger');
+  const body = document.getElementById('gallery-body');
+  const storeKey = 'gallery-body-state';
+
+  // 讀取狀態
+  try {
+    const saved = localStorage.getItem(storeKey);
+    if (saved === 'expanded') {
+      body.classList.remove('is-collapsed');
+      trigger.setAttribute('aria-expanded', 'true');
+      body.setAttribute('aria-hidden', 'false');
+    }
+  } catch (_) {}
+
+  function toggle() {
+    const collapsed = body.classList.toggle('is-collapsed');
+    const expanded = !collapsed;
+    trigger.setAttribute('aria-expanded', String(expanded));
+    body.setAttribute('aria-hidden', String(!expanded));
+    try { localStorage.setItem(storeKey, expanded ? 'expanded' : 'collapsed'); } catch (_) {}
+  }
+
+  trigger.addEventListener('click', toggle);
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle();
+    }
+  });
+})();
