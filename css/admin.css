@@ -1,6 +1,6 @@
 /* 共用：守門時隱藏、整體間距 */
 html[data-guard="checking"] main { visibility: hidden; }
-main.page-admin { padding-top: 14px; padding-bottom: 32px; }
+main.page-admin {/* padding-top: 14px; *//* padding-bottom: 32px; */}
 
 /* 兩欄排版 */
 .admin-wrap {
