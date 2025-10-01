@@ -569,111 +569,57 @@
   window.addEventListener('DOMContentLoaded', adminRefresh);
 })();
 
-
+// === Collapsible 初始化（通用） ===
 (function () {
-  const wrapper = document.getElementById('lessons-wrapper');
-  if (!wrapper) return;
+  function initCollapsible({ wrapperId, bodyId, storeKey, defaultExpanded = false }) {
+    const wrapper = document.getElementById(wrapperId);
+    if (!wrapper) return;
 
-  const trigger = wrapper.querySelector('.collapsible-trigger');
-  const body = document.getElementById('lessons-body');
-  const storeKey = 'lessons-body-state';
+    const trigger = wrapper.querySelector('.collapsible-trigger');
+    const body = document.getElementById(bodyId);
+    if (!trigger || !body) return;
 
-  // 讀取上次狀態
-  try {
-    const saved = localStorage.getItem(storeKey);
-    if (saved === 'expanded') {
-      body.classList.remove('is-collapsed');
-      trigger.setAttribute('aria-expanded', 'true');
-      body.setAttribute('aria-hidden', 'false');
+    const key = storeKey;
+
+    // 套用狀態
+    function apply(expanded) {
+      trigger.setAttribute('aria-expanded', String(expanded));
+      body.setAttribute('aria-hidden', String(!expanded));
+      body.classList.toggle('is-collapsed', !expanded);
     }
-  } catch (_) {}
 
-  function toggle() {
-    const collapsed = body.classList.toggle('is-collapsed');
-    const expanded = !collapsed;
-    trigger.setAttribute('aria-expanded', String(expanded));
-    body.setAttribute('aria-hidden', String(!expanded));
-    try { localStorage.setItem(storeKey, expanded ? 'expanded' : 'collapsed'); } catch (_) {}
+    // 還原上次狀態（或預設）
+    let expanded = !!defaultExpanded;
+    try {
+      const saved = localStorage.getItem(key);
+      if (saved === 'expanded') expanded = true;
+      if (saved === 'collapsed') expanded = false;
+    } catch (_) {}
+    apply(expanded);
+
+    // 切換
+    function toggle() {
+      const willExpand = body.classList.contains('is-collapsed'); // 目前收合 → 將要展開
+      apply(willExpand);
+      try { localStorage.setItem(key, willExpand ? 'expanded' : 'collapsed'); } catch (_) {}
+    }
+
+    // 事件
+    trigger.addEventListener('click', toggle);
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
   }
 
-  // 點擊整個標題列就可切換
-  trigger.addEventListener('click', toggle);
-
-  // 鍵盤可用（Enter / Space）
-  trigger.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggle();
-    }
-  });
+  // 一次初始化三個區塊（都預設收合）
+  [
+    { wrapperId: 'lessons-wrapper', bodyId: 'lessons-body', storeKey: 'lessons-body-state' },
+    { wrapperId: 'gallery-card',    bodyId: 'gallery-body',  storeKey: 'gallery-body-state' },
+    { wrapperId: 'courses-card',    bodyId: 'courses-body',  storeKey: 'courses-body-state' },
+  ].forEach(initCollapsible);
 })();
 
 
-(function () {
-  const wrapper = document.getElementById('gallery-card');
-  if (!wrapper) return;
-
-  const trigger = wrapper.querySelector('.collapsible-trigger');
-  const body = document.getElementById('gallery-body');
-  const storeKey = 'gallery-body-state';
-
-  // 讀取狀態
-  try {
-    const saved = localStorage.getItem(storeKey);
-    if (saved === 'expanded') {
-      body.classList.remove('is-collapsed');
-      trigger.setAttribute('aria-expanded', 'true');
-      body.setAttribute('aria-hidden', 'false');
-    }
-  } catch (_) {}
-
-  function toggle() {
-    const collapsed = body.classList.toggle('is-collapsed');
-    const expanded = !collapsed;
-    trigger.setAttribute('aria-expanded', String(expanded));
-    body.setAttribute('aria-hidden', String(!expanded));
-    try { localStorage.setItem(storeKey, expanded ? 'expanded' : 'collapsed'); } catch (_) {}
-  }
-
-  trigger.addEventListener('click', toggle);
-  trigger.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggle();
-    }
-  });
-})();
-(function () {
-  const wrapper = document.getElementById('courses-card');
-  if (!wrapper) return;
-
-  const trigger = wrapper.querySelector('.collapsible-trigger');
-  const body = document.getElementById('courses-body');
-  const storeKey = 'courses-body-state';
-
-  // 讀取狀態
-  try {
-    const saved = localStorage.getItem(storeKey);
-    if (saved === 'expanded') {
-      body.classList.remove('is-collapsed');
-      trigger.setAttribute('aria-expanded', 'true');
-      body.setAttribute('aria-hidden', 'false');
-    }
-  } catch (_) {}
-
-  function toggle() {
-    const collapsed = body.classList.toggle('is-collapsed');
-    const expanded = !collapsed;
-    trigger.setAttribute('aria-expanded', String(expanded));
-    body.setAttribute('aria-hidden', String(!expanded));
-    try { localStorage.setItem(storeKey, expanded ? 'expanded' : 'collapsed'); } catch (_) {}
-  }
-
-  trigger.addEventListener('click', toggle);
-  trigger.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggle();
-    }
-  });
-})();
