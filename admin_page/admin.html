@@ -128,23 +128,34 @@
             </div>
           </form>
         </div>
-        <div class="admin-card" style="margin-top:16px;">
-          <h3 style="margin:0;">單元</h3>
-          <div id="admin-lessons" style="margin-top:10px;">
-            <!-- 由 admin.js 產生單元清單 -->
-          </div>
-          <form id="admin-lesson-form" class="form-grid" style="margin-top:12px;">
-            <input type="hidden" id="al-id" />
-            <label>順序 <input type="number" id="al-order" min="1" value="1" required /></label>
-            <label>標題 <input id="al-title" required /></label>
-            <label>內容 <textarea id="al-content" rows="3"></textarea></label>
-            <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="submit" class="btn">新增 / 更新單元</button>
-              <button type="button" id="admin-lesson-delete" class="btn danger">刪除選取單元</button>
+          
+          <!-- 單元：可收折 -->
+          <div class="admin-card is-collapsible is-collapsed" id="lessons-card" data-key="lessons-card">
+            <header class="admin-header collapsible-trigger" role="button" aria-expanded="false" tabindex="0">
+              <h3 style="margin:0;">單元</h3>
+              <button type="button" class="btn subtle collapse-btn" aria-label="展開/收合單元">展開</button>
+            </header>
+        
+            <div class="collapsible-body" id="lessons-body" aria-hidden="true">
+              <div id="admin-lessons" style="margin-top:10px;">
+                <!-- 由 admin.js 產生單元清單 -->
+              </div>
+        
+              <form id="admin-lesson-form" class="form-grid" style="margin-top:12px;">
+                <input type="hidden" id="al-id" />
+                <label>順序 <input type="number" id="al-order" min="1" value="1" required /></label>
+                <label>標題 <input id="al-title" required /></label>
+                <label>內容 <textarea id="al-content" rows="3"></textarea></label>
+                <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <button type="submit" class="btn">新增 / 更新單元</button>
+                  <button type="button" id="admin-lesson-delete" class="btn danger">刪除選取單元</button>
+                </div>
+              </form>
+        
+              <p class="muted" style="margin-top:8px;">＊只有被加入管理者清單的帳號才能操作。</p>
             </div>
-          </form>
-          <p class="muted" style="margin-top:8px;">＊只有被加入管理者清單的帳號才能操作。</p>
-        </div>
+          </div>
+        
       </div>
     </section>
   </main>
