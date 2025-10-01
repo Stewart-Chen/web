@@ -571,12 +571,14 @@
 
 
 (function () {
-  const trigger = document.querySelector('#lessons-wrapper .collapsible-trigger');
+  const wrapper = document.getElementById('lessons-wrapper');
+  if (!wrapper) return;
+
+  const trigger = wrapper.querySelector('.collapsible-trigger');
   const body = document.getElementById('lessons-body');
-  const btn = document.querySelector('#lessons-wrapper .collapse-btn');
   const storeKey = 'lessons-body-state';
 
-  // 讀取狀態
+  // 讀取上次狀態
   try {
     const saved = localStorage.getItem(storeKey);
     if (saved === 'expanded') {
@@ -591,12 +593,13 @@
     const expanded = !collapsed;
     trigger.setAttribute('aria-expanded', String(expanded));
     body.setAttribute('aria-hidden', String(!expanded));
-    try {
-      localStorage.setItem(storeKey, expanded ? 'expanded' : 'collapsed');
-    } catch (_) {}
+    try { localStorage.setItem(storeKey, expanded ? 'expanded' : 'collapsed'); } catch (_) {}
   }
 
+  // 點擊整個標題列就可切換
   trigger.addEventListener('click', toggle);
+
+  // 鍵盤可用（Enter / Space）
   trigger.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -604,4 +607,5 @@
     }
   });
 })();
+
 
