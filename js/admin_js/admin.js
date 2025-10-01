@@ -568,3 +568,50 @@
   // 進入頁面 → 先刷新一次列表
   window.addEventListener('DOMContentLoaded', adminRefresh);
 })();
+
+
+// === Collapsible: 單元卡 ===
+(function () {
+  const card = document.getElementById('lessons-card');
+  if (!card) return;
+
+  const body = card.querySelector('.collapsible-body');
+  const trigger = card.querySelector('.collapsible-trigger');
+  const btn = card.querySelector('.collapse-btn');
+  const storeKey = card.getAttribute('data-key') || 'collapsible-lessons';
+
+  // 讀取上次狀態
+  try {
+    const saved = localStorage.getItem(storeKey);
+    if (saved === 'expanded') {
+      card.classList.remove('is-collapsed');
+      trigger.setAttribute('aria-expanded', 'true');
+      body.setAttribute('aria-hidden', 'false');
+    }
+  } catch (_) {}
+
+  function toggle() {
+    const isCollapsed = card.classList.toggle('is-collapsed');
+    const expanded = !isCollapsed;
+    trigger.setAttribute('aria-expanded', String(expanded));
+    body.setAttribute('aria-hidden', String(!expanded));
+    try {
+      localStorage.setItem(storeKey, expanded ? 'expanded' : 'collapsed');
+    } catch (_) {}
+  }
+
+  // 點擊 header 或按鈕都可切換
+  trigger.addEventListener('click', (e) => {
+    // 避免表單內部點擊誤觸，限制只有點 header 區或按鈕才切換
+    if (e.target.closest('.collapse-btn') || e.currentTarget === trigger) toggle();
+  });
+
+  // 鍵盤操作（Enter / Space）
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle();
+    }
+  });
+
+})();
