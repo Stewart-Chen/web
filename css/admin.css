@@ -305,3 +305,34 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
 .collapsible-body.is-collapsed {
   display: none;
 }
+
+/* 觸發區可點、左右對齊 */
+.collapsible-trigger {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 右側小三角：預設向下（收合） */
+.caret::before {
+  content: '▼';
+  display: inline-block;
+  transition: transform .18s ease;
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* 展開時改成向上 ▲ */
+.collapsible-trigger[aria-expanded="true"] .caret::before {
+  content: '▲';
+}
+
+/* 內容：展開/收合。收合時完全不佔空間 */
+.collapsible-body.is-collapsed { display: none; }
+
+/* （如果你想要展開/收合有點小過度，可選擇性使用下面兩行）
+.collapsible-body { animation: fadeIn .18s ease; }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+*/
