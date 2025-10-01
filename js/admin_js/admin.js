@@ -570,29 +570,25 @@
 })();
 
 
-// === Collapsible: 單元卡 ===
 (function () {
-  const card = document.getElementById('lessons-card');
-  if (!card) return;
+  const trigger = document.querySelector('#lessons-wrapper .collapsible-trigger');
+  const body = document.getElementById('lessons-body');
+  const btn = document.querySelector('#lessons-wrapper .collapse-btn');
+  const storeKey = 'lessons-body-state';
 
-  const body = card.querySelector('.collapsible-body');
-  const trigger = card.querySelector('.collapsible-trigger');
-  const btn = card.querySelector('.collapse-btn');
-  const storeKey = card.getAttribute('data-key') || 'collapsible-lessons';
-
-  // 讀取上次狀態
+  // 讀取狀態
   try {
     const saved = localStorage.getItem(storeKey);
     if (saved === 'expanded') {
-      card.classList.remove('is-collapsed');
+      body.classList.remove('is-collapsed');
       trigger.setAttribute('aria-expanded', 'true');
       body.setAttribute('aria-hidden', 'false');
     }
   } catch (_) {}
 
   function toggle() {
-    const isCollapsed = card.classList.toggle('is-collapsed');
-    const expanded = !isCollapsed;
+    const collapsed = body.classList.toggle('is-collapsed');
+    const expanded = !collapsed;
     trigger.setAttribute('aria-expanded', String(expanded));
     body.setAttribute('aria-hidden', String(!expanded));
     try {
@@ -600,18 +596,12 @@
     } catch (_) {}
   }
 
-  // 點擊 header 或按鈕都可切換
-  trigger.addEventListener('click', (e) => {
-    // 避免表單內部點擊誤觸，限制只有點 header 區或按鈕才切換
-    if (e.target.closest('.collapse-btn') || e.currentTarget === trigger) toggle();
-  });
-
-  // 鍵盤操作（Enter / Space）
+  trigger.addEventListener('click', toggle);
   trigger.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       toggle();
     }
   });
-
 })();
+
