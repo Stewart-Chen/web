@@ -263,3 +263,40 @@ main.page-admin { padding-top: 14px; padding-bottom: 32px; }
   }
 }
 
+
+/* === Collapsible card === */
+.is-collapsible .collapsible-body {
+  overflow: hidden;
+  transition: grid-template-rows .22s ease, opacity .22s ease, margin .22s ease;
+  display: grid;
+  grid-template-rows: 1fr; /* 展開態 */
+  opacity: 1;
+}
+
+/* 收起時：高度 0、透明、縮小外距 */
+.is-collapsible.is-collapsed .collapsible-body {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0 !important;
+}
+
+/* 讓內層內容不被撐開時閃動 */
+.is-collapsible .collapsible-body > * {
+  min-height: 0;
+}
+
+/* 觸發區可點，也有鍵盤可聚焦 */
+.collapsible-trigger {
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn.subtle {
+  background: #f6f7f8;
+  border: 1px solid rgba(0,0,0,.08);
+}
+.btn.subtle:hover { background: #fff; }
+
+/* 切換按鈕文案的小樣式 */
+.is-collapsible:not(.is-collapsed) .collapse-btn::after { content: '（收合）'; }
+.is-collapsible.is-collapsed .collapse-btn::after { content: '（展開）'; }
