@@ -182,8 +182,6 @@ nav .dropdown:focus-within .dropbtn{
   filter: drop-shadow(0 4px 10px rgba(59, 179, 195, 0.4));
 }
 
-/* ---- 老師區塊 ---- */
-.teachers{ margin-top: 22px; }
 .teacher-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -814,7 +812,7 @@ body.menu-open{ overflow: hidden; }
   margin-bottom: 5px;
   text-align: right;
   padding: 0px 8px;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 .key-bar{
   margin-top: 12px;
