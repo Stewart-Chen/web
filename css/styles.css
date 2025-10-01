@@ -816,6 +816,9 @@ body.menu-open{ overflow: hidden; }
   padding: 0px 8px;
   margin-top: 12px;
 }
+.key-bar{
+  margin-top: 12px;
+}
 .alert{ border-radius: 12px; padding: 12px; border: 1px solid transparent; }
 .alert.ok{ background: #ecfdf5; border-color: #b7ebc0; }
 .alert.danger{ background: #fef2f2; border-color: #fecaca; }
