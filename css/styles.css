@@ -227,10 +227,9 @@ nav .dropdown:focus-within .dropbtn{
   box-shadow: var(--shadow-sm);
 }
 .course-meta{
-  font-size: .9rem;
+  font-size: .8rem;
   color: rgba(0,0,0,.65);
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
 }
 .course-card h4{ margin: 0 0 4px 0; }
@@ -1665,7 +1664,7 @@ textarea::placeholder {
 
 /* ---- 課程資訊（仿截圖） ---- */
 .course-info {
-  margin: 20px 0 12px 0;
+  margin: 20px 0 8px 0;
 }
 
 .course-info__title{
@@ -1706,16 +1705,18 @@ textarea::placeholder {
 }
 
 .info-item .label{
-  color: #374151; font-weight: 600;
+  color: #374151;
+  font-weight: 600;
 }
 .info-item .value{
-  color: #111827; font-weight: 700;
+  color: #111827;
+  font-weight: 700;
 }
 
 /* 小螢幕時讓 value 換行到下一列也好看 */
-@media (max-width: 520px){
-  .info-item{ grid-template-columns: auto 1fr; }
-  .info-item .value{ grid-column: 2 / -1; }
+@media (max-width: 720px){
+  .info-item{grid-template-columns: auto 1fr;}
+  .info-item .value{grid-column: 2 / -1;}
 }
 
 .tabs {
@@ -1740,6 +1741,7 @@ textarea::placeholder {
 
 .tabs .tab.active {
   color: #111827;               /* 深色文字 */
+  font-weight: 600;
   border-bottom: 2px solid #3bb3c3; /* 主題色直線 */
 }
 
@@ -1751,5 +1753,12 @@ textarea::placeholder {
 .tab-content .tab-pane.active { display: block; }
 
 .tabs-section {
-  margin-top: 20px;
+  margin-top: 28px;
+}
+
+.teacher-box{
+  /* align-items: center; */
+  max-width: 900px;
+  margin: 12px auto;
+  padding: 20px;
 }
