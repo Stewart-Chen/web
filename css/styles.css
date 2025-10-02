@@ -1779,6 +1779,12 @@ textarea::placeholder {
   font-size: .8rem;
 }
 
+.tab-items {
+  display: inline-flex;
+  gap: 8px;                  /* chip 與 chip 間距 */
+  flex-wrap: wrap;
+}
+
 /* 小螢幕時讓 value 換行到下一列也好看 */
 @media (max-width: 720px){
   .teacher-box{
