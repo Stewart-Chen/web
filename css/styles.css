@@ -1665,7 +1665,7 @@ textarea::placeholder {
 
 /* ---- 課程資訊（仿截圖） ---- */
 .course-info {
-  margin-top: 20px;
+  margin: 20px 0 12px 0;
 }
 
 .course-info__title{
