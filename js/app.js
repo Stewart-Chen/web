@@ -54,9 +54,14 @@ async function loadCourse(){
 
     if (heroEl) {
       heroEl.innerHTML = `
-        <img src="${heroUrl}" alt="${course.title} 主圖" loading="eager" decoding="async" width="1200" height="630">
+        <img src="${heroUrl}" alt="${course.title} 主圖" loading="eager" decoding="async">
+        <div class="hero-avatar">
+          <img src="/web/img/fan_o.jpg" alt="縮圖">
+        </div>
       `;
     }
+
+    
   } catch (e) {
     console.warn('hero image load failed', e);
   }
