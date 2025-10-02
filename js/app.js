@@ -53,11 +53,19 @@ async function loadCourse(){
       `https://picsum.photos/seed/${encodeURIComponent(course.id)}/1200/630`;
 
     if (heroEl) {
+      let avatarUrl = null;
+      if (course.teacher === 'fanfan') {
+        avatarUrl = '/web/img/fan_o.jpg';
+      } else if (course.teacher === 'xd') {
+        avatarUrl = '/web/img/dd_o.jpg';
+      }
       heroEl.innerHTML = `
         <img src="${heroUrl}" alt="${course.title} 主圖" loading="eager" decoding="async">
-        <div class="hero-avatar">
-          <img src="/web/img/fan_o.jpg" alt="縮圖">
-        </div>
+        ${avatarUrl ? `
+          <div class="hero-avatar">
+            <img src="${avatarUrl}" alt="${course.teacher} 縮圖">
+          </div>
+        ` : ``}
       `;
     }
 
