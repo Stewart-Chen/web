@@ -1338,12 +1338,12 @@ h3 + p, h4 + p{margin-top: .2em;}
 /* 基本 chip */
 .chip{
   flex: 0 0 auto;
-  padding: 5px 15px;
-  font-weight: 600;
+  padding: 4px 12px;
+  font-weight: 500;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
-  font-size: .85rem;
+  font-size: .8rem;
   border-radius: 999px;
   background: #d9f2f0;
   color: var(--ink);
@@ -1683,20 +1683,16 @@ textarea::placeholder {
 .info-list{
   display: grid;
   gap: 10px;
-  margin-top: 8px;
-}
-
-.info-item{
-  display: grid;
-  grid-template-columns: auto 1fr auto; /* icon | label | value */
-  align-items: center;
-  gap: 10px;
+  margin-top: 12px;
 }
 
 .info-item .icon{
-  width: 36px; height: 36px; border-radius: 12px;
+  width: 25px;
+  height: 25px;
+  border-radius: 12px;
   background: var(--accent-blue);
-  display: grid; place-items: center;
+  display: grid;
+  place-items: center;
   box-shadow: 0 2px 8px rgba(59,179,195,.25);
 }
 .info-item .icon svg{
@@ -1713,24 +1709,20 @@ textarea::placeholder {
   font-weight: 700;
 }
 
-/* 小螢幕時讓 value 換行到下一列也好看 */
-@media (max-width: 720px){
-  .info-item{grid-template-columns: auto 1fr;}
-  .info-item .value{grid-column: 2 / -1;}
-}
+
 
 .tabs {
   display: flex;
   justify-content: space-around;
   border-bottom: 1px solid #e5e7eb; /* 灰色基準線 */
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
 .tabs .tab {
   background: none;
   border: none;
   padding: 10px 16px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: #6b7280; /* 預設灰字 */
   cursor: pointer;
@@ -1757,8 +1749,39 @@ textarea::placeholder {
 }
 
 .teacher-box{
-  /* align-items: center; */
-  max-width: 900px;
+  max-width: 860px;
   margin: 12px auto;
-  padding: 20px;
+  padding: 20px 40px 60px 40px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* label 靠左，value 靠右 */
+  gap: 10px;
+}
+
+.info-item .icon {
+  flex: 0 0 auto;   /* 固定大小 */
+}
+
+.info-item .label {
+  flex: 1;          /* 佔滿中間 */
+  white-space: nowrap; /* 不換行 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 太長用 … */
+  font-size: .8rem;
+}
+
+.info-item .value {
+  flex: 0 0 auto;   /* 固定在最右邊 */
+  white-space: nowrap;
+  font-size: .8rem;
+}
+
+/* 小螢幕時讓 value 換行到下一列也好看 */
+@media (max-width: 720px){
+  .teacher-box{
+    padding: 10px 20px 30px 20px;
+  }
 }
