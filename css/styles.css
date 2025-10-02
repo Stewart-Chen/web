@@ -1662,3 +1662,55 @@ textarea::placeholder {
     max-height: min(25vh);
   }
 }
+
+/* ---- 課程資訊（仿截圖） ---- */
+.course-info {
+  margin-top: 8px;
+}
+
+.course-info__title{
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; letter-spacing: .2px;
+}
+.course-info__title::before{
+  content:""; width: 4px; height: 18px; border-radius: 2px;
+  background: var(--accent-blue);
+  display:inline-block;
+}
+
+.info-list{
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.info-item{
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* icon | label | value */
+  align-items: center;
+  gap: 10px;
+}
+
+.info-item .icon{
+  width: 36px; height: 36px; border-radius: 12px;
+  background: var(--accent-blue);
+  display: grid; place-items: center;
+  box-shadow: 0 2px 8px rgba(59,179,195,.25);
+}
+.info-item .icon svg{
+  width: 20px; height: 20px;
+  stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.info-item .label{
+  color: #374151; font-weight: 600;
+}
+.info-item .value{
+  color: #111827; font-weight: 700;
+}
+
+/* 小螢幕時讓 value 換行到下一列也好看 */
+@media (max-width: 520px){
+  .info-item{ grid-template-columns: auto 1fr; }
+  .info-item .value{ grid-column: 2 / -1; }
+}
