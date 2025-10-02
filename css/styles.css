@@ -1714,3 +1714,30 @@ textarea::placeholder {
   .info-item{ grid-template-columns: auto 1fr; }
   .info-item .value{ grid-column: 2 / -1; }
 }
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 12px;
+}
+.tabs .tab {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6b7280; /* 灰色 */
+  cursor: pointer;
+  transition: color .2s ease;
+}
+.tabs .tab.active {
+  color: #111827; /* 深色 */
+  border-bottom: 3px solid #111827; /* 底線 */
+}
+.tabs .tab:hover {
+  color: #111827;
+}
+
+.tab-content .tab-pane { display: none; }
+.tab-content .tab-pane.active { display: block; }
