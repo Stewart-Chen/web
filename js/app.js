@@ -101,6 +101,10 @@ async function loadCourse(){
     if (course.plan_type) {
       items.push({ key: 'plan', label: '方案類型', value: `${course.plan_type}`, icon: 'tag' });
     }
+    if (Number.isFinite(course.material_fee)) {
+      const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
+      items.push({ key: 'material_fee', label: '材料費用', value: `NT$ ${mfee}`, icon: 'coin' });
+    }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
       items.push({ key: 'fee', label: '課程費用', value: `NT$ ${fee}`, icon: 'coin' });
@@ -124,54 +128,6 @@ async function loadCourse(){
       `;
       infoSec.innerHTML = title + listHTML;
       extraSec.appendChild(infoSec);
-    }
-  
-    // 2) 把「被拿掉的欄位」加回來放最下面（設備/材料/材料費/關鍵字…）
-    const gridBlocks = [];
-    if (Array.isArray(course.equipment_items) && course.equipment_items.length) {
-      gridBlocks.push(`
-        <div>
-          <div class="label">設備項目</div>
-          <div class="value chips">${course.equipment_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
-        </div>
-      `);
-    }
-    if (Array.isArray(course.material_items) && course.material_items.length) {
-      gridBlocks.push(`
-        <div>
-          <div class="label">材料項目</div>
-          <div class="value chips">${course.material_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
-        </div>
-      `);
-    }
-    if (Number.isFinite(course.material_fee)) {
-      const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
-      gridBlocks.push(`
-        <div>
-          <div class="label">材料費</div>
-          <div class="value">NT$ ${mfee}</div>
-        </div>
-      `);
-    }
-    if (Array.isArray(course.keywords) && course.keywords.length) {
-      gridBlocks.push(`
-        <div>
-          <div class="label">關鍵字</div>
-          <div class="value chips">${course.keywords.map(k=>`<span class="chip">${k}</span>`).join('')}</div>
-        </div>
-      `);
-    }
-  
-    if (gridBlocks.length) {
-      const gridSec = document.createElement('section');
-      gridSec.id = 'course-meta-grid';       // ← 新 id
-      gridSec.className = 'flow-sm';
-      gridSec.innerHTML = `
-        <div class="meta-grid">
-          ${gridBlocks.join('')}
-        </div>
-      `;
-      extraSec.appendChild(gridSec);
     }
   }
   
