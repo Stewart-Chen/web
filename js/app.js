@@ -19,6 +19,8 @@ async function loadCourse(){
   const enrolledBadge = document.getElementById('enrolled-badge');
   const progressEl = document.getElementById('progress');
   const modal = document.getElementById('lesson-modal');
+  const summaryEl = document.getElementById('course-summary'); // ✅ 新增
+  const heroEl = document.getElementById('course-hero');       // ✅ 新增
 
   if (!idParam || Number.isNaN(idNum)) {
     if (titleEl) titleEl.textContent = '找不到課程或尚未發佈';
@@ -37,13 +39,33 @@ async function loadCourse(){
   if (error) { console.error(error); return; }
   if (!course) { if (titleEl) titleEl.textContent = '找不到課程或尚未發佈'; return; }
   if (titleEl) titleEl.textContent = course.title;
+  if (summaryEl) summaryEl.textContent = course.summary || '—';
   if (descEl)  descEl.textContent  = course.description ?? course.summary ?? '';
 
+
+  // ✅ Hero 圖：抓第一張 gallery，退而求其次用 cover_url，再退 placeholder
+  try {
+    const gallery = Array.isArray(course.gallery) ? course.gallery : [];
+    const urls = gallery.length ? await toPublicUrls('course-gallery', gallery) : [];
+    const heroUrl =
+      (urls && urls[0]) ||
+      course.cover_url ||
+      `https://picsum.photos/seed/${encodeURIComponent(course.id)}/1200/630`;
+
+    if (heroEl) {
+      heroEl.innerHTML = `
+        <img src="${heroUrl}" alt="${course.title} 主圖" loading="eager" decoding="async" width="1200" height="630">
+      `;
+    }
+  } catch (e) {
+    console.warn('hero image load failed', e);
+  }
+  
   const teacherBox = document.getElementById('teacher-box-content');
   if (teacherBox) {
     const TEACHER_META = {
       fanfan: { name: '汎汎', role: '園藝治療老師' },
-      xd:     { name: '小D', role: '藝術治療老師' }
+      xd:     { name: '小D', role: '藝術療癒老師' }
     };
     const meta = TEACHER_META[course.teacher];
     teacherBox.textContent = meta ? `${meta.name}｜${meta.role}` : (course.teacher || '—');
