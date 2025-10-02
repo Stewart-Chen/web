@@ -92,18 +92,18 @@ async function loadCourse(){
   
     // 1) 產生「課程資訊」：icon 清單（人數/時數/方案/費用）
     const items = [];
+    if (course.plan_type) {
+      items.push({ key: 'plan', label: '方案類型', value: `${course.plan_type}`, icon: 'tag' });
+    }
     if (Number.isFinite(course.capacity)) {
       items.push({ key: 'capacity', label: '課程人數', value: `${course.capacity} 人`, icon: 'users' });
     }
     if (course.duration_hours) {
       items.push({ key: 'duration', label: '課程時數', value: `${Number(course.duration_hours)} 小時`, icon: 'clock' });
     }
-    if (course.plan_type) {
-      items.push({ key: 'plan', label: '方案類型', value: `${course.plan_type}`, icon: 'tag' });
-    }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
-      items.push({ key: 'material_fee', label: '材料費用', value: `NT$ ${mfee}`, icon: 'coin' });
+      items.push({ key: 'material_fee', label: '材料費用', value: `NT$ ${mfee}`, icon: 'wallet' });
     }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
@@ -131,22 +131,23 @@ async function loadCourse(){
     }
   }
   
-  /* --- 小圖示（SVG） --- */
   function iconSVG(name){
+    const size = 20; // 統一大小
     switch (name) {
       case 'users':
-        return `<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
       case 'clock':
-        return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
       case 'tag':
-        return `<svg viewBox="0 0 24 24"><path d="M20 10l-8 8-9-9V4h5l9 9z"/><path d="M7 7h.01"/></svg>`;
-      case 'coin':
-        return `<svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10l-8 8-9-9V4h5l9 9z"/><path d="M7 7h.01"/></svg>`;
+      case 'coin': // 課程費用
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/></svg>`;
+      case 'wallet': // 材料費用
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M16 12h.01"/></svg>`;
       default:
-        return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>`;
     }
   }
-
 
   // 啟用 tabs 切換
   document.querySelectorAll('#course-extra-tabs .tab').forEach(tab => {
