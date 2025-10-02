@@ -83,63 +83,70 @@ async function loadCourse(){
     const meta = TEACHER_META[course.teacher];
     teacherBox.textContent = meta ? `${meta.name}｜${meta.role}` : (course.teacher || '—');
   }
-
-  
-  // (A) 課程資訊 之後、在 teacherBox 之後插入
-  /*
-  const infoSec = document.getElementById('course-info');
-  if (infoSec) {
-    // 先移除舊的 meta（避免重覆載入）
-    infoSec.querySelector('#course-meta')?.remove();
-  
-    const metaWrap = document.createElement('section');
-    metaWrap.id = 'course-meta';
-    metaWrap.className = 'flow-sm';
-    metaWrap.innerHTML = `
-      <div class="meta-grid">
-        ${course.capacity         ? `<div><div class="label">課程人數</div><div class="value">${course.capacity}</div></div>` : ``}
-        ${course.duration_hours   ? `<div><div class="label">課程時數</div><div class="value">${Number(course.duration_hours)} 小時</div></div>` : ``}
-        ${Array.isArray(course.equipment_items) && course.equipment_items.length ? `
-          <div><div class="label">設備項目</div><div class="value chips">${course.equipment_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
-        ${Array.isArray(course.material_items) && course.material_items.length ? `
-          <div><div class="label">材料項目</div><div class="value chips">${course.material_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
-        ${Number.isFinite(course.material_fee) ? `<div><div class="label">材料費</div><div class="value">NT$ ${course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee}</div></div>` : ``}
-        ${course.plan_type        ? `<div><div class="label">方案類型</div><div class="value"><span class="badge">${course.plan_type}</span></div></div>` : ``}
-        ${Number.isFinite(course.course_fee) ? `<div><div class="label">課程費用</div><div class="value">NT$ ${course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee}</div></div>` : ``}
-        ${Array.isArray(course.keywords) && course.keywords.length ? `
-          <div><div class="label">關鍵字</div><div class="value chips">${course.keywords.map(k=>`<span class="chip">${k}</span>`).join('')}</div></div>` : ``}
-
-      </div>
-    `;
-    infoSec.appendChild(metaWrap);
-  }
-  */
   
   const extraSec = document.getElementById('course-extra');
   if (extraSec) {
-    // 清掉舊的 meta（避免重複）
     extraSec.querySelector('#course-meta')?.remove();
   
-    const metaWrap = document.createElement('div');
-    metaWrap.id = 'course-meta';
-    metaWrap.className = 'flow-sm';
-    metaWrap.innerHTML = `
-      <div class="meta-grid">
-        ${course.capacity ? `<div><div class="label">課程人數</div><div class="value">${course.capacity}</div></div>` : ``}
-        ${course.duration_hours ? `<div><div class="label">課程時數</div><div class="value">${Number(course.duration_hours)} 小時</div></div>` : ``}
-        ${Array.isArray(course.equipment_items) && course.equipment_items.length ? `
-          <div><div class="label">設備項目</div><div class="value chips">${course.equipment_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
-        ${Array.isArray(course.material_items) && course.material_items.length ? `
-          <div><div class="label">材料項目</div><div class="value chips">${course.material_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
-        ${Number.isFinite(course.material_fee) ? `<div><div class="label">材料費</div><div class="value">NT$ ${course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee}</div></div>` : ``}
-        ${course.plan_type ? `<div><div class="label">方案類型</div><div class="value"><span class="badge">${course.plan_type}</span></div></div>` : ``}
-        ${Number.isFinite(course.course_fee) ? `<div><div class="label">課程費用</div><div class="value">NT$ ${course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee}</div></div>` : ``}
-        ${Array.isArray(course.keywords) && course.keywords.length ? `
-          <div><div class="label">關鍵字</div><div class="value chips">${course.keywords.map(k=>`<span class="chip">${k}</span>`).join('')}</div></div>` : ``}
-      </div>
-    `;
-    extraSec.appendChild(metaWrap);
+    // 產生要顯示的項目
+    const items = [];
+    if (Number.isFinite(course.capacity)) {
+      items.push({ key: 'capacity', label: '課程人數', value: `${course.capacity} 人`, icon: 'users' });
+    }
+    if (course.duration_hours) {
+      items.push({ key: 'duration', label: '課程時數', value: `${Number(course.duration_hours)} 小時`, icon: 'clock' });
+    }
+    if (course.plan_type) {
+      items.push({ key: 'plan', label: '方案類型', value: `${course.plan_type}`, icon: 'tag' });
+    }
+    if (Number.isFinite(course.course_fee)) {
+      const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
+      items.push({ key: 'fee', label: '課程費用', value: `NT$ ${fee}`, icon: 'coin' });
+    }
+  
+    // 若完全沒有項目就不要畫
+    if (items.length) {
+      const metaWrap = document.createElement('section');
+      metaWrap.id = 'course-meta';
+      metaWrap.className = 'course-info';
+  
+      // 標題
+      const title = `<div class="course-info__title">課程資訊</div>`;
+  
+      // 清單
+      const listHTML = `
+        <div class="info-list">
+          ${items.map(it => `
+            <div class="info-item" data-key="${it.key}">
+              <div class="icon">${iconSVG(it.icon)}</div>
+              <div class="label">${it.label}</div>
+              <div class="value">${it.value}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+  
+      metaWrap.innerHTML = title + listHTML;
+      extraSec.appendChild(metaWrap);
+    }
   }
+  
+  /* --- 小圖示（SVG） --- */
+  function iconSVG(name){
+    switch (name) {
+      case 'users':
+        return `<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+      case 'clock':
+        return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+      case 'tag':
+        return `<svg viewBox="0 0 24 24"><path d="M20 10l-8 8-9-9V4h5l9 9z"/><path d="M7 7h.01"/></svg>`;
+      case 'coin':
+        return `<svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/></svg>`;
+      default:
+        return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>`;
+    }
+  }
+
 
   // (B) 單元列表
   const { data: lessons, error: lsErr } = await sb
