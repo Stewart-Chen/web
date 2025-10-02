@@ -338,7 +338,7 @@
         .split(/[，,]/)
         .map(x => x.trim())
         .filter(Boolean);
-      return arr.length ? Array.from(new Set(arr)) : null; // 空就回 null
+      return arr.length ? Array.from(new Set(arr)) : [];
     };
   
     // 數字欄位轉數字，空字串 → null
@@ -366,7 +366,12 @@
       plan_type:       $v('ac-plan-type') || null,    // text/nullable
       keywords:        toList($v('ac-keywords')),     // text[]/nullable
     };
-  
+    
+    // 額外保險（避免任何地方意外出現 null）
+    ['equipment_items','material_items','keywords'].forEach(k=>{
+      if (!Array.isArray(payload[k])) payload[k] = [];
+    });
+    
     if (!payload.title)   { alert('請填寫標題'); return; }
     if (!payload.teacher) { alert('請選擇授課老師'); return; }
   
