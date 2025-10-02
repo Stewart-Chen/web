@@ -87,7 +87,7 @@ async function loadCourse(){
   const extraSec = document.getElementById('course-extra');
   if (extraSec) {
     // 先清乾淨舊內容（避免重複）
-    extraSec.querySelector('#course-info')?.remove();       // icon 列表
+    extraSec.querySelector('#course-info-detail')?.remove();       // icon 列表
     extraSec.querySelector('#course-meta-grid')?.remove();  // 下方 meta grid
   
     // 1) 產生「課程資訊」：icon 清單（人數/時數/方案/費用）
@@ -108,7 +108,7 @@ async function loadCourse(){
   
     if (items.length) {
       const infoSec = document.createElement('section');
-      infoSec.id = 'course-info';              // ← 改成新 id（不要再叫 course-meta）
+      infoSec.id = 'course-info-detail';              // ← 改成新 id（不要再叫 course-meta）
       infoSec.className = 'course-info';
       const title = `<div class="course-info__title">課程資訊</div>`;
       const listHTML = `
