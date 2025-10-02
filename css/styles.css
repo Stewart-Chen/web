@@ -1616,3 +1616,32 @@ textarea::placeholder {
   background-clip: padding-box;
 }
 
+#course-summary{font-weight:600}
+
+/* 置頂主圖容器：固定比例 + 不超高 + 圓角 + 裁切 */
+#course-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  /* 預設桌機：更寬更扁 */
+  aspect-ratio: 16 / 9;
+  max-height: min(50vh);
+  margin-inline: auto;           /* 置中 */
+  width: min(100%, 1100px);      /* 版心寬度（依你的設計可改 1024/1140 等） */
+  justify-self: center;          /* 若父層是 CSS Grid，確保自己居中 */
+}
+
+/* 圖片鋪滿容器，以中央為對齊點裁切 */
+#course-hero img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+}
+
+@media (max-width: 760px) {
+  #course-hero {
+    max-height: 30vh;
+  }
+}
