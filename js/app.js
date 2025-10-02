@@ -86,6 +86,7 @@ async function loadCourse(){
 
   
   // (A) 課程資訊 之後、在 teacherBox 之後插入
+  /*
   const infoSec = document.getElementById('course-info');
   if (infoSec) {
     // 先移除舊的 meta（避免重覆載入）
@@ -112,7 +113,33 @@ async function loadCourse(){
     `;
     infoSec.appendChild(metaWrap);
   }
-
+  */
+  
+  const extraSec = document.getElementById('course-extra');
+  if (extraSec) {
+    // 清掉舊的 meta（避免重複）
+    extraSec.querySelector('#course-meta')?.remove();
+  
+    const metaWrap = document.createElement('div');
+    metaWrap.id = 'course-meta';
+    metaWrap.className = 'flow-sm';
+    metaWrap.innerHTML = `
+      <div class="meta-grid">
+        ${course.capacity ? `<div><div class="label">課程人數</div><div class="value">${course.capacity}</div></div>` : ``}
+        ${course.duration_hours ? `<div><div class="label">課程時數</div><div class="value">${Number(course.duration_hours)} 小時</div></div>` : ``}
+        ${Array.isArray(course.equipment_items) && course.equipment_items.length ? `
+          <div><div class="label">設備項目</div><div class="value chips">${course.equipment_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
+        ${Array.isArray(course.material_items) && course.material_items.length ? `
+          <div><div class="label">材料項目</div><div class="value chips">${course.material_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>` : ``}
+        ${Number.isFinite(course.material_fee) ? `<div><div class="label">材料費</div><div class="value">NT$ ${course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee}</div></div>` : ``}
+        ${course.plan_type ? `<div><div class="label">方案類型</div><div class="value"><span class="badge">${course.plan_type}</span></div></div>` : ``}
+        ${Number.isFinite(course.course_fee) ? `<div><div class="label">課程費用</div><div class="value">NT$ ${course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee}</div></div>` : ``}
+        ${Array.isArray(course.keywords) && course.keywords.length ? `
+          <div><div class="label">關鍵字</div><div class="value chips">${course.keywords.map(k=>`<span class="chip">${k}</span>`).join('')}</div></div>` : ``}
+      </div>
+    `;
+    extraSec.appendChild(metaWrap);
+  }
 
   // (B) 單元列表
   const { data: lessons, error: lsErr } = await sb
