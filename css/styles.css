@@ -153,7 +153,7 @@ nav .dropdown:focus-within .dropbtn{
   border-radius: var(--radius);
   display: grid;
   align-items: center;
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -1625,14 +1625,13 @@ textarea::placeholder {
 }
 
 #course-info #course-hero{
+  position: relative;
   width: calc(100% + 40px);   /* 40px = 左右 padding 各 20px */
   margin-left: -20px;
   margin-right: -20px;
   margin-top: -20px;          /* 如果想讓主圖也頂住卡片上緣 */
-  border-radius: 8px 8px 0 0;  /* 上方圓角，底部不一定要 */
   aspect-ratio: 16 / 9;
-  max-height: min(50vh);
-  overflow: hidden;
+  max-height: min(40vh);
 }
 
 #course-info #course-hero img{
@@ -1641,5 +1640,29 @@ textarea::placeholder {
   display: block;
   object-fit: cover;
   object-position: center;
+  border-radius: 10px;
 }
 
+/* 圓形縮圖維持原本設定 */
+#course-hero .hero-avatar{
+  position: absolute;
+  left: 50%;
+  bottom: -36px;              /* 往下凸一半 */
+  transform: translateX(-50%);
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  overflow: hidden;
+  background: #fff;
+}
+
+/* 讓下面標題往下讓出 avatar 的一半高度 */
+#course-info header > #course-hero + *{
+  margin-top: calc(72px / 2 + 12px);
+}
+@media (max-width: 720px){
+    #course-info #course-hero{
+    max-height: min(25vh);
+  }
+}
