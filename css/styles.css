@@ -1665,12 +1665,15 @@ textarea::placeholder {
 
 /* ---- 課程資訊（仿截圖） ---- */
 .course-info {
-  margin-top: 8px;
+  margin-top: 20px;
 }
 
 .course-info__title{
-  display: flex; align-items: center; gap: 8px;
-  font-weight: 700; letter-spacing: .2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  letter-spacing: .2px;
 }
 .course-info__title::before{
   content:""; width: 4px; height: 18px; border-radius: 2px;
@@ -1746,3 +1749,7 @@ textarea::placeholder {
 
 .tab-content .tab-pane { display: none; }
 .tab-content .tab-pane.active { display: block; }
+
+.tabs-section {
+  margin-top: 20px;
+}
