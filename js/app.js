@@ -192,6 +192,39 @@ async function loadCourse(){
   }
 
 
+  // 啟用 tabs 切換
+  document.querySelectorAll('#course-extra-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      // 清掉 active
+      document.querySelectorAll('#course-extra-tabs .tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('#course-extra-tabs .tab-pane').forEach(p => p.classList.remove('active'));
+  
+      // 設定新的 active
+      tab.classList.add('active');
+      const target = tab.dataset.target;
+      document.getElementById('tab-' + target)?.classList.add('active');
+    });
+  });
+
+  if (Array.isArray(course.equipment_items) && course.equipment_items.length) {
+    $('#equip-items').innerHTML = course.equipment_items.map(x => `<span class="chip">${x}</span>`).join('');
+  } else {
+    $('#equip-items').textContent = '尚無設備項目';
+  }
+  
+  if (Array.isArray(course.material_items) && course.material_items.length) {
+    $('#material-items').innerHTML = course.material_items.map(x => `<span class="chip">${x}</span>`).join('');
+  } else {
+    $('#material-items').textContent = '尚無材料項目';
+  }
+  
+  if (Array.isArray(course.keywords) && course.keywords.length) {
+    $('#keyword-items').innerHTML = course.keywords.map(k => `<span class="chip">${k}</span>`).join('');
+  } else {
+    $('#keyword-items').textContent = '尚無關鍵字';
+  }
+
+
   // (B) 單元列表
   const { data: lessons, error: lsErr } = await sb
     .from('lessons')
