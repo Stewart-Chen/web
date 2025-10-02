@@ -343,7 +343,8 @@
   
     // 數字欄位轉數字，空字串 → null
     const toNum = (s) => {
-      const n = Number(s);
+      if (s === '' || s == null) return null;
+      const n = parseInt(String(s), 10);
       return Number.isFinite(n) ? n : null;
     };
   
@@ -374,7 +375,12 @@
     
     if (!payload.title)   { alert('請填寫標題'); return; }
     if (!payload.teacher) { alert('請選擇授課老師'); return; }
-  
+
+    // 若容量有填，就必須是正整數
+    if (payload.capacity != null && (!Number.isInteger(payload.capacity) || payload.capacity <= 0)) {
+      alert('容納人數需為正整數'); return;
+    }
+    
     try {
       if (id) {
         // 可選：依 gallery 第一張推封面（你原本的邏輯）
