@@ -344,7 +344,7 @@
     // 數字欄位轉數字，空字串 → null
     const toNum = (s) => {
       if (s === '' || s == null) return null;
-      const n = parseInt(String(s), 10);
+      const n = parseFloat(s);
       return Number.isFinite(n) ? n : null;
     };
   
