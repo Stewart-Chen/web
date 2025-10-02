@@ -121,8 +121,11 @@ async function loadCourse(){
     .eq('course_id', idNum)
     .order('order_no');
   if (lsErr) { console.error(lsErr); return; }
+  
   if (!lessons || lessons.length === 0){
-    lessonsEmpty?.classList.remove('hidden');
+    //lessonsEmpty?.classList.remove('hidden');
+    $('#lessons-section')?.classList.add('hidden');
+    $('#progress-section')?.classList.add('hidden');
   } else if (lessonsEl){
     lessonsEl.innerHTML = lessons.map(ls => `
       <li><button class="btn" data-lesson="${ls.id}">${ls.title}</button></li>
