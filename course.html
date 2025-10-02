@@ -34,7 +34,6 @@
         <div id="course-hero" class="hero-img" aria-label="課程主圖" style="padding:0;border:none"></div>
         <h2 id="course-title">讀取中…</h2>
         <p id="course-summary" class="muted">—</p>         <!-- ✅ 新增：summary -->
-        <p id="course-desc" class="muted">請稍候，正在載入課程內容。</p>
       </header>
 
       <div class="row" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;justify-content: center;">
@@ -43,10 +42,15 @@
       </div>
     </section>
 
-    <!-- 授課老師 -->
     <aside id="teacher-box" class="card">
       <strong>授課老師</strong>
       <div id="teacher-box-content" class="course-meta" style="margin-top:6px;">—</div>
+    
+      <!-- ⬇️ 新 section：描述 + meta -->
+      <section id="course-extra" class="flow-sm" style="margin-top:12px;">
+        <p id="course-desc" class="muted">請稍候，正在載入課程內容。</p>
+        <div id="course-meta"></div>
+      </section>
     </aside>
 
     <section id="lessons-section" class="flow-md need-js">
