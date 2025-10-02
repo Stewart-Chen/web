@@ -86,9 +86,11 @@ async function loadCourse(){
   
   const extraSec = document.getElementById('course-extra');
   if (extraSec) {
-    extraSec.querySelector('#course-meta')?.remove();
+    // 先清乾淨舊內容（避免重複）
+    extraSec.querySelector('#course-info')?.remove();       // icon 列表
+    extraSec.querySelector('#course-meta-grid')?.remove();  // 下方 meta grid
   
-    // 產生要顯示的項目
+    // 1) 產生「課程資訊」：icon 清單（人數/時數/方案/費用）
     const items = [];
     if (Number.isFinite(course.capacity)) {
       items.push({ key: 'capacity', label: '課程人數', value: `${course.capacity} 人`, icon: 'users' });
@@ -104,16 +106,11 @@ async function loadCourse(){
       items.push({ key: 'fee', label: '課程費用', value: `NT$ ${fee}`, icon: 'coin' });
     }
   
-    // 若完全沒有項目就不要畫
     if (items.length) {
-      const metaWrap = document.createElement('section');
-      metaWrap.id = 'course-meta';
-      metaWrap.className = 'course-info';
-  
-      // 標題
+      const infoSec = document.createElement('section');
+      infoSec.id = 'course-info';              // ← 改成新 id（不要再叫 course-meta）
+      infoSec.className = 'course-info';
       const title = `<div class="course-info__title">課程資訊</div>`;
-  
-      // 清單
       const listHTML = `
         <div class="info-list">
           ${items.map(it => `
@@ -125,9 +122,56 @@ async function loadCourse(){
           `).join('')}
         </div>
       `;
+      infoSec.innerHTML = title + listHTML;
+      extraSec.appendChild(infoSec);
+    }
   
-      metaWrap.innerHTML = title + listHTML;
-      extraSec.appendChild(metaWrap);
+    // 2) 把「被拿掉的欄位」加回來放最下面（設備/材料/材料費/關鍵字…）
+    const gridBlocks = [];
+    if (Array.isArray(course.equipment_items) && course.equipment_items.length) {
+      gridBlocks.push(`
+        <div>
+          <div class="label">設備項目</div>
+          <div class="value chips">${course.equipment_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+        </div>
+      `);
+    }
+    if (Array.isArray(course.material_items) && course.material_items.length) {
+      gridBlocks.push(`
+        <div>
+          <div class="label">材料項目</div>
+          <div class="value chips">${course.material_items.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+        </div>
+      `);
+    }
+    if (Number.isFinite(course.material_fee)) {
+      const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
+      gridBlocks.push(`
+        <div>
+          <div class="label">材料費</div>
+          <div class="value">NT$ ${mfee}</div>
+        </div>
+      `);
+    }
+    if (Array.isArray(course.keywords) && course.keywords.length) {
+      gridBlocks.push(`
+        <div>
+          <div class="label">關鍵字</div>
+          <div class="value chips">${course.keywords.map(k=>`<span class="chip">${k}</span>`).join('')}</div>
+        </div>
+      `);
+    }
+  
+    if (gridBlocks.length) {
+      const gridSec = document.createElement('section');
+      gridSec.id = 'course-meta-grid';       // ← 新 id
+      gridSec.className = 'flow-sm';
+      gridSec.innerHTML = `
+        <div class="meta-grid">
+          ${gridBlocks.join('')}
+        </div>
+      `;
+      extraSec.appendChild(gridSec);
     }
   }
   
