@@ -158,7 +158,6 @@ nav .dropdown:focus-within .dropbtn{
   padding: 20px;
 }
 .hero h2{/* font-size: 1.6rem; */margin: 0 0 8px;/* color: #1b5e20; *//* font-weight: 700; */}
-.hero p{color: #444;font-size: 0.9rem;}
 .chips{display: flex;gap: 8px;flex-wrap: wrap;margin-top: 10px;}
 
 /* ---- Feature（服務領域） ---- */
@@ -1189,9 +1188,6 @@ h3 + p, h4 + p{margin-top: .2em;}
     /* font-weight: 600; */
     line-height: 1.4;
   }
-  .hero p{
-    font-size: .8rem;
-  }
   .chips .chip{
     font-size: .8rem;
     padding: 6px 16px;
@@ -1616,7 +1612,7 @@ textarea::placeholder {
   background-clip: padding-box;
 }
 
-#course-summary{font-weight:600}
+#course-summary{font-weight:600;}
 
 /* 置頂主圖容器：固定比例 + 不超高 + 圓角 + 裁切 */
 #course-hero {
