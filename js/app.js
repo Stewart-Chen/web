@@ -383,14 +383,16 @@ function courseCardHTML(c){
 }
 
 // ========= 抓課程並渲染 =========
-async function renderCourses(){
+async function renderCourses(page = 1){
   const listEl  = document.getElementById('courses-list');
   const emptyEl = document.getElementById('courses-empty');
   const moreBtn = document.getElementById('btn-more-courses');
+  const paginationEl = document.getElementById('pagination');
   if (!listEl) return;
 
   const isHome = !!moreBtn;
-  const LIMIT  = isHome ? 6 : null;
+  const LIMIT = isHome ? 6 : 16;
+  const offset = (page - 1) * LIMIT;
 
   if (!window.sb || typeof window.sb.from !== 'function'){
     listEl.innerHTML = '';
@@ -450,6 +452,39 @@ async function renderCourses(){
     } else {
       moreBtn.classList.add('hidden');
     }
+  } else {
+    // （課程列表頁）顯示分頁
+    const totalPages = Math.ceil(count / LIMIT);
+    renderPagination(page, totalPages);
+    paginationEl?.classList.remove('hidden');
+    moreBtn?.classList.add('hidden'); // 隱藏查看更多
+  }
+}
+
+function renderPagination(currentPage, totalPages) {
+  const prevBtn = document.getElementById('prev-page');
+  const nextBtn = document.getElementById('next-page');
+  const pageNumbersEl = document.getElementById('page-numbers');
+  
+  if (!pageNumbersEl) return;
+  pageNumbersEl.innerHTML = '';
+
+  // 上一頁 / 下一頁按鈕狀態
+  prevBtn.disabled = currentPage <= 1;
+  nextBtn.disabled = currentPage >= totalPages;
+
+  prevBtn.onclick = () => renderCourses(currentPage - 1);
+  nextBtn.onclick = () => renderCourses(currentPage + 1);
+
+  // 頁碼按鈕
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    btn.className = 'page-number' + (i === currentPage ? ' active' : '');
+    btn.onclick = () => {
+      if (i !== currentPage) renderCourses(i);
+    };
+    pageNumbersEl.appendChild(btn);
   }
 }
 
