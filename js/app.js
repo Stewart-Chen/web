@@ -400,7 +400,7 @@ async function renderCourses(page = 1, filters = {}){
   if (!listEl) return;
 
   const isHome = !!moreBtn;
-  const LIMIT = isHome ? 6 : 16;
+  const LIMIT = isHome ? 12 : 16;
   const offset = (page - 1) * LIMIT;
 
   if (!window.sb || typeof window.sb.from !== 'function'){
@@ -520,13 +520,24 @@ function renderPagination(currentPage, totalPages, filters = {}) {
   prevBtn.disabled = currentPage <= 1;
   nextBtn.disabled = currentPage >= totalPages;
 
+  // ---- helper：滾回課程區頂部 ----
+  function scrollToCoursesTop() {
+    const section = document.getElementById('courses-section');
+    const headerH = parseInt(getComputedStyle(document.documentElement)
+                      .getPropertyValue('--header-height')) || 68;
+    const y = section ? section.getBoundingClientRect().top + window.scrollY - headerH - 12 : 0;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+  
   prevBtn.onclick = () => {
     courseState.page = Math.max(1, currentPage - 1);
     renderCourses(courseState.page, filters);
+    scrollToCoursesTop();
   };
   nextBtn.onclick = () => {
     courseState.page = Math.min(totalPages, currentPage + 1);
     renderCourses(courseState.page, filters);
+    scrollToCoursesTop();
   };
 
   for (let i = 1; i <= totalPages; i++) {
@@ -537,6 +548,7 @@ function renderPagination(currentPage, totalPages, filters = {}) {
       if (i !== currentPage) {
         courseState.page = i;
         renderCourses(courseState.page, filters);
+        scrollToCoursesTop();
       }
     };
     pageNumbersEl.appendChild(btn);
