@@ -403,18 +403,15 @@ async function renderCourses(page = 1){
   const sb = window.sb;
 
   // 查詢
-  let query = sb
+  let { data, error, count } = await sb
     .from('courses')
-    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords', { count: LIMIT ? 'exact' : null })
+    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords', { count: 'exact' })
     .eq('published', true)
     .is('deleted_at', null)
     .order('sort_priority', { ascending: false })   // 先比優先順序 sort_priority 大 → 小 排序
     .order('created_at', { ascending: false });     // 再比新舊 建立時間 新 → 舊 排序
+    .range(offset, offset + LIMIT - 1);
 
-
-  if (LIMIT) query = query.range(0, LIMIT - 1);
-
-  const { data, error, count } = await query;
   if (error){
     console.warn('[courses] load error:', error);
     emptyEl?.classList.remove('hidden');
