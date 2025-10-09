@@ -426,6 +426,7 @@ async function renderCourses(page = 1, filters = {}){
 
   //關鍵字（title/summary/description 模糊 + keywords 陣列包含）
   if (filters.q && filters.q.trim()) {
+    const kw = filters.q.trim();
     const esc = kw.replace(/%/g, '\\%').replace(/_/g, '\\_');   // 粗略跳脫 % _
     query = query.or(
       `title.ilike.%${esc}%,summary.ilike.%${esc}%,description.ilike.%${esc}%`,
