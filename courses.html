@@ -84,18 +84,6 @@
     // --- 安全檢查：沒有 renderCourses 就不做 ---
     if (typeof window.renderCourses !== 'function') return;
 
-    // 若沒定義全域狀態/setter，這裡補上最小版（避免報錯）
-    if (!window.courseState) {
-      window.courseState = { page: 1, teacher: null, category: null, q: '' };
-    }
-    if (!window.setCourseFilter) {
-      window.setCourseFilter = function (partial) {
-        Object.assign(window.courseState, partial);
-        window.courseState.page = 1; // 篩選變更時回到第 1 頁
-        window.renderCourses(window.courseState.page, window.courseState);
-      };
-    }
-
     // --- 工具：簡單 debounce ---
     function debounce(fn, wait = 300) {
       let t;
