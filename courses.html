@@ -71,9 +71,7 @@
     </section>
   </main>
 
-   <script>
-  // 這段假設你已在 app.js 加了 courseState / setCourseFilter / renderCourses
-  // 若你照我之前的建議做，這三個都掛在 window 上了。
+<script>
 
   document.addEventListener('DOMContentLoaded', () => {
     const form    = document.getElementById('course-filters');
@@ -84,6 +82,17 @@
     // --- 安全檢查：沒有 renderCourses 就不做 ---
     if (typeof window.renderCourses !== 'function') return;
 
+    if (!window.courseState) {
+      window.courseState = { page: 1, teacher: null, category: null, q: '' };
+    }
+    if (!window.setCourseFilter) {
+      window.setCourseFilter = function (partial) {
+        Object.assign(window.courseState, partial);
+        window.courseState.page = 1; // 篩選變更時回到第 1 頁
+        window.renderCourses(window.courseState.page, window.courseState);
+      };
+    }
+    
     // --- 工具：簡單 debounce ---
     function debounce(fn, wait = 300) {
       let t;
