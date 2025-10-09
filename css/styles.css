@@ -808,7 +808,7 @@ body.menu-open{ overflow: hidden; }
 /* 表單訊息與狀態結果 */
 .count{
   margin-bottom: 5px;
-  text-align: right;
+  /* text-align: right; */
   padding: 0px 8px;
   margin-top: 16px;
 }
@@ -1792,7 +1792,8 @@ textarea::placeholder {
   }
 }
 
-.pagination {
+/* ===== Pagination（維持原造型，只換主題色） ===== */
+.pagination{
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1801,27 +1802,41 @@ textarea::placeholder {
   font-size: 15px;
 }
 
-.page-btn, .page-number {
+/* 一般狀態：主題色文字，透明底 */
+.page-btn, .page-number{
   border: none;
   background: none;
-  color: #007bff;
+  color: var(--accent-blue);     /* 原本 #007bff → 主題藍綠 */
   padding: 6px 12px;
   cursor: pointer;
-  border-radius: 6px;
-  transition: background 0.2s;
+  border-radius: 6px;            /* 保留原本 6px */
+  transition: background .2s, color .2s;
 }
 
-.page-btn[disabled], .page-number[disabled] {
+/* hover：淡藍綠底 */
+.page-number:hover:not(.active),
+.page-btn:hover:not([disabled]){
+  background-color: rgba(59,179,195,.10); /* ≈ var(--accent-blue) 的 10% */
+}
+
+/* active：實心主題色（維持原本的填色效果） */
+.page-number.active{
+  background: var(--accent-blue);
+  color: #fff;
+  cursor: default;
+}
+
+/* disabled：維持灰色但更柔和 */
+.page-btn[disabled],
+.page-number[disabled]{
   color: #aaa;
   cursor: default;
 }
 
-.page-number.active {
-  background-color: #007bff;
-  color: white;
-  cursor: default;
+/* 焦點可及性 */
+.page-btn:focus-visible,
+.page-number:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,179,195,.28);
 }
 
-.page-number:hover:not(.active) {
-  background-color: #f2f2f2;
-}
