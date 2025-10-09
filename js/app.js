@@ -383,20 +383,13 @@ function courseCardHTML(c){
 }
 
 // 全域狀態：頁碼 + 過濾條件
-const courseState = {
+window.courseState = window.courseState || {
   page: 1,
-  teacher: null,   // 'fanfan' | 'xd' | null
-  category: null,  // 'horti' | 'art' | null
+  teacher: null,
+  category: null,
   q: ''
 };
-
-// 切換過濾 (選老師 / 類型) 時呼叫：會自動重置到第 1 頁
-function setCourseFilter(partial) {
-  Object.assign(courseState, partial);
-  courseState.page = 1;
-  renderCourses(courseState.page, courseState);
-}
-
+const courseState = window.courseState;
 
 // ========= 抓課程並渲染 =========
 async function renderCourses(page = 1, filters = {}){
