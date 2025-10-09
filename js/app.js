@@ -409,7 +409,7 @@ async function renderCourses(page = 1){
     .eq('published', true)
     .is('deleted_at', null)
     .order('sort_priority', { ascending: false })   // 先比優先順序 sort_priority 大 → 小 排序
-    .order('created_at', { ascending: false });     // 再比新舊 建立時間 新 → 舊 排序
+    .order('created_at', { ascending: false })     // 再比新舊 建立時間 新 → 舊 排序
     .range(offset, offset + LIMIT - 1);
 
   if (error){
