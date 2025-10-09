@@ -382,8 +382,23 @@ function courseCardHTML(c){
   `;
 }
 
+// 全域狀態：頁碼 + 過濾條件
+const courseState = {
+  page: 1,
+  teacher: null,   // 'fanfan' | 'xd' | null
+  category: null,  // 'horti' | 'art' | null
+};
+
+// 切換過濾 (選老師 / 類型) 時呼叫：會自動重置到第 1 頁
+function setCourseFilter(partial) {
+  Object.assign(courseState, partial);
+  courseState.page = 1;
+  renderCourses(courseState.page, courseState);
+}
+
+
 // ========= 抓課程並渲染 =========
-async function renderCourses(page = 1){
+async function renderCourses(page = 1, filters = {}){
   const listEl  = document.getElementById('courses-list');
   const emptyEl = document.getElementById('courses-empty');
   const moreBtn = document.getElementById('btn-more-courses');
@@ -403,7 +418,7 @@ async function renderCourses(page = 1){
   const sb = window.sb;
 
   // 查詢
-  let { data, error, count } = await sb
+  let query = sb
     .from('courses')
     .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords', { count: 'exact' })
     .eq('published', true)
@@ -412,6 +427,13 @@ async function renderCourses(page = 1){
     .order('created_at', { ascending: false })     // 再比新舊 建立時間 新 → 舊 排序
     .range(offset, offset + LIMIT - 1);
 
+  //套用過濾條件（老師 / 類型）
+  if (filters.teacher)  query = query.eq('teacher',  filters.teacher);
+  if (filters.category) query = query.eq('category', filters.category);
+
+  //分頁範圍
+  const { data, error, count } = await query.range(offset, offset + LIMIT - 1);
+  
   if (error){
     console.warn('[courses] load error:', error);
     emptyEl?.classList.remove('hidden');
@@ -420,10 +442,19 @@ async function renderCourses(page = 1){
   }
 
   const items = (data || []);
-  if (!items.length){
+  if (!items.length) {
     listEl.innerHTML = '';
     emptyEl?.classList.remove('hidden');
-    moreBtn?.classList.add('hidden');
+
+    // 分開處理首頁/課程頁的尾端 UI
+    if (isHome) {
+      moreBtn?.classList.add('hidden');
+    } else {
+      // 課程頁：沒有資料時也要把分頁清乾淨
+      renderPagination(1, 1, filters); // 渲染成單頁禁用狀態
+      paginationEl?.classList.remove('hidden');
+      moreBtn?.classList.add('hidden');
+    }
     return;
   }
   emptyEl?.classList.add('hidden');
@@ -443,43 +474,59 @@ async function renderCourses(page = 1){
   enableCarousels(listEl);
 
   // 首頁的「查看更多」
-  if (isHome){
+  if (isHome) {
+    // 首頁：顯示「查看更多」，不顯示分頁
     if (typeof count === 'number' ? count > items.length : items.length >= LIMIT) {
-      moreBtn.classList.remove('hidden');
+      moreBtn?.classList.remove('hidden');
     } else {
-      moreBtn.classList.add('hidden');
+      moreBtn?.classList.add('hidden');
     }
+    paginationEl?.classList.add('hidden');
   } else {
-    // （課程列表頁）顯示分頁
-    const totalPages = Math.ceil(count / LIMIT);
-    renderPagination(page, totalPages);
+    // 課程頁：依「相同的過濾條件」計算總頁數並渲染分頁
+    const totalPages = Math.max(1, Math.ceil(count / LIMIT));
+
+    // 若目前頁碼超過總頁數（例如篩選後資料變少），自動拉回最後一頁
+    if (page > totalPages) {
+      courseState.page = totalPages;
+      return renderCourses(courseState.page, filters);
+    }
+
+    renderPagination(page, totalPages, filters);
     paginationEl?.classList.remove('hidden');
-    moreBtn?.classList.add('hidden'); // 隱藏查看更多
+    moreBtn?.classList.add('hidden');
   }
 }
 
-function renderPagination(currentPage, totalPages) {
+function renderPagination(currentPage, totalPages, filters = {}) {
   const prevBtn = document.getElementById('prev-page');
   const nextBtn = document.getElementById('next-page');
   const pageNumbersEl = document.getElementById('page-numbers');
-  
+
   if (!pageNumbersEl) return;
   pageNumbersEl.innerHTML = '';
 
-  // 上一頁 / 下一頁按鈕狀態
   prevBtn.disabled = currentPage <= 1;
   nextBtn.disabled = currentPage >= totalPages;
 
-  prevBtn.onclick = () => renderCourses(currentPage - 1);
-  nextBtn.onclick = () => renderCourses(currentPage + 1);
+  prevBtn.onclick = () => {
+    courseState.page = Math.max(1, currentPage - 1);
+    renderCourses(courseState.page, filters);
+  };
+  nextBtn.onclick = () => {
+    courseState.page = Math.min(totalPages, currentPage + 1);
+    renderCourses(courseState.page, filters);
+  };
 
-  // 頁碼按鈕
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement('button');
     btn.textContent = i;
     btn.className = 'page-number' + (i === currentPage ? ' active' : '');
     btn.onclick = () => {
-      if (i !== currentPage) renderCourses(i);
+      if (i !== currentPage) {
+        courseState.page = i;
+        renderCourses(courseState.page, filters);
+      }
     };
     pageNumbersEl.appendChild(btn);
   }
