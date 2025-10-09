@@ -72,73 +72,65 @@
   </main>
 
    <script>
-    document.addEventListener('DOMContentLoaded', () => {    
-      const form    = document.getElementById('course-filters');
-      const kw      = document.getElementById('q');
-      const cat     = document.getElementById('cat');
-      const teacher = document.getElementById('teacher');
-      const list    = document.getElementById('courses-list');
-      const empty   = document.getElementById('courses-empty');
-    
-      function filterCards() {
-        const keyword  = (kw.value || '').trim().toLowerCase();
-        const category = (cat.value || '').trim();
-        const tch      = (teacher.value || '').trim();
-    
-        const cards = list ? Array.from(list.children) : [];
-        let visibleCount = 0;
-    
-        cards.forEach(card => {
-          const text   = (card.innerText || '').toLowerCase();
-          const cardCat = card.dataset.category || '';
-          const cardTch = card.dataset.teacher || '';
-    
-          const hitKw  = !keyword || text.includes(keyword);
-          const hitCat = !category || cardCat === category;
-          const hitTch = !tch || cardTch === tch;
-    
-          const show = hitKw && hitCat && hitTch;
-          card.style.display = show ? '' : 'none';
-          if (show) visibleCount++;
-        });
-    
-        empty?.classList.toggle('hidden', visibleCount !== 0);
-        
-        // 更新課程數量
-        const countBox = document.getElementById('courses-count');
-        if (countBox) {
-          const totalCount = cards.length; // 總數量（全部課程數）
-          if (totalCount > 0) {
-            countBox.textContent = `${visibleCount} 堂課程`;
-          } else {
-            countBox.textContent = '目前沒有課程';
-          }
-        }
+  // 這段假設你已在 app.js 加了 courseState / setCourseFilter / renderCourses
+  // 若你照我之前的建議做，這三個都掛在 window 上了。
 
-      }
-    
-      /* 關鍵字：按下搜尋（submit）或按 Enter 才執行 */
-      form?.addEventListener('submit', e => { e.preventDefault(); filterCards(); });
-      kw?.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); filterCards(); }
-      });
-    
-      /* 類型 / 老師：一變更就立即過濾 */
-      cat?.addEventListener('change', filterCards);
-      teacher?.addEventListener('change', filterCards);
-    
-      /* 初次載入先跑一次 */
-      //filterCards();
-      if (list) {
-        const observer = new MutationObserver(() => {
-          filterCards();
-        });
-        observer.observe(list, { childList: true });
-      }
+  document.addEventListener('DOMContentLoaded', () => {
+    const form    = document.getElementById('course-filters');
+    const kw      = document.getElementById('q');
+    const cat     = document.getElementById('cat');
+    const teacher = document.getElementById('teacher');
 
+    // --- 安全檢查：沒有 renderCourses 就不做 ---
+    if (typeof window.renderCourses !== 'function') return;
+
+    // 若沒定義全域狀態/setter，這裡補上最小版（避免報錯）
+    if (!window.courseState) {
+      window.courseState = { page: 1, teacher: null, category: null, q: '' };
+    }
+    if (!window.setCourseFilter) {
+      window.setCourseFilter = function (partial) {
+        Object.assign(window.courseState, partial);
+        window.courseState.page = 1; // 篩選變更時回到第 1 頁
+        window.renderCourses(window.courseState.page, window.courseState);
+      };
+    }
+
+    // --- 工具：簡單 debounce ---
+    function debounce(fn, wait = 300) {
+      let t;
+      return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
+    }
+
+    // 關鍵字：input 時即更新（debounce），按 Enter 也會觸發
+    kw?.addEventListener('input', debounce(() => {
+      window.setCourseFilter({ q: kw.value || '' });
+    }, 300));
+    kw?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        window.setCourseFilter({ q: kw.value || '' });
+      }
     });
 
-  </script>
+    // 類型/老師：change 即更新
+    cat?.addEventListener('change', () => {
+      const v = (cat.value || '').trim();
+      window.setCourseFilter({ category: v || null });
+    });
+    teacher?.addEventListener('change', () => {
+      const v = (teacher.value || '').trim();
+      window.setCourseFilter({ teacher: v || null });
+    });
+
+    // 阻止 form submit 重新整理頁面
+    form?.addEventListener('submit', (e) => e.preventDefault());
+
+    // 初次載入：以目前狀態渲染（課程列表頁會顯示分頁；首頁不會）
+    window.renderCourses(window.courseState.page, window.courseState);
+  });
+</script>
+
 </body>
 </html>
 
