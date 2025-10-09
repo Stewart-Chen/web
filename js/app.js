@@ -387,6 +387,7 @@ const courseState = {
   page: 1,
   teacher: null,   // 'fanfan' | 'xd' | null
   category: null,  // 'horti' | 'art' | null
+  q: ''
 };
 
 // 切換過濾 (選老師 / 類型) 時呼叫：會自動重置到第 1 頁
@@ -430,6 +431,19 @@ async function renderCourses(page = 1, filters = {}){
   if (filters.teacher)  query = query.eq('teacher',  filters.teacher);
   if (filters.category) query = query.eq('category', filters.category);
 
+  //關鍵字（title/summary/description 模糊 + keywords 陣列包含）
+  if (filters.q && filters.q.trim()) {
+    const kw = filters.q.trim();
+    // 1) 文字欄位做 ilike
+    // 2) keywords (text[]) 做包含：使用 PostgREST 的 cs（contains）語法在 OR 裡
+    // 注意：cs 需要 JSON 陣列字面值，例如 { "園藝" }
+    const esc = kw.replace(/%/g, '\\%').replace(/_/g, '\\_');   // 粗略跳脫 % _
+    const jsonArray = `{${JSON.stringify(kw)}}`.replace(/^\{"/, '{').replace(/"\}$/, '}'); // -> {"xxx"} 變 {xxx}
+    query = query.or(
+      `title.ilike.%${esc}%,summary.ilike.%${esc}%,description.ilike.%${esc}%,keywords.cs.${jsonArray}`
+    , { referencedTable: 'courses' });
+  }
+  
   //分頁範圍
   const { data, error, count } = await query.range(offset, offset + LIMIT - 1);
   
