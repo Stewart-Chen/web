@@ -424,16 +424,14 @@ async function renderCourses(page = 1, filters = {}){
   if (filters.teacher)  query = query.eq('teacher',  filters.teacher);
   if (filters.category) query = query.eq('category', filters.category);
 
-  //關鍵字（title/summary/description 模糊 + keywords 陣列包含）
   if (filters.q && filters.q.trim()) {
-    const kw = filters.q.trim();
-    const esc = kw.replace(/%/g, '\\%').replace(/_/g, '\\_');   // 粗略跳脫 % _
+    const kw  = filters.q.trim();
+    const esc = kw.replace(/%/g, '\\%').replace(/_/g, '\\_');
     query = query.or(
-      `title.ilike.%${esc}%,summary.ilike.%${esc}%,description.ilike.%${esc}%`,
-      { referencedTable: 'courses' }
+      `title.ilike.%${esc}%,summary.ilike.%${esc}%,description.ilike.%${esc}%`
     );
   }
-  
+
   //分頁範圍
   const { data, error, count } = await query.range(offset, offset + LIMIT - 1);
   
