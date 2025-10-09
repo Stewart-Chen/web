@@ -440,6 +440,16 @@ async function renderCourses(page = 1, filters = {}){
     return;
   }
 
+  // 渲染卡片後，更新數量（課程頁才顯示）
+  const countBox = document.getElementById('courses-count');
+  if (countBox) {
+    if (isHome) {
+      countBox.textContent = ''; // 首頁不顯示
+    } else {
+      countBox.textContent = typeof count === 'number' ? `${count} 堂課程` : '';
+    }
+  }
+
   const items = (data || []);
   if (!items.length) {
     listEl.innerHTML = '';
