@@ -157,7 +157,7 @@ nav .dropdown:focus-within .dropbtn{
   margin: 0 auto;
   padding: 20px;
 }
-.hero h2{/* font-size: 1.6rem; */margin: 0 0 8px;/* color: #1b5e20; *//* font-weight: 700; */}
+.hero h2{/* font-size: 1.6rem; */margin: 0 0 8px;/* color: #1b5e20; *//* font-weight: 700; */text-align: center;}
 .chips{display: flex;gap: 8px;flex-wrap: wrap;margin-top: 10px;}
 
 /* ---- Feature（服務領域） ---- */
