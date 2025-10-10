@@ -1840,3 +1840,6 @@ textarea::placeholder {
   box-shadow: 0 0 0 3px rgba(59,179,195,.28);
 }
 
+/* 讓 \n 變成可視的換行 */
+#course-desc { white-space: pre-line; }
+/* 如果還要保留多個空白字元，用 pre-wrap */
