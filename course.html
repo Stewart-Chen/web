@@ -94,4 +94,32 @@
     <p class="nojs" style="display:none;">你的瀏覽器未啟用 JavaScript，本頁功能將無法使用。</p>
   </main>
 </body>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const p = document.getElementById("course-desc");
+  if (!p) return;
+
+  // 取得文字內容並清理多餘空白
+  const text = p.textContent.trim();
+
+  // 用正則依據「數字.」開頭切割
+  const items = text.split(/\s*\d+\.\s*/).filter(Boolean);
+
+  // 產生 <ol> 元素
+  const ol = document.createElement("ol");
+  ol.className = p.className;
+  ol.id = p.id;
+
+  // 每一項包進 <li>
+  items.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item.trim();
+    ol.appendChild(li);
+  });
+
+  // 用 <ol> 取代原本 <p>
+  p.replaceWith(ol);
+});
+</script>
+
 </html>
