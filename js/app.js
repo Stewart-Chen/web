@@ -186,7 +186,12 @@ async function loadCourse(){
         </svg>`;
 
       case 'coin': // 課程費用
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 8v8M9 10a3 3 0 0 1 3-2h1a2 2 0 1 1 0 4h-2a2 2 0 1 0 0 4h3a3 3 0 0 0 3-2"/>
+        </svg>`;
+
       case 'wallet': // 材料費用
         return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M16 12h.01"/></svg>`;
       default:
