@@ -40,8 +40,36 @@ async function loadCourse(){
   if (!course) { if (titleEl) titleEl.textContent = '找不到課程或尚未發佈'; return; }
   if (titleEl) titleEl.textContent = course.title;
   if (summaryEl) summaryEl.textContent = course.summary || '—';
-  if (descEl)  descEl.textContent  = course.description ?? course.summary ?? '';
 
+  // 小工具：把「1. ... 2. ...」純文字轉 <ol><li>...</li></ol>
+  function convertNumberedTextToList(el){
+    if (!el) return;
+    // 已經是清單就不動
+    if (el.tagName === 'OL' || el.tagName === 'UL') return;
+  
+    const text = (el.textContent || '').trim();
+    // 切：支援 1. / 1、 / １． / １、（允許前後空白/換行）
+    const parts = text.split(/\s*[0-9０-９]+\s*[\.．、]\s*/g).filter(Boolean);
+  
+    // 需要至少兩項才算真正的編號清單
+    if (parts.length < 2) return;
+  
+    const ol = document.createElement('ol');
+    ol.className = el.className || '';
+    ol.id = el.id || '';
+  
+    parts.forEach(t => {
+      const li = document.createElement('li');
+      li.textContent = t.trim();
+      ol.appendChild(li);
+    });
+  
+    el.replaceWith(ol);
+  }
+  
+  // ---- 在 loadCourse() 裡，設定 desc 後立刻呼叫 ----
+  if (descEl) descEl.textContent = course.description ?? course.summary ?? '';
+  convertNumberedTextToList(document.getElementById('course-desc'));
 
   // ✅ Hero 圖：抓第一張 gallery，退而求其次用 cover_url，再退 placeholder
   try {
