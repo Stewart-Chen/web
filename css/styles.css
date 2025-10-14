@@ -1852,13 +1852,22 @@ textarea::placeholder {
   margin-left: 0;               /* 移除外距 */
 }
 
-#lessons {
-  gap: 12px;
-  padding-left: 0em;          /* 縮小縮排 */
+#course-desc li::marker {
+  font-weight: bold;    /* 可加粗 */
+  color: #555;
 }
 
-#lessons li {
-  list-style: none;
+#lessons {
+  gap: 20px;
+  padding-left: 3em;          /* 縮小縮排 */
+  padding-right: 3em;
+}
+
+#lessons li::marker {
+  font-size: 0.8em;     /* 改標號大小 */
+  font-weight: bold;    /* 可加粗 */
+  color: #555;          /* 改顏色 */
+  font-family: 'Noto Sans TC', sans-serif; /* 可改字型 */
 }
 
 #lessons .btn {
