@@ -1781,6 +1781,7 @@ textarea::placeholder {
   display: inline-flex;
   gap: 8px;                  /* chip 與 chip 間距 */
   flex-wrap: wrap;
+  padding: 0 1rem;
 }
 
 /* 小螢幕時讓 value 換行到下一列也好看 */
