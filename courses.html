@@ -142,6 +142,40 @@
       const v = (planType.value || '').trim();
       window.setCourseFilter({ plan_type: v || null });
     });
+
+
+    const chipsRoot = document.querySelector('.sticky-chips');
+    if (chipsRoot) {
+      chipsRoot.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+
+        // 有錨點(#)的 chip 交給你原本的錨點平滑滾動處理
+        const href = chip.getAttribute('href') || '';
+        if (href.startsWith('#')) return;
+
+        // 根據 chip 文字做對應
+        const label = chip.textContent.trim();
+
+        // 目前先只實作「初學者」 → keywords contains
+        if (label === '初學者') {
+          // toggle：如果已經是初學者，就取消；否則套用
+          const on = chip.classList.toggle('active');
+          window.setCourseFilter({ keyword: on ? '初學者' : null });
+          
+          // 若切換 chip，順便清除文字搜尋避免互相影響（可選）
+          const q = document.getElementById('q');
+          if (q && on) { q.value = ''; window.courseState.q = ''; }
+        }
+
+        if (label === '粉彩' || label === '編織' || label === '花藝' || label === '植物知識') {
+           const on = chip.classList.toggle('active');
+           window.setCourseFilter({ keyword: on ? label : null });
+           const q = document.getElementById('q');
+           if (q && on) { q.value = ''; window.courseState.q = ''; }
+         }
+      });
+    }
     
     // 阻止 form submit 重新整理頁面
     form?.addEventListener('submit', (e) => e.preventDefault());
