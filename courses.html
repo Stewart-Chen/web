@@ -149,6 +149,35 @@
     // 初次載入：以目前狀態渲染（課程列表頁會顯示分頁；首頁不會）
     window.renderCourses(window.courseState.page, window.courseState);
   });
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const chips = document.querySelector('.sticky-chips');
+    if (!chips) return;
+  
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+  
+    chips.addEventListener('mousedown', (e) => {
+      isDown = true;
+      chips.classList.add('dragging');
+      startX = e.pageX - chips.offsetLeft;
+      scrollLeft = chips.scrollLeft;
+    });
+  
+    chips.addEventListener('mouseleave', () => { isDown = false; chips.classList.remove('dragging'); });
+    chips.addEventListener('mouseup', () => { isDown = false; chips.classList.remove('dragging'); });
+  
+    chips.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - chips.offsetLeft;
+      const walk = (x - startX) * 1.2; // 移動倍率
+      chips.scrollLeft = scrollLeft - walk;
+    });
+  });
+
 </script>
 
 </body>
