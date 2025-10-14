@@ -1854,3 +1854,20 @@ textarea::placeholder {
   margin-left: 0;               /* 移除外距 */
 }
 
+#lessons {
+  gap: 12px;
+  padding-left: 0em;          /* 縮小縮排 */
+}
+
+#lessons li {
+  list-style: none;
+}
+
+#lessons .btn {
+  display: block;
+  width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+  padding: 12px;
+}
