@@ -16,13 +16,17 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script defer src="js/app.js"></script>
   <script>
-    document.getElementById('back-btn').addEventListener('click', () => {
-      // 如果有上一頁記錄就回上一頁，否則跳回首頁
-      if (document.referrer && document.referrer !== location.href) {
-        history.back();
-      } else {
-        location.href = '/web/courses.html';
-      }
+    document.addEventListener("DOMContentLoaded", () => {
+      const backBtn = document.getElementById('back-btn');
+      if (!backBtn) return;
+    
+      backBtn.addEventListener('click', () => {
+        if (document.referrer && document.referrer !== location.href) {
+          history.back();
+        } else {
+          location.href = '/web/courses.html';
+        }
+      });
     });
   </script>
   <noscript>
