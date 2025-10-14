@@ -5,58 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>課程內容｜HeartHub Studio 心聚坊</title>
 
-  <!-- 样式 -->
   <link rel="icon" href="img/logo.png" sizes="16x16" type="image/png">
   <link rel="stylesheet" href="css/styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&family=Noto+Serif+TC:wght@600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- Supabase & App -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="js/shared-layout.js"></script>
   <script defer src="js/shared-dialog.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script defer src="js/app.js"></script>
-
-  <script>
-    (function runNowOrOnReady() {
-      function toList() {
-        const el = document.getElementById("course-desc");
-        if (!el) return;
-    
-        // 取得純文字
-        const text = el.textContent.trim();
-    
-        // 支援：1. / 1、 / 全形 １． / １、   （允許前後空白或換行）
-        const items = text
-          .split(/\s*[0-9０-９]+\s*[\.．、]\s*/g)
-          .filter(Boolean);
-    
-        if (items.length === 0) return; // 沒切到就不動
-    
-        const ol = document.createElement("ol");
-        ol.className = el.className || "";
-        ol.id = el.id || "";
-    
-        items.forEach(t => {
-          const li = document.createElement("li");
-          li.textContent = t.trim();
-          ol.appendChild(li);
-        });
-    
-        el.replaceWith(ol);
-      }
-    
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", toList, { once: true });
-      } else {
-        // DOM 已經好，直接跑
-        toList();
-      }
-    })();
-  </script>
-
-  
   <noscript>
     <style>
       .need-js{ display:none; }
@@ -65,14 +23,13 @@
   </noscript>
 </head>
 <body>
-  <!-- 主內容 -->
   <main class="container flow-lg">     
     <!-- 課程資訊卡 -->
     <section id="course-info" class="hero card">
       <header>
         <div id="course-hero" class="hero-img" aria-label="課程主圖" style="padding:0;border:none"></div>
         <h2 id="course-title">讀取中…</h2>
-        <p id="course-summary" class="muted">—</p>         <!-- ✅ 新增：summary -->
+        <p id="course-summary" class="muted">—</p>
       </header>
 
       <div class="row" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;justify-content: center;">
@@ -111,8 +68,6 @@
           </div>
         </div>
       </section>
-
-      
     </aside>
 
     <section id="lessons-section" class="flow-md need-js">
@@ -133,6 +88,4 @@
     <p class="nojs" style="display:none;">你的瀏覽器未啟用 JavaScript，本頁功能將無法使用。</p>
   </main>
 </body>
-
-
 </html>
