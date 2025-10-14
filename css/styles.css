@@ -261,7 +261,13 @@ nav .dropdown:focus-within .dropbtn{
   gap: 16px;
   margin-block: 4px 2px;
 }
-.form-grid label{display: grid;gap: 8px;font-weight: 600;font-size: 0.8rem;}
+.form-grid label{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, auto));
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
 label{display: block;font-size: 12px;padding: 3px 5px;}
 input, select, textarea{
   border-radius: 10px;
@@ -1595,10 +1601,14 @@ textarea::placeholder {
 }
 
 #course-filters.form-grid {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto; /* 搜尋框撐滿，中間/右邊自動 */
-  gap: 3px;
+  display: block;
+}
+
+.filters-grid {
+  display: inline-grid;
+  grid-auto-flow: column;
   align-items: center;
+  margin-top: 5px;
 }
 
 #q {
