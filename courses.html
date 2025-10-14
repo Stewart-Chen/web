@@ -116,6 +116,7 @@
       }
     });
 
+    const planType = document.getElementById('planType');
     // 類型/老師：change 即更新
     cat?.addEventListener('change', () => {
       const v = (cat.value || '').trim();
@@ -125,7 +126,11 @@
       const v = (teacher.value || '').trim();
       window.setCourseFilter({ teacher: v || null });
     });
-
+    planType?.addEventListener('change', () => {
+      const v = (planType.value || '').trim();
+      window.setCourseFilter({ plan_type: v || null });
+    });
+    
     // 阻止 form submit 重新整理頁面
     form?.addEventListener('submit', (e) => e.preventDefault());
 
