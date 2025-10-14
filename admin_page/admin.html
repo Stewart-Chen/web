@@ -114,9 +114,22 @@
               <input id="ac-materials" type="text" placeholder="例如：彩鹽, 玻璃瓶, 漏斗" />
             </label>
             
-            <label>材料費（NTD）
-              <input id="ac-material-fee" type="number" step="1" min="0" placeholder="例如 300" />
+            <div class="form-row-2">
+              <label>材料費（NTD）
+                <input id="ac-material-fee" type="number" step="1" min="0" placeholder="例如 300" />
+              </label>
+            
+              <label style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="ac-is-premium" />
+                高階課程
+              </label>
+            </div>
+            
+            <label id="premium-fee-wrap" style="display:none;">
+              高階材料費（NTD）
+              <input id="ac-material-fee-premium" type="number" step="1" min="0" placeholder="例如 600" />
             </label>
+
             
             <label>課程費用（NTD）
               <input id="ac-course-fee" type="number" step="1" min="0" placeholder="例如 2000" />
