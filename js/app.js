@@ -512,7 +512,7 @@ async function renderCourses(page = 1, filters = {}){
   // 查詢
   let query = sb
     .from('courses')
-    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords', { count: 'exact' })
+    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords,plan_type', { count: 'exact' })
     .eq('published', true)
     .is('deleted_at', null)
     .order('sort_priority', { ascending: false })   // 先比優先順序 sort_priority 大 → 小 排序
