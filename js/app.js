@@ -195,8 +195,8 @@ async function loadCourse(){
       case 'wallet': // 材料費用
         return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14.7 6.3a1 1 0 0 1 1.4 0l1.6 1.6a1 1 0 0 1 0 1.4l-9 9a1 1 0 0 1-1.4 0l-1.6-1.6a1 1 0 0 1 0-1.4l9-9z"/>
-          <path d="M22 2l-5 5"/>
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"/>
+          <path d="M3.27 6.96L12 12l8.73-5.04"/>
         </svg>`;
 
       default:
