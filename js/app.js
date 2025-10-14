@@ -236,8 +236,8 @@ function renderEquip(items){
 
   const html = `
     <div class="equip-groups">
-      ${section('單位提供', groups.org)}
-      ${section('老師自備', groups.teacher)}
+      ${section('主辦單位提供', groups.org)}
+      ${section('講師自備', groups.teacher)}
       ${groups.other.length ? section('未分類', groups.other) : ''}
     </div>
   `;
