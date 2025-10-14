@@ -203,11 +203,63 @@ async function loadCourse(){
     });
   });
 
-  if (Array.isArray(course.equipment_items) && course.equipment_items.length) {
-    $('#equip-items').innerHTML = course.equipment_items.map(x => `<span class="chip">${x}</span>`).join('');
-  } else {
-    $('#equip-items').textContent = '尚無設備項目';
+  function renderEquip(items){
+    const box = document.getElementById('equip-items');
+    if (!box) return;
+  
+    if (!Array.isArray(items) || !items.length) {
+      box.textContent = '尚無設備項目';
+      return;
+    }
+  
+    // 支援兩種格式：
+    // 1) "單位: 投影機" / "老師: 筆電"
+    // 2) { name: "投影機", who: "org" | "teacher" }
+    const groups = { org: [], teacher: [], other: [] };
+  
+    items.forEach(raw => {
+      if (typeof raw === 'string') {
+        const s = raw.trim().replace(/^(\s*[-–—•]\s*)/, ''); // 去掉開頭符號
+        // 容忍：冒號半形/全形、空白
+        const m = s.match(/^(單位|老師)\s*[:：]\s*(.+)$/);
+        if (m) {
+          const who = (m[1] === '單位') ? 'org' : 'teacher';
+          const name = m[2].trim();
+          if (name) groups[who].push(name);
+        } else {
+          groups.other.push(s); // 沒標記的放其他
+        }
+      } else if (raw && typeof raw === 'object') {
+        const who = raw.who === 'teacher' ? 'teacher' : (raw.who === 'org' ? 'org' : 'other');
+        const name = (raw.name || '').trim();
+        if (name) groups[who].push(name);
+      }
+    });
+  
+    // 產出 HTML
+    function sectionHTML(title, arr){
+      if (!arr.length) return '';
+      return `
+        <div class="equip-group">
+          <div class="equip-title">${title}</div>
+          <div class="tab-items">
+            ${arr.map(x => `<span class="chip">${x}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+  
+    const html =
+      sectionHTML('單位提供', groups.org) +
+      sectionHTML('老師自備', groups.teacher) +
+      (groups.other.length ? sectionHTML('未分類', groups.other) : '');
+  
+    box.innerHTML = html || '尚無設備項目';
   }
+  
+  // 呼叫
+  renderEquip(course.equipment_items);
+
   
   if (Array.isArray(course.material_items) && course.material_items.length) {
     $('#material-items').innerHTML = course.material_items.map(x => `<span class="chip">${x}</span>`).join('');
