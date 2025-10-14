@@ -41,35 +41,47 @@ async function loadCourse(){
   if (titleEl) titleEl.textContent = course.title;
   if (summaryEl) summaryEl.textContent = course.summary || '—';
 
-  // 小工具：把「1. ... 2. ...」純文字轉 <ol><li>...</li></ol>
-  function convertNumberedTextToList(el){
+  function convertCourseText(el) {
     if (!el) return;
-    // 已經是清單就不動
-    if (el.tagName === 'OL' || el.tagName === 'UL') return;
   
-    const text = (el.textContent || '').trim();
-    // 切：支援 1. / 1、 / １． / １、（允許前後空白/換行）
-    const parts = text.split(/\s*[0-9０-９]+\s*[\.．、]\s*/g).filter(Boolean);
+    const raw = (el.textContent || '').trim();
+    if (!raw) return;
   
-    // 需要至少兩項才算真正的編號清單
-    if (parts.length < 2) return;
+    // 1️⃣ 依「兩個以上換行」切成兩段
+    const [partMain, partFeature] = raw.split(/\n{2,}/);
   
-    const ol = document.createElement('ol');
-    ol.className = el.className || '';
-    ol.id = el.id || '';
+    // 2️⃣ 切出課程步驟：支援 1. / 1、 / 全形 １． / １、
+    const items = partMain
+      .split(/\s*[0-9０-９]+\s*[\.．、]\s*/g)
+      .filter(Boolean);
   
-    parts.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t.trim();
-      ol.appendChild(li);
-    });
+    // 如果有兩個以上項目，轉成 <ol>
+    if (items.length >= 2) {
+      const ol = document.createElement('ol');
+      ol.className = el.className || '';
+      ol.id = el.id || '';
   
-    el.replaceWith(ol);
+      items.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t.trim();
+        ol.appendChild(li);
+      });
+  
+      el.replaceWith(ol);
+  
+      // 3️⃣ 如果還有第二段（課程特色）
+      if (partFeature && partFeature.trim()) {
+        const p = document.createElement('p');
+        p.id = 'course-feature';
+        p.className = el.className || '';
+        p.style.whiteSpace = 'pre-line';
+        p.textContent = partFeature.trim();
+        ol.insertAdjacentElement('afterend', p);
+      }
+    }
   }
-  
-  // ---- 在 loadCourse() 裡，設定 desc 後立刻呼叫 ----
   if (descEl) descEl.textContent = course.description ?? course.summary ?? '';
-  convertNumberedTextToList(document.getElementById('course-desc'));
+  convertCourseText(document.getElementById('course-desc'));
 
   // ✅ Hero 圖：抓第一張 gallery，退而求其次用 cover_url，再退 placeholder
   try {
