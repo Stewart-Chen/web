@@ -439,7 +439,8 @@ function courseCardHTML(c){
         <div class="course-body">
           <div class="title-row">
             <h3>${c.title}</h3>
-            
+            ${c.plan_type ? `<span class="badge pill">${c.plan_type}</span>` : ``}
+         
             ${c.category
               ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
                        alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
@@ -483,6 +484,7 @@ window.courseState = window.courseState || {
   page: 1,
   teacher: null,
   category: null,
+  plan_type: null,
   q: ''
 };
 const courseState = window.courseState;
@@ -519,6 +521,7 @@ async function renderCourses(page = 1, filters = {}){
   //套用過濾條件（老師 / 類型）
   if (filters.teacher)  query = query.eq('teacher',  filters.teacher);
   if (filters.category) query = query.eq('category', filters.category);
+  if (filters.plan_type) query = query.eq('plan_type', filters.plan_type);
 
   if (filters.q && filters.q.trim()) {
     const kw  = filters.q.trim();
