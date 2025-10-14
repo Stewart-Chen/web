@@ -141,15 +141,14 @@ async function loadCourse(){
     if (course.duration_hours) {
       items.push({ key: 'duration', label: '課程時數', value: `${Number(course.duration_hours)} 小時`, icon: 'clock' });
     }
-    if (Number.isFinite(course.material_fee)) {
-      const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
-      items.push({ key: 'material_fee', label: '材料費用', value: `NT$ ${mfee}`, icon: 'wallet' });
-    }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
       items.push({ key: 'fee', label: '課程費用', value: `NT$ ${fee}`, icon: 'coin' });
     }
-  
+    if (Number.isFinite(course.material_fee)) {
+      const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
+      items.push({ key: 'material_fee', label: '材料費用 (另計)', value: `NT$ ${mfee}`, icon: 'wallet' });
+    }
     if (items.length) {
       const infoSec = document.createElement('section');
       infoSec.id = 'course-info-detail';              // ← 改成新 id（不要再叫 course-meta）
