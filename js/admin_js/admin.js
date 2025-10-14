@@ -265,13 +265,33 @@
 
     document.getElementById('ac-people').value        = c?.capacity ?? '';
     document.getElementById('ac-duration').value      = c?.duration_hours ?? '';
-    document.getElementById('ac-equipments').value    = Array.isArray(c?.equipment_items) ? c.equipment_items.join(', ') : (c?.equipment_items ?? '');
     document.getElementById('ac-materials').value     = Array.isArray(c?.material_items)  ? c.material_items.join(', ')  : (c?.material_items ?? '');
     document.getElementById('ac-material-fee').value  = c?.material_fee ?? '';
     document.getElementById('ac-course-fee').value    = c?.course_fee ?? '';
     document.getElementById('ac-sort').value          = c?.sort_priority ?? '';
     document.getElementById('ac-plan-type').value     = c?.plan_type ?? '';
     document.getElementById('ac-keywords').value      = Array.isArray(c?.keywords) ? c.keywords.join(', ') : (c?.keywords ?? '');
+
+    // 拆設備項目到兩欄
+    const eq = Array.isArray(c?.equipment_items) ? c.equipment_items : [];
+    const org = [], teacher = [], other = [];
+    eq.forEach(s => {
+      const t = (s || '').trim();
+      const m = t.match(/^(單位|老師)\s*[:：]\s*(.+)$/);
+      if (m) {
+        (m[1] === '單位' ? org : teacher).push(m[2].trim());
+      } else if (t) {
+        other.push(t); // 舊資料可能沒前綴
+      }
+    });
+    document.getElementById('ac-equip-org').value     = org.join(', ');
+    document.getElementById('ac-equip-teacher').value = teacher.join(', ');
+    // 若有未分類舊資料，你可選擇塞到哪一欄；這裡示範附加到「單位提供」
+    if (other.length) {
+      document.getElementById('ac-equip-org').value =
+        [document.getElementById('ac-equip-org').value, ...other].filter(Boolean).join(', ');
+    }
+
     
     const sd = document.getElementById('admin-soft-delete');
     const hd = document.getElementById('admin-hard-delete');
@@ -347,7 +367,16 @@
       const n = parseFloat(s);
       return Number.isFinite(n) ? n : null;
     };
-  
+
+    // 兩欄 → 合併並加前綴
+    const eqOrgList     = toList($v('ac-equip-org'));     // ["投影機","麥克風"]
+    const eqTeacherList = toList($v('ac-equip-teacher')); // ["筆電","小鏟子"]
+    
+    const equipMerged = [
+      ...eqOrgList.map(x => `單位: ${x}`),
+      ...eqTeacherList.map(x => `老師: ${x}`)
+    ];
+    
     const payload = {
       title:         $v('ac-title'),
       summary:       $v('ac-summary')   || null,
@@ -355,11 +384,9 @@
       teacher:       $v('ac-teacher'),
       category:      $v('ac-category'),
       published:     $c('ac-published'),
-  
-      // ↓↓↓ 新欄位 ↓↓↓（請確保 DB 欄位名稱一致）
       capacity:    toNum($v('ac-people')),        // int/nullable
       duration_hours:  toNum($v('ac-duration')),      // numeric/nullable
-      equipment_items:      toList($v('ac-equipments')),   // text[]/nullable
+      equipment_items: equipMerged,
       material_items:       toList($v('ac-materials')),    // text[]/nullable
       material_fee:    toNum($v('ac-material-fee')),  // int/nullable
       course_fee:      toNum($v('ac-course-fee')),    // int/nullable
