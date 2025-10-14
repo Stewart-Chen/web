@@ -1847,3 +1847,10 @@ textarea::placeholder {
 #course-desc li {
   margin-bottom: 0.5em;
 }
+
+#course-desc {
+  list-style-position: outside; /* 數字在外側 */
+  padding-left: 1.2em;          /* 縮小縮排 */
+  margin-left: 0;               /* 移除外距 */
+}
+
