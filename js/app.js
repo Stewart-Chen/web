@@ -493,6 +493,7 @@ window.courseState = window.courseState || {
   teacher: null,
   category: null,
   plan_type: null,
+  keyword: null,
   q: ''
 };
 const courseState = window.courseState;
@@ -530,6 +531,7 @@ async function renderCourses(page = 1, filters = {}){
   if (filters.teacher)  query = query.eq('teacher',  filters.teacher);
   if (filters.category) query = query.eq('category', filters.category);
   if (filters.plan_type) query = query.eq('plan_type', filters.plan_type);
+  if (filters.keyword)   query = query.contains('keywords', [filters.keyword]);
 
   if (filters.q && filters.q.trim()) {
     const kw  = filters.q.trim();
