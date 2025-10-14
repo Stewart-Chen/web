@@ -439,7 +439,15 @@ function courseCardHTML(c){
         <div class="course-body">
           <div class="title-row">
             <h3>${c.title}</h3>
-            ${c.plan_type ? `<span class="badge plan-type">${c.plan_type}</span>` : ``}
+            ${c.plan_type ? (() => {
+              // 判斷類型 → 給不同 class
+              let extraClass = '';
+              if (c.plan_type === '系列課') extraClass = ' series-course';
+              else if (c.plan_type === '一日工作坊') extraClass = ' one-day';
+            
+              return `<span class="badge plan-type${extraClass}">${c.plan_type}</span>`;
+            })() : ``}
+
          
             ${c.category
               ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
