@@ -28,29 +28,35 @@
       </div>
     </section>
 
-    <!-- 可選的搜尋/篩選（保留結構，未連動；需要時可在 app.js 擴充） -->
     <section class="card key-bar">
-      <form id="course-filters" class="form-grid">
-        <label>
+      <form id="course-filters" class="form-grid filters-grid">
+        <!-- 搜尋獨佔一行 -->
+        <label class="field field--q">
           <input type="search" id="q" placeholder="輸入關鍵字" />
         </label>
-        <div>
-          <button type="submit" class="btn primary" style="display:none;">搜尋</button>
-        </div>
-        <label>
-          <select id="cat">
-            <option value="" disabled selected hidden>類型</option>
-            <option value="">全部</option>
+    
+        <label class="field">
+          <select id="cat" aria-label="療癒領域">
+            <option value="" selected>全部領域</option>
             <option value="horti">園藝</option>
             <option value="art">藝術</option>
           </select>
         </label>
-        <label>
-          <select id="teacher">
-            <option value="" disabled selected hidden>老師</option>
-            <option value="">全部</option>
+    
+        <label class="field">
+          <select id="teacher" aria-label="授課老師">
+            <option value="" selected>全部老師</option>
             <option value="fanfan">汎汎</option>
             <option value="xd">小D</option>
+          </select>
+        </label>
+    
+        <label class="field">
+          <select id="planType" aria-label="方案類型">
+            <option value="" selected>全部類型</option>
+            <option value="課程">課程</option>
+            <option value="系列課">系列課</option>
+            <option value="一日工作坊">一日工作坊</option>
           </select>
         </label>
       </form>
