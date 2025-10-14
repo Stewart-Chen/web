@@ -439,7 +439,7 @@ function courseCardHTML(c){
         <div class="course-body">
           <div class="title-row">
             <h3>${c.title}</h3>
-            ${c.plan_type ? `<span class="badge pill">${c.plan_type}</span>` : ``}
+            ${c.plan_type ? `<span class="badge plan-type">${c.plan_type}</span>` : ``}
          
             ${c.category
               ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
