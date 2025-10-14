@@ -193,7 +193,12 @@ async function loadCourse(){
         </svg>`;
 
       case 'wallet': // 材料費用
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><path d="M16 12h.01"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 1 1.4 0l1.6 1.6a1 1 0 0 1 0 1.4l-9 9a1 1 0 0 1-1.4 0l-1.6-1.6a1 1 0 0 1 0-1.4l9-9z"/>
+          <path d="M22 2l-5 5"/>
+        </svg>`;
+
       default:
         return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>`;
     }
