@@ -1871,3 +1871,15 @@ textarea::placeholder {
   text-align: center;
   padding: 12px;
 }
+
+#course-summary {
+  text-align: left;        /* 文字靠左 */
+  margin-left: 1.5em;        /* 左邊留空間 */
+  margin-right: 1.5em;       /* 右邊留空間 */
+}
+@media (max-width: 720px) {
+  #course-summary {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+}
