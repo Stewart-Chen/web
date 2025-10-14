@@ -1500,9 +1500,9 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 .plan-type {
   margin: 0 0 0 10px;
-  background: var(--brand-3);        /* 灰底 */
-  color: #fff;                 /* 白字 */
-  border-radius: 8px;          /* 圓角（可調 6~10px） */
+  background: var(--brand-2);
+  color: #fff;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
   box-shadow:
@@ -1992,4 +1992,12 @@ textarea::placeholder {
   max-width: 100%;           /* 超長時下一行換 */
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.badge.plan-type.series-course {
+  background: var(--brand-3);
+}
+
+.badge.plan-type.one-day {
+  background: var(--accent-blue); 
 }
