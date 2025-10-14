@@ -1611,8 +1611,6 @@ textarea::placeholder {
   background-clip: padding-box;
 }
 
-#course-summary{font-weight:600;}
-
 /* 置頂主圖容器：固定比例 + 不超高 + 圓角 + 裁切 */
 #course-hero {
   margin-inline: auto;           /* 置中 */
@@ -1874,12 +1872,13 @@ textarea::placeholder {
 
 #course-summary {
   text-align: left;        /* 文字靠左 */
-  margin-left: 1.5em;        /* 左邊留空間 */
-  margin-right: 1.5em;       /* 右邊留空間 */
+  margin: 1.5em 1.5em;
+  white-space: pre-line;
+  font-weight:600;
 }
+
 @media (max-width: 720px) {
   #course-summary {
-    margin-left: 1em;
-    margin-right: 1em;
+    margin: 1em 1em;
   }
 }
