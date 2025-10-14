@@ -1861,7 +1861,7 @@ textarea::placeholder {
 #lessons {
   gap: 20px;
   padding-left: 3em;          /* 縮小縮排 */
-  padding-right: 3em;
+  padding-right: 1em;
 }
 
 #lessons li::marker {
@@ -1873,11 +1873,12 @@ textarea::placeholder {
 
 #lessons .btn {
   display: block;
-  width: 100%;
+  width: 90%;
   white-space: normal;
   word-break: break-word;
   text-align: center;
-  padding: 12px;
+  padding: 8px 12px;
+  margin-left: 0.5em;
 }
 
 #course-summary {
