@@ -1953,7 +1953,7 @@ textarea::placeholder {
   color: var(--brand-2);
   margin: 4px 0 8px;
   white-space: nowrap;                       /* 標題不換行 */
-  font-size: 14px;
+  font-size: 13px;
 }
 
 #tab-equip .equip-chips {
