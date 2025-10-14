@@ -1844,15 +1844,6 @@ textarea::placeholder {
 #course-desc { white-space: pre-line; }
 /* 如果還要保留多個空白字元，用 pre-wrap */
 
-#course-desc {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: #555;
-  margin-left: 1.5em;
-  list-style-type: decimal; /* 編號清單 */
-  list-style-position: outside;
-}
-
 #course-desc li {
   margin-bottom: 0.5em;
 }
