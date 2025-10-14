@@ -1457,7 +1457,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .course-card .title-row {
   display: flex;
   align-items: center;   /* 垂直置中 */
-  gap: 18px;              /* 標題與 badge 保持一點距離 */
+  gap: 3px;              /* 標題與 badge 保持一點距離 */
 }
 
 .course-card .title-row h3 {
@@ -1467,7 +1467,6 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .course-card .title-row .badge {
-  align-self: center;    /* 保證在同一行垂直置中 */
   align-self: start;
 }
 
@@ -1488,17 +1487,28 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .badgeImg {
-  width: 25px;          /* 你想要的大小 */
-  height: 25px;
+  width: 26px;          /* 你想要的大小 */
+  height: 26px;
   display: inline-block;
   vertical-align: middle; /* 和文字徽章垂直置中 */
   background: none;       /* 移除背景 */
   padding: 0;             /* 移除文字徽章的 padding */
   border: none;           /* 不要邊框 */
-  margin: 0 0 0 8px;
+  margin: 0 0 0 3px;
   border-radius: 0;
 }
 
+.plan-type {
+  margin: 0 0 0 10px;
+  background: var(--brand-3);        /* 灰底 */
+  color: #fff;                 /* 白字 */
+  border-radius: 8px;          /* 圓角（可調 6~10px） */
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow:
+    inset 0 -1px 0 rgba(0,0,0,.18), /* 底邊內陰影，更立體 */
+    0 1px 2px rgba(0,0,0,.18);      /* 外陰影 */
+}
 
 .meta-grid{
   display:grid;
