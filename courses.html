@@ -21,11 +21,11 @@
 <body>
   <nav class="chips sticky-chips" aria-label="關鍵字搜尋">
     <div class="sticky-chips__inner">
-      <a class="chip">初學者</a>
-      <a class="chip">粉彩</a>
-      <a class="chip">編織</a>
-      <a class="chip">花藝</a>
-      <a class="chip">植物知識</a>
+      <button class="chip" data-filter-key="keyword" data-filter-value="初學者">初學者</button>
+      <button class="chip" data-filter-key="keyword" data-filter-value="粉彩">粉彩</button>
+      <button class="chip" data-filter-key="keyword" data-filter-value="編織">編織</button>
+      <button class="chip" data-filter-key="keyword" data-filter-value="花藝">花藝</button>
+      <button class="chip" data-filter-key="keyword" data-filter-value="植物小百科">植物小百科</button>
     </div>
   </nav>
   <main class="container">
@@ -143,40 +143,30 @@
       window.setCourseFilter({ plan_type: v || null });
     });
 
-
     const chipsRoot = document.querySelector('.sticky-chips');
     if (chipsRoot) {
       chipsRoot.addEventListener('click', (e) => {
         const chip = e.target.closest('.chip');
         if (!chip) return;
-
-        // 有錨點(#)的 chip 交給你原本的錨點平滑滾動處理
-        const href = chip.getAttribute('href') || '';
-        if (href.startsWith('#')) return;
-
-        // 根據 chip 文字做對應
-        const label = chip.textContent.trim();
-
-        // 目前先只實作「初學者」 → keywords contains
-        if (label === '初學者') {
-          // toggle：如果已經是初學者，就取消；否則套用
-          const on = chip.classList.toggle('active');
-          window.setCourseFilter({ keyword: on ? '初學者' : null });
-          
-          // 若切換 chip，順便清除文字搜尋避免互相影響（可選）
-          const q = document.getElementById('q');
-          if (q && on) { q.value = ''; window.courseState.q = ''; }
-        }
-
-        if (label === '粉彩' || label === '編織' || label === '花藝' || label === '植物知識') {
-           const on = chip.classList.toggle('active');
-           window.setCourseFilter({ keyword: on ? label : null });
-           const q = document.getElementById('q');
-           if (q && on) { q.value = ''; window.courseState.q = ''; }
-         }
+       
+        const key = chip.dataset.filterKey;       
+        const value = chip.dataset.filterValue;   
+        if (!key) return;
+    
+        // --- 單選模式（同一 key 僅能選一個） ---
+        // 先把同 key 的其他 chip 取消 active
+        chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`).forEach(el => {
+          if (el !== chip) el.classList.remove('active');
+        });
+    
+        const on = chip.classList.toggle('active');
+        const payload = {};
+        payload[key] = on ? value : null;
+    
+        window.setCourseFilter(payload);
       });
     }
-    
+
     // 阻止 form submit 重新整理頁面
     form?.addEventListener('submit', (e) => e.preventDefault());
 
