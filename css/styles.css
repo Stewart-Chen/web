@@ -1891,6 +1891,9 @@ textarea::placeholder {
   list-style-position: outside; /* 數字在外側 */
   padding: 0 2rem;
 }
+#course-feature {
+  padding: 0 1rem;
+}
 
 #course-desc li::marker {
   font-weight: bold;    /* 可加粗 */
@@ -2018,5 +2021,8 @@ textarea::placeholder {
   }
   #course-desc {
     padding: 0 3rem;
+  }
+  #course-feature {
+    padding: 0 2rem;
   }
 }
