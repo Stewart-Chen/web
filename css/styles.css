@@ -1345,7 +1345,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 /* 基本 chip */
 .chip{
   flex: 0 0 auto;
-  padding: 4px 12px;
+  padding: 4px 8px;
   font-weight: 500;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
@@ -1813,6 +1813,7 @@ textarea::placeholder {
   flex-wrap: wrap;
   padding: 0 1rem;
   justify-content: center;
+  font-size: .8rem;
 }
 
 .tab-content {
