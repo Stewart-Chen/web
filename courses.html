@@ -182,7 +182,13 @@
     // 阻止 form submit 重新整理頁面
     form?.addEventListener('submit', (e) => e.preventDefault());
 
-    // 初次載入：以目前狀態渲染（課程列表頁會顯示分頁；首頁不會）
+    // 在第一次 render 前加
+    Object.assign(window.courseState, {
+      q: document.getElementById('q')?.value || '',
+      category: document.getElementById('cat')?.value || null,
+      teacher: document.getElementById('teacher')?.value || null,
+      plan_type: document.getElementById('planType')?.value || null,
+    });
     window.renderCourses(window.courseState.page, window.courseState);
   });
 
