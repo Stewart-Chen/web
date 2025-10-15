@@ -187,27 +187,6 @@
     window.renderCourses(window.courseState.page, window.courseState);
   });
 
-  function normalize(v) { return (v === '' || v == null) ? null : v; }
-  function syncFiltersFromUI() {
-    const kw       = document.getElementById('q');
-    const cat      = document.getElementById('cat');
-    const teacher  = document.getElementById('teacher');
-    const planType = document.getElementById('planType');
-  
-    const patch = {
-      q: kw ? (kw.value || '') : '',
-      category: normalize(cat?.value || null),
-      teacher: normalize(teacher?.value || null),
-      plan_type: normalize(planType?.value || null),
-    };
-    Object.assign(window.courseState, patch);
-  }
-   
-  window.addEventListener('pageshow', (e) => {
-    syncFiltersFromUI();
-    window.renderCourses(window.courseState.page, window.courseState);
-  });
-
   document.addEventListener('DOMContentLoaded', () => {
     const chips = document.querySelector('.sticky-chips');
     if (!chips) return;
