@@ -1345,16 +1345,19 @@ h3 + p, h4 + p{margin-top: .2em;}
 /* 基本 chip */
 .chip{
   flex: 0 0 auto;
-  padding: 4px 8px;
   font-weight: 500;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
-  white-space: nowrap;
   font-size: .8rem;
   border-radius: 10px;
   background: var(--mint-50);
-  /* color: #fff; */
   border: none;
+  line-height: 1;            /* 讓高度一致 */
+  padding: 8px 12px;
+  white-space: nowrap;       /* 單顆 chip 不折行 */
+  max-width: 100%;           /* 超長時下一行換 */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 @media (hover:hover){
   .chip:hover{
@@ -1981,7 +1984,7 @@ textarea::placeholder {
 
 #tab-equip .equip-title {
   font-weight: 600;
-  color: var(--brand-2);
+  color: var(--brand-3);
   margin: 4px 0 12px;
   white-space: nowrap;                       /* 標題不換行 */
   font-size: 13px;
@@ -1994,15 +1997,6 @@ textarea::placeholder {
   gap: 12px;                             /* chip 間距 */
   min-width: 0;
   justify-content: center;
-}
-
-#tab-equip .chip {
-  line-height: 1;            /* 讓高度一致 */
-  padding: 8px 12px;
-  white-space: nowrap;       /* 單顆 chip 不折行 */
-  max-width: 100%;           /* 超長時下一行換 */
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .badge.plan-type.series-course {
