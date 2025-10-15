@@ -87,8 +87,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     const form    = document.getElementById('course-filters');
     const kw      = document.getElementById('q');
-    const cat     = document.getElementById('cat');
-    const teacher = document.getElementById('teacher');
 
     if (typeof window.renderCourses !== 'function') {
       console.log('[renderCourses]');
@@ -120,7 +118,9 @@
         window.setCourseFilter({ q: kw.value || '' });
       }
     });
-
+    
+    const cat     = document.getElementById('cat');
+    const teacher = document.getElementById('teacher');
     const planType = document.getElementById('planType');
     // 類型/老師：change 即更新
     cat?.addEventListener('change', () => {
