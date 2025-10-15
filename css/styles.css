@@ -1487,8 +1487,11 @@ h3 + p, h4 + p{margin-top: .2em;}
 }
 
 .sticky-chips__inner_k{
+  width: min(100%, var(--container));
   display: flex;
   gap: 8px 13px;
+  max-width: var(--container);
+  margin: 0 auto;
 }
 
 .badgeImg {
