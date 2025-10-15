@@ -498,18 +498,6 @@ window.courseState = window.courseState || {
 };
 const courseState = window.courseState;
 
-if (!window.setCourseFilter) {
-  window.setCourseFilter = function (partial) {
-    Object.assign(window.courseState, partial);
-    window.courseState.page = 1; // 篩選變更時回到第 1 頁
-
-    if (typeof window.renderCourses === 'function') {
-      console.log('[app]');
-      window.renderCourses(window.courseState.page, window.courseState);
-    }
-  };
-}
-
 // ========= 抓課程並渲染 =========
 async function renderCourses(page = 1, filters = {}){
   const listEl  = document.getElementById('courses-list');
@@ -629,6 +617,17 @@ async function renderCourses(page = 1, filters = {}){
     moreBtn?.classList.add('hidden');
   }
 }
+
+window.setCourseFilter = function (partial) {
+  Object.assign(window.courseState, partial);
+  window.courseState.page = 1; // 篩選變更時回到第 1 頁
+  console.log('[app_init]');
+
+  if (typeof window.renderCourses === 'function') {
+    console.log('[app]');
+    window.renderCourses(window.courseState.page, window.courseState);
+  }
+};
 
 function renderPagination(currentPage, totalPages, filters = {}) {
   const prevBtn = document.getElementById('prev-page');
