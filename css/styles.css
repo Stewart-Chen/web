@@ -1350,9 +1350,9 @@ h3 + p, h4 + p{margin-top: .2em;}
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
   font-size: .8rem;
-  border-radius: 999px;
-  background: #d9f2f0;
-  color: var(--ink);
+  border-radius: 10px;
+  background: var(--mint-50);
+  /* color: #fff; */
   border: none;
 }
 @media (hover:hover){
@@ -1812,6 +1812,11 @@ textarea::placeholder {
   padding: 0 1rem;
 }
 
+.tab-content {
+  display: flex;
+  justify-content: center;
+}
+
 /* 小螢幕時讓 value 換行到下一列也好看 */
 @media (max-width: 720px){
   .teacher-box{
@@ -1967,14 +1972,6 @@ textarea::placeholder {
   gap: 12px 24px;                 /* row / col 間距 */
   grid-template-columns: 1fr;     /* 手機：單欄 */
 }
-
-@media (min-width: 768px) {
-  #tab-equip .equip-groups {
-    grid-template-columns: repeat(3, 1fr); /* 桌機：三欄 */
-    align-items: start;                     /* 各欄頂端對齊 */
-  }
-}
-
 
 #tab-equip .equip-group { min-width: 0; }   /* 讓內容可縮，不會撐格子 */
 
