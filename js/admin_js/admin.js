@@ -3,14 +3,8 @@
 (() => {
   const sb = window.sb;
   let currentUser = null;
+  const labelOfTeacher = (t) => t || '—';
 
-  // ★ 新增：統一老師顯示字典（也順便修正左側清單的顯示）
-  const TEACHER_LABEL = {
-    fanfan: '汎汎',
-    xd: '小D'
-  };
-  const labelOfTeacher = (t) => TEACHER_LABEL[t] || '—';
-  
   // 取得目前使用者（部分動作要用）
   async function ensureUser() {
     if (currentUser) return currentUser;
