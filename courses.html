@@ -20,13 +20,7 @@
 </head>
 <body>
   <nav class="chips sticky-chips" aria-label="關鍵字搜尋">
-    <div class="sticky-chips__inner">
-      <button class="chip" data-filter-key="keyword" data-filter-value="初學者">初學者</button>
-      <button class="chip" data-filter-key="keyword" data-filter-value="粉彩">粉彩</button>
-      <button class="chip" data-filter-key="keyword" data-filter-value="編織">編織</button>
-      <button class="chip" data-filter-key="keyword" data-filter-value="花藝">花藝</button>
-      <button class="chip" data-filter-key="keyword" data-filter-value="植物小百科">植物小百科</button>
-    </div>
+    <div class="sticky-chips__inner" id="chips-root"></div>
   </nav>
   <main class="container">
     <section class="hero card hero-card">
@@ -143,29 +137,38 @@
       window.setCourseFilter({ plan_type: v || null });
     });
 
-    const chipsRoot = document.querySelector('.sticky-chips');
+
+    const chipsData = [
+      { key: 'keyword', value: '初學者' },
+      { key: 'keyword', value: '粉彩' },
+      { key: 'keyword', value: '編織' },
+      { key: 'keyword', value: '花藝' },
+      { key: 'keyword', value: '植物小百科' },
+    ];
+    
+    const chipsRoot = document.getElementById('chips-root');
     if (chipsRoot) {
+      chipsRoot.innerHTML = chipsData
+        .map(chip => 
+          `<button class="chip" data-filter-key="${chip.key}" data-filter-value="${chip.value}">
+             ${chip.value}
+           </button>`
+        )
+        .join('');
+    
       chipsRoot.addEventListener('click', (e) => {
         const chip = e.target.closest('.chip');
         if (!chip) return;
-       
-        const key = chip.dataset.filterKey;       
-        //const value = chip.dataset.filterValue;   
-        if (!key) return;
-        
-        /*chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`).forEach(el => {
-          if (el !== chip) el.classList.remove('active');
-        });
-        const on = chip.classList.toggle('active');*/
-
+    
         chip.classList.toggle('active');
+    
+        const key = chip.dataset.filterKey;
         const selected = Array.from(
           chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`)
         ).map(el => el.dataset.filterValue);
-        
+    
         const payload = {};
-        //payload[key] = on ? value : null;
-        payload[key] = Array.from(new Set(selected)); // 去重，保險
+        payload[key] = Array.from(new Set(selected));
     
         window.setCourseFilter(payload);
       });
@@ -177,7 +180,6 @@
     // 初次載入：以目前狀態渲染（課程列表頁會顯示分頁；首頁不會）
     window.renderCourses(window.courseState.page, window.courseState);
   });
-
 
   document.addEventListener('DOMContentLoaded', () => {
     const chips = document.querySelector('.sticky-chips');
