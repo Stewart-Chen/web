@@ -94,9 +94,9 @@ async function loadCourse(){
 
     if (heroEl) {
       let avatarUrl = null;
-      if (course.teacher === 'fanfan') {
+      if (course.teacher === '汎汎') {
         avatarUrl = '/web/img/fan_o.jpg';
-      } else if (course.teacher === 'xd') {
+      } else if (course.teacher === '小D') {
         avatarUrl = '/web/img/dd_o.jpg';
       }
       heroEl.innerHTML = `
@@ -117,8 +117,8 @@ async function loadCourse(){
   const teacherBox = document.getElementById('teacher-box-content');
   if (teacherBox) {
     const TEACHER_META = {
-      fanfan: { name: '汎汎', role: '園藝治療老師' },
-      xd:     { name: '小D', role: '藝術療癒老師' }
+      汎汎: { name: '汎汎', role: '園藝治療老師' },
+      小D:     { name: '小D', role: '藝術療癒老師' }
     };
     const meta = TEACHER_META[course.teacher];
     teacherBox.textContent = meta ? `${meta.name}｜${meta.role}` : (course.teacher || '—');
@@ -417,7 +417,7 @@ function renderEquip(items){
 // ========= 共用：課程卡片模板 =========
 function courseCardHTML(c){
   const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
-  const teacher  = c.teacher ? (c.teacher === 'fanfan' ? '汎汎' : '小D') : '';
+  const teacher  = c.teacher;
   const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
   return `
     <article class="course-card card"
