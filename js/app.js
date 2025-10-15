@@ -677,7 +677,9 @@ function renderPagination(currentPage, totalPages, filters = {}) {
 
 // ====== 頁面初始化 ======
 function initPage(){
-  if (document.getElementById('courses-list')) renderCourses();
+  if (document.getElementById('courses-list')) {
+    renderCourses(window.courseState.page, window.courseState);
+  }
   if (document.getElementById('course-info')) loadCourse();
 }
 document.addEventListener('DOMContentLoaded', initPage);
