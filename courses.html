@@ -152,16 +152,18 @@
         const key = chip.dataset.filterKey;       
         const value = chip.dataset.filterValue;   
         if (!key) return;
-    
-        // --- 單選模式（同一 key 僅能選一個） ---
-        // 先把同 key 的其他 chip 取消 active
-        chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`).forEach(el => {
+        
+        /*chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`).forEach(el => {
           if (el !== chip) el.classList.remove('active');
-        });
+        });*/
+        const selected = Array.from(
+          chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`)
+        ).map(el => el.dataset.filterValue);
     
         const on = chip.classList.toggle('active');
         const payload = {};
-        payload[key] = on ? value : null;
+        //payload[key] = on ? value : null;
+        payload[key] = selected;
     
         window.setCourseFilter(payload);
       });
