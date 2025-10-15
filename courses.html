@@ -150,20 +150,22 @@
         if (!chip) return;
        
         const key = chip.dataset.filterKey;       
-        const value = chip.dataset.filterValue;   
+        //const value = chip.dataset.filterValue;   
         if (!key) return;
         
         /*chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`).forEach(el => {
           if (el !== chip) el.classList.remove('active');
-        });*/
+        });
+        const on = chip.classList.toggle('active');*/
+
+        chip.classList.toggle('active');
         const selected = Array.from(
           chipsRoot.querySelectorAll(`.chip[data-filter-key="${key}"].active`)
         ).map(el => el.dataset.filterValue);
-    
-        const on = chip.classList.toggle('active');
+        
         const payload = {};
         //payload[key] = on ? value : null;
-        payload[key] = selected;
+        payload[key] = Array.from(new Set(selected)); // 去重，保險
     
         window.setCourseFilter(payload);
       });
