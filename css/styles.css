@@ -1777,9 +1777,9 @@ textarea::placeholder {
 }
 
 .teacher-box{
-  max-width: 860px;
+  max-width: 600px;
   margin: 12px auto;
-  padding: 20px 40px 60px 40px;
+  padding: 20px 80px 40px 80px;
 }
 
 .info-item {
@@ -2010,4 +2010,18 @@ textarea::placeholder {
 
 .badge.plan-type.one-day {
   background: var(--accent-blue); 
+}
+
+@media (min-width: 720px) {
+  .info-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 60px;
+    padding: 0 2rem;
+  }
+  .course-meta {
+    padding: 0 2rem;
+  }
+  #course-desc {
+    padding: 0 3rem;
+  }
 }
