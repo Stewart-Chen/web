@@ -183,12 +183,15 @@
     form?.addEventListener('submit', (e) => e.preventDefault());
 
     // 在第一次 render 前加
-    Object.assign(window.courseState, {
+    console.log('[courseState assign result]', Object.assign(window.courseState, {
       q: document.getElementById('q')?.value || '',
       category: document.getElementById('cat')?.value || null,
       teacher: document.getElementById('teacher')?.value || null,
       plan_type: document.getElementById('planType')?.value || null,
-    });
+    }));
+
+    console.log('[courseState after assign]', window.courseState);
+
     window.renderCourses(window.courseState.page, window.courseState);
   });
 
