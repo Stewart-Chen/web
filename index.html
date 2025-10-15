@@ -98,5 +98,16 @@
       <div id="courses-empty" class="muted hidden">目前沒有課程。</div>
     </section>
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 監聽所有 a 連結
+      document.querySelectorAll('a[href]').forEach(link => {
+        link.addEventListener('click', () => {
+          // 儲存目前頁面路徑
+          sessionStorage.setItem('returnTo', location.href);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
