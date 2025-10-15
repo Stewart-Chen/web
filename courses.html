@@ -97,17 +97,11 @@
 
     if (!window.courseState) {
       console.log('[courseState]');
-      const saved = JSON.parse(localStorage.getItem('courseState') || '{}');
-      window.courseState = Object.assign({ page: 1, teacher: null, category: null, q: '', plan_type: null }, saved);
+      return;
     }
     if (!window.setCourseFilter) {
       console.log('[setCourseFilter]');
-      window.setCourseFilter = function (partial) {
-        Object.assign(window.courseState, partial);
-        window.courseState.page = 1; // 篩選變更時回到第 1 頁
-        localStorage.setItem('courseState', JSON.stringify(window.courseState));
-        window.renderCourses(window.courseState.page, window.courseState);
-      };
+      return;
     }
     
     // --- 工具：簡單 debounce ---
