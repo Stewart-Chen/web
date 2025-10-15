@@ -187,6 +187,10 @@
     window.renderCourses(window.courseState.page, window.courseState);
   });
 
+  window.addEventListener('pageshow', (e) => {
+    window.renderCourses(window.courseState.page, window.courseState);
+  });
+  
   document.addEventListener('DOMContentLoaded', () => {
     const chips = document.querySelector('.sticky-chips');
     if (!chips) return;
