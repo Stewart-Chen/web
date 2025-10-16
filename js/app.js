@@ -500,20 +500,19 @@ function renderEquip(items){
   }
 
   // 啟用展開/收合
-  lessonsEl?.addEventListener('click', (e)=>{
-    const btn = e.target.closest('#lessons .lesson-toggle');
+  lessonsEl?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.lesson-toggle'); // ← 不要加 #lessons
     if (!btn) return;
   
     const li = btn.closest('li');
     const contentEl = li?.querySelector('.lesson-content');
-    if (!contentEl) return; // 沒內容就不切
+    if (!contentEl) return; // 沒內容就不切換
   
     const willOpen = contentEl.classList.contains('hidden');
     contentEl.classList.toggle('hidden', !willOpen);
     li.classList.toggle('open', willOpen);
     btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
   });
-
 
   // (D) 點單元 → 完成標記
   /*lessonsEl?.addEventListener('click', async (e)=>{
