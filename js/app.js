@@ -7,22 +7,22 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
-
-function enhanceLessonsUI(root=document){
+function enhanceLessonsUI(root = document){
   const btns = root.querySelectorAll('#lessons button.btn');
-  btns.forEach((btn)=>{
-    if (btn.dataset.enhanced) return;       // 避免重複包裝
+  btns.forEach((btn, idx)=>{
+    if (btn.dataset.enhanced) return;
     const title = btn.textContent.trim();
-    const duration = btn.dataset.duration || ''; // 之後若你有加時長就會顯示
+    const duration = btn.dataset.duration || '';
+    const chapter = `Ch. ${idx + 1}`; // ← 自動產生章節編號
 
     btn.innerHTML = `
-      <span class="dot" aria-hidden="true"></span>
+      <span class="chapter">${chapter}</span>
       <span class="title">${title}</span>
       <span class="meta">
         ${duration ? `<span class="duration">${duration}</span>` : ``}
       </span>
     `;
-    btn.classList.add('lesson-btn');        // 提供 CSS 掛鉤
+    btn.classList.add('lesson-btn');
     btn.dataset.enhanced = '1';
   });
 }
@@ -312,9 +312,9 @@ function renderEquip(items){
     $('#progress-section')?.classList.add('hidden');
   } else if (lessonsEl){
     lessonsEl.innerHTML = lessons.map((ls, i) => {
-      // 若之後你資料表有 duration_sec，就這樣帶：
-      // const dur = formatDuration(ls.duration_sec);
-      const dur = ''; // 現階段先留白，UI 一樣漂亮
+
+      const dur = course.duration_hours ? `${course.duration_hours} 小時` : '';
+      //const dur = ''; // 現階段先留白，UI 一樣漂亮
       return `
         <li>
           <button class="btn" data-lesson="${ls.id}" ${dur ? `data-duration="${dur}"` : ''}>
