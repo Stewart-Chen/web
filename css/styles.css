@@ -2042,3 +2042,86 @@ textarea::placeholder {
     margin-left: 1em;
   }
 }
+
+
+
+
+/* 容器與標題條 */
+#lessons-section{
+  border:1px solid #e6e6e6;
+  border-radius:10px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+#lessons-section > h3{
+  margin:0;
+  padding:14px 16px;
+  font-size:16px;
+  font-weight:600;
+  color:#1f2937;
+  border-bottom:1px solid #eee;
+  background:#fafafa;
+}
+
+/* 列表重置 */
+#lessons{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:block !important; /* 蓋掉 inline grid style */
+}
+#lessons > li{
+  margin:0;
+  padding:0;
+  border-bottom:1px solid #f0f0f0;
+}
+#lessons > li:last-child{ border-bottom:none; }
+
+/* 單元按鈕：一行卡片 */
+#lessons .btn.lesson-btn{
+  all:unset;                /* 清掉原生 button 樣式 */
+  display:grid;
+  grid-template-columns:auto 1fr auto; /* 圓點 | 標題 | 右側 */
+  gap:12px;
+  align-items:center;
+  width:100%;
+  padding:14px 16px;
+  cursor:pointer;
+}
+
+/* 左邊小圓點 */
+#lessons .btn.lesson-btn .dot{
+  width:8px; height:8px;
+  border-radius:50%;
+  background:#111827;
+}
+
+/* 中間標題（單行省略） */
+#lessons .btn.lesson-btn .title{
+  font-size:15px;
+  color:#111827;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* 右側區塊（時長等） */
+#lessons .btn.lesson-btn .meta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+#lessons .btn.lesson-btn .duration{
+  font-size:12px;
+  color:#6b7280;
+  letter-spacing:.2px;
+}
+
+/* 互動狀態 */
+#lessons .btn.lesson-btn:hover{ background:#f9fafb; }
+#lessons .btn.lesson-btn:active{ background:#f3f4f6; }
+#lessons .btn.lesson-btn:focus-visible{
+  outline:2px solid #2563eb;
+  outline-offset:-2px;
+}
