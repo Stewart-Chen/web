@@ -357,8 +357,8 @@ function renderEquip(items){
         : '';
       return `
         <li>
-          <button class="btn lesson-toggle" data-lesson="${ls.id}">
-            ${ls.title}${dur ? ` <span class="duration">(${dur})</span>` : ''}
+          <button class="btn" data-lesson="${ls.id}" ${dur ? `data-duration="${dur}"` : ''}>
+            ${ls.title}
           </button>
           ${contentHTML}
         </li>
