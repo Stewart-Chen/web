@@ -176,7 +176,7 @@ async function loadCourse(){
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
       const label = (course.plan_type === '系列課') ? '課程總費用' : '課程費用';
-      items.push({ key: 'fee', label, value: `NT$ ${fee}`, icon: 'coin' });
+      items.push({ key: 'fee', label, value: `NT$ ${fee}（由主辦單位支付）`, icon: 'coin' });
     }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
@@ -309,7 +309,7 @@ function renderEquip(items){
 
   const html = `
     <div class="equip-groups">
-      ${section('主辦單位提供', groups.org)}
+      ${section('由主辦單位提供', groups.org)}
       ${section('講師自備', groups.teacher)}
       ${groups.other.length ? section('未分類', groups.other) : ''}
     </div>
