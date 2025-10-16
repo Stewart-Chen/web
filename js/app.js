@@ -13,7 +13,7 @@ function enhanceLessonsUI(root = document){
     if (btn.dataset.enhanced) return;
     const title = btn.textContent.trim();
     const duration = btn.dataset.duration || '';
-    const chapter = `Ch. ${idx + 1}`; // ← 自動產生章節編號
+    const chapter = `第 ${idx + 1} 堂`;
 
     btn.innerHTML = `
       <span class="chapter">${chapter}</span>
@@ -298,7 +298,7 @@ function renderEquip(items){
   }
 
 
-  // (B) 單元列表
+  // (B) 系列課程單元
   const { data: lessons, error: lsErr } = await sb
     .from('lessons')
     .select('id, title, content, order_no')
