@@ -349,6 +349,7 @@ function renderEquip(items){
     $('#lessons-section')?.classList.add('hidden');
     $('#progress-section')?.classList.add('hidden');
   } else if (lessonsEl){
+    $('#progress-section')?.classList.add('hidden');
     lessonsEl.innerHTML = lessons.map((ls, i) => {
       const dur = course.duration_hours ? `${course.duration_hours} 小時` : '';
       const contentHTML = ls.content
