@@ -264,7 +264,7 @@ function renderEquip(items){
     <div class="equip-group">
       <div class="equip-title">${title}</div>
       <div class="equip-chips">
-        ${arr.map(x => `<span class="chip">${x}</span>`).join('')}
+        ${arr.map(x => `<span class="chip chip-items">${x}</span>`).join('')}
       </div>
     </div>
   `;
@@ -286,13 +286,13 @@ function renderEquip(items){
 
   
   if (Array.isArray(course.material_items) && course.material_items.length) {
-    $('#material-items').innerHTML = course.material_items.map(x => `<span class="chip">${x}</span>`).join('');
+    $('#material-items').innerHTML = course.material_items.map(x => `<span class="chip chip-items">${x}</span>`).join('');
   } else {
     $('#material-items').textContent = '尚無材料項目';
   }
   
   if (Array.isArray(course.keywords) && course.keywords.length) {
-    $('#keyword-items').innerHTML = course.keywords.map(k => `<span class="chip">${k}</span>`).join('');
+    $('#keyword-items').innerHTML = course.keywords.map(k => `<span class="chip chip-items">${k}</span>`).join('');
   } else {
     $('#keyword-items').textContent = '尚無關鍵字';
   }
