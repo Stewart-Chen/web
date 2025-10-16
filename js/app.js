@@ -604,7 +604,7 @@ function courseCardHTML(c){
                 const per = Number(c.duration_hours);
                 const weeks = (c.plan_type === '系列課') ? Number(c._weeks) : 0; // ← 從外面回填進來
                 const label = (weeks && per)
-                  ? `${weeks} 週 × ${per} 小時`
+                  ? `共${weeks}堂課 × 每堂${per}小時`
                   : `${per} 小時`;
                 return `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i">
                   <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
