@@ -1809,9 +1809,9 @@ textarea::placeholder {
 
 .tab-items {
   display: inline-flex;
-  gap: 12px;                  /* chip 與 chip 間距 */
+  gap: 10px;                  /* chip 與 chip 間距 */
   flex-wrap: wrap;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
   justify-content: center;
   font-size: .8rem;
 }
@@ -1984,7 +1984,7 @@ textarea::placeholder {
 #tab-equip .equip-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;                             /* chip 間距 */
+  gap: 10px;                             /* chip 間距 */
   min-width: 0;
   justify-content: center;
 }
@@ -2014,7 +2014,7 @@ textarea::placeholder {
     padding: 0 2rem;
   }
   #course-desc {
-    padding: 0 3rem;
+    padding: 0 2.5rem;
   }
   #course-feature {
     padding: 0 2rem;
@@ -2138,5 +2138,20 @@ textarea::placeholder {
     color:#1f2937;
     border-bottom:1px solid #eee;
     background: #fafafa;
+  }
+}
+
+.chip-items {
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: var(--mint-50);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+@media (hover:hover){
+  .chip-items:hover{
+    background: var(--mint-100); /* hover 時亮一階 */
+    box-shadow: 0 4px 10px rgba(46,125,50,.15);
   }
 }
