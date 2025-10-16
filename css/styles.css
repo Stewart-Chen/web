@@ -2091,6 +2091,7 @@ textarea::placeholder {
 
 /* 中間標題 */
 #lessons .btn.lesson-btn .title{
+  white-space:normal;
   font-size: 12px;
   color:#111827;
   overflow:hidden;
@@ -2113,27 +2114,6 @@ textarea::placeholder {
 #lessons .btn.lesson-btn:focus-visible{
   outline:2px solid #2563eb;
   outline-offset:-2px;
-}
-
-@media (max-width: 720px){
-  #lessons{
-    grid-template-columns:1fr !important; /* ✅ 強制單欄 */
-  }
-  #lessons .btn.lesson-btn{
-    padding: 14px 24px;
-  }
-  #lessons .btn.lesson-btn .chapter{
-    font-size:13px;
-    color: #6b7280;
-    min-width:auto;
-  }
-  #lessons .btn.lesson-btn .title{
-    /* white-space:normal; */           /* ✅ 標題可換行 */
-    
-  }
-  #lessons .btn.lesson-btn .meta{
-    justify-content:flex-start;   /* ✅ 時長左對齊 */
-  }
 }
 
 @media (min-width: 720px) {
@@ -2162,8 +2142,6 @@ textarea::placeholder {
     box-shadow: 0 4px 10px rgba(46,125,50,.15);
   }
 }
-
-
 
 /* 讓按鈕有空間放三角形 */
 #lessons .lesson-toggle {
@@ -2200,9 +2178,31 @@ textarea::placeholder {
   opacity: 0.2;                  /* 或直接 display:none; 想完全隱藏就改這個 */
 }
 
-/* 內容區塊（你已有 .hidden 控制顯示/隱藏） */
 #lessons .lesson-content {
-  padding: 10px 12px 10px 32px;     /* 左邊對齊箭頭/標題 */
+  padding: 20px 25px 20px 70px;     /* 左邊對齊箭頭/標題 */
   color: #374151;
   font-size: 12px;
+  background: #f9fafb;
+  border-left: 3px solid #93c5fd;
+  border-radius: 4px;
+}
+
+@media (max-width: 720px){
+  #lessons{
+    grid-template-columns:1fr !important; /* ✅ 強制單欄 */
+  }
+  #lessons .btn.lesson-btn{
+    padding: 14px 24px;
+  }
+  #lessons .btn.lesson-btn .chapter{
+    font-size:13px;
+    color: #6b7280;
+    min-width:auto;
+  }
+  #lessons .btn.lesson-btn .meta{
+    justify-content:flex-start;   /* ✅ 時長左對齊 */
+  }
+  #lessons .lesson-content {
+    padding: 10px 12px 10px 32px;     /* 左邊對齊箭頭/標題 */
+  }
 }
