@@ -1897,13 +1897,6 @@ textarea::placeholder {
   color: #555;
 }
 
-#lessons {
-  gap: 20px;
-  padding: 1em 0.1em 2em 1.5em;
-  max-width: 400px;
-  margin: auto;
-}
-
 #progress-section {
   padding: 10px 20px 10px 20px;
   max-width: 750px;
@@ -1915,17 +1908,6 @@ textarea::placeholder {
   font-weight: bold;    /* 可加粗 */
   color: #555;          /* 改顏色 */
   font-family: 'Noto Sans TC', sans-serif; /* 可改字型 */
-}
-
-#lessons .btn {
-  display: block;
-  width: 90%;
-  white-space: normal;
-  word-break: break-word;
-  text-align: center;
-  padding: 12px 12px;
-  margin-left: 0.5em;
-  font-size: 14px;
 }
 
 #course-summary {
@@ -2016,9 +1998,9 @@ textarea::placeholder {
 }
 
 .lessons-section {
-  padding: 10px 20px 10px 20px;
+  padding: 5px 10px 5px 10px;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 
@@ -2043,9 +2025,6 @@ textarea::placeholder {
   }
 }
 
-
-
-
 /* 容器與標題條 */
 #lessons-section{
   border:1px solid #e6e6e6;
@@ -2061,7 +2040,7 @@ textarea::placeholder {
   font-weight:600;
   color:#1f2937;
   border-bottom:1px solid #eee;
-  background:#fafafa;
+  background: #fafafa;
 }
 
 /* 列表重置 */
@@ -2070,6 +2049,7 @@ textarea::placeholder {
   margin:0;
   padding:0;
   display:block !important; /* 蓋掉 inline grid style */
+  width: 100%;
 }
 #lessons > li{
   margin:0;
@@ -2081,18 +2061,22 @@ textarea::placeholder {
 #lessons .btn.lesson-btn{
   all:unset;
   display:grid;
-  grid-template-columns:auto 1fr auto; /* Ch.編號 | 標題 | 時長 */
+  grid-template-columns: auto 1fr auto; /* Ch.編號 | 標題 | 時長 */
   gap:12px;
   align-items:center;
   width:100%;
   padding:14px 16px;
   cursor:pointer;
+  overflow:hidden;
+  max-width:100%;
+  min-width:0;
+  box-sizing: border-box;
 }
 
 /* 左側章節編號 */
 #lessons .btn.lesson-btn .chapter{
   font-weight:600;
-  font-size:14px;
+  font-size: 12px;
   color:#374151;
   min-width:48px;      /* 對齊整齊 */
   text-align:left;
@@ -2100,11 +2084,10 @@ textarea::placeholder {
 
 /* 中間標題 */
 #lessons .btn.lesson-btn .title{
-  font-size:15px;
+  font-size: 12px;
   color:#111827;
   overflow:hidden;
   text-overflow:ellipsis;
-  white-space:nowrap;
 }
 
 /* 右側時間 */
@@ -2114,7 +2097,7 @@ textarea::placeholder {
 }
 #lessons .btn.lesson-btn .duration{
   font-size:12px;
-  color:#6b7280;
+  color: var(--accent-blue);
 }
 
 /* hover / active */
@@ -2124,3 +2107,25 @@ textarea::placeholder {
   outline:2px solid #2563eb;
   outline-offset:-2px;
 }
+
+@media (max-width: 640px){
+  #lessons{
+    grid-template-columns:1fr !important; /* ✅ 強制單欄 */
+  }
+  #lessons .btn.lesson-btn{
+    padding:12px 14px;
+  }
+  #lessons .btn.lesson-btn .chapter{
+    font-size:13px;
+    color: #6b7280;
+    min-width:auto;
+  }
+  #lessons .btn.lesson-btn .title{
+    /* white-space:normal; */           /* ✅ 標題可換行 */
+    
+  }
+  #lessons .btn.lesson-btn .meta{
+    justify-content:flex-start;   /* ✅ 時長左對齊 */
+  }
+}
+
