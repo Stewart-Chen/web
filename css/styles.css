@@ -1711,7 +1711,7 @@ textarea::placeholder {
   display: grid;
   gap: 10px;
   margin-top: 12px;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem 0 0.5rem;
 }
 
 .info-item .icon{
@@ -1916,8 +1916,9 @@ textarea::placeholder {
   white-space: normal;
   word-break: break-word;
   text-align: center;
-  padding: 8px 12px;
+  padding: 12px 12px;
   margin-left: 0.5em;
+  font-size: 13px;
 }
 
 #course-summary {
@@ -2011,7 +2012,7 @@ textarea::placeholder {
   .info-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px 60px;
-    padding: 0 2rem;
+    padding: 0.5rem 2rem 0 1.5rem;
   }
   .course-meta {
     padding: 0 2rem;
