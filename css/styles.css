@@ -1899,7 +1899,7 @@ textarea::placeholder {
 
 #progress-section {
   padding: 10px 20px 10px 20px;
-  max-width: 750px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
@@ -1998,8 +1998,8 @@ textarea::placeholder {
 }
 
 .lessons-section {
-  padding: 5px 10px 5px 10px;
-  max-width: 500px;
+  /* padding: 5px 10px 5px 10px; */
+  max-width: 760px;
   margin: 10px auto;
 }
 
@@ -2035,7 +2035,7 @@ textarea::placeholder {
 }
 #lessons-section > h3{
   margin:0;
-  padding:14px 16px;
+  padding: 13px 18px;
   font-size:16px;
   font-weight:600;
   color:#1f2937;
@@ -2062,10 +2062,10 @@ textarea::placeholder {
   all:unset;
   display:grid;
   grid-template-columns: auto 1fr auto; /* Ch.編號 | 標題 | 時長 */
-  gap:12px;
+  gap: 14px;
   align-items:center;
   width:100%;
-  padding:14px 16px;
+  padding: 20px 50px;
   cursor:pointer;
   overflow:hidden;
   max-width:100%;
@@ -2108,12 +2108,12 @@ textarea::placeholder {
   outline-offset:-2px;
 }
 
-@media (max-width: 640px){
+@media (max-width: 720px){
   #lessons{
     grid-template-columns:1fr !important; /* ✅ 強制單欄 */
   }
   #lessons .btn.lesson-btn{
-    padding:12px 14px;
+    padding: 14px 24px;
   }
   #lessons .btn.lesson-btn .chapter{
     font-size:13px;
@@ -2129,3 +2129,14 @@ textarea::placeholder {
   }
 }
 
+@media (min-width: 720px) {
+  #lessons-section > h3{
+    margin:0;
+    padding: 16px 32px;
+    font-size:16px;
+    font-weight:600;
+    color:#1f2937;
+    border-bottom:1px solid #eee;
+    background: #fafafa;
+  }
+}
