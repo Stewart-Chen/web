@@ -181,20 +181,31 @@ async function loadCourse(){
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
       items.push({ key: 'material_fee', label: '總材料費 (另付)', value: `NT$ ${mfee}`, icon: 'wallet' });
     }
+    function planTypeClass(pt){
+      if (pt === '系列課') return 'series-course';
+      if (pt === '一日工作坊') return 'one-day';
+      return (pt || '').trim().replace(/\s+/g,'-').toLowerCase();
+    }
     if (items.length) {
       const infoSec = document.createElement('section');
-      infoSec.id = 'course-info-detail';              // ← 改成新 id（不要再叫 course-meta）
+      infoSec.id = 'course-info-detail';
       infoSec.className = 'course-info';
       const title = `<div class="course-info__title">課程資訊</div>`;
       const listHTML = `
         <div class="info-list">
-          ${items.map(it => `
-            <div class="info-item" data-key="${it.key}">
-              <div class="icon">${iconSVG(it.icon)}</div>
-              <div class="label">${it.label}</div>
-              <div class="value">${it.value}</div>
-            </div>
-          `).join('')}
+          ${items.map(it => {
+            const isPlan = it.key === 'plan';
+            const valueClass = isPlan
+              ? `badge plan-type ${planTypeClass(course.plan_type)}`
+              : 'value';
+            return `
+              <div class="info-item" data-key="${it.key}">
+                <div class="icon">${iconSVG(it.icon)}</div>
+                <div class="label">${it.label}</div>
+                <div class="${valueClass}">${it.value}</div>
+              </div>
+            `;
+          }).join('')}
         </div>
       `;
       infoSec.innerHTML = title + listHTML;
