@@ -175,11 +175,13 @@ async function loadCourse(){
     }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
-      items.push({ key: 'fee', label: '課程總費用', value: `NT$ ${fee}`, icon: 'coin' });
+      const label = (course.plan_type === '系列課') ? '課程總費用' : '課程費用';
+      items.push({ key: 'fee', label, value: `NT$ ${fee}`, icon: 'coin' });
     }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
-      items.push({ key: 'material_fee', label: '總材料費 (另付)', value: `NT$ ${mfee}`, icon: 'wallet' });
+      const label = (course.plan_type === '系列課') ? '每人總材料費 (另付)' : '每人材料費 (另付)';
+      items.push({ key: 'material_fee', label, value: `NT$ ${mfee}`, icon: 'wallet' });
     }
     function planTypeClass(pt){
       if (pt === '系列課') return 'series-course';
