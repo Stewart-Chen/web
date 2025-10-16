@@ -350,17 +350,20 @@ function renderEquip(items){
     $('#progress-section')?.classList.add('hidden');
   } else if (lessonsEl){
     lessonsEl.innerHTML = lessons.map((ls, i) => {
-
       const dur = course.duration_hours ? `${course.duration_hours} 小時` : '';
-      //const dur = ''; // 現階段先留白，UI 一樣漂亮
+      const contentHTML = ls.content
+        ? `<div class="lesson-content hidden">${ls.content.replace(/\n/g, '<br>')}</div>`
+        : '';
       return `
         <li>
-          <button class="btn" data-lesson="${ls.id}" ${dur ? `data-duration="${dur}"` : ''}>
-            ${ls.title}
+          <button class="btn lesson-toggle" data-lesson="${ls.id}">
+            ${ls.title}${dur ? ` <span class="duration">(${dur})</span>` : ''}
           </button>
+          ${contentHTML}
         </li>
       `;
     }).join('');
+
     enhanceLessonsUI(document);   // ← 這行：把按鈕包成「圓點 + 標題 + 時長」
   }
 
@@ -487,8 +490,15 @@ function renderEquip(items){
     });
   }
 
+  lessonsEl.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.lesson-toggle');
+    if (!btn) return;
+    const contentEl = btn.nextElementSibling;
+    if (contentEl) contentEl.classList.toggle('hidden');
+  });
+
   // (D) 點單元 → 完成標記
-  lessonsEl?.addEventListener('click', async (e)=>{
+  /*lessonsEl?.addEventListener('click', async (e)=>{
     const btn = e.target.closest('button[data-lesson]');
     if (!btn) return;
 
@@ -521,7 +531,7 @@ function renderEquip(items){
         modal?.close();
       };
     }
-  });
+  });*/
 
   // (E) 進度
   async function loadProgress(lessonList){
