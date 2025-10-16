@@ -2037,4 +2037,8 @@ textarea::placeholder {
   #course-feature {
     padding: 0 2rem;
   }
+  #lessons .btn {
+    padding: 14px 24px;
+    margin-left: 1em;
+  }
 }
