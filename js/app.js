@@ -244,7 +244,7 @@ async function loadCourse(){
           <path d="M3.27 6.96L12 12l8.73-5.04"/>
         </svg>`;
         
-      case 'calendar': // 上課頻率
+      case 'calendar': // 課程節數
         return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -364,7 +364,7 @@ function renderEquip(items){
     enhanceLessonsUI(document);   // ← 這行：把按鈕包成「圓點 + 標題 + 時長」
   }
 
-  // ---- 系列課補充：上課頻率 & 總時數 ----
+  // ---- 系列課補充：課程節數 & 總時數 ----
   if (course.plan_type === '系列課') {
     const weeks = Array.isArray(lessons) ? lessons.length : 0;
     const per = Number(course.duration_hours) || 0;
@@ -388,13 +388,13 @@ function renderEquip(items){
         `);
       }
   
-      // 2) 上課頻率：每週一堂，共 X 週
+      // 2) 課程節數
       let freqItem = list.querySelector('.info-item[data-key="frequency"]');
       const freqHTML = `
         <div class="info-item" data-key="frequency">
           <div class="icon">${iconSVG('calendar')}</div>
-          <div class="label">上課頻率</div>
-          <div class="value">每週一堂，共 ${weeks} 週</div>
+          <div class="label">課程節數</div>
+          <div class="value">共 ${weeks} 堂課</div>
         </div>
       `;
       if (freqItem) {
@@ -606,7 +606,7 @@ function courseCardHTML(c){
                 const per = Number(c.duration_hours);
                 const weeks = (c.plan_type === '系列課') ? Number(c._weeks) : 0; // ← 從外面回填進來
                 const label = (weeks && per)
-                  ? `共${weeks}堂課 × 每堂${per}小時`
+                  ? `${weeks} 堂 × ${per} 小時`
                   : `${per} 小時`;
                 return `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i">
                   <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
