@@ -165,11 +165,11 @@ async function loadCourse(){
     }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
-      items.push({ key: 'fee', label: '課程費用', value: `NT$ ${fee}`, icon: 'coin' });
+      items.push({ key: 'fee', label: '課程總費用', value: `NT$ ${fee}`, icon: 'coin' });
     }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
-      items.push({ key: 'material_fee', label: '材料費用 (另計)', value: `NT$ ${mfee}`, icon: 'wallet' });
+      items.push({ key: 'material_fee', label: '材料費 (另付)', value: `NT$ ${mfee}`, icon: 'wallet' });
     }
     if (items.length) {
       const infoSec = document.createElement('section');
