@@ -158,8 +158,10 @@ async function loadCourse(){
     if (Number.isFinite(course.capacity)) {
       items.push({ key: 'capacity', label: '課程人數', value: `${course.capacity} 人`, icon: 'users' });
     }
+    // 系列課：把「課程時數」→「每堂時數」
     if (course.duration_hours) {
-      items.push({ key: 'duration', label: '課程時數', value: `${Number(course.duration_hours)} 小時`, icon: 'clock' });
+      const label = (course.plan_type === '系列課') ? '每堂時數' : '課程時數';
+      items.push({ key: 'duration', label, value: `${Number(course.duration_hours)} 小時`, icon: 'clock' });
     }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
@@ -217,6 +219,19 @@ async function loadCourse(){
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"/>
           <path d="M3.27 6.96L12 12l8.73-5.04"/>
+        </svg>`;
+        
+      case 'calendar': // 上課頻率
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>`;
+      
+      case 'sum': // 總時數
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 4h14M7 8h10M9 12h6M7 16h10M5 20h14"/>
         </svg>`;
 
       default:
@@ -324,6 +339,63 @@ function renderEquip(items){
       `;
     }).join('');
     enhanceLessonsUI(document);   // ← 這行：把按鈕包成「圓點 + 標題 + 時長」
+  }
+
+  // ---- 系列課補充：上課頻率 & 總時數 ----
+  if (course.plan_type === '系列課') {
+    const weeks = Array.isArray(lessons) ? lessons.length : 0;
+    const per = Number(course.duration_hours) || 0;
+    const total = weeks * per;
+  
+    const infoSec = document.getElementById('course-info-detail');
+    const list = infoSec?.querySelector('.info-list');
+    if (list) {
+      // 1) 修正「每堂時數」(若先前不是就強制改)
+      let durItem = list.querySelector('.info-item[data-key="duration"]');
+      if (durItem) {
+        durItem.querySelector('.label')?.replaceChildren(document.createTextNode('每堂時數'));
+        durItem.querySelector('.value')?.replaceChildren(document.createTextNode(per ? `${per} 小時` : '—'));
+      } else if (per) {
+        list.insertAdjacentHTML('beforeend', `
+          <div class="info-item" data-key="duration">
+            <div class="icon">${iconSVG('clock')}</div>
+            <div class="label">每堂時數</div>
+            <div class="value">${per} 小時</div>
+          </div>
+        `);
+      }
+  
+      // 2) 上課頻率：每週一堂，共 X 週
+      let freqItem = list.querySelector('.info-item[data-key="frequency"]');
+      const freqHTML = `
+        <div class="info-item" data-key="frequency">
+          <div class="icon">${iconSVG('calendar')}</div>
+          <div class="label">上課頻率</div>
+          <div class="value">每週一堂，共 ${weeks} 週</div>
+        </div>
+      `;
+      if (freqItem) {
+        freqItem.querySelector('.value')?.replaceChildren(document.createTextNode(`每週一堂，共 ${weeks} 週`));
+      } else {
+        list.insertAdjacentHTML('beforeend', freqHTML);
+      }
+  
+      // 3) 總時數：每堂時數 × 週數
+      let totalItem = list.querySelector('.info-item[data-key="total_hours"]');
+      const totalText = total ? `${total} 小時` : '—';
+      const totalHTML = `
+        <div class="info-item" data-key="total_hours">
+          <div class="icon">${iconSVG('sum')}</div>
+          <div class="label">總時數</div>
+          <div class="value">${totalText}</div>
+        </div>
+      `;
+      if (totalItem) {
+        totalItem.querySelector('.value')?.replaceChildren(document.createTextNode(totalText));
+      } else {
+        list.insertAdjacentHTML('beforeend', totalHTML);
+      }
+    }
   }
 
   // (C) 報名狀態
