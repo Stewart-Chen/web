@@ -2058,18 +2058,25 @@ textarea::placeholder {
 }
 #lessons > li:last-child{ border-bottom:none; }
 
-#lessons .btn.lesson-btn{
-  all:unset;
-  display:grid;
-  grid-template-columns: auto 1fr auto; /* Ch.編號 | 標題 | 時長 */
+#lessons .btn.lesson-btn {
+  /* 不用 all:unset; 改成 reset 常見屬性即可 */
+  background: none;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  font: inherit;
+  color: inherit;
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   gap: 14px;
-  align-items:center;
-  width:100%;
+  align-items: center;
+  width: 100%;
   padding: 20px 50px;
-  cursor:pointer;
-  overflow:hidden;
-  max-width:100%;
-  min-width:0;
+  cursor: pointer;
+  overflow: hidden;
+  max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 
@@ -2154,4 +2161,48 @@ textarea::placeholder {
     background: var(--mint-100); /* hover 時亮一階 */
     box-shadow: 0 4px 10px rgba(46,125,50,.15);
   }
+}
+
+
+
+/* 讓按鈕有空間放三角形 */
+#lessons .lesson-toggle {
+  position: relative;
+  text-align: left;
+  padding-left: 32px;            /* 給箭頭留空間 */
+}
+
+/* 左邊的收折三角形（預設向右 ▶） */
+#lessons .lesson-toggle::before {
+  content: '▸';                  /* 也可用 ▶ 或用 SVG 當背景 */
+  position: absolute;
+  left: 12px;                    /* 與 padding-left 對齊 */
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform .2s ease, opacity .2s ease;
+  font-size: 14px;
+  line-height: 1;
+  opacity: .8;
+  pointer-events: none;
+}
+
+/* 展開時改成向下 ▼（其實是旋轉 90°） */
+#lessons li.open > .lesson-toggle::before,
+#lessons .lesson-toggle[aria-expanded="true"]::before {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+/* 沒內容（no-content）就把箭頭淡出，游標也改成預設 */
+#lessons .lesson-toggle.no-content {
+  cursor: default;
+}
+#lessons .lesson-toggle.no-content::before {
+  opacity: 0.2;                  /* 或直接 display:none; 想完全隱藏就改這個 */
+}
+
+/* 內容區塊（你已有 .hidden 控制顯示/隱藏） */
+#lessons .lesson-content {
+  padding: 10px 12px 10px 32px;     /* 左邊對齊箭頭/標題 */
+  color: #374151;
+  font-size: 12px;
 }
