@@ -350,22 +350,30 @@ function renderEquip(items){
     $('#progress-section')?.classList.add('hidden');
   } else if (lessonsEl){
     $('#progress-section')?.classList.add('hidden');
-    lessonsEl.innerHTML = lessons.map((ls, i) => {
-      const dur = course.duration_hours ? `${course.duration_hours} 小時` : '';
-      const contentHTML = ls.content
-        ? `<div class="lesson-content hidden">${ls.content.replace(/\n/g, '<br>')}</div>`
-        : '';
-      return `
-        <li>
-          <button class="btn" data-lesson="${ls.id}" ${dur ? `data-duration="${dur}"` : ''}>
-            ${ls.title}
-          </button>
-          ${contentHTML}
-        </li>
-      `;
-    }).join('');
+    lessonsEl.innerHTML = lessons.map((ls) => {
+        const dur = course.duration_hours ? `${course.duration_hours} 小時` : '';
+        const contentHTML = ls.content
+          ? `<div class="lesson-content hidden">${ls.content.replace(/\n/g, '<br>')}</div>`
+          : '';
+        return `
+          <li>
+            <button class="btn lesson-toggle" aria-expanded="false"
+                    data-lesson="${ls.id}" ${dur ? `data-duration="${dur}"` : ''}>
+              ${ls.title}
+            </button>
+            ${contentHTML}
+          </li>
+        `;
+      }).join('');
 
     enhanceLessonsUI(document);   // ← 這行：把按鈕包成「圓點 + 標題 + 時長」
+    
+    // 沒內容的按鈕 → 不顯示箭頭
+    document.querySelectorAll('#lessons li').forEach(li => {
+      const btn = li.querySelector('.lesson-toggle');
+      const content = li.querySelector('.lesson-content');
+      if (btn && !content) btn.classList.add('no-content');
+    });
   }
 
   // ---- 系列課補充：課程節數 & 總時數 ----
@@ -491,12 +499,21 @@ function renderEquip(items){
     });
   }
 
-  lessonsEl.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.lesson-toggle');
+  // 啟用展開/收合
+  lessonsEl?.addEventListener('click', (e)=>{
+    const btn = e.target.closest('#lessons .lesson-toggle');
     if (!btn) return;
-    const contentEl = btn.nextElementSibling;
-    if (contentEl) contentEl.classList.toggle('hidden');
+  
+    const li = btn.closest('li');
+    const contentEl = li?.querySelector('.lesson-content');
+    if (!contentEl) return; // 沒內容就不切
+  
+    const willOpen = contentEl.classList.contains('hidden');
+    contentEl.classList.toggle('hidden', !willOpen);
+    li.classList.toggle('open', willOpen);
+    btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
   });
+
 
   // (D) 點單元 → 完成標記
   /*lessonsEl?.addEventListener('click', async (e)=>{
