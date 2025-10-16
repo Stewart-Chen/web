@@ -166,7 +166,7 @@ async function loadCourse(){
       items.push({ key: 'plan', label: '方案類型', value: `${course.plan_type}`, icon: 'tag' });
     }
     if (Number.isFinite(course.capacity)) {
-      items.push({ key: 'capacity', label: '課程人數', value: `${course.capacity} 人`, icon: 'users' });
+      items.push({ key: 'capacity', label: '預估人數', value: `${course.capacity} 人`, icon: 'users' });
     }
     // 系列課：把「課程時數」→「每堂時數」
     if (course.duration_hours) {
