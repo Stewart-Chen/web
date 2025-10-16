@@ -599,7 +599,19 @@ function courseCardHTML(c){
             
             <div class="meta-row">
               ${teacher ? `<span class="meta">${teacher}</span>` : ``}
-              ${c.duration_hours ? `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${Number(c.duration_hours)}小時</span>` : ``}
+
+              ${c.duration_hours ? (() => {
+                const per = Number(c.duration_hours);
+                const weeks = (c.plan_type === '系列課') ? Number(c._weeks) : 0; // ← 從外面回填進來
+                const label = (weeks && per)
+                  ? `${weeks} 週 × ${per} 小時`
+                  : `${per} 小時`;
+                return `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i">
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/></svg>${label}</span>`;
+              })() : ``}
+     
               ${Number.isFinite(c.course_fee) ? `<span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}</span>` : ``}
             </div>
           
@@ -711,6 +723,24 @@ async function renderCourses(page = 1, filters = {}){
       : [ c.cover_url || ('https://picsum.photos/seed/' + encodeURIComponent(c.id) + '/640/360') ];
   }
 
+  // 補系列課的週數（用 lessons 筆數當週數）
+  const seriesIds = items.filter(c => c.plan_type === '系列課').map(c => c.id);
+  if (seriesIds.length) {
+    // 一次抓出所有系列課的 lessons，自己在前端 group 計數
+    const { data: lsAll, error: lsErr } = await sb
+      .from('lessons')
+      .select('course_id')
+      .in('course_id', seriesIds);
+  
+    if (!lsErr && Array.isArray(lsAll)) {
+      const weeksMap = {};
+      lsAll.forEach(r => { weeksMap[r.course_id] = (weeksMap[r.course_id] || 0) + 1; });
+      items.forEach(c => {
+        if (c.plan_type === '系列課') c._weeks = weeksMap[c.id] || 0;
+      });
+    }
+  }
+  
   // 渲染
   listEl.innerHTML = items.map(courseCardHTML).join('');
 
