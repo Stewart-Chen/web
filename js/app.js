@@ -7,6 +7,16 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
+function moveCourseFeesToEnd(){
+  const list = document.querySelector('#course-info-detail .info-list');
+  if (!list) return;
+  const fee  = list.querySelector('.info-item[data-key="fee"]');
+  const mfee = list.querySelector('.info-item[data-key="material_fee"]');
+  // 先費用、再材料費 → 順序就會是 …, 課程總費用, 總材料費
+  if (fee)  list.appendChild(fee);
+  if (mfee) list.appendChild(mfee);
+}
+
 function enhanceLessonsUI(root = document){
   const btns = root.querySelectorAll('#lessons button.btn');
   btns.forEach((btn, idx)=>{
@@ -169,7 +179,7 @@ async function loadCourse(){
     }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
-      items.push({ key: 'material_fee', label: '材料費 (另付)', value: `NT$ ${mfee}`, icon: 'wallet' });
+      items.push({ key: 'material_fee', label: '總材料費 (另付)', value: `NT$ ${mfee}`, icon: 'wallet' });
     }
     if (items.length) {
       const infoSec = document.createElement('section');
@@ -397,6 +407,7 @@ function renderEquip(items){
       }
     }
   }
+  moveCourseFeesToEnd();
 
   // (C) 報名狀態
   let enrolled = false;
