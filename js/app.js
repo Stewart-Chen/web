@@ -761,7 +761,7 @@ function courseCardHTML(c){
                     stroke-linecap="round" stroke-linejoin="round"/></svg>${label}</span>`;
               })() : ``}
      
-              ${Number.isFinite(c.course_fee) ? `<span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}/小時</span>` : ``}
+              ${Number.isFinite(c.course_fee) ? `<span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee} / 小時</span>` : ``}
             </div>
           
           ` : ``}
