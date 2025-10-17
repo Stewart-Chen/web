@@ -1665,19 +1665,7 @@ textarea::placeholder {
   border-radius: 10px;
 }
 
-/* 圓形縮圖維持原本設定 */
-#course-hero .hero-avatar{
-  position: absolute;
-  left: 50%;
-  bottom: -36px;              /* 往下凸一半 */
-  transform: translateX(-50%);
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  border: 3px solid #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,.2);
-  overflow: hidden;
-  background: #fff;
-}
+
 
 /* 讓下面標題往下讓出 avatar 的一半高度 */
 #course-info header > #course-hero + *{
@@ -2246,14 +2234,14 @@ textarea::placeholder {
 
   #cost-calculator .calc-grid{
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px 26px;
+    gap: 12px 32px;
     margin-top: 8px;
-    padding: 0.2rem 2.5rem 0.2rem 2.5rem;
+    padding: 0.2rem 3.5rem 0.2rem 3.5rem;
   }
   
   #cost-calculator .calc-result{
-    padding: 10px 50px 18px;
-    margin: 18px 120px;
+    padding: 10px 26px 18px;
+    margin: 18px 130px;
   }
 }
 
@@ -2282,3 +2270,74 @@ textarea::placeholder {
   line-height: 1;              /* 緊湊一點 */
 }
 
+/* 你的既有尺寸設定保留，只加 overflow 與下緣空間 */
+#course-info #course-hero{
+  position: relative;
+  width: calc(100% + 40px);
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-top: -20px;
+  aspect-ratio: 16 / 9;
+  max-height: min(40vh);
+  overflow: visible;                   /* 讓探出的頭像不被裁掉 */
+  --hero-av-size: 72px;                /* 頭像尺寸（可依需要調） */
+  --hero-av-gap: 12px;                 /* 並排間距（不想重疊時用） */
+  --hero-av-overlap: -20px;            /* 想重疊就用這個負值 */
+  margin-bottom: calc(var(--hero-av-size) / 2 + 8px); /* 下方預留空間 */
+}
+
+/* 圖片鋪滿容器 */
+#course-info #course-hero > img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 多顆頭像容器（置中貼底，往下探出 50%） */
+#course-info #course-hero .hero-avatar{
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%);     /* 以自身高的一半探出容器 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;                 /* 避免擋到點擊；要可點就移除 */
+}
+
+/* 單顆頭像樣式 */
+#course-info #course-hero .hero-avatar img{
+  width: var(--hero-av-size);
+  height: var(--hero-av-size);
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  background: #fff;
+  object-fit: cover;
+  pointer-events: auto;
+  transition: transform .2s;
+}
+
+/* 二選一：想「重疊」就開這段 */
+#course-info #course-hero .hero-avatar img + img{
+  margin-left: var(--hero-av-overlap); /* -20px 重疊；想疊多一點調更負 */
+}
+
+/* 二選一：想「並排不重疊」就用這段，並移除上一段 */
+ /*
+#course-info #course-hero .hero-avatar{
+  gap: var(--hero-av-gap);
+}
+*/
+
+/* 小尺寸時縮小頭像與預留空間 */
+@media (max-width: 720px){
+  #course-info #course-hero{
+    max-height: min(25vh);
+    --hero-av-size: 56px;
+    margin-bottom: calc(var(--hero-av-size) / 2 + 6px);
+  }
+}
