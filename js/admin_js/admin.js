@@ -205,7 +205,7 @@
     // 基本查詢
     let query = sb
       .from('courses')
-      .select('id,title,teacher,plan_type,category,published,deleted_at,created_at,sort_priority');
+      .select('id,title,teacher,teachers,plan_type,category,published,deleted_at,created_at,sort_priority');
 
     if (selectedTeacher) query = query.eq('teacher', selectedTeacher);
     if (selectedPlan)   query = query.eq('plan_type', selectedPlan);
@@ -227,7 +227,9 @@
         <div class="title-row">
           <div class="title">${c.title}</div>
           <div class="meta">
-            <span class="badge">${labelOfTeacher(c.teacher)}</span>
+            <span class="badge">
+              ${Array.isArray(c.teachers) && c.teachers.length ? c.teachers.join('、') : labelOfTeacher(c.teacher)}
+            </span>
             ${!c.published ? `<span class="badge">未發佈</span>` : ``}
             ${c.deleted_at ? '<span class="badge">已刪除</span>' : ''}
           </div>
@@ -254,10 +256,8 @@
     document.getElementById('ac-title').value     = c?.title ?? '';
     document.getElementById('ac-summary').value   = c?.summary ?? '';
     document.getElementById('ac-desc').value      = c?.description ?? '';
-    document.getElementById('ac-teacher').value   = c?.teacher ?? '';
     document.getElementById('ac-category').value  = c?.category ?? '';
     document.getElementById('ac-published').checked = !!c?.published;
-
     document.getElementById('ac-people').value        = c?.capacity ?? '';
     document.getElementById('ac-duration').value      = c?.duration_hours ?? '';
     document.getElementById('ac-materials').value     = Array.isArray(c?.material_items)  ? c.material_items.join(', ')  : (c?.material_items ?? '');
@@ -267,6 +267,10 @@
     document.getElementById('ac-plan-type').value     = c?.plan_type ?? '';
     document.getElementById('ac-keywords').value      = Array.isArray(c?.keywords) ? c.keywords.join(', ') : (c?.keywords ?? '');
 
+    const teacherArr = Array.isArray(c?.teachers) ? c.teachers
+                    : ((c?.teacher || '').trim() ? [c.teacher.trim()] : []);
+    setCheckedTeachers(teacherArr);
+    
     // 拆設備項目到兩欄
     const eq = Array.isArray(c?.equipment_items) ? c.equipment_items : [];
     const org = [], teacher = [], other = [];
@@ -338,6 +342,18 @@
     });
   }
 
+  function getCheckedTeachers() {
+    return Array.from(document.querySelectorAll('#ac-teachers input[type="checkbox"]:checked'))
+      .map(el => el.value.trim())
+      .filter(Boolean);
+  }
+  function setCheckedTeachers(names = []) {
+    const set = new Set((names || []).filter(Boolean));
+    document.querySelectorAll('#ac-teachers input[type="checkbox"]').forEach(cb => {
+      cb.checked = set.has(cb.value);
+    });
+  }
+
   // ===== 課程儲存 =====
   async function saveCourseFromForm() {
     if (!await isAdmin()) { alert('只有管理者可以操作'); return; }
@@ -346,6 +362,8 @@
     const $c = (id) => !!document.getElementById(id)?.checked;
   
     const id = Number($v('ac-id') || 0);
+    const teachers = getCheckedTeachers();
+
   
     // 將以逗號分隔的字串轉陣列（去頭尾、去空白、去重）
     const toList = (s) => {
@@ -376,7 +394,8 @@
       title:         $v('ac-title'),
       summary:       $v('ac-summary')   || null,
       description:   $v('ac-desc')      || null,
-      teacher:       $v('ac-teacher'),
+      teachers:      teachers,                 // 新：text[]
+      teacher:       (teachers[0] || null),    // 舊：第一位回填，保相容
       category:      $v('ac-category'),
       published:     $c('ac-published'),
       capacity:    toNum($v('ac-people')),        // int/nullable
@@ -396,7 +415,7 @@
     });
     
     if (!payload.title)   { alert('請填寫標題'); return; }
-    if (!payload.teacher) { alert('請選擇授課老師'); return; }
+    if (!teachers.length) { alert('請至少選擇 1 位授課老師'); return; }
 
     // 若容量有填，就必須是正整數
     if (payload.capacity != null && (!Number.isInteger(payload.capacity) || payload.capacity <= 0)) {
