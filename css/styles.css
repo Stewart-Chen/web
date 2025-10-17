@@ -2003,28 +2003,6 @@ textarea::placeholder {
   margin: 10px auto;
 }
 
-
-@media (min-width: 720px) {
-  .info-list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px 60px;
-    padding: 0.5rem 2rem 0 1.5rem;
-  }
-  .course-meta {
-    padding: 0 2rem;
-  }
-  #course-desc {
-    padding: 0 2.5rem;
-  }
-  #course-feature {
-    padding: 0 2rem;
-  }
-  #lessons .btn {
-    padding: 14px 24px;
-    margin-left: 1em;
-  }
-}
-
 /* 容器與標題條 */
 #lessons-section{
   border:1px solid #e6e6e6;
@@ -2205,3 +2183,74 @@ textarea::placeholder {
     padding: 10px 12px 10px 32px;     /* 左邊對齊箭頭/標題 */
   }
 }
+
+#cost-calculator { margin-top: 16px; }
+#cost-calculator .calc-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+  padding: 0 1rem 0 1rem;
+}
+#cost-calculator .calc-field{
+  display: flex; flex-direction: column; gap: 6px;
+}
+#cost-calculator .calc-field input{
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font: inherit;
+}
+#cost-calculator .calc-result{
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px dashed #ddd;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.02);
+  margin: 12px 16px;
+}
+#cost-calculator .calc-result .lines{
+  margin-top: 6px;
+  display: grid;
+  gap: 6px;
+  font-size: .8rem;
+}
+#cost-calculator .calc-result .lines > div{
+  display: flex; align-items: center; justify-content: space-between;
+}
+#cost-calculator .calc-result .total strong{font-size: 1rem;}
+#cost-calculator .formula{color: #666;font-size: .8rem;}
+
+@media (min-width: 720px) {
+  .info-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 60px;
+    padding: 0.5rem 2rem 0 1.5rem;
+  }
+  .course-meta {
+    padding: 0 2rem;
+  }
+  #course-desc {
+    padding: 0 2.5rem;
+  }
+  #course-feature {
+    padding: 0 2rem;
+  }
+  #lessons .btn {
+    padding: 14px 24px;
+    margin-left: 1em;
+  }
+
+  #cost-calculator .calc-grid{
+    gap: 12px;
+    margin-top: 8px;
+    padding: 0.5rem 1.5rem 0 1.5rem;
+  }
+  
+  #cost-calculator .calc-result{
+    margin-top: 18px;
+    padding: 18px;
+  }
+}
+
+
