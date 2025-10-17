@@ -20,34 +20,40 @@ function moveCourseFeesToEnd(){
 function convertTextToList(el) {
   if (!el) return;
 
-  // 取出文字內容，保留換行
-  const raw = el.innerHTML
-    .replace(/<br\s*\/?>/gi, '\n')
+  // 🪄 改這裡：用 innerHTML 取內容，保留 <br>
+  const raw = (el.innerHTML || '')
+    .replace(/<br\s*\/?>/gi, '\n')  // 把 <br> 換成換行
     .trim();
 
   if (!raw) return;
 
-  // 依「兩個以上換行」切成主體與附加段（例如課程特色）
+  // 1️⃣ 依「兩個以上換行」切成兩段
   const [partMain, partFeature] = raw.split(/\n{2,}/);
 
-  // 找出條列開頭：1. / 1、 / １． / １、
+  // 2️⃣ 切出課程步驟：支援 1. / 1、 / 全形 １． / １、
   const items = partMain
     .split(/\s*[0-9０-９]+\s*[\.．、]\s*/g)
     .filter(Boolean);
 
-  // 若有兩項以上，轉為 <ol>
+  // 如果有兩個以上項目，轉成 <ol>
   if (items.length >= 2) {
     const ol = document.createElement('ol');
+    ol.className = el.className || '';
+    ol.id = el.id || '';
+
     items.forEach(t => {
       const li = document.createElement('li');
       li.textContent = t.trim();
       ol.appendChild(li);
     });
-    el.replaceChildren(ol);
 
-    // 若有第二段（例如課程特色），照樣附加在後面
+    el.replaceWith(ol);
+
+    // 3️⃣ 如果還有第二段（課程特色）
     if (partFeature && partFeature.trim()) {
       const p = document.createElement('p');
+      p.id = 'course-feature';
+      p.className = el.className || '';
       p.style.whiteSpace = 'pre-line';
       p.textContent = partFeature.trim();
       ol.insertAdjacentElement('afterend', p);
