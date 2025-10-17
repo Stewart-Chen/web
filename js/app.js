@@ -17,29 +17,27 @@ function moveCourseFeesToEnd(){
   if (mfee) list.appendChild(mfee);
 }
 
-function convertLessonTextToList(el){
+function convertLessonTextToList(el) {
   if (!el) return;
 
-  // 將 <br> 還原為換行，保留純文字處理
+  // 把 <br> 換成換行，保留所有文字
   const raw = el.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim();
   if (!raw) return;
 
-  // 尋找「數字 + 標點」開頭的每個項目，非貪婪吃到下一個項目前
+  // 找條列項目
   const itemRe = /(^|\n)\s*[0-9０-９]+\s*[\.．、]\s*(.*?)(?=(?:\n\s*[0-9０-９]+\s*[\.．、]\s*)|\s*$)/gs;
-
   const items = [];
-  let match, lastEnd = 0, lastMatchEnd = 0;
+  let match, lastMatchEnd = 0;
 
   while ((match = itemRe.exec(raw)) !== null) {
     const content = (match[2] || '').trim();
     if (content) items.push(content);
-    lastMatchEnd = itemRe.lastIndex; // 紀錄最後一個條列片段結束的位置
+    lastMatchEnd = itemRe.lastIndex;
   }
 
-  // 沒有兩個以上項目就不處理
   if (items.length < 2) return;
 
-  // 產生有序清單
+  // 製作 <ol>
   const ol = document.createElement('ol');
   items.forEach(t => {
     const li = document.createElement('li');
@@ -47,19 +45,34 @@ function convertLessonTextToList(el){
     ol.appendChild(li);
   });
 
-  // 置換原內容為 <ol>
-  el.replaceChildren(ol);
-
-  // 取出「最後一個條列之後」的尾段文字（補充說明）
-  const tail = raw.slice(lastMatchEnd).trim();
-  if (tail) {
-    const p = document.createElement('p');
-    p.className = 'lesson-tail';
-    p.style.whiteSpace = 'pre-line'; // 保留換行
-    p.textContent = tail;
-    ol.insertAdjacentElement('afterend', p);
+  // 檢查最後一項內是否混入「課程特色」等文字（常見狀況）
+  const lastLi = ol.lastElementChild;
+  if (lastLi && /課程特色[:：]/.test(lastLi.textContent)) {
+    const text = lastLi.textContent;
+    const [before, after] = text.split(/課程特色[:：]/);
+    lastLi.textContent = before.trim();
+    if (after && after.trim()) {
+      const p = document.createElement('p');
+      p.className = 'lesson-tail';
+      p.style.whiteSpace = 'pre-line';
+      p.textContent = '課程特色：' + after.trim();
+      ol.insertAdjacentElement('afterend', p);
+    }
+  } else {
+    // 如果「課程特色」不在清單內，就看清單後是否有尾段
+    const tail = raw.slice(lastMatchEnd).trim();
+    if (tail) {
+      const p = document.createElement('p');
+      p.className = 'lesson-tail';
+      p.style.whiteSpace = 'pre-line';
+      p.textContent = tail;
+      ol.insertAdjacentElement('afterend', p);
+    }
   }
+
+  el.replaceChildren(ol);
 }
+
 
 function enhanceLessonsUI(root = document){
   const btns = root.querySelectorAll('#lessons button.btn');
