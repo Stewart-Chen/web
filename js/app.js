@@ -17,6 +17,30 @@ function moveCourseFeesToEnd(){
   if (mfee) list.appendChild(mfee);
 }
 
+function convertLessonTextToList(el){
+  if (!el) return;
+  
+  const raw = el.innerHTML
+    .replace(/<br\s*\/?>/gi, '\n') // 把 <br> 換回換行
+    .trim();
+
+  // 分割出 1. / 1、 / １． / １、 開頭的項目
+  const items = raw
+    .split(/\s*[0-9０-９]+\s*[\.．、]\s*/g)
+    .filter(Boolean);
+
+  if (items.length < 2) return; // 少於 2 條就不處理
+
+  const ol = document.createElement('ol');
+  items.forEach(t => {
+    const li = document.createElement('li');
+    li.textContent = t.trim();
+    ol.appendChild(li);
+  });
+
+  el.replaceChildren(ol);
+}
+
 function enhanceLessonsUI(root = document){
   const btns = root.querySelectorAll('#lessons button.btn');
   btns.forEach((btn, idx)=>{
@@ -385,6 +409,8 @@ function renderEquip(items){
       if (btn && !content) btn.classList.add('no-content');
     });
 
+    // 把「1. ... 2. ...」轉成 <ol>
+    document.querySelectorAll('#lessons .lesson-content').forEach(convertLessonTextToList);
     // 預設展開第一個有內容的單元
     expandFirstLessonIfAny();
   }
