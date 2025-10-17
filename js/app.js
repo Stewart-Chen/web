@@ -241,10 +241,14 @@ async function loadCourse(){
     if (!names.length) {
       teacherBox.textContent = '—';
     } else {
-      teacherBox.innerHTML = names.map(n=>{
+      teacherBox.innerHTML = names.map((n, i) => {
         const m = TEACHER_META[n];
-        return m ? `${m.name}｜${m.role}` : n;
-      }).join('×');
+        const text = m ? `${m.name}｜${m.role}` : n;
+        // 除了最後一個之外都在後面加上乘號行
+        return i < names.length - 1
+          ? `<div class="teacher-line">${text}</div><div class="teacher-sep">×</div>`
+          : `<div class="teacher-line">${text}</div>`;
+      }).join('');
     }
   }
 
