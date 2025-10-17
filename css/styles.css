@@ -2187,10 +2187,10 @@ textarea::placeholder {
 #cost-calculator { margin-top: 16px; }
 #cost-calculator .calc-grid{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 8px;
   margin-top: 8px;
-  padding: 0 3rem 0 3rem;
+  /* padding: 0 3rem 0 3rem; */
 }
 #cost-calculator .calc-field{
   display: flex;
@@ -2205,7 +2205,7 @@ textarea::placeholder {
   font: inherit;
 }
 #cost-calculator .calc-result{
-  padding: 8px 24px 16px;
+  padding: 10px 34px 16px;
   border: 1px dashed #ddd;
   border-radius: 10px;
   background: rgba(0,0,0,0.02);
@@ -2245,6 +2245,7 @@ textarea::placeholder {
   }
 
   #cost-calculator .calc-grid{
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px 26px;
     margin-top: 8px;
     padding: 0.2rem 2.5rem 0.2rem 2.5rem;
