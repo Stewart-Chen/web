@@ -185,13 +185,13 @@ async function loadCourse(){
     }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
-      const label = (course.plan_type === '系列課') ? '課程總費用（含所有人）' : '課程費用（含所有人）';
+      const label = '課程費用（含全班）';
       items.push({ key: 'fee', label, value: `NT$ ${fee}/小時`, icon: 'coin' });
     }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
-      const label = (course.plan_type === '系列課') ? '每人總材料費 (另付)' : '每人材料費 (另付)';
-      items.push({ key: 'material_fee', label, value: `NT$ ${mfee}`, icon: 'wallet' });
+      const label = (course.plan_type === '系列課') ? '總材料費 (另付)' : '材料費 (另付)';
+      items.push({ key: 'material_fee', label, value: `NT$ ${mfee}/人`, icon: 'wallet' });
     }
     function planTypeClass(pt){
       if (pt === '系列課') return 'series-course';
@@ -654,7 +654,7 @@ function courseCardHTML(c){
                     stroke-linecap="round" stroke-linejoin="round"/></svg>${label}</span>`;
               })() : ``}
      
-              ${Number.isFinite(c.course_fee) ? `<span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}</span>` : ``}
+              ${Number.isFinite(c.course_fee) ? `<span class="meta">NT$ ${c.course_fee.toLocaleString?.('zh-TW') ?? c.course_fee}/小時</span>` : ``}
             </div>
           
           ` : ``}
