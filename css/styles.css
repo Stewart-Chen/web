@@ -2202,12 +2202,11 @@ textarea::placeholder {
   font: inherit;
 }
 #cost-calculator .calc-result{
-  margin-top: 12px;
-  padding: 12px;
+  padding: 16px 22px;
   border: 1px dashed #ddd;
   border-radius: 10px;
   background: rgba(0,0,0,0.02);
-  margin: 12px 16px;
+  margin: 12px 4px;
 }
 #cost-calculator .calc-result .lines{
   margin-top: 6px;
@@ -2218,7 +2217,7 @@ textarea::placeholder {
 #cost-calculator .calc-result .lines > div{
   display: flex; align-items: center; justify-content: space-between;
 }
-#cost-calculator .calc-result .total strong{font-size: 1rem;}
+#cost-calculator .calc-result .total strong{font-size: 0.9rem;}
 #cost-calculator .formula{color: #666;font-size: .8rem;}
 
 @media (min-width: 720px) {
@@ -2248,8 +2247,8 @@ textarea::placeholder {
   }
   
   #cost-calculator .calc-result{
-    margin-top: 18px;
-    padding: 18px;
+    padding: 18px 46px;
+    margin: 16px 90px;
   }
 }
 
