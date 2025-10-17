@@ -1669,7 +1669,7 @@ textarea::placeholder {
 
 /* 讓下面標題往下讓出 avatar 的一半高度 */
 #course-info header > #course-hero + *{
-  margin-top: calc(72px / 2 + 12px);
+  margin-top: calc(72px / 2 + 18px);
 }
 @media (max-width: 720px){
     #course-info #course-hero{
@@ -2280,9 +2280,8 @@ textarea::placeholder {
   aspect-ratio: 16 / 9;
   max-height: min(40vh);
   overflow: visible;                   /* 讓探出的頭像不被裁掉 */
-  --hero-av-size: 130px;                /* 頭像尺寸（可依需要調） */
+  --hero-av-size: 110px;                /* 頭像尺寸（可依需要調） */
   --hero-av-gap: 12px;                 /* 並排間距（不想重疊時用） */
-  --hero-av-overlap: -20px;            /* 想重疊就用這個負值 */
   margin-bottom: calc(var(--hero-av-size) / 2 + 8px); /* 下方預留空間 */
 }
 
@@ -2321,23 +2320,17 @@ textarea::placeholder {
   transition: transform .2s;
 }
 
-/* 二選一：想「重疊」就開這段 */
 #course-info #course-hero .hero-avatar img + img{
-  margin-left: var(--hero-av-overlap); /* -20px 重疊；想疊多一點調更負 */
+  margin-left: -20px; 
 }
 
-/* 二選一：想「並排不重疊」就用這段，並移除上一段 */
- /*
-#course-info #course-hero .hero-avatar{
-  gap: var(--hero-av-gap);
-}
-*/
-
-/* 小尺寸時縮小頭像與預留空間 */
 @media (max-width: 720px){
   #course-info #course-hero{
     max-height: min(25vh);
     --hero-av-size: 80px;
     margin-bottom: calc(var(--hero-av-size) / 2 + 6px);
+  }
+  #course-info #course-hero .hero-avatar img + img{
+    margin-left: -15px;
   }
 }
