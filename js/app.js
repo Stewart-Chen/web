@@ -291,17 +291,17 @@ async function loadCourse(){
     sec.className = 'course-info cost-calculator';
     const title = `<div class="course-info__title">總金額試算</div>`;
   
-    const labelHours = isSeries ? '總時數（可改）' : '課程時數（可改）';
-    const labelMat   = isSeries ? '總材料費 / 人（可改）' : '材料費 / 人（可改）';
+    const labelHours = isSeries ? '總時數' : '課程時數';
+    const labelMat   = isSeries ? '總材料費 / 人' : '材料費 / 人';
     const formulaTxt = isSeries
-      ? '公式：課程費用 × 總時數 ＋ 總材料費 × 預估人數'
-      : '公式：課程費用 × 課程時數 ＋ 材料費 × 預估人數';
+      ? '課程費用 × 總時數 ＋ 總材料費 × 預估人數'
+      : '課程費用 × 課程時數 ＋ 材料費 × 預估人數';
   
     sec.innerHTML = `
       ${title}
       <div class="calc-grid">
         <label class="calc-field">
-          <span>預估人數（可改）</span>
+          <span>預估人數</span>
           <input type="number" id="calc-people" min="0" step="1" value="${people}">
         </label>
         <label class="calc-field">
@@ -309,7 +309,7 @@ async function loadCourse(){
           <input type="number" id="calc-hours" min="0" step="0.5" value="${totalHr}">
         </label>
         <label class="calc-field">
-          <span>課程費用 / 小時（可改）</span>
+          <span>課程費用 / 小時</span>
           <input type="number" id="calc-fee" min="0" step="1" value="${feePerHr}">
         </label>
         <label class="calc-field">
