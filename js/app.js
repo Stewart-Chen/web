@@ -7,6 +7,44 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
+// === [app.js 頂層] BFCache/返回保護：同步 + 單一出入口 + 旗標 ===
+function syncFiltersFromUI() {
+  const qEl       = document.getElementById('q');
+  const catEl     = document.getElementById('cat');
+  const teacherEl = document.getElementById('teacher');
+  const planEl    = document.getElementById('planType');
+
+  Object.assign(window.courseState || (window.courseState = {}), {
+    q: qEl?.value || '',
+    category: (catEl?.value ?? '') || null,
+    teacher: (teacherEl?.value ?? '') || null,
+    plan_type: (planEl?.value ?? '') || null,
+  });
+}
+
+// 單一出入口：永遠以 window.courseState 為準
+function renderCoursesFromState() {
+  window.renderCourses(window.courseState.page, window.courseState);
+}
+
+let __restoringBF = false;
+let _didInitialRender = false;
+
+// === [app.js 頂層] 返回(BFCache) 時：先同步 UI → state，再渲染 ===
+window.addEventListener('pageshow', (e) => {
+  if (!document.getElementById('courses-list')) return;
+  const nav = performance.getEntriesByType('navigation')[0];
+  const isBF = e.persisted || nav?.type === 'back_forward';
+  if (!isBF) return;
+
+  __restoringBF = true;
+  syncFiltersFromUI();
+  console.log('[pageshow] state synced', window.courseState);
+  renderCoursesFromState();
+  __restoringBF = false;
+  _didInitialRender = true; // 告知 DOMContentLoaded 不用再渲染一次
+});
+
 function moveCourseFeesToEnd(){
   const list = document.querySelector('#course-info-detail .info-list');
   if (!list) return;
@@ -921,14 +959,12 @@ async function renderCourses(page = 1, filters = {}){
   }
 }
 
+// === [app.js] 改版 setCourseFilter：統一出入口 ===
 window.setCourseFilter = function (partial) {
   Object.assign(window.courseState, partial);
-  window.courseState.page = 1; // 篩選變更時回到第 1 頁
-  console.log('[app_init]');
-
+  window.courseState.page = 1;
   if (typeof window.renderCourses === 'function') {
-    console.log('[app]');
-    window.renderCourses(window.courseState.page, window.courseState);
+    renderCoursesFromState(); // 用統一出入口
   }
 };
 
@@ -954,12 +990,12 @@ function renderPagination(currentPage, totalPages, filters = {}) {
   
   prevBtn.onclick = () => {
     courseState.page = Math.max(1, currentPage - 1);
-    renderCourses(courseState.page, filters);
+    renderCoursesFromState();
     scrollToCoursesTop();
   };
   nextBtn.onclick = () => {
     courseState.page = Math.min(totalPages, currentPage + 1);
-    renderCourses(courseState.page, filters);
+    renderCoursesFromState();
     scrollToCoursesTop();
   };
 
@@ -970,7 +1006,7 @@ function renderPagination(currentPage, totalPages, filters = {}) {
     btn.onclick = () => {
       if (i !== currentPage) {
         courseState.page = i;
-        renderCourses(courseState.page, filters);
+        renderCoursesFromState();
         scrollToCoursesTop();
       }
     };
@@ -981,7 +1017,12 @@ function renderPagination(currentPage, totalPages, filters = {}) {
 // ====== 頁面初始化 ======
 function initPage(){
   if (document.getElementById('courses-list')) {
-    renderCourses(window.courseState.page, window.courseState);
+    requestAnimationFrame(() => {
+      if (_didInitialRender) return;
+      syncFiltersFromUI();
+      renderCoursesFromState();
+      _didInitialRender = true;
+    });
   }
   if (document.getElementById('course-info')) loadCourse();
 }
@@ -1110,3 +1151,16 @@ window.enableCarousels  = window.enableCarousels  || enableCarousels;
 window.toPublicUrls     = window.toPublicUrls     || toPublicUrls;
 window.renderCourseCards= window.renderCourseCards|| renderCourseCards;
 window.renderCourses    = window.renderCourses    || renderCourses;
+
+// === [app.js 結尾掛 window.renderCourses 之後立刻包裝] ===
+(function guardRenderDuringRestore(){
+  const _orig = window.renderCourses;
+  if (!_orig) return;
+  window.renderCourses = function(page, filters){
+    if (__restoringBF) {
+      console.log('[renderCourses] skipped during BF restore');
+      return;
+    }
+    return _orig(page, filters);
+  };
+})();
