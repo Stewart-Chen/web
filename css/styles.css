@@ -2205,7 +2205,7 @@ textarea::placeholder {
   font: inherit;
 }
 #cost-calculator .calc-result{
-  padding: 10px 34px 16px;
+  padding: 10px 22px 16px;
   border: 1px dashed #ddd;
   border-radius: 10px;
   background: rgba(0,0,0,0.02);
@@ -2252,9 +2252,33 @@ textarea::placeholder {
   }
   
   #cost-calculator .calc-result{
-    padding: 10px 52px 18px;
+    padding: 10px 50px 18px;
     margin: 18px 120px;
   }
 }
 
+#teacher-box-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 整體靠左 */
+  gap: 0.4em;
+}
+
+.teacher-line {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* 乘號改為跟前後老師文字水平對齊 */
+.teacher-sep {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 與文字左對齊 */
+  margin-left: 3.5em;          /* ← 微調，讓 × 對齊上面 "汎汎｜..." 的中間 */
+  color: #999;
+  font-weight: bold;
+  font-size: 0.9rem;
+  line-height: 1;              /* 緊湊一點 */
+}
 
