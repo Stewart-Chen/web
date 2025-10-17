@@ -243,7 +243,7 @@ async function loadCourse(){
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
       const label = (course.plan_type === '系列課') ? '課程總費用（含所有人）' : '課程費用（含所有人）';
-      items.push({ key: 'fee', label, value: `NT$ ${fee}`, icon: 'coin' });
+      items.push({ key: 'fee', label, value: `NT$ ${fee}／小時`, icon: 'coin' });
     }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
