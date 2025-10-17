@@ -185,7 +185,7 @@ async function loadCourse(){
     }
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
-      const label = '課程費用（含全班）';
+      const label = '全班課程費用';
       items.push({ key: 'fee', label, value: `NT$ ${fee}/小時`, icon: 'coin' });
     }
     if (Number.isFinite(course.material_fee)) {
