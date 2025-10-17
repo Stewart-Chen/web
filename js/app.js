@@ -52,8 +52,9 @@ function convertTextToList(el) {
     // 3️⃣ 如果還有第二段（課程特色）
     if (partFeature && partFeature.trim()) {
       const p = document.createElement('p');
-      p.id = 'course-feature';
-      p.className = el.className || '';
+      //p.id = 'course-feature';
+      //p.className = el.className || '';
+      p.classList.add('course-feature');
       p.style.whiteSpace = 'pre-line';
       p.textContent = partFeature.trim();
       ol.insertAdjacentElement('afterend', p);
