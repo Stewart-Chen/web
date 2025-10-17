@@ -19,26 +19,46 @@ function moveCourseFeesToEnd(){
 
 function convertLessonTextToList(el){
   if (!el) return;
-  
-  const raw = el.innerHTML
-    .replace(/<br\s*\/?>/gi, '\n') // 把 <br> 換回換行
-    .trim();
 
-  // 分割出 1. / 1、 / １． / １、 開頭的項目
-  const items = raw
-    .split(/\s*[0-9０-９]+\s*[\.．、]\s*/g)
-    .filter(Boolean);
+  // 將 <br> 還原為換行，保留純文字處理
+  const raw = el.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim();
+  if (!raw) return;
 
-  if (items.length < 2) return; // 少於 2 條就不處理
+  // 尋找「數字 + 標點」開頭的每個項目，非貪婪吃到下一個項目前
+  const itemRe = /(^|\n)\s*[0-9０-９]+\s*[\.．、]\s*(.*?)(?=(?:\n\s*[0-9０-９]+\s*[\.．、]\s*)|\s*$)/gs;
 
+  const items = [];
+  let match, lastEnd = 0, lastMatchEnd = 0;
+
+  while ((match = itemRe.exec(raw)) !== null) {
+    const content = (match[2] || '').trim();
+    if (content) items.push(content);
+    lastMatchEnd = itemRe.lastIndex; // 紀錄最後一個條列片段結束的位置
+  }
+
+  // 沒有兩個以上項目就不處理
+  if (items.length < 2) return;
+
+  // 產生有序清單
   const ol = document.createElement('ol');
   items.forEach(t => {
     const li = document.createElement('li');
-    li.textContent = t.trim();
+    li.textContent = t;
     ol.appendChild(li);
   });
 
+  // 置換原內容為 <ol>
   el.replaceChildren(ol);
+
+  // 取出「最後一個條列之後」的尾段文字（補充說明）
+  const tail = raw.slice(lastMatchEnd).trim();
+  if (tail) {
+    const p = document.createElement('p');
+    p.className = 'lesson-tail';
+    p.style.whiteSpace = 'pre-line'; // 保留換行
+    p.textContent = tail;
+    ol.insertAdjacentElement('afterend', p);
+  }
 }
 
 function enhanceLessonsUI(root = document){
