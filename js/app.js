@@ -37,12 +37,13 @@ window.addEventListener('pageshow', (e) => {
   const isBF = e.persisted || nav?.type === 'back_forward';
   if (!isBF) return;
 
-  __restoringBF = true;
+  __restoringBF = true;       // 只在同步 UI → state 時開保護
   syncFiltersFromUI();
+  __restoringBF = false;      // ✅ 渲染前關閉，避免被 guard 擋掉
+
   console.log('[pageshow] state synced', window.courseState);
-  renderCoursesFromState();
-  __restoringBF = false;
-  _didInitialRender = true; // 告知 DOMContentLoaded 不用再渲染一次
+  renderCoursesFromState();   // 這次會正常渲染
+  _didInitialRender = true;
 });
 
 function moveCourseFeesToEnd(){
@@ -950,7 +951,7 @@ async function renderCourses(page = 1, filters = {}){
     // 若目前頁碼超過總頁數（例如篩選後資料變少），自動拉回最後一頁
     if (page > totalPages) {
       courseState.page = totalPages;
-      return renderCourses(courseState.page, filters);
+      return renderCoursesFromState();
     }
 
     renderPagination(page, totalPages, filters);
