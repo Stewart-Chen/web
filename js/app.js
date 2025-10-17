@@ -186,12 +186,12 @@ async function loadCourse(){
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
       const label = '全班課程費用';
-      items.push({ key: 'fee', label, value: `NT$ ${fee}/小時`, icon: 'coin' });
+      items.push({ key: 'fee', label, value: `NT$ ${fee} / 小時`, icon: 'coin' });
     }
     if (Number.isFinite(course.material_fee)) {
       const mfee = course.material_fee.toLocaleString?.('zh-TW') ?? course.material_fee;
       const label = (course.plan_type === '系列課') ? '總材料費 (另付)' : '材料費 (另付)';
-      items.push({ key: 'material_fee', label, value: `NT$ ${mfee}/人`, icon: 'wallet' });
+      items.push({ key: 'material_fee', label, value: `NT$ ${mfee} / 人`, icon: 'wallet' });
     }
     function planTypeClass(pt){
       if (pt === '系列課') return 'series-course';
