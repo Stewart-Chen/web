@@ -66,6 +66,16 @@ async function loadCourse(){
     .is('deleted_at', null)
     .maybeSingle();
 
+  function expandFirstLessonIfAny(){
+    const firstContent = document.querySelector('#lessons .lesson-content');
+    if (!firstContent) return; // 沒有任何可展開內容就跳過
+    firstContent.classList.remove('hidden');
+    const li  = firstContent.closest('li');
+    if (li) li.classList.add('open');
+    const btn = li?.querySelector('.lesson-toggle');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+
   if (error) { console.error(error); return; }
   if (!course) { if (titleEl) titleEl.textContent = '找不到課程或尚未發佈'; return; }
   if (titleEl) titleEl.textContent = course.title;
@@ -374,6 +384,9 @@ function renderEquip(items){
       const content = li.querySelector('.lesson-content');
       if (btn && !content) btn.classList.add('no-content');
     });
+
+    // 預設展開第一個有內容的單元
+    expandFirstLessonIfAny();
   }
 
   // ---- 系列課補充：課程節數 & 總時數 ----
