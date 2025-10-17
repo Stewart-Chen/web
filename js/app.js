@@ -17,78 +17,6 @@ function moveCourseFeesToEnd(){
   if (mfee) list.appendChild(mfee);
 }
 
-function convertLessonTextToList(el){
-  if (!el) return;
-
-  const hasList = !!el.querySelector('ol, ul');
-
-  // === 情況 2：已經是清單，檢查是否把「課程特色」塞在最後一個 <li> 裡 ===
-  if (hasList) {
-    const ol = el.querySelector('ol, ul');
-    const lastLi = ol?.lastElementChild;
-    if (!lastLi) return;
-
-    // 讀出原始文字（保留 <br> 換行）
-    const lastText = lastLi.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim();
-
-    // 找到「課程特色：」分隔點就拆出去
-    const m = lastText.match(/([\s\S]*?)(?:\n|^)\s*課程特色[:：]\s*([\s\S]*)$/);
-    if (m) {
-      const before = m[1].trim();
-      const feature = m[2].trim();
-
-      // 更新最後一個 li（只保留前半）
-      lastLi.textContent = before || '—';
-
-      // 建立尾段 <p>
-      if (feature) {
-        const p = document.createElement('p');
-        p.className = 'lesson-tail';
-        p.style.whiteSpace = 'pre-line';
-        p.textContent = '課程特色：\n' + feature;
-        ol.insertAdjacentElement('afterend', p);
-      }
-    }
-    return; // 已處理完畢
-  }
-
-  // === 情況 1：純文字，從數字條列轉 <ol>，尾段另建 <p> ===
-  const raw = el.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim();
-  if (!raw) return;
-
-  // 抓條列（1. / 1、 / １． / １、）
-  const itemRe = /(^|\n)\s*[0-9０-９]+\s*[\.．、]\s*(.*?)(?=(?:\n\s*[0-9０-９]+\s*[\.．、]\s*)|\s*$)/gs;
-  const items = [];
-  let match, lastMatchEnd = 0;
-
-  while ((match = itemRe.exec(raw)) !== null) {
-    const content = (match[2] || '').trim();
-    if (content) items.push(content);
-    lastMatchEnd = itemRe.lastIndex;
-  }
-
-  if (items.length < 2) return; // 不是條列就不處理
-
-  // 建立 <ol>
-  const ol = document.createElement('ol');
-  items.forEach(t => {
-    const li = document.createElement('li');
-    li.textContent = t;
-    ol.appendChild(li);
-  });
-
-  // 尾段
-  const tail = raw.slice(lastMatchEnd).trim();
-  el.replaceChildren(ol);
-  if (tail) {
-    const p = document.createElement('p');
-    p.className = 'lesson-tail';
-    p.style.whiteSpace = 'pre-line';
-    p.textContent = tail;
-    ol.insertAdjacentElement('afterend', p);
-  }
-}
-
 function enhanceLessonsUI(root = document){
   const btns = root.querySelectorAll('#lessons button.btn');
   btns.forEach((btn, idx)=>{
@@ -457,8 +385,6 @@ function renderEquip(items){
       if (btn && !content) btn.classList.add('no-content');
     });
 
-    // 把「1. ... 2. ...」轉成 <ol>
-    document.querySelectorAll('#lessons .lesson-content').forEach(convertLessonTextToList);
     // 預設展開第一個有內容的單元
     expandFirstLessonIfAny();
   }
