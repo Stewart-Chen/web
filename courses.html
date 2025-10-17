@@ -84,6 +84,7 @@
   </main>
 
 <script>
+  // 1) 頂層：同步 UI → state 的函式
   function syncFiltersFromUI() {
     const qEl       = document.getElementById('q');
     const catEl     = document.getElementById('cat');
@@ -97,22 +98,29 @@
       plan_type: (planEl?.value ?? '') || null,
     });
   }
-
+  
+  // 2) 頂層：返回/顯示頁面時再同步一次（BFCache 會走這裡）
+  let _didInitialRender = false;
+  window.addEventListener('pageshow', (e) => {
+    // 只在課程清單頁才動作
+    if (!document.getElementById('courses-list')) return;
+  
+    // 若是正常首次載入，可能已在 DOMContentLoaded 做過一次；避免重渲染
+    const isBF = e.persisted || performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
+    if (!isBF && _didInitialRender) return;
+  
+    syncFiltersFromUI();
+    console.log('[courseState after pageshow]', window.courseState);
+    window.renderCourses(window.courseState.page, window.courseState);
+  });
+  
   document.addEventListener('DOMContentLoaded', () => {
     const form    = document.getElementById('course-filters');
     const kw      = document.getElementById('q');
 
-    if (typeof window.renderCourses !== 'function') {
-      console.log('[renderCourses]');
-      return;
-    }
-
-    if (!window.courseState) {
-      console.log('[courseState]');
-      return;
-    }
-    if (!window.setCourseFilter) {
-      console.log('[setCourseFilter]');
+    if (typeof window.renderCourses !== 'function' ||
+        !window.courseState ||
+        !window.setCourseFilter) {
       return;
     }
     
@@ -196,23 +204,12 @@
     // 阻止 form submit 重新整理頁面
     form?.addEventListener('submit', (e) => e.preventDefault());
 
-    requestAnimationFrame(() => {     // 等瀏覽器把表單值恢復
+    requestAnimationFrame(() => {
       syncFiltersFromUI();
       console.log('[courseState after sync at init]', window.courseState);
       window.renderCourses(window.courseState.page, window.courseState);
+      _didInitialRender = true; // 標記已經做過第一次渲染
     });
-    
-    window.addEventListener('pageshow', (e) => {
-      // 無論是否來自 BFCache，都保險地再同步一次
-      // 若只想針對 back/forward，可判斷 e.persisted 或 navigation type
-      // const nav = performance.getEntriesByType('navigation')[0];
-      // const isBF = e.persisted || nav?.type === 'back_forward';
-    
-      syncFiltersFromUI();
-      console.log('[courseState after pageshow]', window.courseState);
-      window.renderCourses(window.courseState.page, window.courseState);
-    });
-
   });
 
   document.addEventListener('DOMContentLoaded', () => {
