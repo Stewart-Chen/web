@@ -17,49 +17,28 @@ function moveCourseFeesToEnd(){
   if (mfee) list.appendChild(mfee);
 }
 
-function convertTextToList(el) {
+function convertLessonTextToList(el){
   if (!el) return;
-
-  // 🪄 改這裡：用 innerHTML 取內容，保留 <br>
-  const raw = (el.innerHTML || '')
-    .replace(/<br\s*\/?>/gi, '\n')  // 把 <br> 換成換行
+  
+  const raw = el.innerHTML
+    .replace(/<br\s*\/?>/gi, '\n') // 把 <br> 換回換行
     .trim();
 
-  if (!raw) return;
-
-  // 1️⃣ 依「兩個以上換行」切成兩段
-  const [partMain, partFeature] = raw.split(/\n{2,}/);
-
-  // 2️⃣ 切出課程步驟：支援 1. / 1、 / 全形 １． / １、
-  const items = partMain
+  // 分割出 1. / 1、 / １． / １、 開頭的項目
+  const items = raw
     .split(/\s*[0-9０-９]+\s*[\.．、]\s*/g)
     .filter(Boolean);
 
-  // 如果有兩個以上項目，轉成 <ol>
-  if (items.length >= 2) {
-    const ol = document.createElement('ol');
-    ol.className = el.className || '';
-    ol.id = el.id || '';
+  if (items.length < 2) return; // 少於 2 條就不處理
 
-    items.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t.trim();
-      ol.appendChild(li);
-    });
+  const ol = document.createElement('ol');
+  items.forEach(t => {
+    const li = document.createElement('li');
+    li.textContent = t.trim();
+    ol.appendChild(li);
+  });
 
-    el.replaceWith(ol);
-
-    // 3️⃣ 如果還有第二段（課程特色）
-    if (partFeature && partFeature.trim()) {
-      const p = document.createElement('p');
-      //p.id = 'course-feature';
-      //p.className = el.className || '';
-      p.classList.add('course-feature');
-      p.style.whiteSpace = 'pre-line';
-      p.textContent = partFeature.trim();
-      ol.insertAdjacentElement('afterend', p);
-    }
-  }
+  el.replaceChildren(ol);
 }
 
 function enhanceLessonsUI(root = document){
@@ -126,8 +105,47 @@ async function loadCourse(){
   if (titleEl) titleEl.textContent = course.title;
   if (summaryEl) summaryEl.textContent = course.summary || '—';
 
+  function convertCourseText(el) {
+    if (!el) return;
+  
+    const raw = (el.textContent || '').trim();
+    if (!raw) return;
+  
+    // 1️⃣ 依「兩個以上換行」切成兩段
+    const [partMain, partFeature] = raw.split(/\n{2,}/);
+  
+    // 2️⃣ 切出課程步驟：支援 1. / 1、 / 全形 １． / １、
+    const items = partMain
+      .split(/\s*[0-9０-９]+\s*[\.．、]\s*/g)
+      .filter(Boolean);
+  
+    // 如果有兩個以上項目，轉成 <ol>
+    if (items.length >= 2) {
+      const ol = document.createElement('ol');
+      ol.className = el.className || '';
+      ol.id = el.id || '';
+  
+      items.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t.trim();
+        ol.appendChild(li);
+      });
+  
+      el.replaceWith(ol);
+  
+      // 3️⃣ 如果還有第二段（課程特色）
+      if (partFeature && partFeature.trim()) {
+        const p = document.createElement('p');
+        p.id = 'course-feature';
+        p.className = el.className || '';
+        p.style.whiteSpace = 'pre-line';
+        p.textContent = partFeature.trim();
+        ol.insertAdjacentElement('afterend', p);
+      }
+    }
+  }
   if (descEl) descEl.textContent = course.description ?? course.summary ?? '';
-  convertTextToList(document.getElementById('course-desc'));
+  convertCourseText(document.getElementById('course-desc'));
 
   // ✅ Hero 圖：抓第一張 gallery，退而求其次用 cover_url，再退 placeholder
   try {
@@ -392,7 +410,7 @@ function renderEquip(items){
     });
 
     // 把「1. ... 2. ...」轉成 <ol>
-    document.querySelectorAll('#lessons .lesson-content').forEach(convertTextToList);
+    document.querySelectorAll('#lessons .lesson-content').forEach(convertLessonTextToList);
     // 預設展開第一個有內容的單元
     expandFirstLessonIfAny();
   }
