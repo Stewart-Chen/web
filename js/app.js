@@ -17,14 +17,46 @@ function moveCourseFeesToEnd(){
   if (mfee) list.appendChild(mfee);
 }
 
-function convertLessonTextToList(el) {
+function convertLessonTextToList(el){
   if (!el) return;
 
-  // 把 <br> 換成換行，保留所有文字
+  const hasList = !!el.querySelector('ol, ul');
+
+  // === 情況 2：已經是清單，檢查是否把「課程特色」塞在最後一個 <li> 裡 ===
+  if (hasList) {
+    const ol = el.querySelector('ol, ul');
+    const lastLi = ol?.lastElementChild;
+    if (!lastLi) return;
+
+    // 讀出原始文字（保留 <br> 換行）
+    const lastText = lastLi.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim();
+
+    // 找到「課程特色：」分隔點就拆出去
+    const m = lastText.match(/([\s\S]*?)(?:\n|^)\s*課程特色[:：]\s*([\s\S]*)$/);
+    if (m) {
+      const before = m[1].trim();
+      const feature = m[2].trim();
+
+      // 更新最後一個 li（只保留前半）
+      lastLi.textContent = before || '—';
+
+      // 建立尾段 <p>
+      if (feature) {
+        const p = document.createElement('p');
+        p.className = 'lesson-tail';
+        p.style.whiteSpace = 'pre-line';
+        p.textContent = '課程特色：\n' + feature;
+        ol.insertAdjacentElement('afterend', p);
+      }
+    }
+    return; // 已處理完畢
+  }
+
+  // === 情況 1：純文字，從數字條列轉 <ol>，尾段另建 <p> ===
   const raw = el.innerHTML.replace(/<br\s*\/?>/gi, '\n').trim();
   if (!raw) return;
 
-  // 找條列項目
+  // 抓條列（1. / 1、 / １． / １、）
   const itemRe = /(^|\n)\s*[0-9０-９]+\s*[\.．、]\s*(.*?)(?=(?:\n\s*[0-9０-９]+\s*[\.．、]\s*)|\s*$)/gs;
   const items = [];
   let match, lastMatchEnd = 0;
@@ -35,9 +67,9 @@ function convertLessonTextToList(el) {
     lastMatchEnd = itemRe.lastIndex;
   }
 
-  if (items.length < 2) return;
+  if (items.length < 2) return; // 不是條列就不處理
 
-  // 製作 <ol>
+  // 建立 <ol>
   const ol = document.createElement('ol');
   items.forEach(t => {
     const li = document.createElement('li');
@@ -45,34 +77,17 @@ function convertLessonTextToList(el) {
     ol.appendChild(li);
   });
 
-  // 檢查最後一項內是否混入「課程特色」等文字（常見狀況）
-  const lastLi = ol.lastElementChild;
-  if (lastLi && /課程特色[:：]/.test(lastLi.textContent)) {
-    const text = lastLi.textContent;
-    const [before, after] = text.split(/課程特色[:：]/);
-    lastLi.textContent = before.trim();
-    if (after && after.trim()) {
-      const p = document.createElement('p');
-      p.className = 'lesson-tail';
-      p.style.whiteSpace = 'pre-line';
-      p.textContent = '課程特色：' + after.trim();
-      ol.insertAdjacentElement('afterend', p);
-    }
-  } else {
-    // 如果「課程特色」不在清單內，就看清單後是否有尾段
-    const tail = raw.slice(lastMatchEnd).trim();
-    if (tail) {
-      const p = document.createElement('p');
-      p.className = 'lesson-tail';
-      p.style.whiteSpace = 'pre-line';
-      p.textContent = tail;
-      ol.insertAdjacentElement('afterend', p);
-    }
-  }
-
+  // 尾段
+  const tail = raw.slice(lastMatchEnd).trim();
   el.replaceChildren(ol);
+  if (tail) {
+    const p = document.createElement('p');
+    p.className = 'lesson-tail';
+    p.style.whiteSpace = 'pre-line';
+    p.textContent = tail;
+    ol.insertAdjacentElement('afterend', p);
+  }
 }
-
 
 function enhanceLessonsUI(root = document){
   const btns = root.querySelectorAll('#lessons button.btn');
