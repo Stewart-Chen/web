@@ -84,6 +84,20 @@
   </main>
 
 <script>
+  function syncFiltersFromUI() {
+    const qEl       = document.getElementById('q');
+    const catEl     = document.getElementById('cat');
+    const teacherEl = document.getElementById('teacher');
+    const planEl    = document.getElementById('planType');
+  
+    Object.assign(window.courseState, {
+      q: qEl?.value || '',
+      category: (catEl?.value ?? '') || null,
+      teacher: (teacherEl?.value ?? '') || null,
+      plan_type: (planEl?.value ?? '') || null,
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     const form    = document.getElementById('course-filters');
     const kw      = document.getElementById('q');
@@ -182,17 +196,23 @@
     // 阻止 form submit 重新整理頁面
     form?.addEventListener('submit', (e) => e.preventDefault());
 
-    // 在第一次 render 前加
-    console.log('[courseState assign result]', Object.assign(window.courseState, {
-      q: document.getElementById('q')?.value || '',
-      category: document.getElementById('cat')?.value || null,
-      teacher: document.getElementById('teacher')?.value || null,
-      plan_type: document.getElementById('planType')?.value || null,
-    }));
+    requestAnimationFrame(() => {     // 等瀏覽器把表單值恢復
+      syncFiltersFromUI();
+      console.log('[courseState after sync at init]', window.courseState);
+      window.renderCourses(window.courseState.page, window.courseState);
+    });
+    
+    window.addEventListener('pageshow', (e) => {
+      // 無論是否來自 BFCache，都保險地再同步一次
+      // 若只想針對 back/forward，可判斷 e.persisted 或 navigation type
+      // const nav = performance.getEntriesByType('navigation')[0];
+      // const isBF = e.persisted || nav?.type === 'back_forward';
+    
+      syncFiltersFromUI();
+      console.log('[courseState after pageshow]', window.courseState);
+      window.renderCourses(window.courseState.page, window.courseState);
+    });
 
-    console.log('[courseState after assign]', window.courseState);
-
-    window.renderCourses(window.courseState.page, window.courseState);
   });
 
   document.addEventListener('DOMContentLoaded', () => {
