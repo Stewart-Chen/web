@@ -272,6 +272,96 @@ async function loadCourse(){
     }
   }
 
+  function injectCostCalculator(course, { weeks=0, perHour=0 } = {}){
+    // 找到「課程資訊」區塊
+    const infoSec = document.getElementById('course-info-detail');
+    if (!infoSec) return;
+  
+    // 預設值
+    const isSeries = course.plan_type === '系列課';
+    const people   = Number(course.capacity) || 0;
+    const feePerHr = Number(course.course_fee) || 0;
+    const durHour  = Number(course.duration_hours) || 0;
+    const totalHr  = isSeries ? (weeks * perHour || (weeks * durHour) || 0) : durHour;
+    const matPer   = Number(course.material_fee) || 0; // 系列課這是「總材料費/人」
+  
+    // DOM
+    const sec = document.createElement('section');
+    sec.id = 'cost-calculator';
+    sec.className = 'course-info cost-calculator';
+    const title = `<div class="course-info__title">總金額試算</div>`;
+  
+    const labelHours = isSeries ? '總時數（可改）' : '課程時數（可改）';
+    const labelMat   = isSeries ? '總材料費 / 人（可改）' : '材料費 / 人（可改）';
+    const formulaTxt = isSeries
+      ? '公式：課程費用 × 總時數 ＋ 總材料費 × 預估人數'
+      : '公式：課程費用 × 課程時數 ＋ 材料費 × 預估人數';
+  
+    sec.innerHTML = `
+      ${title}
+      <div class="calc-grid">
+        <label class="calc-field">
+          <span>預估人數（可改）</span>
+          <input type="number" id="calc-people" min="0" step="1" value="${people}">
+        </label>
+        <label class="calc-field">
+          <span>${labelHours}</span>
+          <input type="number" id="calc-hours" min="0" step="0.5" value="${totalHr}">
+        </label>
+        <label class="calc-field">
+          <span>課程費用 / 小時（可改）</span>
+          <input type="number" id="calc-fee" min="0" step="1" value="${feePerHr}">
+        </label>
+        <label class="calc-field">
+          <span>${labelMat}</span>
+          <input type="number" id="calc-mat" min="0" step="1" value="${matPer}">
+        </label>
+      </div>
+  
+      <div class="calc-result">
+        <div class="formula">${formulaTxt}</div>
+        <div class="lines">
+          <div><span>課程費用小計</span><strong id="calc-sub-fee">NT$ 0</strong></div>
+          <div><span>${isSeries ? '總材料費小計' : '材料費小計'}</span><strong id="calc-sub-mat">NT$ 0</strong></div>
+          <hr>
+          <div class="total"><span>預估總金額</span><strong id="calc-total">NT$ 0</strong></div>
+        </div>
+      </div>
+    `;
+  
+    // 插入在課程資訊（icon 列表）後面
+    infoSec.insertAdjacentElement('afterend', sec);
+  
+    // 工具
+    const $ = sel => sec.querySelector(sel);
+    const nt = n => 'NT$ ' + (Math.round(Number(n)||0)).toLocaleString('zh-TW');
+  
+    function calc(){
+      const p  = Number($('#calc-people').value) || 0;
+      const h  = Number($('#calc-hours').value) || 0;
+      const fh = Number($('#calc-fee').value) || 0;
+      const mp = Number($('#calc-mat').value) || 0;
+  
+      // 兩種公式
+      const subFee = fh * h;
+      const subMat = mp * p;
+      const total  = subFee + subMat;
+  
+      $('#calc-sub-fee').textContent = nt(subFee);
+      $('#calc-sub-mat').textContent = nt(subMat);
+      $('#calc-total').textContent   = nt(total);
+    }
+  
+    // 綁定事件
+    ['#calc-people', '#calc-hours', '#calc-fee', '#calc-mat'].forEach(sel=>{
+      $(sel).addEventListener('input', calc);
+      $(sel).addEventListener('change', calc);
+    });
+  
+    // 初算
+    calc();
+  }
+
   // 啟用 tabs 切換
   document.querySelectorAll('#course-extra-tabs .tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -446,6 +536,23 @@ function renderEquip(items){
     }
   }
   moveCourseFeesToEnd();
+
+  // --- 總金額試算表 ---
+  (function addCalculator(){
+    const isSeries = course.plan_type === '系列課';
+    let weeks = 0;
+    let perHour = Number(course.duration_hours) || 0;
+
+    // 若是系列課，盡量用剛剛算過的 lessons 數量當週數
+    if (isSeries) {
+      // lessons 在上面已經查過
+      // 若沒查到（理論上不會），weeks 就是 0
+      const ls = (typeof lessons !== 'undefined' && Array.isArray(lessons)) ? lessons : [];
+      weeks = ls.length;
+    }
+
+    injectCostCalculator(course, { weeks, perHour });
+  })();
 
   // (C) 報名狀態
   let enrolled = false;
