@@ -2084,8 +2084,8 @@ textarea::placeholder {
 #lessons .btn.lesson-btn .chapter{
   font-weight:600;
   font-size: 12px;
-  color:#374151;
-  min-width:48px;      /* 對齊整齊 */
+  color: #6b7280;
+  min-width: 36px;      /* 對齊整齊 */
   text-align:left;
 }
 
@@ -2156,9 +2156,9 @@ textarea::placeholder {
   position: absolute;
   left: 12px;                    /* 與 padding-left 對齊 */
   top: 50%;
-  transform: translateY(-50%) rotate(0deg);
+  transform: translateY(-55%) rotate(0deg);
   transition: transform .2s ease, opacity .2s ease;
-  font-size: 14px;
+  font-size: 22px;
   line-height: 1;
   opacity: .8;
   pointer-events: none;
@@ -2195,9 +2195,8 @@ textarea::placeholder {
     padding: 14px 24px;
   }
   #lessons .btn.lesson-btn .chapter{
-    font-size:13px;
-    color: #6b7280;
     min-width:auto;
+    padding-left: 12px;
   }
   #lessons .btn.lesson-btn .meta{
     justify-content:flex-start;   /* ✅ 時長左對齊 */
