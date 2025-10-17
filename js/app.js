@@ -7,20 +7,44 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
-// === [app.js 頂層] BFCache/返回保護：同步 + 單一出入口 + 旗標 ===
+// 讀 select：如果還是 placeholder（''），就不要覆蓋現有 state
+function readSelectValue(sel) {
+  if (!sel) return undefined;
+  const v = (sel.value ?? '').trim();
+  return v === '' ? undefined : v;  // 只有有選到真實值才回傳
+}
+
 function syncFiltersFromUI() {
   const qEl       = document.getElementById('q');
   const catEl     = document.getElementById('cat');
   const teacherEl = document.getElementById('teacher');
   const planEl    = document.getElementById('planType');
 
-  Object.assign(window.courseState || (window.courseState = {}), {
-    q: qEl?.value || '',
-    category: (catEl?.value ?? '') || null,
-    teacher: (teacherEl?.value ?? '') || null,
-    plan_type: (planEl?.value ?? '') || null,
-  });
+  const patch = {};
+
+  // 關鍵字：空字串允許覆蓋（因為真的可能清空文字）
+  if (qEl) patch.q = qEl.value || '';
+
+  const vCat = readSelectValue(catEl);
+  if (vCat !== undefined) patch.category = vCat || null;
+
+  const vTeacher = readSelectValue(teacherEl);
+  if (vTeacher !== undefined) patch.teacher = vTeacher || null;
+
+  const vPlan = readSelectValue(planEl);
+  if (vPlan !== undefined) patch.plan_type = vPlan || null;
+
+  Object.assign(window.courseState || (window.courseState = {}), patch);
+
+  // 同步後保存（避免下次又被空值蓋掉）
+  try { sessionStorage.setItem('courseState', JSON.stringify(window.courseState)); } catch {}
 }
+
+// app 啟動很早的地方（initPage 之前）先嘗試讀回
+try {
+  const saved = sessionStorage.getItem('courseState');
+  if (saved) Object.assign(window.courseState, JSON.parse(saved));
+} catch {}
 
 // 單一出入口：永遠以 window.courseState 為準
 function renderCoursesFromState() {
@@ -960,12 +984,12 @@ async function renderCourses(page = 1, filters = {}){
   }
 }
 
-// === [app.js] 改版 setCourseFilter：統一出入口 ===
 window.setCourseFilter = function (partial) {
   Object.assign(window.courseState, partial);
   window.courseState.page = 1;
+  try { sessionStorage.setItem('courseState', JSON.stringify(window.courseState)); } catch {}
   if (typeof window.renderCourses === 'function') {
-    renderCoursesFromState(); // 用統一出入口
+    renderCoursesFromState();
   }
 };
 
