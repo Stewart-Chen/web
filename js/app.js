@@ -219,7 +219,7 @@ async function loadCourse(){
       heroEl.innerHTML = `
         <img src="${heroUrl}" alt="${course.title} 主圖" loading="eager" decoding="async">
         ${avatars.length ? `
-          <div class="hero-avatars">
+          <div class="hero-avatar">
             ${avatars.map((url, i)=>`<img src="${url}" alt="${names[i]} 縮圖">`).join('')}
           </div>
         ` : ``}
@@ -244,7 +244,7 @@ async function loadCourse(){
       teacherBox.innerHTML = names.map(n=>{
         const m = TEACHER_META[n];
         return m ? `${m.name}｜${m.role}` : n;
-      }).join('、');
+      }).join('×');
     }
   }
 
@@ -832,8 +832,8 @@ function courseCardHTML(c){
             ` : ``}
             
             <div class="meta-row">
-              ${teacherNames.length ? `<span class="meta teachers">
-                ${teacherNames.map(n => `<span class="chip chip-teacher">${n}</span>`).join('')}
+              ${teacherNames.length ? `<span class="meta">
+                ${teacherNames.map(n => `<span>${n}</span>`).join('×')}
               </span>` : ``}
 
               ${c.duration_hours ? (() => {
