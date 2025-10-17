@@ -7,6 +7,16 @@ function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel))
 function getParam(name){ return new URLSearchParams(location.search).get(name); }
 const getUser = () => window.currentUser; // 由 shared-layout.js 維護
 
+function getTeacherNames(course){
+  // 允許 teacher: '小D' | null、teachers: ['小D', '汎汎'] | null
+  const arr = Array.isArray(course?.teachers)
+    ? course.teachers.filter(Boolean).map(String)
+    : [];
+  if (arr.length) return arr;
+  const single = (course?.teacher ?? '').trim();
+  return single ? [single] : [];
+}
+
 // 讀 select：如果還是 placeholder（''），就不要覆蓋現有 state
 function readSelectValue(sel) {
   if (!sel) return undefined;
@@ -196,17 +206,21 @@ async function loadCourse(){
       `https://picsum.photos/seed/${encodeURIComponent(course.id)}/1200/630`;
 
     if (heroEl) {
-      let avatarUrl = null;
-      if (course.teacher === '汎汎') {
-        avatarUrl = '/web/img/fan_o.jpg';
-      } else if (course.teacher === '小D') {
-        avatarUrl = '/web/img/dd_o.jpg';
-      }
+      const names = getTeacherNames(course);
+      const TEACHER_META = {
+        汎汎: { avatar: '/web/img/fan_o.jpg' },
+        小D:  { avatar: '/web/img/dd_o.jpg' }
+      };
+      const avatars = names
+        .map(n => TEACHER_META[n]?.avatar)
+        .filter(Boolean)
+        .slice(0, 3); // 顯示最多 3 個
+      
       heroEl.innerHTML = `
         <img src="${heroUrl}" alt="${course.title} 主圖" loading="eager" decoding="async">
-        ${avatarUrl ? `
-          <div class="hero-avatar">
-            <img src="${avatarUrl}" alt="${course.teacher} 縮圖">
+        ${avatars.length ? `
+          <div class="hero-avatars">
+            ${avatars.map((url, i)=>`<img src="${url}" alt="${names[i]} 縮圖">`).join('')}
           </div>
         ` : ``}
       `;
@@ -220,13 +234,20 @@ async function loadCourse(){
   const teacherBox = document.getElementById('teacher-box-content');
   if (teacherBox) {
     const TEACHER_META = {
-      汎汎: { name: '汎汎', role: '園藝治療老師' },
-      小D:     { name: '小D', role: '藝術療癒老師' }
+      汎汎: { name: '汎汎', role: '園藝治療老師', avatar: '/web/img/fan_o.jpg' },
+      小D:  { name: '小D',  role: '藝術療癒老師', avatar: '/web/img/dd_o.jpg' }
     };
-    const meta = TEACHER_META[course.teacher];
-    teacherBox.textContent = meta ? `${meta.name}｜${meta.role}` : (course.teacher || '—');
+    const names = getTeacherNames(course);
+    if (!names.length) {
+      teacherBox.textContent = '—';
+    } else {
+      teacherBox.innerHTML = names.map(n=>{
+        const m = TEACHER_META[n];
+        return m ? `${m.name}｜${m.role}` : n;
+      }).join('、');
+    }
   }
-  
+
   const extraSec = document.getElementById('course-extra');
   if (extraSec) {
     // 先清乾淨舊內容（避免重複）
@@ -753,12 +774,13 @@ function renderEquip(items){
 // ========= 共用：課程卡片模板 =========
 function courseCardHTML(c){
   const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
-  const teacher  = c.teacher;
+  const teacherNames = getTeacherNames(c);
   const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
   return `
     <article class="course-card card"
              data-category="${c.category || ''}"
-             data-teacher="${c.teacher || ''}">
+             data-teachers="${teacherNames.join(',')}">
+
       <div class="carousel" data-total="${imgs.length}" data-index="0">
         <div class="track">
           ${imgs.map((url, i) => `
@@ -810,7 +832,9 @@ function courseCardHTML(c){
             ` : ``}
             
             <div class="meta-row">
-              ${teacher ? `<span class="meta">${teacher}</span>` : ``}
+              ${teacherNames.length ? `<span class="meta teachers">
+                ${teacherNames.map(n => `<span class="chip chip-teacher">${n}</span>`).join('')}
+              </span>` : ``}
 
               ${c.duration_hours ? (() => {
                 const per = Number(c.duration_hours);
@@ -869,14 +893,17 @@ async function renderCourses(page = 1, filters = {}){
   // 查詢
   let query = sb
     .from('courses')
-    .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords,plan_type', { count: 'exact' })
+    .select('id,title,summary,description,cover_url,gallery,teacher,teachers,category,created_at,duration_hours,course_fee,keywords,plan_type', { count: 'exact' })
     .eq('published', true)
     .is('deleted_at', null)
     .order('sort_priority', { ascending: false })   // 先比優先順序 sort_priority 大 → 小 排序
     .order('created_at', { ascending: false });    // 再比新舊 建立時間 新 → 舊 排序
 
   //套用過濾條件（老師 / 類型）
-  if (filters.teacher)  query = query.eq('teacher',  filters.teacher);
+  if (filters.teacher) {
+    const t = String(filters.teacher).trim();
+    query = query.or(`teacher.eq.${t},teachers.cs.{${t}}`);
+  }
   if (filters.category) query = query.eq('category', filters.category);
   if (filters.plan_type) query = query.eq('plan_type', filters.plan_type);
   if (filters.keyword)   query = query.contains('keywords', [filters.keyword]);
