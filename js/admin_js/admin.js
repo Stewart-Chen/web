@@ -198,17 +198,18 @@
     // ★ 新增：讀取下拉選單的老師篩選值（含 localStorage 保留）
     const teacherFilterSelect = document.getElementById('admin-teacher-filter');
     const selectedTeacher = (teacherFilterSelect?.value || '').trim();
+
+    const planFilterSelect = document.getElementById('admin-plan-filter');
+    const selectedPlan = (planFilterSelect?.value || '').trim();
     
     // 基本查詢
     let query = sb
       .from('courses')
-      .select('id,title,teacher,category,published,deleted_at,created_at,sort_priority');
+      .select('id,title,teacher,plan_type,category,published,deleted_at,created_at,sort_priority');
 
-    // ★ 新增：如果有選老師就加 eq 條件
-    if (selectedTeacher) {
-      query = query.eq('teacher', selectedTeacher);
-    }
-
+    if (selectedTeacher) query = query.eq('teacher', selectedTeacher);
+    if (selectedPlan)   query = query.eq('plan_type', selectedPlan);
+    
     // 排序（照原本）
     query = query
       .order('sort_priority', { ascending: false })
@@ -541,6 +542,18 @@
     });
   }
 
+  const planFilterSelect = document.getElementById('admin-plan-filter');
+  if (planFilterSelect) {
+    const savedPlan = localStorage.getItem('admin.filter.plan') || '';
+    if (savedPlan && planFilterSelect.querySelector(`option[value="${savedPlan}"]`)) {
+      planFilterSelect.value = savedPlan;
+    }
+    planFilterSelect.addEventListener('change', () => {
+      localStorage.setItem('admin.filter.plan', planFilterSelect.value || '');
+      adminRefresh();
+    });
+  }
+  
   // 進入頁面 → 先刷新一次列表（會套用已還原的篩選）
   window.addEventListener('DOMContentLoaded', adminRefresh);
   
