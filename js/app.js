@@ -304,7 +304,7 @@ async function loadCourse(){
           <span>預估人數</span>
           <input type="number" id="calc-people" min="0" step="1" value="${people}">
         </label>
-        <label class="calc-field hidden">
+        <label class="calc-field">
           <span>${labelHours}</span>
           <input type="number" id="calc-hours" min="0" step="0.5" value="${totalHr}">
         </label>
@@ -319,7 +319,7 @@ async function loadCourse(){
       </div>
   
       <div class="calc-result">
-        <div class="formula">${formulaTxt}</div>
+        <!--<div class="formula">${formulaTxt}</div>-->
         <div class="lines">
           <div><span>課程費用小計</span><strong id="calc-sub-fee">NT$ 0</strong></div>
           <div><span>${isSeries ? '總材料費小計' : '材料費小計'}</span><strong id="calc-sub-mat">NT$ 0</strong></div>
