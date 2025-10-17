@@ -1711,7 +1711,7 @@ textarea::placeholder {
   display: grid;
   gap: 10px;
   margin-top: 12px;
-  padding: 0.5rem 1rem 0 0.5rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
 }
 
 .info-item .icon{
@@ -2190,10 +2190,13 @@ textarea::placeholder {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 8px;
   margin-top: 8px;
-  padding: 0 1rem 0 1rem;
+  padding: 0 3rem 0 3rem;
 }
 #cost-calculator .calc-field{
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
 }
 #cost-calculator .calc-field input{
   padding: 8px 10px;
@@ -2213,18 +2216,19 @@ textarea::placeholder {
   display: grid;
   gap: 6px;
   font-size: .8rem;
+  font-weight: 600;
 }
 #cost-calculator .calc-result .lines > div{
   display: flex; align-items: center; justify-content: space-between;
 }
-#cost-calculator .calc-result .total strong{font-size: 0.9rem;}
+#cost-calculator .calc-result .total strong{font-size: 0.8rem;}
 #cost-calculator .formula{color: #666;font-size: .8rem;}
 
 @media (min-width: 720px) {
   .info-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px 60px;
-    padding: 0.5rem 2rem 0 1.5rem;
+    padding: 0.5rem 2rem 0.5rem 1.5rem;
   }
   .course-meta {
     padding: 0 2rem;
@@ -2241,13 +2245,13 @@ textarea::placeholder {
   }
 
   #cost-calculator .calc-grid{
-    gap: 12px;
+    gap: 12px 26px;
     margin-top: 8px;
-    padding: 0.5rem 1.5rem 0 1.5rem;
+    padding: 0.2rem 2.5rem 0.2rem 2.5rem;
   }
   
   #cost-calculator .calc-result{
-    padding: 10px 46px 18px;
+    padding: 10px 52px 18px;
     margin: 16px 90px;
   }
 }
