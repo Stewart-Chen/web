@@ -2202,11 +2202,11 @@ textarea::placeholder {
   font: inherit;
 }
 #cost-calculator .calc-result{
-  padding: 16px 22px;
+  padding: 8px 24px 16px;
   border: 1px dashed #ddd;
   border-radius: 10px;
   background: rgba(0,0,0,0.02);
-  margin: 12px 4px;
+  margin: 14px 2px;
 }
 #cost-calculator .calc-result .lines{
   margin-top: 6px;
@@ -2247,7 +2247,7 @@ textarea::placeholder {
   }
   
   #cost-calculator .calc-result{
-    padding: 18px 46px;
+    padding: 10px 46px 18px;
     margin: 16px 90px;
   }
 }
