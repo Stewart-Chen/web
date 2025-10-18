@@ -2368,5 +2368,14 @@ textarea::placeholder {
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
     border-radius: 10px;
   }
+  .flow-md h2 {
+    padding: 0px 12px;
+  }
+  .flow-md h2::after {
+    left: 12px;
+  }
+  .link-more{
+    margin: 0 12px 0 0;
+  }
 }
 
