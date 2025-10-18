@@ -822,12 +822,12 @@ function courseCardHTML(c){
             ${Array.isArray(c.keywords) && c.keywords.length ? `
               <div class="meta-row keywords-row">
                 <span class="meta meta-kw">
-                  <svg aria-hidden="true" viewBox="0 0 24 24" class="i">
+                  <!--<svg aria-hidden="true" viewBox="0 0 24 24" class="i">
                     <path d="M3 12V6a3 3 0 0 1 3-3h6l9 9-9 9H6a3 3 0 0 1-3-3v-6z"
                           fill="none" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round"/>
                     <circle cx="8" cy="8" r="1" fill="currentColor"/>
-                  </svg>
+                  </svg>-->
                   <span class="kw-list">
                     ${c.keywords.map(k => `<span class="kw">${k}</span>`).join('')}
                   </span>
