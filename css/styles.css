@@ -2326,7 +2326,11 @@ textarea::placeholder {
 #course-info #course-hero .hero-avatar img + img{
   margin-left: -20px; 
 }
-
+@media (max-width: 600px){
+  .grid{
+    gap: 0px;
+  }
+}
 @media (max-width: 720px){
   #course-info #course-hero{
     max-height: min(25vh);
@@ -2335,11 +2339,6 @@ textarea::placeholder {
   }
   #course-info #course-hero .hero-avatar img + img{
     margin-left: -15px;
-  }
-
-
-  .grid{
-    gap: 0px;
   }
   .course-card{
     border: 0;
