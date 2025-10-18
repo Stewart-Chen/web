@@ -1485,7 +1485,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .sticky-chips__inner{
   width: min(100%, var(--container));  /* 直接給寬度，別只用 max-width */
   display: flex;
-  gap: 8px 13px;
+  gap: 8px 14px;
 }
 
 .sticky-chips__inner_k{
