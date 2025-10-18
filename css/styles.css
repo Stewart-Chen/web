@@ -2360,7 +2360,7 @@ textarea::placeholder {
     background: linear-gradient(135deg, #e9f9f4, #ffffff);
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
   }
-  .course-card .course-body{padding: 8px 14px 22px 18px;}
+  .course-card .course-body{padding: 8px 16px 22px 18px;}
   .key-bar{
     margin: 12px 5px 0px 5px;
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
