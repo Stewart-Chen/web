@@ -1323,7 +1323,8 @@ h3 + p, h4 + p{margin-top: .2em;}
   overflow: hidden;
   word-break: break-word;
   overflow-wrap: anywhere;
-  padding: 0 16px 0 0;
+  padding: 0px;
+  margin: 0 0 5px 0;
 }
 
 /* ===== sticky chips bar ===== */
@@ -1539,7 +1540,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   gap: 0px 2px;
   font-size: 10px;
   color: var(--muted, #666);
-  padding: 0 16px 0 0;
+  padding: 0;
 }
 .course-card .meta-row .meta{display:inline-flex;align-items:center;gap: 3px;}
 
@@ -2358,7 +2359,7 @@ textarea::placeholder {
     background: linear-gradient(135deg, #e9f9f4, #ffffff);
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
   }
-  .course-card .course-body{padding: 8px 14px 22px 18px;}
+  .course-card .course-body{padding: 8px 16px 22px 20px;}
   .key-bar{
     margin: 12px 5px 0px 5px;
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
