@@ -195,7 +195,6 @@ nav .dropdown:focus-within .dropbtn{
   border: 1px solid rgba(0,0,0,.05);
   box-shadow: 0 4px 12px rgba(0,0,0,.08);
   padding: 16px;
-  margin: 0 8px;
 }
 .teacher-card .avatar{
   width: 72px;
@@ -816,10 +815,10 @@ body.menu-open{ overflow: hidden; }
 
 /* 表單訊息與狀態結果 */
 .count{
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   /* text-align: right; */
-  padding: 0px 8px;
-  margin-top: 16px;
+  padding: 0px 12px;
+  margin-top: 12px;
 }
 .key-bar{
   margin-top: 12px;
@@ -2364,15 +2363,10 @@ textarea::placeholder {
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
   }
   .course-card .course-body{padding: 8px 14px 22px 18px;}
-  .flow-md h2 {
-    padding: 0px 12px;
-  }
-  
-  .flow-md h2::after {
-    left: 12px;
-  }
-  .link-more{
-    margin: 0 12px 0 0;
+  .key-bar{
+    margin: 12px 5px 0px 5px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.05);
+    border-radius: 10px;
   }
 }
 
