@@ -1311,7 +1311,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 /* 首頁卡片微調：接近參考圖排版 */
 .course-card.card{padding: 0;overflow:hidden;}
-.course-card .course-body{padding: 8px 11px 8px;}
+.course-card .course-body{padding: 8px 8px 10px 16px;}
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
 
@@ -1326,6 +1326,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   overflow: hidden;
   word-break: break-word;
   overflow-wrap: anywhere;
+  padding: 0 16px 0 0;
 }
 
 /* ===== sticky chips bar ===== */
@@ -1539,9 +1540,9 @@ h3 + p, h4 + p{margin-top: .2em;}
   display:flex;
   flex-wrap:wrap;
   gap: 0px 2px;
-  /* margin-top: 6px; */
   font-size: 10px;
   color: var(--muted, #666);
+  padding: 0 16px 0 0;
 }
 .course-card .meta-row .meta{display:inline-flex;align-items:center;gap: 3px;}
 
@@ -2361,5 +2362,6 @@ textarea::placeholder {
     background: linear-gradient(135deg, #e9f9f4, #ffffff);
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
   }
+  .course-card .course-body{padding: 8px 10px 22px 18px;}
 }
 
