@@ -780,6 +780,13 @@ function courseCardHTML(c){
   const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
   const teacherNames = getTeacherNames(c);
   const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
+  const showCatBadge = c.plan_type !== '一日工作坊' && !!c.category;
+  const catBadgeHTML = showCatBadge
+    ? `<img class="badge badgeImg"
+             src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
+             alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
+    : ``;
+  
   return `
     <article class="course-card card"
              data-category="${c.category || ''}"
@@ -810,11 +817,7 @@ function courseCardHTML(c){
               return `<span class="badge plan-type${extraClass}">${c.plan_type}</span>`;
             })() : ``}
 
-         
-            ${c.category
-              ? `<img class="badge badgeImg" src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
-                       alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
-              : ``}
+            ${catBadgeHTML}
           </div>
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
           
