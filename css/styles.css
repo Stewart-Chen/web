@@ -1324,7 +1324,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   word-break: break-word;
   overflow-wrap: anywhere;
   padding: 0px;
-  margin: 0 0 5px 0;
+  margin: 0 0 4px 0;
 }
 
 /* ===== sticky chips bar ===== */
