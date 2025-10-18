@@ -2389,6 +2389,8 @@ textarea::placeholder {
   #teachers .grid{
    gap: 8px;
   }
-  
+  .teacher-card{
+    margin: 0px 10px;
+  }
 }
 
