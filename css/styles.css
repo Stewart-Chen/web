@@ -1167,6 +1167,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   }
   .site-header .header-bar{
     gap: 5px;
+    padding: 0px 12px;
   }
   .dock-inner{
     width: calc(100% - 12px);
@@ -1351,7 +1352,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
   font-size: .8rem;
-  border-radius: 999px;
+  border-radius: 10px;
   background: #d9f2f0;
   color: var(--ink);
   border: none;
@@ -1376,7 +1377,7 @@ h3 + p, h4 + p{margin-top: .2em;}
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: 15px;               /* ← chip 之間的間距 */
-    padding: 5px 14px;
+    padding: 5px 10px;
     top: var(--header-height, 55px);
   }
 }
@@ -1490,7 +1491,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .sticky-chips__inner_k{
   width: min(100%, var(--container));
   display: flex;
-  gap: 8px 13px;
+  gap: 8px 10px;
   max-width: var(--container);
   margin: 0 auto;
 }
@@ -1636,7 +1637,7 @@ textarea::placeholder {
   background-repeat: no-repeat;
   background-position: 8px center;
   background-size: 16px 16px;
-  border-radius: 20px;
+  border-radius: 10px;
   background-clip: padding-box;
 }
 
