@@ -1311,7 +1311,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 
 /* 首頁卡片微調：接近參考圖排版 */
 .course-card.card{padding: 0;overflow:hidden;}
-.course-card .course-body{padding: 8px 8px 10px 16px;}
+.course-card .course-body{padding: 8px 10px 10px 16px;}
 .course-card .cta .btn.primary{ background:#1d7f45; color:#fff; }
 .hidden{ display:none !important; } /* 若你尚未定義 */
 
@@ -2326,7 +2326,7 @@ textarea::placeholder {
 #course-info #course-hero .hero-avatar img + img{
   margin-left: -20px; 
 }
-@media (max-width: 600px){
+@media (max-width: 620px){
   .grid{
     gap: 0px;
   }
