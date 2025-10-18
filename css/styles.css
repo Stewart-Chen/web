@@ -1665,7 +1665,7 @@ textarea::placeholder {
   display: block;
   object-fit: cover;
   object-position: center;
-  border-radius: 10px;
+  border-radius: 10px 10px 0 0;
 }
 
 
@@ -2376,6 +2376,12 @@ textarea::placeholder {
   }
   .link-more{
     margin: 0 12px 0 0;
+  }
+  #lessons-section{
+    margin: 10px 10px;
+  }
+  #course-info #course-hero img{
+    border-radius: 0;
   }
 }
 
