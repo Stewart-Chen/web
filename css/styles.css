@@ -2362,7 +2362,7 @@ textarea::placeholder {
   }
   .course-card .course-body{padding: 8px 16px 22px 18px;}
   .key-bar{
-    margin: 12px 5px 0px 5px;
+    margin: 12px 10px 0px 10px;
     box-shadow: 0 6px 20px rgba(0,0,0,.05);
     border-radius: 10px;
   }
