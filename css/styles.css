@@ -48,7 +48,7 @@ body{
 }
 .container,
 .sticky-chips__inner
-{max-width: var(--container);margin: 0 auto;padding: 0 16px;}
+{max-width: var(--container);margin: 0 auto;padding: 0 22px;}
 .hidden{ display: none !important; }
 .muted {
   color: var(--muted);
