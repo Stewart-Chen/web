@@ -2481,12 +2481,13 @@ textarea::placeholder {
   --theme-color: #3bb3c3;           /* 主色：青藍 */
   --theme-bg-light: #f4fbfc;        /* 背景：更淡的青白 */
   --theme-bg-medium: #d8f1f4;       /* 邊框／hover 用 */
-  --theme-text-strong: #006f7d;     /* 深青標題 */
+  --theme-text-strong: #00373d;     /* 深青標題 */
 }
 
 #course-info.is-one-day,
 #teacher-box.is-one-day {
-  background: linear-gradient(135deg, #f9fdfd 0%, #eef9fa 100%);
+  background: linear-gradient(135deg, #fcfefe 0%, #f5fbfc 100%);
+
   border: 1px solid var(--theme-bg-medium);
 }
 
@@ -2503,7 +2504,7 @@ textarea::placeholder {
 /* Hover 狀態（略微提亮） */
 #course-info.is-one-day:hover,
 #teacher-box.is-one-day:hover {
-  background: linear-gradient(135deg, #f3fafb 0%, #e6f6f8 100%);
+  background: linear-gradient(135deg, #fcfefe 0%, #f5fbfc 100%);
 }
 /* 系列課 chip 樣式 */
 .is-series .chip.chip-items {
@@ -2593,3 +2594,13 @@ textarea::placeholder {
   box-shadow: 0 0 4px rgba(76, 175, 80, 0.05);
 }
 
+.is-one-day .equip-group {
+  background: linear-gradient(135deg, #fcfefe 0%, #f3fbfc 100%);
+  border: 1px solid #d2eef0;
+  box-shadow: 0 1px 4px rgba(59, 179, 195, 0.08); /* 青色陰影調 */
+}
+.is-one-day #cost-calculator .calc-result {
+  border-color: #cceef1;
+  background: linear-gradient(135deg, #fafefe 0%, #f4fbfc 100%);
+  box-shadow: 0 0 4px rgba(59, 179, 195, 0.05);
+}
