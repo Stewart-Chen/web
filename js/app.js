@@ -1061,7 +1061,7 @@ async function renderCourses(page = 1, filters = {}){
   if (!listEl) return;
 
   const isHome = !!moreBtn;
-  const LIMIT = isHome ? 12 : 15;
+  const LIMIT = isHome ? 15 : 15;
   const offset = (page - 1) * LIMIT;
 
   if (!window.sb || typeof window.sb.from !== 'function'){
