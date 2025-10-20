@@ -151,7 +151,7 @@ function enhanceLessonsUI(root = document){
       if (amLi) {
         amLi.insertAdjacentHTML('afterend', `
           <li class="lesson-rest">
-            <button class="lesson-btn no-content rest" aria-disabled="true" tabindex="-1">
+            <button class="btn lesson-btn no-content rest" aria-disabled="true" tabindex="-1">
               <span class="chapter">休息</span>
               <span class="title">午餐活動時間</span>
               <span class="meta"><span class="duration">12:00~13:00</span></span>
