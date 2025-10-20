@@ -1914,7 +1914,7 @@ textarea::placeholder {
 }
 
 /* 讓容器成為定位參考 */
-#course-info {position: relative;margin: 10px 10px;border-radius: var(--radius);}
+#course-info {border-radius: var(--radius);}
 
 /* 小巧的圓形 icon 按鈕（玻璃感、淡陰影） */
 .icon-btn {
@@ -2395,6 +2395,7 @@ textarea::placeholder {
   #enroll-btn{
    padding: 12px 106px;
   }
+  #course-info {margin: 10px 10px;}
 }
 
 /* 整體外觀 */
