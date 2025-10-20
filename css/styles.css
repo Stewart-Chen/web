@@ -1914,7 +1914,7 @@ textarea::placeholder {
 }
 
 /* 讓容器成為定位參考 */
-#course-info { position: relative; }
+#course-info {position: relative;margin: 10px 10px;border-radius: var(--radius);}
 
 /* 小巧的圓形 icon 按鈕（玻璃感、淡陰影） */
 .icon-btn {
@@ -2379,7 +2379,7 @@ textarea::placeholder {
     margin: 10px 10px;
   }
   #course-info #course-hero img{
-    border-radius: 0;
+    /* border-radius: 0; */
   }
   #teachers .course-card.card{
    margin: 0px 10px;
