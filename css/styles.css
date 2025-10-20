@@ -2504,4 +2504,30 @@ textarea::placeholder {
 #teacher-box.is-one-day:hover {
   background: linear-gradient(135deg, #f3fafb 0%, #e6f6f8 100%);
 }
+/* 系列課 chip 樣式 */
+.is-series .chip.chip-items {
+  background-color: #e9f7eb;     /* 淡綠底 */
+  border: 1px solid #c8e6ca;     /* 柔綠邊框 */
+  color: #2e7d32;                /* 深綠文字 */
+}
+
+/* hover 狀態：稍微強一點的綠 */
+.is-series .chip.chip-items:hover {
+  background-color: #dff3e3;
+  border-color: #b7e0b8;
+  color: #1b5e20;
+}
+/* 一日工作坊 chip 樣式 */
+.is-one-day .chip.chip-items {
+  background-color: #edfafa;     /* 淡青底 */
+  border: 1px solid #cceef1;     /* 淡藍邊框 */
+  color: #006f7d;                /* 深青文字 */
+}
+
+/* hover 狀態：微亮一點的青 */
+.is-one-day .chip.chip-items:hover {
+  background-color: #e1f4f6;
+  border-color: #b7e7eb;
+  color: #005861;
+}
 
