@@ -126,15 +126,16 @@ function enhanceLessonsUI(root = document){
     // 避免重複插入休息卡（若已存在 .lesson-rest 就跳過插入）
     const hasRest = !!root.querySelector('.lesson-rest');
 
-    // 2) 先處理上午（第 1 個按鈕）
+    // 2) 先處理上午（第 1 個按鈕）——以結束時間 12:00 往前推
     const amBtn = btns[0];
     if (amBtn && !amBtn.dataset.enhanced) {
       const rawTitle = amBtn.textContent.trim();
-      const durHrs = parseHours(amBtn.dataset.duration);
-      const startH = 9, startM = 0;
-      const [endH, endM] = addMinutes(startH, startM, Math.round(durHrs * 60));
+      const durHrs = parseHours(amBtn.dataset.duration); // e.g. "3 小時" → 3
+      const endH = 12, endM = 0;                         // 上午固定 12:00 結束
+      const mins = Math.round(durHrs * 60);
+      const [startH, startM] = addMinutes(endH, endM, -mins); // 往前推回開始時間
       const durationStr = `${fmt(startH, startM)}~${fmt(endH, endM)}`;
-
+    
       amBtn.innerHTML = `
         <span class="chapter">上午課程</span>
         <span class="title">${rawTitle}</span>
