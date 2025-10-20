@@ -567,15 +567,12 @@ function renderEquip(items){
         const contentHTML = ls.content
           ? `<div class="lesson-content hidden">${ls.content.replace(/\n/g, '<br>')}</div>`
           : '';
-    
-        // 顯示「第 x 堂」或「單元 x」
-        const chapter = isOneDay ? `單元 ${idx + 1}` : `第 ${idx + 1} 堂`;
-    
+       
         return `
           <li>
             <button class="btn lesson-toggle" aria-expanded="false"
                     data-lesson="${ls.id}" data-duration="${dur}">
-              ${chapter} ${ls.title}
+              ${ls.title}
             </button>
             ${contentHTML}
           </li>
