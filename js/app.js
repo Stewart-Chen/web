@@ -91,19 +91,121 @@ function moveCourseFeesToEnd(){
 }
 
 function enhanceLessonsUI(root = document){
+  // 判斷是否在「一日工作坊單元」容器中
   const isOneDay =
-  root.id === 'lessons-section-one-day' ||
-  root.closest?.('#lessons-section-one-day') ||
-  !!root.querySelector?.('#lessons-one-day');
-  
-  // 同時支援系列課與一日工作坊
-  const btns = root.querySelectorAll('button.lesson-toggle, #lessons button.btn, #lessons-one-day button.btn');
-  
+    root.id === 'lessons-section-one-day' ||
+    root.closest?.('#lessons-section-one-day') ||
+    !!root.querySelector?.('#lessons-one-day');
+
+  // 取得兩種清單裡的 lesson 按鈕
+  const btns = Array.from(
+    root.querySelectorAll('button.lesson-toggle, #lessons button.btn, #lessons-one-day button.btn')
+  ).filter(Boolean);
+
+  // 工具：把 "3 小時" 之類字串抓出數字小時，預設 3
+  const parseHours = (s) => {
+    const m = String(s || '').match(/([0-9]+(?:\.[0-9]+)?)/);
+    return m ? parseFloat(m[1]) : 3;
+  };
+  const fmt = (h, m) => `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  const addMinutes = (baseH, baseM, plusMin) => {
+    const total = baseH * 60 + baseM + plusMin;
+    const hh = Math.floor(total / 60) % 24;
+    const mm = total % 60;
+    return [hh, mm];
+  };
+
+  if (isOneDay) {
+    // 一日工作坊：預期只有兩個課程按鈕（上午、下午）
+    // 1) 準備容器與中午休息的插入點
+    const listEl =
+      root.querySelector('#lessons-one-day') ||
+      btns[0]?.closest('ol') ||
+      root.querySelector('ol');
+
+    // 避免重複插入休息卡（若已存在 .lesson-rest 就跳過插入）
+    const hasRest = !!root.querySelector('.lesson-rest');
+
+    // 2) 先處理上午（第 1 個按鈕）
+    const amBtn = btns[0];
+    if (amBtn && !amBtn.dataset.enhanced) {
+      const rawTitle = amBtn.textContent.trim();
+      const durHrs = parseHours(amBtn.dataset.duration);
+      const startH = 9, startM = 0;
+      const [endH, endM] = addMinutes(startH, startM, Math.round(durHrs * 60));
+      const durationStr = `${fmt(startH, startM)}~${fmt(endH, endM)}`;
+
+      amBtn.innerHTML = `
+        <span class="chapter">上午課程</span>
+        <span class="title">${rawTitle}</span>
+        <span class="meta">${durHrs ? `<span class="duration">${durationStr}</span>` : ''}</span>
+      `;
+      amBtn.classList.add('lesson-btn');
+      amBtn.dataset.enhanced = '1';
+    }
+
+    // 3) 插入中午休息卡片
+    if (listEl && !hasRest && amBtn) {
+      const amLi = amBtn.closest('li');
+      if (amLi) {
+        amLi.insertAdjacentHTML('afterend', `
+          <li class="lesson-rest">
+            <button class="lesson-btn no-content rest" aria-disabled="true" tabindex="-1">
+              <span class="chapter">休息</span>
+              <span class="title">午餐活動時間</span>
+              <span class="meta"><span class="duration">12:00~13:00</span></span>
+            </button>
+          </li>
+        `);
+      }
+    }
+
+    // 4) 再處理下午（第 2 個按鈕）
+    const pmBtn = btns[1];
+    if (pmBtn && !pmBtn.dataset.enhanced) {
+      const rawTitle = pmBtn.textContent.trim();
+      const durHrs = parseHours(pmBtn.dataset.duration);
+      const startH = 13, startM = 0;
+      const [endH, endM] = addMinutes(startH, startM, Math.round(durHrs * 60));
+      const durationStr = `${fmt(startH, startM)}~${fmt(endH, endM)}`;
+
+      pmBtn.innerHTML = `
+        <span class="chapter">下午課程</span>
+        <span class="title">${rawTitle}</span>
+        <span class="meta">${durHrs ? `<span class="duration">${durationStr}</span>` : ''}</span>
+      `;
+      pmBtn.classList.add('lesson-btn');
+      pmBtn.dataset.enhanced = '1';
+    }
+
+    // 其餘（若意外出現第 3 個之後的按鈕），就當作一般課處理
+    btns.slice(2).forEach((btn, idx) => {
+      if (btn.dataset.enhanced) return;
+      const title = btn.textContent.trim();
+      const duration = btn.dataset.duration || '';
+      btn.innerHTML = `
+        <span class="chapter">第 ${idx + 3} 堂</span>
+        <span class="title">${title}</span>
+        <span class="meta">${duration ? `<span class="duration">${duration}</span>` : ``}</span>
+      `;
+      btn.classList.add('lesson-btn');
+      btn.dataset.enhanced = '1';
+    });
+
+    return; // 一日工作坊到此結束
+  }
+
+  // ===== 非一日工作坊（維持原行為）=====
   btns.forEach((btn, idx)=>{
     if (btn.dataset.enhanced) return;
-    const title = btn.textContent.trim();
+    // 清掉可能夾帶的「第N堂 / 單元N」，保留純標題
+    const raw = btn.textContent.trim();
+    const title = raw
+      .replace(/^第\s*\d+\s*堂\s*/,'')
+      .replace(/^單元\s*\d+\s*/,'')
+      .trim();
     const duration = btn.dataset.duration || '';
-    const chapter = isOneDay ? `單元 ${idx + 1}` : `第 ${idx + 1} 堂`;
+    const chapter = `第 ${idx + 1} 堂`;
 
     btn.innerHTML = `
       <span class="chapter">${chapter}</span>
