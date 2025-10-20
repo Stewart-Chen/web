@@ -959,7 +959,7 @@ async function renderCourses(page = 1, filters = {}){
     }
     return;
   }
-  emptyEl?.classList.add('hidden');
+  //emptyEl?.classList.add('hidden');
 
   // 圖片 URL
   for (const c of items){
