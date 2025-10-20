@@ -2475,3 +2475,33 @@ textarea::placeholder {
   background: linear-gradient(135deg, #f5faf6 0%, #e6f4e8 100%);
 }
 
+/* 一日工作坊主題（柔和版） */
+.is-one-day {
+  --theme-color: #3bb3c3;           /* 主色：青藍 */
+  --theme-bg-light: #f4fbfc;        /* 背景：更淡的青白 */
+  --theme-bg-medium: #d8f1f4;       /* 邊框／hover 用 */
+  --theme-text-strong: #006f7d;     /* 深青標題 */
+}
+
+#course-info.is-one-day,
+#teacher-box.is-one-day {
+  background: linear-gradient(135deg, #f9fdfd 0%, #eef9fa 100%);
+  border: 1px solid var(--theme-bg-medium);
+}
+
+#course-info.is-one-day .course-info__title,
+#teacher-box.is-one-day .teacher-line {
+  color: var(--theme-text-strong);
+}
+
+#course-info.is-one-day .badge.plan-type {
+  background-color: var(--theme-color);
+  color: white;
+}
+
+/* Hover 狀態（略微提亮） */
+#course-info.is-one-day:hover,
+#teacher-box.is-one-day:hover {
+  background: linear-gradient(135deg, #f3fafb 0%, #e6f6f8 100%);
+}
+
