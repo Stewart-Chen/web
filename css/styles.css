@@ -1914,7 +1914,7 @@ textarea::placeholder {
 }
 
 /* 讓容器成為定位參考 */
-#course-info {border-radius: var(--radius);}
+#course-info {position: relative;border-radius: var(--radius);}
 
 /* 小巧的圓形 icon 按鈕（玻璃感、淡陰影） */
 .icon-btn {
