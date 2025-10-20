@@ -2413,7 +2413,7 @@ textarea::placeholder {
 
 /* 標題 */
 .equip-title {
-  border-bottom: 1.5px solid #007bff20;
+  border-bottom: 1px solid #111827;
   padding-bottom: 0.4em;
 }
 
