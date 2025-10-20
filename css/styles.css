@@ -2426,7 +2426,7 @@ textarea::placeholder {
   border-radius: 0;
   /* font-weight: 600; */
   color: var(--ink);
-  background: var(--mint-50);
+  background: #fafafa;
   transition: none;
 }
 
@@ -2434,7 +2434,7 @@ textarea::placeholder {
 .lessons-content .btn.rest:focus,
 .lessons-content .btn.rest:focus-visible,
 .lessons-content .btn.rest:active {
-  background: var(--mint-50) !important; /* 保持原色 */
+  background: #fafafa; !important; /* 保持原色 */
   color: var(--ink) !important;
   transform: none !important;             /* 不位移、不縮放 */
   box-shadow: none !important;            /* 無陰影跳動 */
@@ -2531,3 +2531,27 @@ textarea::placeholder {
   color: #005861;
 }
 
+/* 一日工作坊 input 樣式 */
+.is-one-day input,
+.is-one-day select,
+.is-one-day textarea {
+  border: 1px solid #cceef1;
+  background-color: #f9fdfd;
+  color: #005861;
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.is-one-day input::placeholder,
+.is-one-day textarea::placeholder {
+  color: #7aaeb3;
+}
+
+.is-one-day input:focus,
+.is-one-day select:focus,
+.is-one-day textarea:focus {
+  border-color: #3bb3c3;
+  box-shadow: 0 0 0 3px rgba(59, 179, 195, 0.15);
+  outline: none;
+  background-color: #f4fbfc;
+}
