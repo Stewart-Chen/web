@@ -402,8 +402,8 @@ async function loadCourse(){
     
         items.push({
           key: 'duration',
-          label: '上下午各時段',
-          value: `${per} 小時`,
+          label: '課程時數',
+          value: `上午 ${per} 小時 + 下午 ${per} 小時`,
           icon: 'clock'
         });
         items.push({
