@@ -2581,4 +2581,15 @@ textarea::placeholder {
   outline: none;
   background-color: #f3faf4;
 }
+.is-series .equip-group {
+  background: linear-gradient(135deg, #fbfdfc 0%, #f3faf5 100%);
+  border: 1px solid #cfe9d4;
+  box-shadow: 0 1px 4px rgba(46, 125, 50, 0.08); /* 綠色陰影調 */
+}
+
+.is-series #cost-calculator .calc-result {
+  border-color: #c8e6ca;
+  background: linear-gradient(135deg, #f9fcfa 0%, #f4faf6 100%);
+  box-shadow: 0 0 4px rgba(76, 175, 80, 0.05);
+}
 
