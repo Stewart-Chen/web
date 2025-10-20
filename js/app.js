@@ -946,7 +946,7 @@ async function renderCourses(page = 1, filters = {}){
   const items = (data || []);
   if (!items.length) {
     listEl.innerHTML = '';
-    emptyEl?.classList.remove('hidden');
+    //emptyEl?.classList.remove('hidden');
 
     // 分開處理首頁/課程頁的尾端 UI
     if (isHome) {
@@ -959,7 +959,7 @@ async function renderCourses(page = 1, filters = {}){
     }
     return;
   }
-  //emptyEl?.classList.add('hidden');
+  emptyEl?.classList.add('hidden');
 
   // 圖片 URL
   for (const c of items){
