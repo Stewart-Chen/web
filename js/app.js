@@ -117,7 +117,6 @@ async function loadCourse(){
   const titleEl = document.getElementById('course-title');
   const descEl = document.getElementById('course-desc');
   const lessonsEl = document.getElementById('lessons');
-  const lessonsEmpty = document.getElementById('lessons-empty');
   const enrollBtn = document.getElementById('enroll-btn');
   const enrolledBadge = document.getElementById('enrolled-badge');
   const progressEl = document.getElementById('progress');
@@ -533,7 +532,6 @@ function renderEquip(items){
   if (lsErr) { console.error(lsErr); return; }
   
   if (!lessons || lessons.length === 0){
-    //lessonsEmpty?.classList.remove('hidden');
     $('#lessons-section')?.classList.add('hidden');
     $('#progress-section')?.classList.add('hidden');
   } else if (lessonsEl){
