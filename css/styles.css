@@ -2033,7 +2033,7 @@ textarea::placeholder {
   color: inherit;
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 14px;
+  gap: 24px;
   align-items: center;
   width: 100%;
   padding: 20px 50px;
@@ -2061,6 +2061,8 @@ textarea::placeholder {
   color:#111827;
   overflow:hidden;
   text-overflow:ellipsis;
+  font-weight: 600;
+  text-align: center;
 }
 
 /* 右側時間 */
@@ -2157,7 +2159,8 @@ textarea::placeholder {
     grid-template-columns:1fr !important; /* ✅ 強制單欄 */
   }
   .lessons-content .btn.lesson-btn{
-    padding: 14px 24px;
+    padding: 14px 18px;
+    gap: 12px;
   }
   .lessons-content .btn.lesson-btn .chapter{
     min-width:auto;
@@ -2421,7 +2424,7 @@ textarea::placeholder {
 
 .lessons-content .btn.rest {
   border-radius: 0;
-  font-weight: 600;
+  /* font-weight: 600; */
   color: var(--ink);
   background: var(--mint-50);
   transition: none;
