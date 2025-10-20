@@ -2031,7 +2031,6 @@ textarea::placeholder {
   text-decoration: none;
   font: inherit;
   color: inherit;
-
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 14px;
@@ -2052,6 +2051,7 @@ textarea::placeholder {
   color: #6b7280;
   min-width: 36px;      /* 對齊整齊 */
   text-align:left;
+  padding-left: 12px;
 }
 
 /* 中間標題 */
@@ -2119,7 +2119,7 @@ textarea::placeholder {
 .lessons-content .lesson-toggle::before {
   content: '▸';                  /* 也可用 ▶ 或用 SVG 當背景 */
   position: absolute;
-  left: 12px;                    /* 與 padding-left 對齊 */
+  left: 30px;                    /* 與 padding-left 對齊 */
   top: 50%;
   transform: translateY(-55%) rotate(0deg);
   transition: transform .2s ease, opacity .2s ease;
@@ -2161,7 +2161,6 @@ textarea::placeholder {
   }
   .lessons-content .btn.lesson-btn .chapter{
     min-width:auto;
-    padding-left: 12px;
   }
   .lessons-content .btn.lesson-btn .meta{
     justify-content:flex-start;   /* ✅ 時長左對齊 */
@@ -2228,7 +2227,7 @@ textarea::placeholder {
   }
   .lessons-content .btn {
     padding: 14px 24px;
-    margin-left: 1em;
+    /* margin-left: 1em; */
   }
 
   #cost-calculator .calc-grid{
@@ -2393,6 +2392,9 @@ textarea::placeholder {
    padding: 12px 106px;
   }
   #course-info {margin: 10px 10px;}
+  .lessons-content .lesson-toggle::before {
+    left: 12px;
+  }
 }
 
 /* 整體外觀 */
@@ -2417,3 +2419,25 @@ textarea::placeholder {
   padding-bottom: 0.4em;
 }
 
+.lessons-content .btn.rest {
+  border-radius: 0;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--mint-50);
+  transition: none;
+}
+
+.lessons-content .btn.rest:hover,
+.lessons-content .btn.rest:focus,
+.lessons-content .btn.rest:focus-visible,
+.lessons-content .btn.rest:active {
+  background: var(--mint-50) !important; /* 保持原色 */
+  color: var(--ink) !important;
+  transform: none !important;             /* 不位移、不縮放 */
+  box-shadow: none !important;            /* 無陰影跳動 */
+  filter: none !important;                /* 無模糊/亮度特效 */
+  outline: none !important;               /* 取消藍色外框 */
+  border-width: inherit !important;       /* 避免邊框變粗變細 */
+  transition: none !important;            /* 確保沒有過渡動畫 */
+  cursor: default;                        /* 看起來是靜態元素 */
+}
