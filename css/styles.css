@@ -2455,7 +2455,7 @@ textarea::placeholder {
 
 #course-info.is-series,
 #teacher-box.is-series {
-  background: linear-gradient(135deg, #fbfdfc 0%, #f3faf5 100%);
+  background: linear-gradient(135deg, #f8fcf9 0%, #edf8ef 100%);
 
   border: 1px solid var(--theme-bg-medium);
 }
@@ -2473,7 +2473,7 @@ textarea::placeholder {
 /* Hover 狀態（略微提亮） */
 #course-info.is-series:hover,
 #teacher-box.is-series:hover {
-  background: linear-gradient(135deg, #fbfdfc 0%, #f3faf5 100%);
+  background: linear-gradient(135deg, #f8fcf9 0%, #edf8ef 100%);
 }
 
 /* 一日工作坊主題（柔和版） */
@@ -2486,7 +2486,7 @@ textarea::placeholder {
 
 #course-info.is-one-day,
 #teacher-box.is-one-day {
-  background: linear-gradient(135deg, #fcfefe 0%, #f5fbfc 100%);
+  background: linear-gradient(135deg, #f9fdfd 0%, #eef9fa 100%);
 
   border: 1px solid var(--theme-bg-medium);
 }
@@ -2504,7 +2504,7 @@ textarea::placeholder {
 /* Hover 狀態（略微提亮） */
 #course-info.is-one-day:hover,
 #teacher-box.is-one-day:hover {
-  background: linear-gradient(135deg, #fcfefe 0%, #f5fbfc 100%);
+  background: linear-gradient(135deg, #f9fdfd 0%, #eef9fa 100%);
 }
 /* 系列課 chip 樣式 */
 .is-series .chip.chip-items {
