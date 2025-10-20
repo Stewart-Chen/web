@@ -2444,3 +2444,34 @@ textarea::placeholder {
   transition: none !important;            /* 確保沒有過渡動畫 */
   cursor: default;                        /* 看起來是靜態元素 */
 }
+
+/* 系列課主題（柔和版） */
+.is-series {
+  --theme-color: #4caf50;           /* 主色：綠 */
+  --theme-bg-light: #f3faf4;        /* 背景：更淡的綠白 */
+  --theme-bg-medium: #dcefe0;       /* 邊框／hover 用 */
+  --theme-text-strong: #2e7d32;     /* 深綠標題 */
+}
+
+#course-info.is-series,
+#teacher-box.is-series {
+  background: linear-gradient(135deg, #f8fcf9 0%, #edf8ef 100%);
+  border: 1px solid var(--theme-bg-medium);
+}
+
+#course-info.is-series .course-info__title,
+#teacher-box.is-series .teacher-line {
+  color: var(--theme-text-strong);
+}
+
+#course-info.is-series .badge.plan-type {
+  background-color: var(--theme-color);
+  color: white;
+}
+
+/* Hover 狀態（略微提亮） */
+#course-info.is-series:hover,
+#teacher-box.is-series:hover {
+  background: linear-gradient(135deg, #f5faf6 0%, #e6f4e8 100%);
+}
+
