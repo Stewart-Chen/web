@@ -38,7 +38,6 @@
 </head>
 <body>
   <main class="container flow-lg">     
-    <!-- 課程資訊卡 -->
     <section id="course-info" class="hero card">
       <button id="back-btn" class="icon-btn back-in-hero" aria-label="上一頁" title="上一頁">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -88,19 +87,18 @@
 
     <section id="lessons-section" class="flow-md need-js lessons-section">
       <h3>系列課程單元</h3>
-      <ol id="lessons" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
-        <!-- 由 app.js 動態渲染：每個 <li> 內有一個 .btn -->
-      </ol>
-      <div id="lessons-empty" class="muted hidden">尚未開放單元。</div>
+      <ol id="lessons" class="grid"></ol>
+    </section>
+    <section id="lessons-section-one-day" class="flow-md need-js lessons-section">
+      <h3>一日工作坊單元</h3>
+      <ol id="lessons-one-day" class="grid"></ol>
     </section>
 
-    <!-- 學習進度 -->
     <section id="progress-section" class="card need-js">
       <h3>學習進度</h3>
       <div id="progress" class="muted">登入後可記錄進度。</div>
     </section>
 
-    <!-- JS 關閉時提示 -->
     <p class="nojs" style="display:none;">你的瀏覽器未啟用 JavaScript，本頁功能將無法使用。</p>
   </main>
 </body>
