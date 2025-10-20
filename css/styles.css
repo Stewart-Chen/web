@@ -2450,12 +2450,13 @@ textarea::placeholder {
   --theme-color: #4caf50;           /* 主色：綠 */
   --theme-bg-light: #f3faf4;        /* 背景：更淡的綠白 */
   --theme-bg-medium: #dcefe0;       /* 邊框／hover 用 */
-  --theme-text-strong: #2e7d32;     /* 深綠標題 */
+  --theme-text-strong: #1b5e20;     /* 深綠標題 */
 }
 
 #course-info.is-series,
 #teacher-box.is-series {
-  background: linear-gradient(135deg, #f8fcf9 0%, #edf8ef 100%);
+  background: linear-gradient(135deg, #fbfdfc 0%, #f3faf5 100%);
+
   border: 1px solid var(--theme-bg-medium);
 }
 
@@ -2472,7 +2473,7 @@ textarea::placeholder {
 /* Hover 狀態（略微提亮） */
 #course-info.is-series:hover,
 #teacher-box.is-series:hover {
-  background: linear-gradient(135deg, #f5faf6 0%, #e6f4e8 100%);
+  background: linear-gradient(135deg, #fbfdfc 0%, #f3faf5 100%);
 }
 
 /* 一日工作坊主題（柔和版） */
@@ -2555,3 +2556,29 @@ textarea::placeholder {
   outline: none;
   background-color: #f4fbfc;
 }
+
+/* 系列課 input 樣式 */
+.is-series input,
+.is-series select,
+.is-series textarea {
+  border: 1px solid #c8e6ca;
+  background-color: #f8fcf9;
+  color: #1b5e20;
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.is-series input::placeholder,
+.is-series textarea::placeholder {
+  color: #7fae83;
+}
+
+.is-series input:focus,
+.is-series select:focus,
+.is-series textarea:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+  outline: none;
+  background-color: #f3faf4;
+}
+
