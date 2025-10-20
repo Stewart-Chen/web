@@ -998,9 +998,15 @@ function courseCardHTML(c){
               ${c.duration_hours ? (() => {
                 const per = Number(c.duration_hours);
                 const weeks = (c.plan_type === '系列課') ? Number(c._weeks) : 0; // ← 從外面回填進來
-                const label = (weeks && per)
-                  ? `${weeks} 堂 × ${per} 小時`
-                  : `${per} 小時`;
+                let label;
+                if (c.plan_type === '一日工作坊') {
+                  const total = per * 2;
+                  label = `共 ${total} 小時（上/下午各 ${per}）`;
+                } else if (weeks && per) {
+                  label = `${weeks} 堂 × ${per} 小時`;
+                } else {
+                  label = `${per} 小時`;
+                }
                 return `<span class="meta"><svg aria-hidden="true" viewBox="0 0 24 24" class="i">
                   <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
                   <path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2"
