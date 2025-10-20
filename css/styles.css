@@ -1893,7 +1893,7 @@ textarea::placeholder {
   margin: 0 auto;
 }
 
-#lessons li::marker {
+.lessons-content li::marker {
   font-size: 0.8em;     /* 改標號大小 */
   font-weight: bold;    /* 可加粗 */
   color: #555;          /* 改顏色 */
@@ -2009,21 +2009,21 @@ textarea::placeholder {
 }
 
 /* 列表重置 */
-#lessons{
+.lessons-content{
   list-style:none;
   margin:0;
   padding:0;
   display:block !important; /* 蓋掉 inline grid style */
   width: 100%;
 }
-#lessons > li{
+.lessons-content > li{
   margin:0;
   padding:0;
   border-bottom:1px solid #f0f0f0;
 }
-#lessons > li:last-child{ border-bottom:none; }
+.lessons-content > li:last-child{ border-bottom:none; }
 
-#lessons .btn.lesson-btn {
+.lessons-content .btn.lesson-btn {
   /* 不用 all:unset; 改成 reset 常見屬性即可 */
   background: none;
   border: none;
@@ -2046,7 +2046,7 @@ textarea::placeholder {
 }
 
 /* 左側章節編號 */
-#lessons .btn.lesson-btn .chapter{
+.lessons-content .btn.lesson-btn .chapter{
   font-weight:600;
   font-size: 12px;
   color: #6b7280;
@@ -2055,7 +2055,7 @@ textarea::placeholder {
 }
 
 /* 中間標題 */
-#lessons .btn.lesson-btn .title{
+.lessons-content .btn.lesson-btn .title{
   white-space:normal;
   font-size: 12px;
   color:#111827;
@@ -2064,19 +2064,19 @@ textarea::placeholder {
 }
 
 /* 右側時間 */
-#lessons .btn.lesson-btn .meta{
+.lessons-content .btn.lesson-btn .meta{
   display:flex;
   align-items:center;
 }
-#lessons .btn.lesson-btn .duration{
+.lessons-content .btn.lesson-btn .duration{
   font-size:12px;
   color: var(--accent-blue);
 }
 
 /* hover / active */
-#lessons .btn.lesson-btn:hover{ background:#f9fafb; }
-#lessons .btn.lesson-btn:active{ background:#f3f4f6; }
-#lessons .btn.lesson-btn:focus-visible{
+.lessons-content .btn.lesson-btn:hover{ background:#f9fafb; }
+.lessons-content .btn.lesson-btn:active{ background:#f3f4f6; }
+.lessons-content .btn.lesson-btn:focus-visible{
   outline:2px solid #2563eb;
   outline-offset:-2px;
 }
@@ -2109,14 +2109,14 @@ textarea::placeholder {
 }
 
 /* 讓按鈕有空間放三角形 */
-#lessons .lesson-toggle {
+.lessons-content .lesson-toggle {
   position: relative;
   text-align: left;
   padding-left: 32px;            /* 給箭頭留空間 */
 }
 
 /* 左邊的收折三角形（預設向右 ▶） */
-#lessons .lesson-toggle::before {
+.lessons-content .lesson-toggle::before {
   content: '▸';                  /* 也可用 ▶ 或用 SVG 當背景 */
   position: absolute;
   left: 12px;                    /* 與 padding-left 對齊 */
@@ -2130,20 +2130,20 @@ textarea::placeholder {
 }
 
 /* 展開時改成向下 ▼（其實是旋轉 90°） */
-#lessons li.open > .lesson-toggle::before,
-#lessons .lesson-toggle[aria-expanded="true"]::before {
+.lessons-content li.open > .lesson-toggle::before,
+.lessons-content .lesson-toggle[aria-expanded="true"]::before {
   transform: translateY(-50%) rotate(90deg);
 }
 
 /* 沒內容（no-content）就把箭頭淡出，游標也改成預設 */
-#lessons .lesson-toggle.no-content {
+.lessons-content .lesson-toggle.no-content {
   cursor: default;
 }
-#lessons .lesson-toggle.no-content::before {
+.lessons-content .lesson-toggle.no-content::before {
   opacity: 0.2;                  /* 或直接 display:none; 想完全隱藏就改這個 */
 }
 
-#lessons .lesson-content {
+.lessons-content .lesson-content {
   padding: 20px 25px 20px 70px;     /* 左邊對齊箭頭/標題 */
   color: #374151;
   font-size: 12px;
@@ -2153,20 +2153,20 @@ textarea::placeholder {
 }
 
 @media (max-width: 720px){
-  #lessons{
+  .lessons-content{
     grid-template-columns:1fr !important; /* ✅ 強制單欄 */
   }
-  #lessons .btn.lesson-btn{
+  .lessons-content .btn.lesson-btn{
     padding: 14px 24px;
   }
-  #lessons .btn.lesson-btn .chapter{
+  .lessons-content .btn.lesson-btn .chapter{
     min-width:auto;
     padding-left: 12px;
   }
-  #lessons .btn.lesson-btn .meta{
+  .lessons-content .btn.lesson-btn .meta{
     justify-content:flex-start;   /* ✅ 時長左對齊 */
   }
-  #lessons .lesson-content {
+  .lessons-content .lesson-content {
     padding: 10px 12px 10px 32px;     /* 左邊對齊箭頭/標題 */
   }
 }
@@ -2226,7 +2226,7 @@ textarea::placeholder {
   #course-feature {
     padding: 0 2rem;
   }
-  #lessons .btn {
+  .lessons-content .btn {
     padding: 14px 24px;
     margin-left: 1em;
   }
