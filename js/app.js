@@ -1005,7 +1005,7 @@ function courseCardHTML(c){
                 let label;
                 if (c.plan_type === '一日工作坊') {
                   const total = per * 2;
-                  label = `共 ${total} 小時（上/下午各 ${per}）`;
+                  label = `上午 ${per} 小時 + 下午 ${per} 小時`;
                 } else if (weeks && per) {
                   label = `${weeks} 堂 × ${per} 小時`;
                 } else {
