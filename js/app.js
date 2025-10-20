@@ -389,14 +389,14 @@ async function loadCourse(){
     
         items.push({
           key: 'duration',
-          label: '課程時數',
-          value: `上午、下午各 ${per} 小時`,
+          label: '上下午各時段',
+          value: `${per} 小時`,
           icon: 'clock'
         });
         items.push({
           key: 'total_duration',
-          label: '活動時長',
-          value: `共 ${totalDayHrs} 小時（含午休）`,
+          label: '活動時長（含午休）',
+          value: `共 ${totalDayHrs} 小時`,
           icon: 'calendar'
         });
       } else {
