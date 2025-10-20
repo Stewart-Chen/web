@@ -1963,11 +1963,11 @@ textarea::placeholder {
 #tab-equip .equip-group { min-width: 0; }   /* 讓內容可縮，不會撐格子 */
 
 #tab-equip .equip-title {
-  font-weight: 600;
-  color: var(--brand-3);
+  font-weight: 500;
+  color: #111827;
   margin: 4px 0 12px;
   white-space: nowrap;                       /* 標題不換行 */
-  font-size: 13px;
+  font-size: 12px;
   text-align: center;
 }
 
@@ -2099,15 +2099,15 @@ textarea::placeholder {
 .chip-items {
   padding: 4px 8px;
   border-radius: 10px;
-  background: var(--mint-50);
-  color: var(--ink);
+  /* background: var(--mint-50); */
+  /* color: var(--ink); */
   font-size: 12px;
 }
 
 @media (hover:hover){
   .chip-items:hover{
-    background: var(--mint-100); /* hover 時亮一階 */
-    box-shadow: 0 4px 10px rgba(46,125,50,.15);
+   // background: var(--mint-100); /* hover 時亮一階 */
+   // box-shadow: 0 4px 10px rgba(46,125,50,.15);
   }
 }
 
@@ -2393,7 +2393,29 @@ textarea::placeholder {
     margin: 0px 10px;
   }
   #enroll-btn{
-   padding: 10px 100px;
+   padding: 12px 106px;
   }
+}
+
+/* 整體外觀 */
+#tab-equip {
+  background-color: #f8f9fa;
+  padding: 1.5em;
+}
+
+/* 每一組（卡片） */
+.equip-group {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1em 1.2em;
+  margin-bottom: 1.5em;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* 標題 */
+.equip-title {
+  border-bottom: 1.5px solid #007bff20;
+  padding-bottom: 0.4em;
 }
 
