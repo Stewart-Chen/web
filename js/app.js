@@ -359,7 +359,20 @@ async function loadCourse(){
   } catch (e) {
     console.warn('hero image load failed', e);
   }
-  
+
+  // === 根據方案類型為 teacher-box 加上 class ===
+  const teacherBoxWrap = document.getElementById('teacher-box');
+  if (teacherBoxWrap && course.plan_type) {
+    teacherBoxWrap.classList.remove('is-series', 'is-one-day', 'is-unknown');
+    if (course.plan_type === '系列課') {
+      teacherBoxWrap.classList.add('is-series');
+    } else if (course.plan_type === '一日工作坊') {
+      teacherBoxWrap.classList.add('is-one-day');
+    } else {
+      teacherBoxWrap.classList.add('is-unknown');
+    }
+  }
+
   const teacherBox = document.getElementById('teacher-box-content');
   if (teacherBox) {
     const TEACHER_META = {
