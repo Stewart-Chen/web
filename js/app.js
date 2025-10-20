@@ -91,12 +91,19 @@ function moveCourseFeesToEnd(){
 }
 
 function enhanceLessonsUI(root = document){
-  const btns = root.querySelectorAll('#lessons button.btn');
+  const isOneDay =
+  root.id === 'lessons-section-one-day' ||
+  root.closest?.('#lessons-section-one-day') ||
+  !!root.querySelector?.('#lessons-one-day');
+  
+  // 同時支援系列課與一日工作坊
+  const btns = root.querySelectorAll('button.lesson-toggle, #lessons button.btn, #lessons-one-day button.btn');
+  
   btns.forEach((btn, idx)=>{
     if (btn.dataset.enhanced) return;
     const title = btn.textContent.trim();
     const duration = btn.dataset.duration || '';
-    const chapter = `第 ${idx + 1} 堂`;
+    const chapter = isOneDay ? `單元 ${idx + 1}` : `第 ${idx + 1} 堂`;
 
     btn.innerHTML = `
       <span class="chapter">${chapter}</span>
