@@ -504,7 +504,11 @@ async function loadCourse(){
     const people   = Number(course.capacity) || 0;
     const feePerHr = Number(course.course_fee) || 0;
     const durHour  = Number(course.duration_hours) || 0;
-    const totalHr  = isSeries ? (weeks * perHour || (weeks * durHour) || 0) : durHour;
+    const totalHr = isSeries
+      ? (weeks * perHour || (weeks * durHour) || 0)
+      : (course.plan_type === '一日工作坊'
+          ? durHour * 2 // 上午 + 下午
+          : durHour);
     const matPer   = Number(course.material_fee) || 0; // 系列課這是「總材料費/人」
   
     // DOM
