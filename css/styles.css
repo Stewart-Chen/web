@@ -2392,5 +2392,8 @@ textarea::placeholder {
   .teacher-card{
     margin: 0px 10px;
   }
+  #enroll-btn{
+   padding: 10px 100px;
+  }
 }
 
