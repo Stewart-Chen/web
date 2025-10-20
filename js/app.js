@@ -379,11 +379,32 @@ async function loadCourse(){
     if (Number.isFinite(course.capacity)) {
       items.push({ key: 'capacity', label: '預估人數', value: `${course.capacity} 人`, icon: 'users' });
     }
-    // 系列課：把「課程時數」→「每堂時數」
+    
+    // 一日工作坊：顯示「上午、下午各 X 小時」與「活動時長 約 Y 小時（含午休）」。
     if (course.duration_hours) {
-      const label = (course.plan_type === '系列課') ? '每堂時數' : '課程時數';
-      items.push({ key: 'duration', label, value: `${Number(course.duration_hours)} 小時`, icon: 'clock' });
+      const per = Number(course.duration_hours);
+      if (course.plan_type === '一日工作坊') {
+        const totalCourseHrs = per * 2;      // 上午+下午的實際上課時數
+        const totalDayHrs    = totalCourseHrs + 1; // 含午休（預設 1 小時）
+    
+        items.push({
+          key: 'duration',
+          label: '課程時數',
+          value: `上午、下午各 ${per} 小時`,
+          icon: 'clock'
+        });
+        items.push({
+          key: 'total_duration',
+          label: '活動時長',
+          value: `約 ${totalDayHrs} 小時（含午休）`,
+          icon: 'calendar'
+        });
+      } else {
+        const label = (course.plan_type === '系列課') ? '每堂時數' : '課程時數';
+        items.push({ key: 'duration', label, value: `${per} 小時`, icon: 'clock' });
+      }
     }
+
     if (Number.isFinite(course.course_fee)) {
       const fee = course.course_fee.toLocaleString?.('zh-TW') ?? course.course_fee;
       const label = '全班課程費用';
