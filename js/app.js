@@ -137,7 +137,7 @@ function enhanceLessonsUI(root = document){
       const durationStr = `${fmt(startH, startM)}~${fmt(endH, endM)}`;
     
       amBtn.innerHTML = `
-        <span class="chapter">上午課程</span>
+        <span class="chapter">上午時段</span>
         <span class="title">${rawTitle}</span>
         <span class="meta">${durHrs ? `<span class="duration">${durationStr}</span>` : ''}</span>
       `;
@@ -152,8 +152,8 @@ function enhanceLessonsUI(root = document){
         amLi.insertAdjacentHTML('afterend', `
           <li class="lesson-rest">
             <button class="btn lesson-btn no-content rest" aria-disabled="true" tabindex="-1">
-              <span class="chapter">休息</span>
-              <span class="title">午餐活動時間</span>
+              <span class="chapter">午間休息</span>
+              <span class="title">午餐與自由交流</span>
               <span class="meta"><span class="duration">12:00~13:00</span></span>
             </button>
           </li>
@@ -171,7 +171,7 @@ function enhanceLessonsUI(root = document){
       const durationStr = `${fmt(startH, startM)}~${fmt(endH, endM)}`;
 
       pmBtn.innerHTML = `
-        <span class="chapter">下午課程</span>
+        <span class="chapter">下午時段</span>
         <span class="title">${rawTitle}</span>
         <span class="meta">${durHrs ? `<span class="duration">${durationStr}</span>` : ''}</span>
       `;
