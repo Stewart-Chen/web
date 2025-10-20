@@ -2398,7 +2398,7 @@ textarea::placeholder {
 /* 整體外觀 */
 #tab-equip {
   /*background-color: #f8f9fa;*/
-  /*padding: 1.5em;*/
+  padding: 1em;
 }
 
 /* 每一組（卡片） */
