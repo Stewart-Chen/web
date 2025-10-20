@@ -142,7 +142,7 @@ async function loadCourse(){
     .is('deleted_at', null)
     .maybeSingle();
 
-  function expandFirstLessonIfAny(rootSel){
+  function (rootSel){
     const firstContent = document.querySelector(`${rootSel} .lesson-content`);
     if (!firstContent) return;
     firstContent.classList.remove('hidden');
@@ -526,62 +526,69 @@ function renderEquip(items){
     $('#keyword-items').textContent = '尚無關鍵字';
   }
 
-
-  // (B) 系列課程單元
-  const { data: lessons, error: lsErr } = await sb
-    .from('lessons')
-    .select('id, title, content, order_no')
-    .eq('course_id', idNum)
-    .order('order_no');
-  if (lsErr) { console.error(lsErr); return; }
-  
-  const isOneDay = course.plan_type === '一日工作坊';
-  
-  if (!lessons || lessons.length === 0){
-    // 兩種區塊都關掉
-    lessonsSecSeries?.classList.add('hidden');
-    lessonsSecOneDay?.classList.add('hidden');
-    $('#progress-section')?.classList.add('hidden');
-  } else {
-    // 依課程類型決定要顯示的區塊 & 目標清單
-    const targetSec = isOneDay ? lessonsSecOneDay : lessonsSecSeries;
-    const hideSec   = isOneDay ? lessonsSecSeries : lessonsSecOneDay;
-    const targetOl  = isOneDay ? lessonsElOneDay  : lessonsEl;
-  
-    hideSec?.classList.add('hidden');
-    targetSec?.classList.remove('hidden');
-    $('#progress-section')?.classList.add('hidden'); // 一樣隱藏進度
-  
-    if (targetOl){
-      targetOl.innerHTML = lessons.map((ls) => {
+    // (B) 課程單元（系列課 or 一日工作坊）
+    const { data: lessons, error: lsErr } = await sb
+      .from('lessons')
+      .select('id, title, content, order_no')
+      .eq('course_id', idNum)
+      .order('order_no');
+    
+    if (lsErr) { console.error(lsErr); return; }
+    
+    const isOneDay = course.plan_type === '一日工作坊';
+    const secSeries = document.getElementById('lessons-section');
+    const secOneDay = document.getElementById('lessons-section-one-day');
+    const listSeries = document.getElementById('lessons');
+    const listOneDay = document.getElementById('lessons-one-day');
+    
+    // 先全部隱藏
+    secSeries?.classList.add('hidden');
+    secOneDay?.classList.add('hidden');
+    
+    if (!lessons || lessons.length === 0) {
+      $('#progress-section')?.classList.add('hidden');
+    } else {
+      // 根據課程類型決定顯示哪一塊
+      const targetSec = isOneDay ? secOneDay : secSeries;
+      const targetList = isOneDay ? listOneDay : listSeries;
+      targetSec?.classList.remove('hidden');
+      $('#progress-section')?.classList.add('hidden');
+    
+      // 渲染課程單元
+      targetList.innerHTML = lessons.map((ls, idx) => {
         const dur = course.duration_hours ? `${course.duration_hours} 小時` : '';
         const contentHTML = ls.content
           ? `<div class="lesson-content hidden">${ls.content.replace(/\n/g, '<br>')}</div>`
           : '';
+    
+        // 顯示「第 x 堂」或「單元 x」
+        const chapter = isOneDay ? `單元 ${idx + 1}` : `第 ${idx + 1} 堂`;
+    
         return `
           <li>
             <button class="btn lesson-toggle" aria-expanded="false"
-                    data-lesson="${ls.id}" ${dur ? `data-duration="${dur}"` : ''}>
-              ${ls.title}
+                    data-lesson="${ls.id}" data-duration="${dur}">
+              ${chapter} ${ls.title}
             </button>
             ${contentHTML}
           </li>
         `;
       }).join('');
-  
-      // 美化按鈕
+    
+      // 這一步會自動轉成「章節＋標題＋meta」結構
       enhanceLessonsUI(targetSec);
-  
+    
       // 沒內容的按鈕 → 不顯示箭頭
       targetSec.querySelectorAll('li').forEach(li => {
         const btn = li.querySelector('.lesson-toggle');
         const content = li.querySelector('.lesson-content');
         if (btn && !content) btn.classList.add('no-content');
       });
-  
-      // 預設展開第一個有內容的單元（針對當前容器）
+    
+      // 預設展開第一個有內容的單元
       expandFirstLessonIfAny(isOneDay ? '#lessons-one-day' : '#lessons');
     }
+
   }
 
   // ---- 系列課補充：課程節數 & 總時數 ----
