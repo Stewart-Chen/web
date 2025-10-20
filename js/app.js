@@ -396,7 +396,7 @@ async function loadCourse(){
         items.push({
           key: 'total_duration',
           label: '活動時長',
-          value: `約 ${totalDayHrs} 小時（含午休）`,
+          value: `共 ${totalDayHrs} 小時（含午休）`,
           icon: 'calendar'
         });
       } else {
