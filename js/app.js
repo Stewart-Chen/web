@@ -264,6 +264,22 @@ async function loadCourse(){
 
   if (error) { console.error(error); return; }
   if (!course) { if (titleEl) titleEl.textContent = '找不到課程或尚未發佈'; return; }
+
+  // === 根據方案類型設定不同 class ===
+  const infoWrap = document.getElementById('course-info');
+  if (infoWrap && course.plan_type) {
+    // 先清除舊 class
+    infoWrap.classList.remove('is-series', 'is-one-day', 'is-unknown');
+    // 根據方案類型加上新 class
+    if (course.plan_type === '系列課') {
+      infoWrap.classList.add('is-series');
+    } else if (course.plan_type === '一日工作坊') {
+      infoWrap.classList.add('is-one-day');
+    } else {
+      infoWrap.classList.add('is-unknown');
+    }
+  }
+
   if (titleEl) titleEl.textContent = course.title;
   if (summaryEl) summaryEl.textContent = course.summary || '—';
 
