@@ -137,7 +137,7 @@ function enhanceLessonsUI(root = document){
       const durationStr = `${fmt(startH, startM)}~${fmt(endH, endM)}`;
     
       amBtn.innerHTML = `
-        <span class="chapter">上午時段</span>
+        <span class="chapter">上午主題</span>
         <span class="title">${rawTitle}</span>
         <span class="meta">${durHrs ? `<span class="duration">${durationStr}</span>` : ''}</span>
       `;
@@ -171,7 +171,7 @@ function enhanceLessonsUI(root = document){
       const durationStr = `${fmt(startH, startM)}~${fmt(endH, endM)}`;
 
       pmBtn.innerHTML = `
-        <span class="chapter">下午時段</span>
+        <span class="chapter">下午主題</span>
         <span class="title">${rawTitle}</span>
         <span class="meta">${durHrs ? `<span class="duration">${durationStr}</span>` : ''}</span>
       `;
