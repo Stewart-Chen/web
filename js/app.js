@@ -589,8 +589,6 @@ function renderEquip(items){
       expandFirstLessonIfAny(isOneDay ? '#lessons-one-day' : '#lessons');
     }
 
-  }
-
   // ---- 系列課補充：課程節數 & 總時數 ----
   if (course.plan_type === '系列課') {
     const weeks = Array.isArray(lessons) ? lessons.length : 0;
