@@ -121,8 +121,12 @@ async function loadCourse(){
   const enrolledBadge = document.getElementById('enrolled-badge');
   const progressEl = document.getElementById('progress');
   const modal = document.getElementById('lesson-modal');
-  const summaryEl = document.getElementById('course-summary'); // ✅ 新增
-  const heroEl = document.getElementById('course-hero');       // ✅ 新增
+  const summaryEl = document.getElementById('course-summary'); 
+  const heroEl = document.getElementById('course-hero');
+  const lessonsElOneDay = document.getElementById('lessons-one-day');
+  const lessonsSecSeries = document.getElementById('lessons-section');
+  const lessonsSecOneDay = document.getElementById('lessons-section-one-day');
+
 
   if (!idParam || Number.isNaN(idNum)) {
     if (titleEl) titleEl.textContent = '找不到課程或尚未發佈';
@@ -138,9 +142,9 @@ async function loadCourse(){
     .is('deleted_at', null)
     .maybeSingle();
 
-  function expandFirstLessonIfAny(){
-    const firstContent = document.querySelector('#lessons .lesson-content');
-    if (!firstContent) return; // 沒有任何可展開內容就跳過
+  function expandFirstLessonIfAny(rootSel){
+    const firstContent = document.querySelector(`${rootSel} .lesson-content`);
+    if (!firstContent) return;
     firstContent.classList.remove('hidden');
     const li  = firstContent.closest('li');
     if (li) li.classList.add('open');
@@ -531,12 +535,25 @@ function renderEquip(items){
     .order('order_no');
   if (lsErr) { console.error(lsErr); return; }
   
+  const isOneDay = course.plan_type === '一日工作坊';
+  
   if (!lessons || lessons.length === 0){
-    $('#lessons-section')?.classList.add('hidden');
+    // 兩種區塊都關掉
+    lessonsSecSeries?.classList.add('hidden');
+    lessonsSecOneDay?.classList.add('hidden');
     $('#progress-section')?.classList.add('hidden');
-  } else if (lessonsEl){
-    $('#progress-section')?.classList.add('hidden');
-    lessonsEl.innerHTML = lessons.map((ls) => {
+  } else {
+    // 依課程類型決定要顯示的區塊 & 目標清單
+    const targetSec = isOneDay ? lessonsSecOneDay : lessonsSecSeries;
+    const hideSec   = isOneDay ? lessonsSecSeries : lessonsSecOneDay;
+    const targetOl  = isOneDay ? lessonsElOneDay  : lessonsEl;
+  
+    hideSec?.classList.add('hidden');
+    targetSec?.classList.remove('hidden');
+    $('#progress-section')?.classList.add('hidden'); // 一樣隱藏進度
+  
+    if (targetOl){
+      targetOl.innerHTML = lessons.map((ls) => {
         const dur = course.duration_hours ? `${course.duration_hours} 小時` : '';
         const contentHTML = ls.content
           ? `<div class="lesson-content hidden">${ls.content.replace(/\n/g, '<br>')}</div>`
@@ -551,18 +568,20 @@ function renderEquip(items){
           </li>
         `;
       }).join('');
-
-    enhanceLessonsUI(document);   // ← 這行：把按鈕包成「圓點 + 標題 + 時長」
-    
-    // 沒內容的按鈕 → 不顯示箭頭
-    document.querySelectorAll('#lessons li').forEach(li => {
-      const btn = li.querySelector('.lesson-toggle');
-      const content = li.querySelector('.lesson-content');
-      if (btn && !content) btn.classList.add('no-content');
-    });
-
-    // 預設展開第一個有內容的單元
-    expandFirstLessonIfAny();
+  
+      // 美化按鈕
+      enhanceLessonsUI(targetSec);
+  
+      // 沒內容的按鈕 → 不顯示箭頭
+      targetSec.querySelectorAll('li').forEach(li => {
+        const btn = li.querySelector('.lesson-toggle');
+        const content = li.querySelector('.lesson-content');
+        if (btn && !content) btn.classList.add('no-content');
+      });
+  
+      // 預設展開第一個有內容的單元（針對當前容器）
+      expandFirstLessonIfAny(isOneDay ? '#lessons-one-day' : '#lessons');
+    }
   }
 
   // ---- 系列課補充：課程節數 & 總時數 ----
@@ -706,19 +725,21 @@ function renderEquip(items){
   }
 
   // 啟用展開/收合
-  lessonsEl?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.lesson-toggle'); // ← 不要加 #lessons
-    if (!btn) return;
-  
-    const li = btn.closest('li');
-    const contentEl = li?.querySelector('.lesson-content');
-    if (!contentEl) return; // 沒內容就不切換
-  
-    const willOpen = contentEl.classList.contains('hidden');
-    contentEl.classList.toggle('hidden', !willOpen);
-    li.classList.toggle('open', willOpen);
-    btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-  });
+  function bindLessonToggle(container){
+    container?.addEventListener('click', (e) => {
+      const btn = e.target.closest('.lesson-toggle');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const contentEl = li?.querySelector('.lesson-content');
+      if (!contentEl) return;
+      const willOpen = contentEl.classList.contains('hidden');
+      contentEl.classList.toggle('hidden', !willOpen);
+      li.classList.toggle('open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    });
+  }
+  bindLessonToggle(lessonsEl);
+  bindLessonToggle(lessonsElOneDay);
 
   // (D) 點單元 → 完成標記
   /*lessonsEl?.addEventListener('click', async (e)=>{
