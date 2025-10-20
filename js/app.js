@@ -142,7 +142,7 @@ async function loadCourse(){
     .is('deleted_at', null)
     .maybeSingle();
 
-  function (rootSel){
+  function expandFirstLessonIfAny(rootSel){
     const firstContent = document.querySelector(`${rootSel} .lesson-content`);
     if (!firstContent) return;
     firstContent.classList.remove('hidden');
