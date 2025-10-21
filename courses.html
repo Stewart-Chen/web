@@ -121,7 +121,7 @@
     // 類型/老師：change 即更新
     cat?.addEventListener('change', () => {
       const v = (cat.value || '').trim();
-      window.setCourseFilter({ category: v || null });
+      window.setCourseFilter({ category: v ? [v] : null });
     });
     teacher?.addEventListener('change', () => {
       const v = (teacher.value || '').trim();
