@@ -2381,12 +2381,13 @@ textarea::placeholder {
     /* border-radius: 0; */
   }
   #teachers .course-card.card{
-   margin: 0px 10px;
+
    box-shadow: 0 6px 20px rgba(0,0,0,.05);
    border-radius: 10px;
   }
   #teachers .grid{
    gap: 8px;
+   padding: 0px 10px;
   }
   .teacher-card{
     margin: 0px 10px;
@@ -2611,3 +2612,9 @@ textarea::placeholder {
 #course-type .plan-type {
   margin: 6px 0 12px;
 }
+
+#teachers .grid{
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+#teachers .course-card .course-body{padding: 12px 0px 16px 12px;}
