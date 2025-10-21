@@ -1464,7 +1464,7 @@ window.renderCourses    = window.renderCourses    || renderCourses;
       const nextState = {
         page: 1,
         teacher: null,
-        category: category ? [category] : null,
+        category: '園藝',
         plan_type: null,    // 不帶方案（避免互相干擾）
         keyword: null,
         q: ''
