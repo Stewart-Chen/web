@@ -170,7 +170,6 @@ nav .dropdown:focus-within .dropbtn{
   display: grid;
   grid-template-columns: 56px 1fr;
   gap: 10px;
-  /* align-items: start; */
 }
 .feature .icon{
   width: 55px;
@@ -2343,7 +2342,7 @@ textarea::placeholder {
     background: none;
     box-shadow: none;
   }
-  .card{
+  .card:not(.feature-grid .card) {
     border-radius: 0;
     border: 0;
     background: #fff;
@@ -2353,7 +2352,8 @@ textarea::placeholder {
     border-radius: 0;
   }
   .feature-grid{
-    gap: 0px;
+    gap: 12px;
+    padding: 0px 18px;
   }
   .hero{
     background: linear-gradient(135deg, #e9f9f4, #ffffff);
