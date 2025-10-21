@@ -946,14 +946,13 @@ function renderEquip(items){
 
 // ========= 共用：課程卡片模板 =========
 function courseCardHTML(c){
-  const cat  = c.category ? (c.category === 'horti' ? '園藝' : '藝術') : '';
   const teacherNames = getTeacherNames(c);
   const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
   const showCatBadge = c.plan_type !== '一日工作坊' && !!c.category;
   const catBadgeHTML = showCatBadge
     ? `<img class="badge badgeImg"
-             src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
-             alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
+             src="${c.category === '園藝' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
+             alt="${c.category}">`
     : `
       <div class="badges-one-day">  
         <img class="badge badgeImg-one-day" src="/web/img/art_simple.png" alt="藝術">
@@ -1449,8 +1448,8 @@ window.renderCourses    = window.renderCourses    || renderCourses;
   if (!sec) return;
 
   const map = new Map([
-    ['園藝治療', 'horti'],
-    ['藝術療癒', 'art']
+    ['園藝治療', '園藝'],
+    ['藝術療癒', '藝術']
   ]);
 
   sec.querySelectorAll('article.feature.card').forEach(card => {
