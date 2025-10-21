@@ -991,6 +991,7 @@ function courseCardHTML(c){
           <p class="muted">${(c.summary || '').slice(0, 80)}</p>
           
           ${(c.duration_hours || Number.isFinite(c.course_fee) || (Array.isArray(c.keywords) && c.keywords.length)) ? `
+            /*
             ${Array.isArray(c.keywords) && c.keywords.length ? `
               <div class="meta-row keywords-row">
                 <span class="meta meta-kw">
@@ -1006,7 +1007,7 @@ function courseCardHTML(c){
                 </span>
               </div>
             ` : ``}
-            
+            */
             <div class="meta-row">
               ${teacherNames.length ? `<span class="meta">
                 ${teacherNames.map(n => `<span>${n}</span>`).join('×')}
