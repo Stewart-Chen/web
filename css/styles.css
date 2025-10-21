@@ -163,7 +163,7 @@ nav .dropdown:focus-within .dropbtn{
 /* ---- Feature（服務領域） ---- */
 .feature-grid{
   display: grid;
-  gap: 8px;
+  gap: 12px;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 .feature{
@@ -2353,7 +2353,7 @@ textarea::placeholder {
   }
   .feature-grid{
     gap: 12px;
-    padding: 0px 18px;
+    padding: 0px 10px;
   }
   .hero{
     background: linear-gradient(135deg, #e9f9f4, #ffffff);
@@ -2386,7 +2386,7 @@ textarea::placeholder {
    border-radius: 10px;
   }
   #teachers .grid{
-   gap: 8px;
+   gap: 10px;
    padding: 0px 10px;
   }
   .teacher-card{
@@ -2657,4 +2657,16 @@ textarea::placeholder {
     margin: 0;              /* 取消置中，不然會被壓回容器寬 */
     padding-right: 10px;    /* 這時候才會真的在最右邊留空 */
   }
+
+  .feature-grid{
+    grid-template-columns: none;            /* 取消固定欄數 */
+    grid-auto-flow: column;                 /* 讓卡片往橫向排 */
+    grid-auto-columns: min(90%, 320px);     /* 每張卡片寬度（可調） */
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;          /* 滑到卡片邊緣 */
+    scrollbar-width: none;                  /* Firefox 隱藏捲軸 */
+  }
+
 }
