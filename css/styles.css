@@ -2618,3 +2618,35 @@ textarea::placeholder {
  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
 #teachers .course-card .course-body{padding: 12px 0px 16px 12px;}
+
+.badges-one-day {
+  display: inline-block;
+  position: relative;
+  margin: 2px 0 0 5px;
+  align-self: start;
+}
+
+.course-card .title-row .badge.badgeImg-one-day {
+  width: 26px;
+  height: 26px;
+  border-radius: 0;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  background: none;       /* 移除背景 */
+  padding: 0;             /* 移除文字徽章的 padding */
+  border: none;           /* 不要邊框 */
+  /* align-self: end; */
+}
+
+/* 讓第一張往右疊在第二張上 */
+.course-card .title-row .badge.badgeImg-one-day:first-child {
+  margin-right: -13px; /* 往右疊 */
+  z-index: 2;          /* 第一張在上層 */
+}
+
+.course-card .title-row .badge.badgeImg-one-day:last-child {
+  z-index: 1;          /* 第二張在下層 */
+}
+
+
