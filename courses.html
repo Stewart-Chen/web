@@ -96,7 +96,10 @@
       const saved = sessionStorage.getItem('courseState');
       if (saved) {
         const st = JSON.parse(saved);
-        if (cat && st.category != null)    cat.value = st.category;
+        if (cat && st.category != null) {
+          const v = Array.isArray(st.category) ? st.category[0] : st.category;
+          cat.value = v ?? '';
+        }
         if (teacher && st.teacher != null) teacher.value = st.teacher;
         if (planType && st.plan_type != null) planType.value = st.plan_type;
         if (kw && typeof st.q === 'string') kw.value = st.q;
