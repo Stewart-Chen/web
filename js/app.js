@@ -966,20 +966,20 @@ function courseCardHTML(c){
              data-category="${c.category || ''}"
              data-teachers="${teacherNames.join(',')}">
   
-      <a href="course.html?id=${c.id}" class="course-link">
-        <div class="carousel" data-total="${imgs.length}" data-index="0">
-          <div class="track">
-            ${imgs.map((url, i) => `
-              <div class="slide"><img src="${url}" alt="${c.title} ${i+1}" loading="lazy" width="640" height="360"></div>
-            `).join('')}
-          </div>
-          ${imgs.length > 1 ? `
-            <button class="nav prev" aria-label="上一張">&#10094;</button>
-            <button class="nav next" aria-label="下一張">&#10095;</button>
-            <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
-          ` : ``}
-        </div> 
+      <div class="carousel" data-total="${imgs.length}" data-index="0">
+        <div class="track">
+          ${imgs.map((url, i) => `
+            <div class="slide"><img src="${url}" alt="${c.title} ${i+1}" loading="lazy" width="640" height="360"></div>
+          `).join('')}
+        </div>
+        ${imgs.length > 1 ? `
+          <button class="nav prev" aria-label="上一張">&#10094;</button>
+          <button class="nav next" aria-label="下一張">&#10095;</button>
+          <div class="indicator"><span class="current">1</span>/<span class="total">${imgs.length}</span></div>
+        ` : ``}
+      </div> 
       
+      <a href="course.html?id=${c.id}" class="course-link">
         <div class="course-body">
           <div class="title-row">
             <h3>${c.title}</h3>
