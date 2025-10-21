@@ -90,7 +90,19 @@
     const cat     = document.getElementById('cat');
     const teacher = document.getElementById('teacher');
     const planType = document.getElementById('planType');
-  
+
+    // ➕ 載入時，如果有保存的狀態，就把下拉選單顯示成相同值（純視覺同步）
+    try {
+      const saved = sessionStorage.getItem('courseState');
+      if (saved) {
+        const st = JSON.parse(saved);
+        if (cat && st.category != null)    cat.value = st.category;
+        if (teacher && st.teacher != null) teacher.value = st.teacher;
+        if (planType && st.plan_type != null) planType.value = st.plan_type;
+        if (kw && typeof st.q === 'string') kw.value = st.q;
+      }
+    } catch {}
+
     function debounce(fn, wait = 300) {
       let t; return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), wait); };
     }
