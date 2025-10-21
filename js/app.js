@@ -1466,7 +1466,7 @@ window.renderCourses    = window.renderCourses    || renderCourses;
         keyword: null,
         q: ''
       };
-      try { sessionStorage.setItem('courseState_handoff', JSON.stringify(nextState)); } catch {}
+      try { sessionStorage.setItem('courseState', JSON.stringify(nextState)); } catch {}
       location.href = 'courses.html';
     };
 
