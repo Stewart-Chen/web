@@ -2604,3 +2604,7 @@ textarea::placeholder {
   background: linear-gradient(135deg, #fafefe 0%, #f4fbfc 100%);
   box-shadow: 0 0 4px rgba(59, 179, 195, 0.05);
 }
+
+#course-type .card{
+  padding: 12px 24px;
+}
