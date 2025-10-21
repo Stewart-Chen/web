@@ -2696,8 +2696,8 @@ textarea::placeholder {
   bottom: 12px;
   right: 16px;
 
-  width: 28px;         /* 可依卡片大小微調 */
-  height: 28px;
+  width: 22px;         /* 可依卡片大小微調 */
+  height: 22px;
   color: var(--accent-color, #666);
 
   transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
