@@ -2607,8 +2607,16 @@ textarea::placeholder {
 }
 
 #course-type .card{
+  position: relative;
+  padding-bottom: 40px; /* 為箭頭留空間 */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   padding: 12px 24px;
 }
+#course-type .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
 #course-type .plan-type {
   margin: 6px 0 12px;
 }
