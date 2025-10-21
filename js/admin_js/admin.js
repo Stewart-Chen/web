@@ -256,7 +256,15 @@
     document.getElementById('ac-title').value     = c?.title ?? '';
     document.getElementById('ac-summary').value   = c?.summary ?? '';
     document.getElementById('ac-desc').value      = c?.description ?? '';
-    document.getElementById('ac-category').value  = c?.category ?? '';
+
+    {
+      const sel = document.getElementById('ac-category');
+      const catVal = Array.isArray(c?.category)
+        ? (c.category[0] ?? '')
+        : (c?.category ?? '');
+      if (sel) sel.value = catVal;
+    }
+
     document.getElementById('ac-published').checked = !!c?.published;
     document.getElementById('ac-people').value        = c?.capacity ?? '';
     document.getElementById('ac-duration').value      = c?.duration_hours ?? '';
@@ -396,7 +404,7 @@
       description:   $v('ac-desc')      || null,
       teachers:      teachers,                 // 新：text[]
       teacher:       (teachers[0] || null),    // 舊：第一位回填，保相容
-      category:      $v('ac-category'),
+      category:      (() => { const v = $v('ac-category'); return v ? [v] : null; })(),
       published:     $c('ac-published'),
       capacity:    toNum($v('ac-people')),        // int/nullable
       duration_hours:  toNum($v('ac-duration')),      // numeric/nullable
