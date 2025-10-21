@@ -954,7 +954,10 @@ function courseCardHTML(c){
     ? `<img class="badge badgeImg"
              src="${c.category === 'horti' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
              alt="${c.category === 'horti' ? '園藝' : '藝術'}">`
-    : ``;
+    : `
+      <img class="badge badgeImg" src="/web/img/garden_simple.png" alt="園藝">
+      <img class="badge badgeImg" src="/web/img/art_simple.png" alt="藝術">
+    `;
   
   return `
     <article class="course-card card"
