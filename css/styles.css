@@ -1323,7 +1323,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   word-break: break-word;
   overflow-wrap: anywhere;
   padding: 0px;
-  margin: 0 0 1px 0;
+  /* margin: 0 0 0px 0; */
 }
 
 /* ===== sticky chips bar ===== */
@@ -1538,7 +1538,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   display:flex;
   flex-wrap:wrap;
   gap: 0px 2px;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted, #666);
   padding: 0;
 }
