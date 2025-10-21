@@ -1442,3 +1442,39 @@ window.renderCourses    = window.renderCourses    || renderCourses;
   });
 })();
 
+// === 首頁：療癒領域卡片點擊 → 帶著 category 跳到課程頁 ===
+(function enableDomainJumpFromHome(){
+  const sec = document.querySelector('#domains .feature-grid');
+  if (!sec) return;
+
+  const map = new Map([
+    ['園藝治療', 'horti'],
+    ['藝術療癒', 'art']
+  ]);
+
+  sec.querySelectorAll('article.feature.card').forEach(card => {
+    const title = card.querySelector('h3')?.textContent.trim();
+    const category = map.get(title);
+    if (!category) return; // 安全防呆
+
+    const go = () => {
+      const nextState = {
+        page: 1,
+        teacher: null,
+        category,           // 'horti' | 'art'
+        plan_type: null,    // 不帶方案（避免互相干擾）
+        keyword: null,
+        q: ''
+      };
+      try { sessionStorage.setItem('courseState_handoff', JSON.stringify(nextState)); } catch {}
+      location.href = 'courses.html';
+    };
+
+    card.style.cursor = 'pointer';
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+    });
+  });
+})();
