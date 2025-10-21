@@ -2608,9 +2608,10 @@ textarea::placeholder {
 
 #course-type .card{
   position: relative;
+  //
   padding-bottom: 40px; /* 為箭頭留空間 */
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  padding: 12px 24px;
+  padding: 12px 24px 40px 24px;
 }
 #course-type .card:hover {
   transform: translateY(-3px);
