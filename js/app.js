@@ -1398,3 +1398,47 @@ window.renderCourses    = window.renderCourses    || renderCourses;
     return _orig(page, filters);
   };
 })();
+
+// === 首頁：課程方案卡片點擊 → 帶著方案類型跳到課程頁 ===
+(function enablePlanTypeJumpFromHome(){
+  const sec = document.querySelector('#course-type .feature-grid');
+  if (!sec) return;
+
+  const planMap = new Map([
+    ['一般課程', '課程'],
+    ['系列課程', '系列課'],
+    ['一日工作坊', '一日工作坊']
+  ]);
+
+  // 讓整張卡片可點
+  sec.querySelectorAll('article.card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.setAttribute('tabindex', '0'); // 鍵盤也可操作
+
+    const labelEl = card.querySelector('.badge.plan-type');
+    const raw = labelEl?.textContent.trim() || '';
+    const planType = planMap.get(raw) || null;
+
+    const go = () => {
+      // 建立要帶去課程頁的狀態（清掉其他既有條件）
+      const nextState = {
+        page: 1,
+        teacher: null,
+        category: null,
+        plan_type: planType, // 可能是「課程 / 系列課 / 一日工作坊」
+        keyword: null,
+        q: ''
+      };
+      try { sessionStorage.setItem('courseState', JSON.stringify(nextState)); } catch {}
+
+      // 前往課程頁
+      location.href = 'courses.html';
+    };
+
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+    });
+  });
+})();
+
