@@ -2670,3 +2670,28 @@ textarea::placeholder {
   }
 
 }
+
+.feature.card {
+  position: relative;
+  padding-bottom: 40px; /* 為箭頭留空間 */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.icon-arrow {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+
+  width: 28px;         /* 可依卡片大小微調 */
+  height: 28px;
+  color: var(--accent-color, #666);
+
+  transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+  opacity: 0.9;
+  pointer-events: none; /* 不干擾卡片點擊 */
+}
