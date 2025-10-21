@@ -946,12 +946,13 @@ function renderEquip(items){
 
 // ========= 共用：課程卡片模板 =========
 function courseCardHTML(c){
+  const cats = Array.isArray(c.category) ? c.category.filter(Boolean) : (c.category ? [c.category] : []);
   const teacherNames = getTeacherNames(c);
   const imgs = Array.isArray(c._galleryUrls) && c._galleryUrls.length ? c._galleryUrls : [];
-  const showCatBadge = c.plan_type !== '一日工作坊' && !!c.category;
+  const showCatBadge = c.plan_type !== '一日工作坊' && !!cats.length;
   const catBadgeHTML = showCatBadge
     ? `<img class="badge badgeImg"
-             src="${c.category === '園藝' ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
+             src="${Array.isArray(c.category) && c.category.includes('園藝') ? '/web/img/garden_simple.png' : '/web/img/art_simple.png'}"
              alt="${c.category}">`
     : `
       <div class="badges-one-day">  
@@ -1086,7 +1087,9 @@ async function renderCourses(page = 1, filters = {}){
     const t = String(filters.teacher).trim();
     query = query.or(`teacher.eq.${t},teachers.cs.{${t}}`);
   }
-  if (filters.category) query = query.eq('category', filters.category);
+  if (Array.isArray(filters.category) && filters.category.length) {
+    query = query.contains('category', filters.category);
+  }
   if (filters.plan_type) query = query.eq('plan_type', filters.plan_type);
   if (filters.keyword)   query = query.contains('keywords', [filters.keyword]);
 
@@ -1461,7 +1464,7 @@ window.renderCourses    = window.renderCourses    || renderCourses;
       const nextState = {
         page: 1,
         teacher: null,
-        category,           // 'horti' | 'art'
+        category, 
         plan_type: null,    // 不帶方案（避免互相干擾）
         keyword: null,
         q: ''
