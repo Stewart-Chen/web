@@ -2608,3 +2608,6 @@ textarea::placeholder {
 #course-type .card{
   padding: 12px 24px;
 }
+#course-type .plan-type {
+  margin: 8px 0;
+}
