@@ -1087,9 +1087,14 @@ async function renderCourses(page = 1, filters = {}){
     const t = String(filters.teacher).trim();
     query = query.or(`teacher.eq.${t},teachers.cs.{${t}}`);
   }
+  // ✅ category 是 text[] → 用 contains
   if (Array.isArray(filters.category) && filters.category.length) {
     query = query.contains('category', filters.category);
+  } else if (typeof filters.category === 'string' && filters.category.trim()) {
+    // 相容舊字串：包成陣列再查
+    query = query.contains('category', [filters.category.trim()]);
   }
+
   if (filters.plan_type) query = query.eq('plan_type', filters.plan_type);
   if (filters.keyword)   query = query.contains('keywords', [filters.keyword]);
 
