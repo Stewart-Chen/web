@@ -2641,7 +2641,7 @@ textarea::placeholder {
 
 /* 讓第一張往右疊在第二張上 */
 .course-card .title-row .badge.badgeImg-one-day:first-child {
-  margin-right: -13px; /* 往右疊 */
+  margin-right: -11px; /* 往右疊 */
   z-index: 2;          /* 第一張在上層 */
 }
 
@@ -2649,4 +2649,12 @@ textarea::placeholder {
   z-index: 1;          /* 第二張在下層 */
 }
 
-
+/* 手機：依內容寬度展開 + 右側留白 */
+@media (max-width: 720px){
+  .sticky-chips__inner_k{
+    width: max-content;     /* 關鍵：用內容撐寬 */
+    max-width: none;
+    margin: 0;              /* 取消置中，不然會被壓回容器寬 */
+    padding-right: 10px;    /* 這時候才會真的在最右邊留空 */
+  }
+}
