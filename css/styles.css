@@ -2692,3 +2692,92 @@ textarea::placeholder {
   opacity: 0.9;
   pointer-events: none; /* 不干擾卡片點擊 */
 }
+/* === 老師頁 Hero：等同課程頁設定 === */
+
+/* 1) 基本容器（對應 #course-info） */
+#teacher-hero {
+  position: relative;
+  border-radius: var(--radius);
+}
+
+/* 2) 置頂主圖容器（對應 #course-hero） */
+#teacher-cover {
+  margin-inline: auto;          /* 置中（與 #course-hero 一致） */
+  justify-self: center;         /* 若父層是 Grid，確保自己居中 */
+}
+
+/* 3) 共同尺寸/探出空間/變數（課程＋老師一起套用） */
+#course-info #course-hero,
+#teacher-hero #teacher-cover {
+  position: relative;
+  width: calc(100% + 40px);
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-top: -20px;
+  aspect-ratio: 16 / 9;
+  max-height: min(40vh);
+  overflow: visible;                     /* 讓探出的頭像不被裁掉 */
+  --hero-av-size: 110px;                 /* 頭像尺寸（可依需要調） */
+  --hero-av-gap: 12px;                   /* 並排間距（不想重疊時用） */
+  margin-bottom: calc(var(--hero-av-size) / 2 + 8px); /* 下方預留空間 */
+}
+
+/* 4) 圖片鋪滿容器 */
+#course-info #course-hero > img,
+#teacher-hero #teacher-cover > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px 10px 0 0;         /* 與課程頁一致的上圓角 */
+}
+
+/* 5) 若有多顆頭像（可選，用於探出效果） */
+#course-info #course-hero .hero-avatar,
+#teacher-hero #teacher-cover .hero-avatar {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+#course-info #course-hero .hero-avatar img,
+#teacher-hero #teacher-cover .hero-avatar img {
+  width: var(--hero-av-size);
+  height: var(--hero-av-size);
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  background: #fff;
+  object-fit: cover;
+  pointer-events: auto;
+  transition: transform .2s;
+}
+#course-info #course-hero .hero-avatar img + img,
+#teacher-hero #teacher-cover .hero-avatar img + img {
+  margin-left: -20px;
+}
+
+/* 6) 標題往下讓出頭像空間（與課程頁一致） */
+#teacher-hero header > #teacher-cover + * {
+  margin-top: calc(72px / 2 + 18px);
+}
+
+/* 7) 行動版高度與變數縮小 */
+@media (max-width: 720px){
+  #course-info #course-hero,
+  #teacher-hero #teacher-cover {
+    max-height: min(25vh);
+    --hero-av-size: 80px;
+    margin-bottom: calc(var(--hero-av-size) / 2 + 6px);
+  }
+  #course-info #course-hero .hero-avatar img + img,
+  #teacher-hero #teacher-cover .hero-avatar img + img {
+    margin-left: -15px;
+  }
+}
