@@ -1647,16 +1647,6 @@ textarea::placeholder {
   justify-self: center;          /* 若父層是 CSS Grid，確保自己居中 */
 }
 
-#course-info #course-hero{
-  position: relative;
-  width: calc(100% + 40px);   /* 40px = 左右 padding 各 20px */
-  margin-left: -20px;
-  margin-right: -20px;
-  margin-top: -20px;          /* 如果想讓主圖也頂住卡片上緣 */
-  aspect-ratio: 16 / 9;
-  max-height: min(40vh);
-}
-
 #course-info #course-hero img{
   width: 100%;
   height: 100%;
@@ -1665,8 +1655,6 @@ textarea::placeholder {
   object-position: center;
   border-radius: 10px 10px 0 0;
 }
-
-
 
 /* 讓下面標題往下讓出 avatar 的一半高度 */
 #course-info header > #course-hero + *{
