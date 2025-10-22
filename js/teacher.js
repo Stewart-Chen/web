@@ -150,7 +150,7 @@
           if (!url) return '';
           const kind = whichBrand(url);
           const label = ({
-            ig:'Instagram', fb:'Facebook', yt:'YouTube', x:'X', linktree:'Linktree', web:'網站'
+            ig:'Instagram', fb:'Facebook', yt:'YouTube', x:'X', linktree:'Linktree', web:'官網'
           })[kind] || '連結';
           return `
             <a class="chip chip-items link-chip" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer nofollow" title="${escapeHtml(url)}">
@@ -163,7 +163,7 @@
           infoList.insertAdjacentHTML('beforeend', `
             <div class="info-item" data-key="links">
               <div class="icon">${iconSVG('web')}</div>
-              <div class="label">社群／官網</div>
+              <div class="label">個人官網</div>
               <div class="value">
                 <span class="links">${chips}</span>
               </div>
