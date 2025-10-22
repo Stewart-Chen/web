@@ -2798,3 +2798,7 @@ textarea::placeholder {
 }
 .link-chip:hover { background: #f9fafb; }
 .link-chip svg { display:inline-block; vertical-align:middle; }
+
+#teacher-meta .badgeImg {
+  margin: 0;
+}
