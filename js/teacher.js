@@ -100,7 +100,29 @@
     const heroUrl =
       teacher.cover_url ||
       `https://picsum.photos/seed/teacher-${encodeURIComponent(teacher.id)}/1200/630`;
-    $id('teacher-cover').innerHTML = `<img src="${heroUrl}" alt="${escapeHtml(teacher.name)} 主圖" loading="eager" decoding="async">`;
+    
+    // 封面圖（優先 cover_url）
+    const heroUrl =
+      teacher.cover_url ||
+      `https://picsum.photos/seed/teacher-${encodeURIComponent(teacher.id)}/1200/630`;
+    $id('teacher-cover').innerHTML = `
+      <img src="${heroUrl}" alt="${escapeHtml(teacher.name)} 主圖" loading="eager" decoding="async">
+      <div class="hero-avatar" id="teacher-avatar"></div>
+    `;
+    
+    // 插入老師頭像
+    const avatarEl = $id('teacher-avatar');
+    if (avatarEl) {
+      // 來源優先順序：teacher.avatar_url → 自訂圖片 → 預設圖
+      let avatarSrc = teacher.avatar_url || '';
+      if (!avatarSrc) {
+        if (teacher.name === '汎汎') avatarSrc = '/web/img/fan_o.jpg';
+        else if (teacher.name === '小D') avatarSrc = '/web/img/dd_o.jpg';
+        else avatarSrc = '/web/img/default.jpg';
+      }
+      avatarEl.innerHTML = `<img src="${avatarSrc}" alt="${escapeHtml(teacher.name)} 縮圖">`;
+    }
+
 
     // 3) 老師介紹 & 資訊（類別 / 信箱 / 連結）
     $id('teacher-desc').textContent = teacher.description || '—';
