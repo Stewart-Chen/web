@@ -6,8 +6,14 @@
 
   function getParam(name){ return new URLSearchParams(location.search).get(name); }
 
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[m]);
+  }
+
   function badgeHTML(txt, extraClass=''){
-    return `<span class="badge ${extraClass}">${txt}</span>`;
+    return `<span class="badge ${extraClass}">${escapeHtml(txt)}</span>`;
   }
 
   function planTypeClass(pt){
@@ -16,11 +22,61 @@
     return (pt || '').trim().replace(/\s+/g,'-').toLowerCase();
   }
 
+  // -------- Links / Icons 工具 --------
+  function normalizeUrl(u){
+    if (!u) return null;
+    const s = String(u).trim();
+    if (!s) return null;
+    if (/^https?:\/\//i.test(s)) return s;
+    if (/^[a-z]+:/i.test(s)) return s; // 其他 schema
+    return 'https://' + s;             // 預設補 https
+  }
+  function whichBrand(url){
+    try{
+      const u = new URL(url);
+      const h = u.hostname.replace(/^www\./,'').toLowerCase();
+      if (h.includes('instagram.com')) return 'ig';
+      if (h.includes('facebook.com') || h === 'fb.me') return 'fb';
+      if (h.includes('youtube.com') || h === 'youtu.be') return 'yt';
+      if (h.includes('x.com') || h.includes('twitter.com')) return 'x';
+      if (h.includes('linktr.ee')) return 'linktree';
+      return 'web';
+    }catch{ return 'web'; }
+  }
+  function iconSVG(kind, size=18){
+    switch (kind){
+      case 'mail':
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>`;
+      case 'ig':
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>`;
+      case 'fb':
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.01 3.66 9.16 8.44 9.94v-7.03H7.9v-2.9h2.54V9.41c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.78 8.44-4.93 8.44-9.94z"/></svg>`;
+      case 'yt':
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .6 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .6-5.8 31 31 0 0 0-.6-5.8zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>`;
+      case 'x':
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 2h3l-7.5 8.5L22 22h-7l-5-6-5 6H2l8.5-9.5L2 2h7l4.5 5L18 2z"/></svg>`;
+      case 'linktree':
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2l3.5 4H14v5h-4V6H8.5L12 2zm0 12a3 3 0 0 1 3 3v5h-6v-5a3 3 0 0 1 3-3z"/></svg>`;
+      default:
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20"/></svg>`;
+    }
+  }
+
   async function loadTeacher(){
     const idParam   = getParam('id');
     const nameParam = getParam('name')?.trim();
 
-    // 1) 讀取老師資訊：先用 id，再用 name
+    // 1) 讀取老師資訊：先用 id，再用 name（* 已含 email / links 欄位 *）
     let teacher = null;
 
     if (idParam && /^\d+$/.test(idParam)) {
@@ -41,20 +97,19 @@
     $id('teacher-name').textContent = teacher.name;
     $id('teacher-summary').textContent = teacher.summary || '—';
 
-    // 封面圖（優先 cover_url）
     const heroUrl =
       teacher.cover_url ||
       `https://picsum.photos/seed/teacher-${encodeURIComponent(teacher.id)}/1200/630`;
-    $id('teacher-cover').innerHTML = `<img src="${heroUrl}" alt="${teacher.name} 主圖" loading="eager" decoding="async">`;
+    $id('teacher-cover').innerHTML = `<img src="${heroUrl}" alt="${escapeHtml(teacher.name)} 主圖" loading="eager" decoding="async">`;
 
-    // 3) 老師介紹 & 類別徽章
+    // 3) 老師介紹 & 資訊（類別 / 信箱 / 連結）
     $id('teacher-desc').textContent = teacher.description || '—';
 
     const infoList = $id('teacher-info-list');
     if (infoList){
       infoList.innerHTML = '';
 
-      // 類別（你目前 teachers.category 是 text 單值；若未來改成陣列也可顯示多個）
+      // 類別（你目前 teachers.category 是 text；若改成 text[] 也可顯示多個）
       const cats = Array.isArray(teacher.category)
         ? teacher.category
         : (teacher.category ? [teacher.category] : []);
@@ -70,6 +125,51 @@
             </div>
           </div>
         `);
+      }
+
+      // 聯絡信箱（若有）
+      if (teacher.email){
+        const mail = String(teacher.email).trim();
+        const mailHtml = `
+          <div class="info-item" data-key="email">
+            <div class="icon">${iconSVG('mail')}</div>
+            <div class="label">聯絡信箱</div>
+            <div class="value">
+              <a href="mailto:${encodeURIComponent(mail)}" class="link" rel="nofollow">${escapeHtml(mail)}</a>
+            </div>
+          </div>
+        `;
+        infoList.insertAdjacentHTML('beforeend', mailHtml);
+      }
+
+      // 社群 / 官網連結（text[]）
+      const links = Array.isArray(teacher.links) ? teacher.links.filter(Boolean) : [];
+      if (links.length){
+        const chips = links.map(raw => {
+          const url = normalizeUrl(raw);
+          if (!url) return '';
+          const kind = whichBrand(url);
+          const label = ({
+            ig:'Instagram', fb:'Facebook', yt:'YouTube', x:'X', linktree:'Linktree', web:'網站'
+          })[kind] || '連結';
+          return `
+            <a class="chip chip-items link-chip" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer nofollow" title="${escapeHtml(url)}">
+              ${iconSVG(kind, 14)}&nbsp;${label}
+            </a>
+          `;
+        }).join('');
+
+        if (chips.trim()){
+          infoList.insertAdjacentHTML('beforeend', `
+            <div class="info-item" data-key="links">
+              <div class="icon">${iconSVG('web')}</div>
+              <div class="label">社群／官網</div>
+              <div class="value">
+                <span class="links">${chips}</span>
+              </div>
+            </div>
+          `);
+        }
       }
     }
 
@@ -115,8 +215,7 @@
     const moreBtn = $id('btn-more-courses');
     if (moreBtn){
       moreBtn.classList.remove('hidden');
-      moreBtn.addEventListener('click', (e)=>{
-        // 設定課程頁的狀態：只看此老師
+      moreBtn.addEventListener('click', ()=>{
         const nextState = {
           page: 1,
           teacher: teacher.name,
