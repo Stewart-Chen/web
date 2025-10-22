@@ -52,112 +52,145 @@
 
   <!-- 頁面專用腳本：載入與渲染 -->
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const grid  = document.getElementById('teacher-grid');
-      const empty = document.getElementById('empty');
-      const count = document.getElementById('count');
-      const q     = document.getElementById('q');
-      const btnClear = document.getElementById('btn-clear');
-      const form  = document.getElementById('teacher-filters');
+  document.addEventListener('DOMContentLoaded', async () => {
+    const sb    = window.sb; // ← 重要：取用 shared-layout.js 初始化好的 Supabase client
+    const grid  = document.getElementById('teacher-grid');
+    const empty = document.getElementById('empty');
+    const count = document.getElementById('count');
+    const q     = document.getElementById('q');
+    const form  = document.getElementById('teacher-filters');
 
-      // 取得師資資料
-      async function fetchTeachers() {
-        try {
-          const { data, error } = await sb
-            .from('teachers')
-            .select('code, name, title, bio, avatar_url, tags')
-            .order('name', { ascending: true });
-          if (error) throw error;
-          return data || [];
-        } catch (err) {
-          console.error(err);
-          return [];
-        }
+    // 安全防呆
+    if (!sb || typeof sb.from !== 'function') {
+      console.warn('Supabase 尚未初始化');
+      empty.classList.remove('hidden');
+      count.textContent = '0 位師資';
+      return;
+    }
+
+    // 取得師資資料（新版欄位）
+    async function fetchTeachers() {
+      try {
+        const { data, error } = await sb
+          .from('teachers')
+          .select('id,name,category,summary,description,cover_url,created_at')
+          .order('name', { ascending: true });
+        if (error) throw error;
+        return data || [];
+      } catch (err) {
+        console.error('[teachers] load error:', err);
+        return [];
       }
+    }
 
-      // 產生卡片
-      function renderCard(t) {
-        const div = document.createElement('div');
-        div.className = 'teacher-card';
+    function escapeHtml(s){
+      return String(s || '').replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      })[m]);
+    }
 
-        // Avatar：有圖片就用圖片，否則用首字
-        let avatarHTML = '';
-        if (t.avatar_url) {
-          avatarHTML = `<div class="avatar" style="overflow:hidden;">
-              <img src="${t.avatar_url}" alt="${t.name} 的照片" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
-            </div>`;
-        } else {      
-          if (t.name === "汎汎") {
-            avatarHTML = `<img class="avatar" src="/web/img/fan_o.jpg" alt="使用者頭像">`;
-          } else if (t.name === "小D") {
-            avatarHTML = `<img class="avatar" src="/web/img/dd_o.jpg" alt="使用者頭像">`;
-          } else {
-            avatarHTML = `<img class="avatar" src="/web/img/default.jpg" alt="使用者頭像">`;
-          }
-        }
+    function badge(txt){ return `<span class="badge plan-type">${escapeHtml(txt)}</span>`; }
 
-        // 標籤
-        const tags = Array.isArray(t.tags) ? t.tags : [];
-        const badges = tags.map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join('');
+    function coverFor(t){
+      if (t.cover_url) return t.cover_url;
+      if (t.name === '汎汎') return '/web/img/fan_o.jpg';
+      if (t.name === '小D')  return '/web/img/dd_o.jpg';
+      return `https://picsum.photos/seed/teacher-${encodeURIComponent(t.id || t.name)}/640/360`;
+    }
 
-        div.innerHTML = `
-          ${avatarHTML}
-          <div class="info">
-            <h4 class="subtitle">${escapeHtml(t.name || '')}</h4>
-            <p class="bio muted">${escapeHtml(t.title || '')}</p>
-            <p class="bio">${escapeHtml(t.bio || '')}</p>
-            <div class="badges">${badges}</div>
-            <div class="cta">
-              <a class="btn secondary" href="courses.html#courses">相關課程</a>
+    // 產生卡片（沿用你的視覺語言，用 course-card 樣式看起來更一致）
+    function renderCard(t) {
+      const cats = Array.isArray(t.category) ? t.category.filter(Boolean)
+                : (t.category ? [t.category] : []);
+      const catBadges = cats.map(c => badge(c)).join(' ');
+
+      const html = `
+        <a href="teacher.html?id=${t.id}" class="course-link">
+          <article class="course-card card">
+            <div class="carousel">
+              <div class="track">
+                <div class="slide">
+                  <img src="${coverFor(t)}" alt="${escapeHtml(t.name)}" loading="lazy" width="640" height="360">
+                </div>
+              </div>
             </div>
-          </div>
-        `;
-        return div;
-      }
-
-      function escapeHtml(s){
-        return String(s || '').replace(/[&<>"']/g, m => ({
-          '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-        })[m]);
-      }
-
-      // 渲染整個列表
-      function renderList(list){
-        grid.innerHTML = '';
-        if (!list.length) {
-          empty.classList.remove('hidden');
-          count.textContent = '0 位師資';
-          grid.setAttribute('aria-busy', 'false');
-          return;
-        }
-        empty.classList.add('hidden');
-        list.forEach(t => grid.appendChild(renderCard(t)));
-        count.textContent = `${list.length} 位師資`;
-        grid.setAttribute('aria-busy', 'false');
-      }
-
-      // 初次載入
-      const ALL = await fetchTeachers();
-      renderList(ALL);
-
-      // 關鍵字過濾（姓名 / title / bio / tags）
-      function filterNow(){
-        const keyword = (q.value || '').trim().toLowerCase();
-        if (!keyword) return renderList(ALL);
-        const filtered = ALL.filter(t => {
-          const hay = [
-            t.name, t.title, t.bio,
-            ...(Array.isArray(t.tags) ? t.tags : [])
-          ].join(' ').toLowerCase();
-          return hay.includes(keyword);
+            <div class="course-body">
+              <div class="title-row">
+                <h3>${escapeHtml(t.name)}</h3>
+                ${catBadges}
+              </div>
+              <p class="muted">${escapeHtml(t.summary || '—')}</p>
+              <div class="meta-row" style="gap:8px;flex-wrap:wrap;">
+                <a class="btn secondary" href="teacher.html?id=${t.id}">查看介紹</a>
+                <a class="btn" href="courses.html" data-teacher="${escapeHtml(t.name)}">相關課程</a>
+              </div>
+            </div>
+          </article>
+        </a>
+      `;
+      const wrap = document.createElement('div');
+      wrap.innerHTML = html;
+      // 幫「相關課程」按鈕帶過濾條件到 courses.html（沿用 app.js 的 sessionStorage 狀態）
+      const a = wrap.querySelector('a.btn[data-teacher]');
+      if (a){
+        a.addEventListener('click', (e)=>{
+          const nextState = {
+            page: 1,
+            teacher: a.dataset.teacher,
+            category: null,
+            plan_type: null,
+            keyword: null,
+            q: ''
+          };
+          try { sessionStorage.setItem('courseState', JSON.stringify(nextState)); } catch {}
         });
-        renderList(filtered);
       }
+      return wrap.firstElementChild;
+    }
 
-      form?.addEventListener('submit', e => { e.preventDefault(); filterNow(); });
-      btnClear?.addEventListener('click', () => { q.value=''; filterNow(); });
-    });
-  </script>
+    function renderList(list){
+      grid.innerHTML = '';
+      grid.setAttribute('aria-busy', 'true');
+
+      if (!list.length) {
+        empty.classList.remove('hidden');
+        count.textContent = '0 位師資';
+        grid.setAttribute('aria-busy', 'false');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      const frag = document.createDocumentFragment();
+      list.forEach(t => frag.appendChild(renderCard(t)));
+      grid.appendChild(frag);
+
+      count.textContent = `${list.length} 位師資`;
+      grid.setAttribute('aria-busy', 'false');
+    }
+
+    // 初次載入
+    const ALL = await fetchTeachers();
+    renderList(ALL);
+
+    // 關鍵字過濾（支援：姓名 / summary / description / category）
+    function filterNow(){
+      const keyword = (q.value || '').trim().toLowerCase();
+      if (!keyword) return renderList(ALL);
+      const filtered = ALL.filter(t => {
+        const cats = Array.isArray(t.category) ? t.category.join(' ') : (t.category || '');
+        const hay = [
+          t.name, t.summary, t.description, cats
+        ].join(' ').toLowerCase();
+        return hay.includes(keyword);
+      });
+      renderList(filtered);
+    }
+
+    form?.addEventListener('submit', e => { e.preventDefault(); filterNow(); });
+    q?.addEventListener('input', () => { filterNow(); });
+  });
+</script>
+
 </body>
 </html>
 
