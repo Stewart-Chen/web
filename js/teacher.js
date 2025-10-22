@@ -96,11 +96,7 @@
     // 2) Hero / 基本
     $id('teacher-name').textContent = teacher.name;
     $id('teacher-summary').textContent = teacher.summary || '—';
-
-    const heroUrl =
-      teacher.cover_url ||
-      `https://picsum.photos/seed/teacher-${encodeURIComponent(teacher.id)}/1200/630`;
-    
+ 
     // 封面圖（優先 cover_url）
     const heroUrl =
       teacher.cover_url ||
