@@ -2785,3 +2785,16 @@ textarea::placeholder {
   white-space: pre-line;
     padding: 0.5rem 1rem 0.5rem 0.5rem;
 }
+
+.link-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 12px;
+}
+.link-chip:hover { background: #f9fafb; }
+.link-chip svg { display:inline-block; vertical-align:middle; }
