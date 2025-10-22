@@ -93,8 +93,8 @@
 
     function coverFor(t){
       if (t.cover_url) return t.cover_url;
-      if (t.name === '汎汎') return '/web/img/fan_o.jpg';
-      if (t.name === '小D')  return '/web/img/dd_o.jpg';
+      if (t.name === '汎汎') return '/web/img/fan.jpg';
+      if (t.name === '小D')  return '/web/img/dd.jpg';
       return `https://picsum.photos/seed/teacher-${encodeURIComponent(t.id || t.name)}/640/360`;
     }
 
