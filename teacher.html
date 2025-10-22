@@ -1,0 +1,70 @@
+<!-- /web/teacher.html -->
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>老師介紹｜HeartHub Studio 心聚坊</title>
+
+  <link rel="icon" href="img/logo.png" sizes="16x16" type="image/png">
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&family=Noto+Serif+TC:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/shared-layout.js"></script>
+  <script defer src="js/shared-dialog.js"></script>
+  <!-- 重要：沿用 app.js 的工具（courseCardHTML、toPublicUrls） -->
+  <script defer src="js/app.js"></script>
+  <script defer src="js/teacher.js"></script>
+
+  <noscript>
+    <style>.need-js{display:none}.nojs{display:block;padding:12px;background:#fff3cd;border:1px solid #ffeeba;border-radius:8px}</style>
+  </noscript>
+</head>
+<body>
+  <main class="container flow-lg">
+    <!-- Hero -->
+    <section id="teacher-hero" class="hero card">
+      <button id="back-btn" class="icon-btn back-in-hero" aria-label="上一頁" title="上一頁">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <header>
+        <div id="teacher-cover" class="hero-img" aria-label="老師主圖" style="padding:0;border:none"></div>
+        <h2 id="teacher-name">讀取中…</h2>
+        <p id="teacher-summary" class="muted">—</p>
+      </header>
+    </section>
+
+    <!-- 老師介紹 & 類別 -->
+    <aside class="card teacher-box">
+      <div class="course-info__title course-info">老師介紹</div>
+      <p id="teacher-desc" class="muted">請稍候，正在載入老師介紹。</p>
+
+      <section id="teacher-meta" class="flow-sm" style="margin-top:12px;">
+        <div class="course-info__title">資訊</div>
+        <div class="info-list" id="teacher-info-list">
+          <!-- 這裡放 類別徽章 / 其他資訊 -->
+        </div>
+      </section>
+    </aside>
+
+    <!-- 該老師的課程 -->
+    <section id="teacher-courses" class="flow-md">
+      <div class="section-head">
+        <h2>該老師的課程</h2>
+        <a id="btn-more-courses" class="link-more hidden muted" href="/web/courses.html" aria-label="更多課程">
+          更多<span class="chev">›</span>
+        </a>
+      </div>
+      <div id="teacher-courses-list" class="grid"></div>
+      <div id="teacher-courses-empty" class="muted hidden">目前尚無課程。</div>
+    </section>
+
+    <p class="nojs" style="display:none;">你的瀏覽器未啟用 JavaScript，本頁功能將無法使用。</p>
+  </main>
+</body>
+</html>
