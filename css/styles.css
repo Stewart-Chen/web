@@ -2781,3 +2781,7 @@ textarea::placeholder {
     margin-left: -15px;
   }
 }
+#teacher-desc.muted {
+  white-space: pre-line;
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+}
