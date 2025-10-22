@@ -99,54 +99,59 @@
     }
 
     // 產生卡片（沿用你的視覺語言，用 course-card 樣式看起來更一致）
-    function renderCard(t) {
-      const cats = Array.isArray(t.category) ? t.category.filter(Boolean)
-                : (t.category ? [t.category] : []);
-      const catBadges = cats.map(c => badge(c)).join(' ');
+function renderCard(t) {
+  const cats = Array.isArray(t.category) ? t.category.filter(Boolean)
+            : (t.category ? [t.category] : []);
+  const catBadges = cats.map(c => badge(c)).join(' ');
 
-      const html = `
-        <a href="teacher.html?id=${t.id}" class="course-link">
-          <article class="course-card card">
-            <div class="carousel">
-              <div class="track">
-                <div class="slide">
-                  <img src="${coverFor(t)}" alt="${escapeHtml(t.name)}" loading="lazy" width="640" height="360">
-                </div>
-              </div>
-            </div>
-            <div class="course-body">
-              <div class="title-row">
-                <h3>${escapeHtml(t.name)}</h3>
-                ${catBadges}
-              </div>
-              <p class="muted">${escapeHtml(t.summary || '—')}</p>
-              <div class="meta-row" style="gap:8px;flex-wrap:wrap;">
-                <a class="btn secondary" href="teacher.html?id=${t.id}">查看介紹</a>
-                <a class="btn" href="courses.html" data-teacher="${escapeHtml(t.name)}">相關課程</a>
-              </div>
-            </div>
-          </article>
-        </a>
-      `;
-      const wrap = document.createElement('div');
-      wrap.innerHTML = html;
-      // 幫「相關課程」按鈕帶過濾條件到 courses.html（沿用 app.js 的 sessionStorage 狀態）
-      const a = wrap.querySelector('a.btn[data-teacher]');
-      if (a){
-        a.addEventListener('click', (e)=>{
-          const nextState = {
-            page: 1,
-            teacher: a.dataset.teacher,
-            category: null,
-            plan_type: null,
-            keyword: null,
-            q: ''
-          };
-          try { sessionStorage.setItem('courseState', JSON.stringify(nextState)); } catch {}
-        });
-      }
-      return wrap.firstElementChild;
-    }
+  const html = `
+    <article class="course-card card">
+      <div class="carousel">
+        <div class="track">
+          <div class="slide">
+            <img src="${coverFor(t)}" alt="${escapeHtml(t.name)}" loading="lazy" width="640" height="360">
+          </div>
+        </div>
+      </div>
+      <div class="course-body">
+        <div class="title-row">
+          <h3>${escapeHtml(t.name)}</h3>
+          ${catBadges}
+        </div>
+        <p class="muted">${escapeHtml(t.summary || '—')}</p>
+        <div class="meta-row" style="gap:8px;flex-wrap:wrap;">
+          <a class="btn secondary" href="teacher.html?id=${t.id}">查看介紹</a>
+          <a class="btn" href="courses.html" data-teacher="${escapeHtml(t.name)}">相關課程</a>
+        </div>
+      </div>
+    </article>
+  `;
+
+  // 這裡包在 <a> 外層，並確保 innerHTML 塞入
+  const link = document.createElement('a');
+  link.href = `teacher.html?id=${t.id}`;
+  link.className = 'course-link';
+  link.innerHTML = html;
+
+  // 幫「相關課程」按鈕綁定事件
+  const btn = link.querySelector('a.btn[data-teacher]');
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      const nextState = {
+        page: 1,
+        teacher: btn.dataset.teacher,
+        category: null,
+        plan_type: null,
+        keyword: null,
+        q: ''
+      };
+      try { sessionStorage.setItem('courseState', JSON.stringify(nextState)); } catch {}
+    });
+  }
+
+  return link;
+}
+
 
     function renderList(list){
       grid.innerHTML = '';
