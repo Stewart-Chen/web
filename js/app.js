@@ -877,9 +877,9 @@ function renderEquip(items){
               message: message                       // ← 新增：存留言
             });
 
-          if (insErr){ console.error(insErr); alert('報名失敗：' + insErr.message); return; }
+          if (insErr){ console.error(insErr); alert('報名失敗：' + insErr.message + '\n\n有任何疑問請洽汎汎: fun790327@gmail.com'); return; }
 
-          alert('報名成功！');
+          alert('報名成功！\n\n有任何疑問請洽汎汎: fun790327@gmail.com');
           dlg.close();
 
       
