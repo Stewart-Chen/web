@@ -1346,7 +1346,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .chip{
   flex: 0 0 auto;
   padding: 4px 12px;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
@@ -2085,8 +2085,6 @@ textarea::placeholder {
 .chip-items {
   padding: 4px 8px;
   border-radius: 10px;
-  /* background: var(--mint-50); */
-  /* color: var(--ink); */
   font-size: 14px;
 }
 
@@ -2382,7 +2380,8 @@ textarea::placeholder {
     margin: 0px 10px;
   }
   #enroll-btn{
-   padding: 12px 106px;
+   padding: 12px 90px;
+   font-size: 16px;
   }
   #course-info {margin: 10px 10px;}
   .lessons-content .lesson-toggle::before {
@@ -2499,7 +2498,7 @@ textarea::placeholder {
 /* 系列課 chip 樣式 */
 .is-series .chip.chip-items {
   background-color: #e9f7eb;     /* 淡綠底 */
-  border: 1px solid #c8e6ca;     /* 柔綠邊框 */
+  border: 2px solid #c8e6ca;     /* 柔綠邊框 */
   color: #2e7d32;                /* 深綠文字 */
 }
 
