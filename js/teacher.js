@@ -46,29 +46,40 @@
   function iconSVG(kind, size=18){
     switch (kind){
       case 'mail':
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#EA4335">
           <path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>`;
+
       case 'ig':
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#E4405F">
+          <rect x="3" y="3" width="18" height="18" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <circle cx="17.5" cy="6.5" r="1.5"/></svg>`;
+      
       case 'fb':
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#1877F2">
           <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.01 3.66 9.16 8.44 9.94v-7.03H7.9v-2.9h2.54V9.41c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.78 8.44-4.93 8.44-9.94z"/></svg>`;
+      
       case 'yt':
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#FF0000">
           <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .6 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .6-5.8 31 31 0 0 0-.6-5.8zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>`;
+      
       case 'x':
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#000000">
           <path d="M18 2h3l-7.5 8.5L22 22h-7l-5-6-5 6H2l8.5-9.5L2 2h7l4.5 5L18 2z"/></svg>`;
+      
       case 'linktree':
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor">
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#43E55E">
           <path d="M12 2l3.5 4H14v5h-4V6H8.5L12 2zm0 12a3 3 0 0 1 3 3v5h-6v-5a3 3 0 0 1 3-3z"/></svg>`;
+
       default:
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20"/></svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" fill="#F4F4F4"/>
+          <path fill="#EA4335" d="M12 2a10 10 0 0 1 8.66 5H12z"/>
+          <path fill="#FBBC04" d="M20.66 7A10 10 0 0 1 12 22l4.33-7.5z"/>
+          <path fill="#34A853" d="M7.67 14.5 12 22A10 10 0 0 1 3.34 7h8.66z"/>
+          <circle cx="12" cy="12" r="4.5" fill="#4285F4"/>
+        </svg>`;
+
     }
   }
 
