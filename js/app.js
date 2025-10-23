@@ -888,6 +888,7 @@ function renderEquip(items){
               phone: phone,
               line_id: line || null,
               user_id: getUser()?.id || null
+              user_email: getUser()?.email || null
             }
           });
           if (fnErr) {
