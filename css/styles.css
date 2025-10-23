@@ -2510,7 +2510,7 @@ textarea::placeholder {
 /* 一日工作坊 chip 樣式 */
 .is-one-day .chip.chip-items {
   background-color: #edfafa;     /* 淡青底 */
-  border: 1px solid #cceef1;     /* 淡藍邊框 */
+  border: 2px solid #cceef1;     /* 淡藍邊框 */
   color: #006f7d;                /* 深青文字 */
 }
 
