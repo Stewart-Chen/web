@@ -169,7 +169,7 @@ nav .dropdown:focus-within .dropbtn{
 .feature{
   display: grid;
   grid-template-columns: 56px 1fr;
-  gap: 8px;
+  gap: 6px;
 }
 .feature .icon{
   width: 50px;
@@ -1055,7 +1055,7 @@ body.menu-open .hamburger{
 
 /* === Typography: h3 / h4 / p（品牌藍綠風） === */
 h3{
-  font-size: 0.9rem;            /* ≈18px，低於你的 h2: 1.25rem */
+  font-size: 16px;            /* ≈18px，低於你的 h2: 1.25rem */
   font-weight: 600;
   color: #333;       /* 綠色主題做層級 */
   letter-spacing: .4px;
@@ -1538,7 +1538,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   display:flex;
   flex-wrap:wrap;
   gap: 0px 2px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted, #666);
   padding: 0;
 }
