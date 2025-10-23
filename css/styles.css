@@ -1503,12 +1503,12 @@ h3 + p, h4 + p{margin-top: .2em;}
   background: none;       /* 移除背景 */
   padding: 0;             /* 移除文字徽章的 padding */
   border: none;           /* 不要邊框 */
-  margin: 2px 0 0 5px;
+  margin: 0px 0 0 3px;
   border-radius: 0;
 }
 
 .plan-type {
-  margin: 3px 0 0 10px;
+  margin: 0px 0 0 10px;
   background: var(--brand-2);
   color: #fff;
   border-radius: 8px;
@@ -2606,19 +2606,18 @@ textarea::placeholder {
 }
 
 #course-type .plan-type {
-  margin: 6px 0 12px;
+  margin: 0px 0 18px;
 }
 
 #teachers .grid{
  display: grid;
  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
-#teachers .course-card .course-body{padding: 12px 0px 16px 12px;}
 
 .badges-one-day {
   display: inline-block;
   position: relative;
-  margin: 2px 0 0 5px;
+  margin: 0px 0 0 3px;
   align-self: start;
 }
 
