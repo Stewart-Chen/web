@@ -859,6 +859,7 @@ function renderEquip(items){
           const name = document.getElementById('enroll-name').value.trim();
           const phone = document.getElementById('enroll-phone').value.trim();
           const line  = document.getElementById('enroll-line').value.trim();
+          const message = document.getElementById('enroll-message')?.value.trim() || null;
 
           if (!name)  { alert('請填寫姓名');  return; }
           if (!phone) { alert('請填寫電話');  return; }
@@ -888,7 +889,8 @@ function renderEquip(items){
               phone: phone,
               line_id: line || null,
               user_id: getUser()?.id || null,
-              user_email: getUser()?.email || null
+              user_email: getUser()?.email || null,
+              message: message
             }
           });
           if (fnErr) {
