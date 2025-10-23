@@ -374,6 +374,14 @@ body.modal-open{ overflow: hidden; }
           <label>LINE ID（選填）
             <input id="enroll-line" type="text" placeholder="選填">
           </label>
+            <label style="grid-column: 1 / -1;">留言 / 備註（選填）
+              <textarea
+                id="enroll-message"
+                rows="3"
+                placeholder="想告訴老師的話…"
+                maxlength="500"
+                style="width:100%;resize:vertical;"></textarea>
+            </label>
         </div>
         <div class="actions">
           <button class="btn secondary" type="button" onclick="document.getElementById('enroll-dialog').close()">取消</button>
