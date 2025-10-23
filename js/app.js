@@ -879,6 +879,31 @@ function renderEquip(items){
           alert('報名成功！');
           dlg.close();
 
+      
+          try {
+            // === NEW: 呼叫 Edge Function 發信 ===
+            await sb.functions.invoke('notify-enrollment', {
+              body: {
+                course_id: idNum,
+                course_title: course.title,
+                fullname: name,
+                phone: phone,
+                line_id: line || null,
+                user_id: getUser()?.id || null
+              }
+            });
+          } catch (e) {
+            // 不阻斷使用者流程；記 log 即可
+            console.warn('notify-enrollment failed', e);
+          }
+          
+          enrollBtn.classList.add('hidden');
+          enrolledBadge?.classList.remove('hidden');
+          if (typeof setLessonLock === 'function') setLessonLock(true);
+          
+          loadProgress(lessons || []);
+
+
           enrollBtn.classList.add('hidden');
           enrolledBadge?.classList.remove('hidden');
           if (typeof setLessonLock === 'function') setLessonLock(true);
