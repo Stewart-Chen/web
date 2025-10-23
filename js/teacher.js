@@ -139,7 +139,7 @@
             </div>
             <div class="label">療癒領域</div>
             <div class="value">
-              ${cats.map(c => badgeHTML(c, 'plan-type ' + planTypeClass(c))).join(' ')}
+              ${cats.map(c => badgeHTML(c, 'cat-type ' + planTypeClass(c))).join(' ')}
             </div>
           </div>
         `);
