@@ -361,8 +361,8 @@ const teacherBox = document.getElementById('teacher-box-content');
 if (teacherBox) {
   // 給老師一個可穩定引用的 id（你也可以改成從資料庫拿）
   const TEACHER_META = {
-    汎汎: { id: 1, name: '汎汎', role: '園藝治療老師', avatar: '/web/img/fan_o.jpg' },
-    小D:  { id: 2, name: '小D',  role: '藝術療癒老師', avatar: '/web/img/dd_o.jpg' }
+    汎汎: { id: 2, name: '汎汎', role: '園藝治療老師', avatar: '/web/img/fan_o.jpg' },
+    小D:  { id: 1, name: '小D',  role: '藝術療癒老師', avatar: '/web/img/dd_o.jpg' }
   };
 
   // 後備方案：若沒有預先配置 id，就用 name 做簡單 slug 當 id
