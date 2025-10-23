@@ -2329,7 +2329,7 @@ textarea::placeholder {
     background: none;
     box-shadow: none;
   }
-  .card:not(.feature-grid .card) {
+  .card:not(.feature-grid .card):not(.hero) {
     border-radius: 0;
     border: 0;
     background: #fff;
@@ -2846,4 +2846,46 @@ a.link:focus {
   text-decoration: underline;
   color: var(--muted);          /* 滑過變深藍 */
 }
+
+/* Social section */
+.social-section {
+  /* padding: 16px 0 4px; */
+  max-width: 800px;
+}
+.social-title {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+.social-links {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-left: 10px;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+  font-size: 12px;
+}
+.social-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Icon size */
+.social-btn svg {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+
+/* Facebook brand color（用填色路徑） */
+.social-btn.fb svg path {
+  fill: #1877F2; /* FB 藍 */
+}
+
+
 
