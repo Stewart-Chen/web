@@ -9,7 +9,7 @@
   --brand: #66bb6a;
   --brand-2: #81c784;
   --brand-3: #4caf50;
-  --mint-50: #e8f5e9;  /* 淺底綠，用於 secondary */
+  --mint-50: #E8F5F0;  /* 淺底綠，用於 secondary */
   --mint-100:#c8e6c9;  /* hover 淺底綠 */
   --accent-blue: #3bb3c3;
   --accent-purple: #a18cd1;
@@ -2808,17 +2808,43 @@ textarea::placeholder {
 
 .cat-type {
   margin: 0px 0 0 10px;
-  background: #d9f2f0;
-  color: var(--ink);
+  background: var(--brand);
+  color: #fff;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   padding: 4px 10px;
-  box-shadow: inset 0 -1px 0 rgba(0,0,0,.1), 
-    0 1px 1px rgba(0,0,0,.1);      /* 外陰影 */
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.18), /* 底邊內陰影，更立體 */    0 1px 2px rgba(0,0,0,.18);      /* 外陰影 */
 }
 
 
 #teacher-grid .course-card p.muted{
   margin-bottom: 12px;
 }
+
+#teacher-summary {
+  text-align: left;        /* 文字靠左 */
+  margin: 1.5em 1.5em;
+  white-space: pre-line;
+  font-weight:600;
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  #teacher-summary {
+    margin: 1em 1em;
+  }
+}
+
+a.link {
+  color: var(--muted);         /* 主題藍 */
+  text-decoration: none;   /* 移除底線 */
+  transition: color 0.2s, text-decoration 0.2s;
+}
+
+a.link:hover,
+a.link:focus {
+  text-decoration: underline;
+  color: var(--muted);          /* 滑過變深藍 */
+}
+
