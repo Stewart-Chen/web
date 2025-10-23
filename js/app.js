@@ -887,7 +887,7 @@ function renderEquip(items){
               fullname: name,
               phone: phone,
               line_id: line || null,
-              user_id: getUser()?.id || null
+              user_id: getUser()?.id || null,
               user_email: getUser()?.email || null
             }
           });
