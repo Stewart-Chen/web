@@ -381,7 +381,7 @@ if (teacherBox) {
       const id = getTeacherId(n);
       const link = `
         <a href="teacher.html?id=${encodeURIComponent(id)}"
-           class="teacher-line teacher-link">
+           class="chip chip-items">
           ${text}
         </a>
       `;
