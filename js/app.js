@@ -872,7 +872,9 @@ function renderEquip(items){
               user_id: getUser().id,
               fullname: name,
               phone: phone,
-              line_id: line || null
+              line_id: line || null,
+              user_email: getUser()?.email || null,  // ← 新增：存會員信箱
+              message: message                       // ← 新增：存留言
             });
 
           if (insErr){ console.error(insErr); alert('報名失敗：' + insErr.message); return; }
