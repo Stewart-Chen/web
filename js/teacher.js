@@ -135,7 +135,7 @@
         infoList.insertAdjacentHTML('beforeend', `
           <div class="info-item" data-key="category">
             <div class="icon">
-              <img class="badge badgeImg" src="/web/img/${cats.includes('園藝') ? 'garden_simple' : 'art_simple'}.png" alt="類別">
+              <img class="badge badgeImg" src="/web/img/${cats.includes('園藝') ? 'garden_simple_bk' : 'art_simple_bk'}.png" alt="類別">
             </div>
             <div class="label">療癒領域</div>
             <div class="value">
