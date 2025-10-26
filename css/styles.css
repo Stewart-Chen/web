@@ -2878,8 +2878,8 @@ a.link:focus {
 
 /* Icon size */
 .social-btn svg {
-  width: 35px;
-  height: 35px;
+  width: 32px;
+  height: 32px;
   display: block;
 }
 
@@ -2896,4 +2896,10 @@ a.link:focus {
 .sticky-chips__inner_k .chip:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.chip svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  vertical-align: middle;
 }
