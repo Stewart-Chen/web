@@ -176,7 +176,7 @@ nav .dropdown:focus-within .dropbtn{
   height: 45px;
   display: grid;
   place-items: center;
-  margin-bottom: 7px;
+  margin: 0 8px 7px;
   filter: drop-shadow(0 4px 10px rgba(59, 179, 195, 0.4));
 }
 
@@ -1505,6 +1505,7 @@ h3 + p, h4 + p{margin-top: .2em;}
   border: none;           /* 不要邊框 */
   margin: 0px 0 0 3px;
   border-radius: 0;
+  opacity: 0.8;
 }
 
 .plan-type {
@@ -2877,8 +2878,8 @@ a.link:focus {
 
 /* Icon size */
 .social-btn svg {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   display: block;
 }
 
@@ -2886,6 +2887,6 @@ a.link:focus {
 .social-btn.fb svg path {
   fill: #1877F2; /* FB 藍 */
 }
-
+#teachers .course-card .course-body{padding: 16px 16px 18px 18px;}
 
 
