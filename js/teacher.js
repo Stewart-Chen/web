@@ -50,10 +50,25 @@
           <path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>`;
 
       case 'ig':
-        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#E4405F">
+        /*return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#E4405F">
           <rect x="3" y="3" width="18" height="18" rx="5" ry="5"/>
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-          <circle cx="17.5" cy="6.5" r="1.5"/></svg>`;
+          <circle cx="17.5" cy="6.5" r="1.5"/></svg>`;*/
+
+       return `<svg viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <!-- IG 漸層 -->
+              <linearGradient id="igGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F58529"></stop>
+                <stop offset="30%" stop-color="#FEDA77"></stop>
+                <stop offset="60%" stop-color="#DD2A7B"></stop>
+                <stop offset="100%" stop-color="#8134AF"></stop>
+              </linearGradient>
+            </defs>
+            <rect x="3" y="3" width="18" height="18" rx="5" ry="5" fill="url(#igGradient)"></rect>
+            <circle cx="12" cy="12" r="4.2" fill="#fff"></circle>
+            <circle cx="17.4" cy="6.6" r="1.2" fill="#fff"></circle>
+          </svg>`; 
       
       case 'fb':
         return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="#1877F2">
