@@ -1192,10 +1192,6 @@ h3 + p, h4 + p{margin-top: .2em;}
     /* font-weight: 600; */
     line-height: 1.4;
   }
-  .chips .chip{
-    font-size: .8rem;
-    padding: 6px 16px;
-  }
   h3{letter-spacing: .3px;margin: 0;}
   h4{ font-size: .95rem;  letter-spacing: .25px; }
 
@@ -1345,12 +1341,12 @@ h3 + p, h4 + p{margin-top: .2em;}
 /* 基本 chip */
 .chip{
   flex: 0 0 auto;
-  padding: 4px 12px;
+  padding: 8px 16px;
   font-weight: 600;
   text-decoration: none;
   transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
   white-space: nowrap;
-  font-size: .8rem;
+  font-size: 14px;
   border-radius: 10px;
   background: #d9f2f0;
   color: var(--ink);
@@ -1490,7 +1486,7 @@ h3 + p, h4 + p{margin-top: .2em;}
 .sticky-chips__inner_k{
   width: min(100%, var(--container));
   display: flex;
-  gap: 8px 10px;
+  gap: 8px 12px;
   max-width: var(--container);
   margin: 0 auto;
 }
