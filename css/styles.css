@@ -2889,4 +2889,11 @@ a.link:focus {
 }
 #teachers .course-card .course-body{padding: 16px 16px 18px 18px;}
 
-
+.sticky-chips__inner_k .chip{
+  background: #d9f2f0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.sticky-chips__inner_k .chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
