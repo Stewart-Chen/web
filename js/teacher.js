@@ -126,7 +126,7 @@
     // 封面圖（優先 cover_url）
     const heroUrl =
       teacher.cover_url ||
-      `https://picsum.photos/seed/teacher-${encodeURIComponent(teacher.id)}/1200/630`;
+      `/web/img/teachers_base.jpg`;
     $id('teacher-cover').innerHTML = `
       <img src="${heroUrl}" alt="${escapeHtml(teacher.name)} 主圖" loading="eager" decoding="async">
       <div class="hero-avatar" id="teacher-avatar"></div>
