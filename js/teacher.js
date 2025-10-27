@@ -126,7 +126,7 @@
     // 封面圖（優先 cover_url）
     const heroUrl =
       teacher.cover_url ||
-      `/web/img/teachers_base.jpg`;
+      `/web/img/teachers_base.png`;
     $id('teacher-cover').innerHTML = `
       <img src="${heroUrl}" alt="${escapeHtml(teacher.name)} 主圖" loading="eager" decoding="async">
       <div class="hero-avatar" id="teacher-avatar"></div>
