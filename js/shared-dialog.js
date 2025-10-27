@@ -479,7 +479,7 @@ body.modal-open{ overflow: hidden; }
       // 2) 撈資料（把 gallery 一起選回來）
       const { data, error } = await sb
         .from('courses')
-        .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords')
+        .select('id,title,summary,description,cover_url,gallery,teacher,category,created_at,duration_hours,course_fee,keywords,plan_type')
         .eq('published', true)
         .is('deleted_at', null);
       
