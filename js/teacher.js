@@ -194,7 +194,7 @@
           if (!url) return '';
           const kind = whichBrand(url);
           const label = ({
-            ig:'Dana Cheng', fb:'汎汎の花園樂趣', yt:'YouTube', x:'X', linktree:'Linktree', web:'汎汎の花園樂趣'
+            ig:'Dana Cheng', fb:'汎汎の花園樂趣', yt:'YouTube', x:'X', linktree:'Linktree', web:'官網'
           })[kind] || '連結';
           return `
             <a class="chip chip-items link-chip" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer nofollow" title="${escapeHtml(url)}">
