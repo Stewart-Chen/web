@@ -1002,7 +1002,7 @@ function courseCardHTML(c){
              alt="${c.category}">`
     : `
       <div class="badges-one-day">  
-        <img class="badge badgeImg-one-day" src="/web/img/art_simple.png" alt="藝術">
+        <!--  <img class="badge badgeImg-one-day" src="/web/img/art_simple.png" alt="藝術"> -->
         <img class="badge badgeImg-one-day" src="/web/img/garden_simple.png" alt="園藝">
       </div>
     `;
