@@ -273,6 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = window.currentUser || null;
     if (!user) { showToast('請先登入再送出表單','danger'); return; }
 
+    const nickname = user?.user_metadata?.nickname || '';
+
     const fd = new FormData(form);
     const getChecked = (name) => $$(`input[name="${name}"]:checked`).map(cb => cb.value);
 
@@ -308,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const payload = {
       user_id: user.id,
+      nickname: nickname,
       course_id: currentCourse ?? null,
       session_id: currentSession ?? null,
       timepoint: currentTp,
